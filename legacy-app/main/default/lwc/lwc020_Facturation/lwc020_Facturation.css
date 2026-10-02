@@ -1,0 +1,278 @@
+/* ══════════════════════════════════════════════════════════════
+   TOKENS
+   Le parent ne porte plus que la barre d'onglets et le placeholder :
+   les briques de table, filtres et KPI vivent dans les enfants, qui
+   recopient ces tokens (le CSS LWC ne traverse pas les frontières
+   de composant).
+══════════════════════════════════════════════════════════════ */
+:host {
+    display: block;
+    width: 100%;
+
+    --blue-600:  #2563eb;
+    --blue-700:  #1d4ed8;
+    --blue-50:   #eff6ff;
+    --blue-200:  #bfdbfe;
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-500: #64748b;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50:  #f8fafc;
+    --white:     #ffffff;
+
+    --primary:      var(--blue-600);
+    --primary-dark: var(--blue-700);
+    --border:       var(--slate-200);
+    --text-heading: var(--slate-900);
+    --text-base:    var(--slate-800);
+    --text-muted:   var(--slate-500);
+    --surface:      var(--white);
+    --surface-alt:  var(--slate-50);
+
+    --shadow-sm: 0 1px 4px rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.04);
+
+    --r-md:   10px;
+    --r-lg:   12px;
+    --r-pill: 999px;
+
+    --fs-ui:    clamp(0.68rem, 0.85vw, 0.8rem);
+    --fs-input: clamp(0.63rem, 0.76vw, 0.75rem);
+
+    /* Placeholder « Bientôt disponible » */
+    --primary-color: #2563eb;
+    --text-dark:  #1e293b;
+    --text-light: #64748b;
+}
+
+/* Géométrie RECOPIÉE de .nav-container (lwc020_CampagneContainer.css) : mêmes
+   max-width, centrage et paddings latéraux, aux mêmes points d'arrêt. C'est ce qui
+   fait que le titre de l'écran s'aligne verticalement sur le logo et le bouton
+   « Actualiser » sur le dernier lien du menu. Sans cette contrainte, le composant
+   occupait toute la largeur de la fenêtre et le contenu touchait les bords, alors
+   que tout le reste du site est cadré. */
+.pay-wrapper {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 24px 32px;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    color: var(--text-base);
+}
+
+@media (max-width: 900px) {
+    .pay-wrapper { padding: 16px 16px 24px; }
+}
+
+@media (max-width: 480px) {
+    .pay-wrapper { padding: 12px 12px 20px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BARRE D'ONGLETS — segment compact à indicateur glissant
+
+   Une seule pastille se déplace d'un onglet à l'autre plutôt que
+   deux fonds qui s'allument : le mouvement porte la continuité.
+   Sa couleur d'accent reprend la sémantique du contenu — bleu pour
+   « En cours », vert pour « Payées », comme les tuiles de KPI.
+
+   Les deux boutons ont une LARGEUR FIXE identique : c'est ce qui
+   permet à l'indicateur de faire exactement 50 % et de se déplacer
+   d'un translateX(100%), sans mesure JavaScript.
+══════════════════════════════════════════════════════════════ */
+.tab-bar {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    gap: 0;
+    padding: 4px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: linear-gradient(180deg, var(--slate-100) 0%, var(--slate-50) 100%);
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.07);
+    box-sizing: border-box;
+}
+
+.tab-slider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12),
+                0 0 0 1px rgba(37, 99, 235, 0.18);
+    /* Léger dépassement en fin de course : la bascule paraît « posée »
+       plutôt que coupée net. */
+    transition: transform 0.34s cubic-bezier(0.34, 1.32, 0.5, 1),
+                box-shadow 0.34s ease;
+    pointer-events: none;
+}
+
+.tab-bar--payees .tab-slider {
+    transform: translateX(100%);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12),
+                0 0 0 1px rgba(21, 128, 61, 0.22);
+}
+
+.tab-btn {
+    position: relative;
+    z-index: 1;
+    width: 9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.22s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Survol d'un onglet INACTIF seulement : l'actif ne doit pas bouger. */
+.tab-btn:not(.tab-btn--active):hover { color: var(--text-base); }
+.tab-btn:not(.tab-btn--active):hover .tab-icon { opacity: 0.9; transform: scale(1.06); }
+
+.tab-label {
+    letter-spacing: 0.1px;
+    line-height: 1;
+}
+
+.tab-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34, 1.32, 0.5, 1);
+}
+
+/* Accent sémantique : bleu côté « en cours », vert côté « payé ». */
+.tab-btn--active { color: var(--primary-dark); }
+.tab-btn--active .tab-icon { opacity: 1; transform: scale(1.08); }
+
+.tab-bar--payees .tab-btn--active { color: #15803d; }
+
+.tab-content { width: 100%; }
+
+/* L'animation de la pastille est décorative : on la retire pour qui
+   demande à réduire les mouvements. */
+@media (prefers-reduced-motion: reduce) {
+    .tab-slider,
+    .tab-icon { transition: none; }
+}
+
+/* Sous 480px, le segment prend toute la largeur pour rester tapable. */
+@media (max-width: 480px) {
+    .tab-bar { display: flex; width: 100%; }
+    .tab-btn { width: 50%; padding: 7px 6px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PLACEHOLDER « BIENTÔT DISPONIBLE »
+   (branche affichée quand afficherContenu est décoché)
+══════════════════════════════════════════════════════════════ */
+.container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: slideInUp 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.coming-soon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 48px 56px;
+    width: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(250, 250, 250, 0.6));
+    border-radius: 18px;
+    box-shadow: 0 6px 30px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(16, 24, 40, 0.06);
+    text-align: center;
+    animation: slideInUp 0.6s ease 0.1s backwards;
+    box-sizing: border-box;
+}
+
+.icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(37, 99, 235, 0.14));
+    border: 1px solid rgba(37, 99, 235, 0.15);
+    margin-bottom: 4px;
+}
+
+.coming-soon-icon {
+    width: 34px;
+    height: 34px;
+    color: var(--primary-color);
+    stroke: var(--primary-color);
+}
+
+.coming-soon-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.3px;
+}
+
+.badge-wrap { margin-top: 4px; }
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.07), rgba(37, 99, 235, 0.12));
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-color);
+    letter-spacing: 0.2px;
+}
+
+.badge-icon {
+    width: 13px;
+    height: 13px;
+    stroke: var(--primary-color);
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .container { padding: 16px; min-height: 240px; }
+    .coming-soon-card { padding: 36px 24px; }
+    .coming-soon-title { font-size: 18px; }
+}

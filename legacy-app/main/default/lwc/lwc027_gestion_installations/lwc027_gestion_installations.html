@@ -1,0 +1,81 @@
+<template>
+    <div class="previsite">
+
+        <template lwc:if={accueil}>
+            <h2 class="salutation">{salutation}</h2>
+
+            <!-- Contrat parti mais pas signe : le portail est visible et inerte,
+                 avec l'explication juste sous le nom. -->
+            <template lwc:if={contratEnAttente}>
+                <div class="attente">
+                    <p class="attente-titre">{txt.attenteTitre}</p>
+                    <p class="attente-message">{messageAttente}</p>
+
+                    <!-- Recap des informations ENVOYEES : l'intervenant verifie
+                         ici, sans rouvrir le formulaire, s'il s'est trompe. -->
+                    <template lwc:if={aUnRecap}>
+                        <p class="recap-titre">{txt.recapTitre}</p>
+                        <dl class="recap">
+                            <template for:each={recap} for:item="l">
+                                <div class="recap-ligne" key={l.champ}>
+                                    <dt>{l.label}</dt>
+                                    <dd>{l.valeur}</dd>
+                                </div>
+                            </template>
+                        </dl>
+                    </template>
+
+                    <!-- Recours dans l'encadre, juste sous le recap : c'est en
+                         relisant qu'on repere l'erreur. Seul chemin de retour
+                         vers le formulaire une fois le contrat parti. -->
+                    <div class="attente-actions">
+                        <p class="recours-texte">{txt.attenteErreur}</p>
+                        <div class="attente-boutons">
+                            <button class="recours-bouton" onclick={handleModifierInfos}>
+                                <span aria-hidden="true">✏️</span> {txt.boutonModifierInfos}
+                            </button>
+                            <template lwc:if={urlPdf}>
+                                <a class="attente-lien" href={urlPdf} target="_blank" rel="noopener noreferrer">
+                                    <span aria-hidden="true">🔗</span> {txt.boutonVoirContrat}
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="intro">{txt.intro}</p>
+            </template>
+
+            <div class="boutons">
+                <button class={classeTuile} onclick={handleAPlanifier} disabled={contratEnAttente}>
+                    <span class="tuile-icone" aria-hidden="true">📅</span>
+                    <span class="tuile-texte">
+                        <span class="tuile-titre">{txt.aPlanifierTitre}</span>
+                        <span class="tuile-sous">{txt.aPlanifierSous}</span>
+                    </span>
+                </button>
+
+                <button class={classeTuile} onclick={handlePlanifies} disabled={contratEnAttente}>
+                    <span class="tuile-icone" aria-hidden="true">✅</span>
+                    <span class="tuile-texte">
+                        <span class="tuile-titre">{txt.planifiesTitre}</span>
+                        <span class="tuile-sous">{txt.planifiesSous}</span>
+                    </span>
+                </button>
+            </div>
+
+        </template>
+
+        <template lwc:else>
+            <div class="vue">
+                <button class="retour" onclick={handleRetour}>{txt.retour}</button>
+                <h2 class="vue-titre">{titreVue}</h2>
+                <!-- Zone volontairement vide : la logique de planification
+                     sera branchée ici une fois definie. -->
+                <div class="placeholder">{txt.bientot}</div>
+            </div>
+        </template>
+
+    </div>
+</template>

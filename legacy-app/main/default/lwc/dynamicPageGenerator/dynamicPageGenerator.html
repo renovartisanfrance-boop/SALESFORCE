@@ -1,0 +1,29 @@
+<template>
+    <lightning-card title={title}>
+        <lightning-record-edit-form 
+        record-id={recordId}
+        object-api-name={objectName}
+        record-type-id={recordTypeId} 
+        onsuccess={handleSuccess} onsubmit={saveClick} onerror={handleError}>
+            <lightning-messages data-id="message">
+            </lightning-messages>
+                <div class="slds-grid slds-wrap my-container">
+                <template if:true={fields}>
+                    <template for:each={fields} for:item="f">
+                       <div key={f.Id} class="slds-col slds-size_1-of-1">
+                        <lightning-input-field field-name={f.APIName} required={f.isRequired} value={f.defaultValue} class={f.className}>
+                        </lightning-input-field>
+                        </div>
+                    </template>
+                </template>
+                </div>
+            <!-- center button -->
+            <div class="slds-grid slds-grid_align-center">
+                <div class="slds-col">
+                    <lightning-button type="submit" variant="brand" label="Enregistrer" disabled={getOnSubmit} ></lightning-button>
+                </div>
+            </div>
+
+        </lightning-record-edit-form>
+    </lightning-card>
+</template>

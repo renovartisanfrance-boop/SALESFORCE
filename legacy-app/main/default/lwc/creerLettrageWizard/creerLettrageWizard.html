@@ -1,0 +1,68 @@
+<template>
+    <div class="pf-wrapper" style="position: relative;">
+        <div class="pf-header">
+            <p class="pf-title">Nouveau lettrage</p>
+            <p class="pf-subtitle">Renseignez les informations puis sélectionnez les factures à lettrer</p>
+        </div>
+
+        <div class="pf-progress">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                <template for:each={steps} for:item="step">
+                    <lightning-progress-step key={step.value} label={step.label} value={step.value}>
+                    </lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </div>
+
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class={infosStepClass}>
+            <div class="pf-card">
+                <lightning-record-edit-form object-api-name={objectApiName}>
+                    <div class="pf-fields-grid">
+                        <template for:each={fields} for:item="f">
+                            <lightning-input-field key={f.apiName} field-name={f.apiName} value={f.savedValue}
+                                required={f.isRequired}>
+                            </lightning-input-field>
+                        </template>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+
+        <template lwc:if={isFacturesStep}>
+            <div class="pf-recap">
+                <span class="pf-recap-label">Montant du lettrage</span>
+                <span class="pf-recap-value">
+                    <lightning-formatted-number value={montantLettrage} format-style="currency"
+                        currency-code="EUR">
+                    </lightning-formatted-number>
+                </span>
+                <span class={matchClass}>{matchLabel}</span>
+            </div>
+
+            <c-lettrage-factures
+                mode="creation"
+                onselectionchange={handleSelectionChange}>
+            </c-lettrage-factures>
+        </template>
+
+        <div class="pf-footer">
+            <lightning-button label="Annuler" onclick={handleCancel}></lightning-button>
+            <template lwc:if={isInfosStep}>
+                <lightning-button class="pf-next-btn" label="Suivant" variant="brand" onclick={handleNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isFacturesStep}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+                <lightning-button class="pf-next-btn" label="Créer le lettrage" variant="brand"
+                    disabled={saveDisabled} onclick={handleSave}>
+                </lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

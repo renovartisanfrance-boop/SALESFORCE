@@ -1,0 +1,85 @@
+<template>
+    <div class={containerClass}>
+
+        <!-- Spinner pendant le chargement initial -->
+        <template if:true={initializing}>
+            <lightning-spinner alternative-text="Chargement…" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Spinner en overlay (action en cours) -->
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Réinitialisation en cours" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Message d'attente pendant la vérification du statut -->
+        <template if:true={showInitMessage}>
+            <div class="slds-p-vertical_large slds-text-align_center slds-text-color_weak">
+                Vérification du statut de la facture…
+            </div>
+        </template>
+
+        <!-- État bloquant : facture déjà au statut Brouillon -->
+        <template if:true={showBlockedSection}>
+            <div class="rf-result slds-p-vertical_medium slds-text-align_center">
+                <lightning-icon icon-name={blockedIcon} size="large"></lightning-icon>
+                <h2 class="slds-text-heading_small slds-m-top_small">{blockedTitle}</h2>
+                <p class="slds-text-color_weak slds-m-top_xx-small">{blockedMessage}</p>
+            </div>
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-top_small">
+                    <lightning-icon icon-name="utility:error" variant="inverse" size="small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    <span>{error}</span>
+                </div>
+            </template>
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Fermer" variant="brand" onclick={handleClose}></lightning-button>
+            </div>
+        </template>
+
+        <!-- Écran de succès -->
+        <template if:true={showDoneSection}>
+            <div class="rf-result slds-p-vertical_medium">
+                <lightning-icon icon-name="action:approval" size="large"></lightning-icon>
+                <h2 class="slds-text-heading_small slds-m-top_small">Facture remise en brouillon</h2>
+                <p class="slds-text-color_weak slds-m-top_xx-small">
+                    Le statut est repassé à « Brouillon ».
+                </p>
+            </div>
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Fermer" variant="brand" onclick={handleClose}></lightning-button>
+            </div>
+        </template>
+
+        <!-- Confirmation -->
+        <template if:true={showFormSection}>
+
+            <div class="slds-box slds-theme_shade slds-m-bottom_medium rf-info">
+                <lightning-icon icon-name="utility:info" size="small"
+                    class="slds-m-right_x-small"></lightning-icon>
+                <span>
+                    Cette action remet la facture au statut <b>« Brouillon »</b> afin
+                    d'autoriser sa modification.
+                    <!-- Aucun autre champ n'est modifié. -->
+                </span>
+            </div>
+
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-bottom_small rf-info">
+                    <lightning-icon icon-name="utility:error" variant="inverse" size="small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    <span>{error}</span>
+                </div>
+            </template>
+
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Annuler" onclick={handleClose}
+                    class="slds-m-right_x-small" disabled={loading}></lightning-button>
+                <lightning-button label="Remettre en brouillon" variant="brand"
+                    onclick={handleConfirm} disabled={confirmDisabled}></lightning-button>
+            </div>
+
+        </template>
+
+    </div>
+</template>

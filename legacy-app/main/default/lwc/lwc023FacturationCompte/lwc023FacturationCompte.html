@@ -1,0 +1,371 @@
+<template>
+    <div class="pf-wrapper" style="position: relative;">
+        <div class="pf-header">
+            <p class="pf-title">Facturation du compte</p>
+            <p class="pf-subtitle">{subtitle}</p>
+        </div>
+
+        <div class="pf-progress">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                <template for:each={steps} for:item="step">
+                    <lightning-progress-step key={step.value} label={step.label} value={step.value}>
+                    </lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </div>
+
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="pf-body">
+        <template lwc:if={error}>
+            <div class="pf-error">{error}</div>
+        </template>
+
+        <!-- ============================================ ÉCRAN 1 : LIGNES ============================================ -->
+        <template lwc:if={isLignesStep}>
+            <div class="pf-card">
+                <div class="pf-card-head">
+                    <p class="pf-section-title">Lignes à facturer</p>
+                    <span class="pf-hint-inline">{selectionSummary}</span>
+                </div>
+
+                <template lwc:if={hasRows}>
+                    <div class="pf-filters">
+                        <lightning-input type="search" class="pf-filter-item" label="Rechercher (dossier, rôle, échéance)"
+                            value={filterText} onchange={handleSearch}>
+                        </lightning-input>
+                    </div>
+
+                    <template lwc:if={hasFilteredRows}>
+                        <div class="pf-scroll">
+                            <table class="pf-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 3rem;">
+                                            <input type="checkbox" class="pf-radio" checked={allSelected}
+                                                onclick={handleSelectAll} />
+                                        </th>
+                                        <th>Dossier</th>
+                                        <th class="pf-sortable" data-field="ficheCee" onclick={handleSort}>Fiche CEE{arrows.ficheCee}</th>
+                                        <th class="pf-sortable" data-field="role" onclick={handleSort}>Rôle{arrows.role}</th>
+                                        <th class="pf-sortable" data-field="numEcheance" onclick={handleSort}>Éch.{arrows.numEcheance}</th>
+                                        <th class="pf-sortable" data-field="echeance" onclick={handleSort}>Échéance{arrows.echeance}</th>
+                                        <th class="pf-sortable" data-field="status" onclick={handleSort}>Statut{arrows.status}</th>
+                                        <th class="pf-sortable" data-field="montant" onclick={handleSort}>Montant HT{arrows.montant}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={displayRows} for:item="r">
+                                        <tr key={r.key} data-key={r.key} class={r.rowClass} onclick={handleToggleRow}>
+                                            <td>
+                                                <input type="checkbox" class="pf-radio" data-key={r.key}
+                                                    checked={r.selected} disabled={r.disabledCheckbox}
+                                                    onclick={handleCheckboxChange} />
+                                            </td>
+                                            <td><strong>{r.dossierName}</strong></td>
+                                            <td>{r.ficheCee}</td>
+                                            <td>
+                                                {r.role}
+                                                <template lwc:if={r.hasNote}>
+                                                    <lightning-helptext content={r.commentaire}></lightning-helptext>
+                                                </template>
+                                            </td>
+                                            <td>{r.numEcheanceDisplay}</td>
+                                            <td>{r.echeance}</td>
+                                            <td>
+                                                <span class={r.statutBadge}>{r.statutLabel}</span>
+                                                <template lwc:if={r.factureNumExterne}>
+                                                    <span class="slds-m-left_xx-small">
+                                                        <span class={r.factureBadge}>{r.factureNumExterne}</span>
+                                                    </span>
+                                                </template>
+                                            </td>
+                                            <td onclick={stopProp}>
+                                                <template lwc:if={r.isEditable}>
+                                                    <lightning-input type="number" variant="label-hidden"
+                                                        formatter="currency" step="0.01" data-key={r.key}
+                                                        value={r.montantValue} disabled={r.disabledInput}
+                                                        onchange={handleMontantChange} onclick={stopProp}>
+                                                    </lightning-input>
+                                                </template>
+                                                <template lwc:else>
+                                                    <template lwc:if={r.montant}>
+                                                        <span class="pf-amount">
+                                                            <lightning-formatted-number value={r.montant}
+                                                                format-style="currency" currency-code="EUR">
+                                                            </lightning-formatted-number>
+                                                        </span>
+                                                    </template>
+                                                    <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="7" class="pf-foot-label">Total sélectionné HT</td>
+                                        <td class="pf-foot-value">
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={totalSelected} format-style="currency"
+                                                    currency-code="EUR"></lightning-formatted-number>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="pf-empty">
+                            <span class="pf-empty-icon">🔍</span>
+                            Aucune ligne ne correspond à la recherche.
+                        </div>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">📋</span>
+                        Aucune ligne à facturer pour ce compte.
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ============================================ ÉCRAN 2 : INFOS ============================================ -->
+        <div class={infosStepClass}>
+            <div class="pf-card">
+                <p class="pf-section-title">Informations de la facture</p>
+                <p class="pf-hint">
+                    Le bénéficiaire est le compte courant. Le montant HT est pré-rempli avec le total des
+                    lignes sélectionnées (modifiable) ; saisissez la TVA et le total TTC.
+                </p>
+                <lightning-record-edit-form object-api-name={objectApiName}>
+                    <div class="pf-fields-grid">
+                        <template for:each={fields} for:item="f">
+                            <lightning-input-field key={f.apiName} field-name={f.apiName} value={f.savedValue}
+                                required={f.isRequired} disabled={f.isReadOnly}>
+                            </lightning-input-field>
+                        </template>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+
+        <!-- ============================================ ÉCRAN 3 : ACOMPTES ============================================ -->
+        <template lwc:if={isAcomptesStep}>
+            <div class="pf-card">
+                <div class="pf-card-head">
+                    <p class="pf-section-title">Acomptes (avances) du compte</p>
+                    <span class="pf-hint-inline">{acompteSelectionSummary}</span>
+                </div>
+
+                <template lwc:if={hasAcomptes}>
+                    <p class="pf-hint">
+                        Sélectionnez les factures d'acompte à rattacher. Leur total HT s'ajoute au montant
+                        HT de la facture lors de la comparaison avec les lignes.
+                    </p>
+                    <table class="pf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 3rem;"></th>
+                                <th>N° Facture</th>
+                                <th>N° Externe</th>
+                                <th>Date facture</th>
+                                <th>Statut</th>
+                                <th>Montant HT</th>
+                                <th>Montant TTC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={acomptesDisplay} for:item="a">
+                                <tr key={a.id} data-id={a.id} class={a.rowClass} onclick={handleAcompteToggleRow}>
+                                    <td>
+                                        <input type="checkbox" class="pf-radio" data-id={a.id} checked={a.selected}
+                                            onclick={handleAcompteCheckboxChange} />
+                                    </td>
+                                    <td><strong>{a.name}</strong></td>
+                                    <td>{a.numExterne}</td>
+                                    <td>
+                                        <template lwc:if={a.dateFacture}>
+                                            <lightning-formatted-date-time value={a.dateFacture}>
+                                            </lightning-formatted-date-time>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                    <td><span class={a.statutBadgeClass}>{a.statut}</span></td>
+                                    <td>
+                                        <template lwc:if={a.montantHT}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={a.montantHT} format-style="currency"
+                                                    currency-code="EUR"></lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                    <td>
+                                        <template lwc:if={a.montantTTC}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={a.montantTTC} format-style="currency"
+                                                    currency-code="EUR"></lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">💶</span>
+                        Aucune facture d'acompte disponible pour ce compte.
+                    </div>
+                </template>
+
+                <!-- Factures d'acompte à CRÉER depuis le catalogue (RT Acompte) -->
+                <template lwc:if={hasAcompteCatalogue}>
+                    <div class="pf-card-head" style="margin-top: 1.25rem;">
+                        <p class="pf-section-title">Factures d'acompte à créer (catalogue)</p>
+                        <span class="pf-hint-inline">{acompteCatalogueSummary}</span>
+                    </div>
+                    <p class="pf-hint">
+                        Acomptes définis au catalogue pour les lignes sélectionnées. Cochez ceux à créer et
+                        saisissez leur N° de facture externe (obligatoire). Leur HT se déduit comme un acompte.
+                    </p>
+                    <table class="pf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 3rem;"></th>
+                                <th>Dossier</th>
+                                <th>Fiche CEE</th>
+                                <th>Rôle</th>
+                                <th>Désignation</th>
+                                <th>N° Facture externe</th>
+                                <th>Montant HT</th>
+                                <th>TVA</th>
+                                <th>Montant TTC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={acompteCatalogueDisplay} for:item="p">
+                                <tr key={p.key} data-key={p.key} class={p.rowClass}
+                                    onclick={handleAcompteCatalogueToggleRow}>
+                                    <td>
+                                        <input type="checkbox" class="pf-radio" data-key={p.key}
+                                            checked={p.selected} onclick={handleAcompteCatalogueCheckbox} />
+                                    </td>
+                                    <td><strong>{p.dossierName}</strong></td>
+                                    <td>{p.ficheCee}</td>
+                                    <td>{p.role}</td>
+                                    <td>{p.designation}</td>
+                                    <td onclick={stopProp}>
+                                        <lightning-input type="text" variant="label-hidden"
+                                            placeholder="N° externe…" data-key={p.key} value={p.numero}
+                                            onclick={stopProp} onchange={handleAcompteCatalogueNumero}>
+                                        </lightning-input>
+                                    </td>
+                                    <td>
+                                        <span class="pf-amount">
+                                            <lightning-formatted-number value={p.montantHT}
+                                                format-style="currency" currency-code="EUR"></lightning-formatted-number>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="pf-amount">
+                                            <lightning-formatted-number value={p.montantTVA}
+                                                format-style="currency" currency-code="EUR"></lightning-formatted-number>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="pf-amount">
+                                            <lightning-formatted-number value={p.montantTTC}
+                                                format-style="currency" currency-code="EUR"></lightning-formatted-number>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                    <template lwc:if={missingAcompteNumero}>
+                        <div class="pf-match-row pf-match-warn">
+                            <span class="pf-match-text">⚠ Saisissez un N° de facture externe pour chaque acompte coché.</span>
+                        </div>
+                    </template>
+                </template>
+
+                <div class="pf-totals">
+                    <div class="pf-total-row pf-total-row-dual">
+                        <span class="pf-total-item">
+                            <span class="pf-total-label">Total lignes</span>
+                            <span class="pf-amount pf-total-value">
+                                <lightning-formatted-number value={totalSelected} format-style="currency"
+                                    currency-code="EUR"></lightning-formatted-number>
+                            </span>
+                        </span>
+                        <span class="pf-total-item">
+                            <span class="pf-total-label">− Acomptes</span>
+                            <span class="pf-amount pf-total-value">
+                                <lightning-formatted-number value={totalAcomptesHT} format-style="currency"
+                                    currency-code="EUR"></lightning-formatted-number>
+                            </span>
+                        </span>
+                        <span class="pf-total-item">
+                            <span class="pf-total-label">= HT attendu</span>
+                            <span class="pf-amount pf-total-value">
+                                <lightning-formatted-number value={htAttendu} format-style="currency"
+                                    currency-code="EUR"></lightning-formatted-number>
+                            </span>
+                        </span>
+                        <span class="pf-total-item">
+                            <span class="pf-total-label">HT saisi</span>
+                            <span class="pf-amount pf-total-value">
+                                <lightning-formatted-number value={htSaisi} format-style="currency"
+                                    currency-code="EUR"></lightning-formatted-number>
+                            </span>
+                        </span>
+                    </div>
+                    <template lwc:if={acomptesDepassent}>
+                        <div class="pf-match-row pf-match-warn">
+                            <span class="pf-match-text">
+                                ⚠ Les acomptes dépassent le total des lignes : réduisez la sélection d'acomptes.
+                            </span>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class={matchRowClass}>
+                            <span class="pf-match-text">{matchLabel}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        </div>
+        <!-- ============================================ FOOTER (figé) ============================================ -->
+        <div class="pf-footer">
+            <lightning-button label="Annuler" onclick={handleCancel}></lightning-button>
+            <template lwc:if={isLignesStep}>
+                <lightning-button class="pf-next-btn" label="Suivant" variant="brand"
+                    disabled={lignesNextDisabled} onclick={handleLignesNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isInfosStep}>
+                <lightning-button label="Retour" onclick={handleInfosBack}></lightning-button>
+                <lightning-button class="pf-next-btn" label="Suivant" variant="brand" onclick={handleInfosNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isAcomptesStep}>
+                <lightning-button label="Retour" onclick={handleAcomptesBack}></lightning-button>
+                <lightning-button class="pf-next-btn" label="Créer la facture" variant="brand"
+                    disabled={creationBlocked} onclick={handleCreate}>
+                </lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

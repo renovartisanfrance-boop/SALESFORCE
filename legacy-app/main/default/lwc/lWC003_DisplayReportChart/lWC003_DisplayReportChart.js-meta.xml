@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="title" type="String" label="Title"
+                description="The title of the component to display." required="true"
+                default="Show reports chart" />
+            <property name="developerNameReport1" type="String" label="Developer name first report"
+                description="The developer name of the first report to display the chart for."
+                required="false" />
+            <property name="developerNameReport2" type="String" label="Developer name second report"
+                description="The developer name of the second report to display the chart for."
+                required="false" />
+            <property name="developerNameReport3" type="String" label="Developer name third report"
+                description="The developer name of the third report to display the chart for."
+                required="false" />
+            <property name="developerNameReport4" type="String" label="Developer name fourth report"
+                description="The developer name of the fourth report to display the chart for."
+                required="false" />
+            <property name="developerNameReport5" type="String" label="Developer name fifth report"
+                description="The developer name of the fifth report to display the chart for."
+                required="false" />
+            <property name="developerNameReport6" type="String" label="Developer name sixth report"
+                description="The developer name of the sixth report to display the chart for."
+                required="false" />
+            <property name="column" type="String" label="Column to filter on"
+                description="The column to filter on" required="true" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

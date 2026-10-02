@@ -1,0 +1,130 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:instore_locations" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span>Ajouter de nouveaux Stocks</span>
+                    </h2>
+                </div>
+                <!-- <div class="slds-no-flex">
+                    <button
+                        class="slds-button slds-button_neutral">New</button>
+                </div> -->
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="my-container">
+                <form class="slds-p-around_medium slds-card" onsubmit={submitHandlerV2}>
+
+                    <!-- <lightning-input type="number" label="Nombre de stocks à ajouter" name="recordsToAddCount"
+                                formatter="number" step="1" value={formData.recordsToAddCount} variant="standard"
+                                onchange={changeHandler}></lightning-input> -->
+                    <template for:each={lines} for:item="line">
+                        <lightning-layout key={line.id} multiple-rows>
+                            <lightning-layout-item size="1" class="slds-p-around_xx-small">
+                                <br>
+                                <lightning-icon icon-name="utility:success" size="small" title="succes"
+                                    lwc:if={line.done}></lightning-icon>
+                                <lightning-icon icon-name="utility:spinner" size="small" title="en cours"
+                                    lwc:if={line.onAdd}></lightning-icon>
+                                <lightning-icon icon-name="utility:warning" size="small" title="echec"
+                                    lwc:if={line.failed}></lightning-icon>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="10" class="slds-p-around_xx-small">
+
+                                <lightning-layout multiple-rows>
+                                    <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                        <lightning-input type="number" dir="rtl" label="Nombre de pair stocks à ajouter"
+                                            name={line.recordsToAddCountName} formatter="number" step="1"
+                                            data-id={line.id} value={line.recordsToAddCount} variant="standard"
+                                            onchange={nbrChangeHandler}>
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                        <lightning-combobox label="Marchandise" name="combobox_2"
+                                            options={optionsMarchandises} required variant="standard"
+                                            data-field="marchandise" data-id={line.id} value={line.marchandise}
+                                            onchange={cbMarchandiseChangeHandler}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                        <lightning-combobox label="Les groupes" name="combobox_1"
+                                            options={optionsStocks} required variant="standard" data-id={line.id}
+                                            value={line.combobox_1} onchange={cbChangeHandler}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                        <lightning-combobox label="Fournisseur" name="combobox_3"
+                                            options={fournisseursVals} variant="standard"
+                                            data-field="fournisseur" data-id={line.id} value={line.fournisseur}
+                                            onchange={cbMarchandiseChangeHandler}></lightning-combobox>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                        <lightning-combobox label="Fournisseur - Mode de retrait" name="combobox_3"
+                                            options={fournisseursModesRetVals} required variant="standard"
+                                            data-field="fournisseurModes" data-id={line.id}
+                                            value={line.fournisseurModes} onchange={cbMarchandiseChangeHandler}>
+                                        </lightning-combobox>
+                                    </lightning-layout-item>
+                                    <template lwc:if={line.showLivraion}>
+                                        <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                            <lightning-combobox label="Fournisseur- Lieu de Livraison" name="combobox_3"
+                                                options={fournisseursLivraisonChez} required variant="standard"
+                                                data-field="livraisonChez" data-id={line.id}
+                                                value={line.livraisonChez} onchange={cbMarchandiseChangeHandler}>
+                                            </lightning-combobox>
+                                        </lightning-layout-item>
+                                        <lightning-input type="date" label="Date Demander pour Livraison" name="dateLivraison"
+                                            data-id={line.id} data-field="dateLivraison" value={line.dateLivraison} variant="standard"
+                                            onchange={cbMarchandiseChangeHandler}></lightning-input>
+                                    </template>
+                                    <template lwc:if={line.showRetrait}>
+                                        <lightning-layout-item size="4" class="slds-p-around_xx-small">
+                                            <lightning-combobox label="Recuperer Par" name="combobox_3"
+                                                options={fournisseursARecupPar} required variant="standard"
+                                                data-field="aRecupererPar" data-id={line.id}
+                                                value={line.aRecupererPar} onchange={cbMarchandiseChangeHandler}>
+                                            </lightning-combobox>
+                                        </lightning-layout-item>
+                                        <lightning-input type="date" label="Date demander pour Retrait" name="dateLivraison"
+                                            data-id={line.id} data-field="dateDemandeRetrait" value={line.dateDemandeRetrait} variant="standard"
+                                            onchange={cbMarchandiseChangeHandler}></lightning-input>
+                                    </template>
+                                    <lightning-layout-item size="12" class="slds-p-around_xx-small">
+                                        Les stocks à ajouter :
+                                        <template for:each={line.elements} for:item="el" for:index='indexEl'>
+                                            <lightning-badge key={index} label={el}></lightning-badge>
+                                        </template>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="1" class="slds-p-around_xx-small ">
+                                <br>
+                                <lightning-icon icon-name="action:delete" size="x-small" title="supprimer"
+                                    data-id={line.id} onclick={deleteHandle}></lightning-icon>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <hr key={line.id} class="separator" />
+                    </template>
+                    <lightning-layout>
+                        <lightning-layout-item size="12" class="slds-p-around_xx-small slds-align_absolute-center">
+                            <lightning-button-icon icon-name="utility:new" alternative-text="Ajouter nouveau ligne"
+                                size="medium" title="Refresh" onclick={addLineHandler}></lightning-button-icon>
+                            &nbsp;
+                            <lightning-button variant="brand" label="Valider l'ajout des stocks"
+                                title="Valider l'ajout des stocks" type="submit"></lightning-button>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </form>
+            </div>
+        </div>
+        <footer class="slds-card__footer">
+            <a class="slds-card__footer-action" href="/lightning/o/STOCK__c/list?filterName=__Recent">
+                <span>Voir tous les stocks</span>
+            </a>
+        </footer>
+    </article>
+
+</template>

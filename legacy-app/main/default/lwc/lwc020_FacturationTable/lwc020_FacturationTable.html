@@ -1,0 +1,135 @@
+<template>
+    <!-- ═══════════ 1. FILTRES — un champ par colonne filtrable ═══════════
+         Absent quand la configuration ne déclare aucune colonne `filtre`
+         (vue partenaire). -->
+    <template lwc:if={afficheFiltres}>
+    <div class="filter-section">
+        <div class="filter-header" onclick={handleToggleFilter}>
+            <div class="filter-header-left">
+                <lightning-icon icon-name={accordionIcon} size="xx-small"></lightning-icon>
+                <span class="filter-header-title">{txt.filtresRecherche}</span>
+                <template lwc:if={hasActiveFilters}>
+                    <span class="filter-count-badge">{filterCountLabel}</span>
+                </template>
+            </div>
+            <div class="filter-header-right">
+                <template lwc:if={hasActiveFilters}>
+                    <button class="btn-clear-filters" onclick={handleClearFilters}>
+                        <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                        Réinitialiser
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <template lwc:if={isFilterOpen}>
+            <div class="filter-body">
+                <div class="filter-grid">
+                    <template for:each={filterFields} for:item="field">
+                        <div class="filter-item" key={field.key}>
+                            <label class="filter-label" for={field.key}>{field.label}</label>
+                            <!-- oninput et non onkeyup : un couper/coller ou un glisser-déposer
+                                 n'émet aucun keyup, le filtre resterait appliqué sur un champ
+                                 visuellement vide. -->
+                            <input type="text" class="filter-input" id={field.key}
+                                placeholder={field.placeholder} data-key={field.key}
+                                value={field.value} oninput={handleFilterChange}>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+    </template>
+
+    <!-- ═══════════ 2. TUILES — fournies par l'onglet parent ═══════════ -->
+    <slot name="kpi"></slot>
+
+    <!-- Troncature de la LISTE (les totaux « du compte » restent exacts) -->
+    <template lwc:if={tronque}>
+        <div class="truncation-banner">
+            <span class="truncation-icon">ℹ️</span>
+            <span class="truncation-text">{messageTroncature}</span>
+        </div>
+    </template>
+
+    <!-- État vide -->
+    <template lwc:if={showEmpty}>
+        <div class="partner-empty-banner">
+            <span class="partner-empty-icon">📋</span>
+            <span class="partner-empty-text">{texteVide}</span>
+        </div>
+    </template>
+
+    <!-- ═══════════ 3. TABLEAU ═══════════ -->
+    <template lwc:if={hasData}>
+        <div class="table-card">
+            <!-- Zone de défilement, horizontal comme vertical. La barre de
+                 pagination reste HORS de ce conteneur, sinon elle sortirait de
+                 l'écran au défilement. -->
+            <div class="table-scroll">
+                <table class="reporting-table" style={styleTable}>
+                    <thead>
+                        <tr>
+                            <template for:each={entetes} for:item="th">
+                                <th key={th.key} class={th.cssClass} style={th.style}
+                                    data-sortkey={th.key} onclick={handleSort}>
+                                    <span class="th-label">{th.label}</span>
+                                    <lightning-icon class={th.iconClass} icon-name={th.icon}
+                                        size="xx-small"></lightning-icon>
+                                </th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <!-- Un <tbody> par facture : permet de repeindre tout le bloc au
+                         survol, cellules fusionnées comprises, sans JavaScript. -->
+                    <template for:each={groupes} for:item="g">
+                        <tbody key={g.key} class={g.groupClass}>
+                            <template for:each={g.rows} for:item="row">
+                                <tr key={row.key} class={row.rowClass}>
+                                    <!-- title : les colonnes larges (Fiche, Échéance)
+                                         sont tronquées à l'ellipse, l'infobulle
+                                         restitue la valeur entière. -->
+                                    <template for:each={row.cells} for:item="c">
+                                        <td key={c.key} rowspan={c.rowspan} class={c.cssClass}
+                                            title={c.value}>
+                                            <template lwc:if={c.estBadge}>
+                                                <span class={c.badgeClass}>{c.value}</span>
+                                            </template>
+                                            <template lwc:else>{c.value}</template>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </template>
+                </table>
+            </div>
+
+            <!-- Pagination (sur les FACTURES, pas sur les lignes) -->
+            <div class="pagination-bar">
+                <span class="pagination-info">
+                    {startRecord}–{endRecord} sur {totalRecords} {unite}
+                </span>
+                <div class="pagination-size">
+                    <select class="page-size-select" onchange={handlePageSizeChange}>
+                        <template for:each={pageSizeOptions} for:item="opt">
+                            <option key={opt.value} value={opt.value} selected={opt.selected}>
+                                {opt.label}
+                            </option>
+                        </template>
+                    </select>
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn-page" onclick={handlePagePrev} disabled={isPrevDisabled}>
+                        &#8249; Préc.
+                    </button>
+                    <span class="page-indicator">{pageInfo}</span>
+                    <button class="btn-page" onclick={handlePageNext} disabled={isNextDisabled}>
+                        Suiv. &#8250;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

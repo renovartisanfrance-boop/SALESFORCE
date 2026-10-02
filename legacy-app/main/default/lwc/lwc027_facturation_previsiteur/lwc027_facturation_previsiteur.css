@@ -1,0 +1,159 @@
+/* Facturation previsiteur — charte ECONATURA, structure de
+   lwc020_FacturationPartenaire (encart d'information puis tableau unique).
+
+   La palette differe volontairement de l'original : ce composant s'affiche dans
+   le portail Previsites, dont l'en-tete et le formulaire de contrat sont deja en
+   charte ECONATURA. Reprendre les couleurs du portail Campagnes aurait fait
+   cohabiter deux identites sur le meme ecran. */
+
+:host {
+    --navy: #1E3544;
+    --green: #2E9E5B;
+    --green-d: #217A47;
+    --amber: #F5BC13;
+    --red: #DA1624;
+    --line: #E2E8E5;
+    --muted: #6E7A76;
+    --paper: #F3F7F4;
+    --bg: #F7FAF8;
+
+    display: block;
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+}
+
+.wrap { max-width: 1000px; margin: 0 auto; padding: 26px 20px 60px; }
+
+h1 { font-size: 26px; font-weight: 700; margin: 0 0 18px; }
+
+/* --- Encart contrat --- */
+
+.info-card {
+    background: linear-gradient(180deg, #fff 0%, var(--paper) 100%);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+}
+
+.info-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.info-icone { font-size: 15px; line-height: 1; flex-shrink: 0; }
+.info-titre {
+    margin: 0;
+    font-size: 13px; font-weight: 700; letter-spacing: .1px;
+    color: var(--navy);
+}
+
+.info-lignes { margin: 0 0 12px; }
+.info-ligne {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+}
+.info-ligne:last-child { border-bottom: none; }
+.info-ligne dt { color: var(--muted); margin: 0; }
+.info-ligne dd { margin: 0; font-weight: 600; text-align: right; }
+
+.info-lien {
+    /* Rendu comme un bouton, mais c'est un <a> : la navigation native
+       echappe au blocage des popups et a la CSP appliquee aux fenetres
+       ouvertes par script. */
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    font: inherit; font-size: 13px; font-weight: 600;
+    color: var(--green-d);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+.info-lien:hover:not(:disabled) { border-color: var(--green); background: var(--paper); }
+.info-lien:disabled { opacity: .45; cursor: not-allowed; }
+
+.info-attente {
+    margin: 0;
+    font-size: 13px; font-style: italic;
+    color: var(--amber);
+}
+
+/* --- Messages --- */
+
+.message {
+    border-radius: 10px; padding: 11px 14px; font-size: 13px;
+    margin-bottom: 18px; border: 1px solid var(--line); line-height: 1.45;
+}
+.message-error { background: #FDF3F2; color: var(--red); border-color: #F3C9C6; }
+.message-info  { background: var(--paper); color: var(--navy); }
+
+/* --- Tableau (a venir) --- */
+
+.card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.placeholder {
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — facturation
+
+   L'encart contrat est une liste cle/valeur : c'est la partie qui souffre le
+   plus en largeur reduite, une date en toutes lettres (« 9 de septiembre de
+   2026 ») ne tenant pas a cote de son libelle.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .wrap { padding: 22px 16px 48px; }
+    h1 { font-size: 23px; }
+}
+
+@media (max-width: 640px) {
+    .wrap { padding: 18px 14px 40px; }
+    h1 { font-size: 21px; margin-bottom: 14px; }
+
+    .info-card { padding: 14px 15px; border-radius: 12px; }
+
+    /* Libelle au-dessus de la valeur : cote a cote, la date se cassait en
+       plusieurs lignes desalignees avec son libelle. */
+    .info-ligne {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 9px 0;
+    }
+    .info-ligne dt { font-size: 12px; }
+    .info-ligne dd { text-align: left; font-size: 15px; }
+
+    /* Le lien devient un bouton pleine largeur : c'est l'action principale de
+       l'encart, et une cible tactile de 44px minimum. */
+    .info-lien {
+        width: 100%;
+        justify-content: center;
+        min-height: 46px;
+        font-size: 14px;
+    }
+
+    .card { padding: 16px 14px; border-radius: 12px; }
+    .placeholder { padding: 2rem .75rem; font-size: 13px; }
+}
+
+@media (max-width: 380px) {
+    h1 { font-size: 19px; }
+    .info-titre { font-size: 12px; }
+    .info-ligne dd { font-size: 14px; }
+}

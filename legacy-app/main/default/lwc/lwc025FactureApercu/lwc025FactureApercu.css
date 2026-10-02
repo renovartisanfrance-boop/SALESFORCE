@@ -1,0 +1,226 @@
+:host {
+    --pf-green: #2da961;
+    --pf-green-dark: #1f8449;
+    --pf-green-light: #56c98a;
+    --pf-blue: #2563eb;
+    --pf-blue-dark: #1e40af;
+    --pf-blue-light: #3b82f6;
+    --pf-surface: #ffffff;
+    --pf-border: #e6eee4;
+    --pf-text: #1e293b;
+    --pf-muted: #64748b;
+    --pf-radius: 16px;
+    display: block;
+    width: 100%;
+}
+
+/* Thème injecté par la classe parente (vert = émise, bleu = reçue). */
+.pf-emise {
+    --c: var(--pf-green);
+    --c-dark: var(--pf-green-dark);
+    --c-light: var(--pf-green-light);
+    --c-soft: rgba(45, 169, 97, 0.10);
+}
+.pf-recue {
+    --c: var(--pf-blue);
+    --c-dark: var(--pf-blue-dark);
+    --c-light: var(--pf-blue-light);
+    --c-soft: rgba(37, 99, 235, 0.10);
+}
+
+/* Carte fluide (remplit sa région ~1/4–1/3) avec apparition + survol. */
+.pf-apercu {
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: var(--pf-radius);
+    box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: pf-in 0.4s ease both;
+}
+.pf-apercu:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 42px -14px rgba(15, 23, 42, 0.28), 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+@keyframes pf-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* En-tête dégradé */
+.pf-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.95rem 1.1rem;
+    background: linear-gradient(135deg, var(--c-light), var(--c-dark));
+    color: #fff;
+}
+.pf-head::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 130% at 100% 0%, rgba(255, 255, 255, 0.20), transparent 55%);
+    pointer-events: none;
+}
+.pf-head-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.18);
+}
+.pf-head-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+.pf-head-badge {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.28rem 0.7rem;
+    border-radius: 999px;
+}
+
+/* Corps */
+.pf-body { padding: 1.05rem 1.1rem 1.15rem; }
+
+/* Contrepartie */
+.pf-party {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.95rem;
+}
+.pf-avatar {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--c-light), var(--c));
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 6px 14px -4px var(--c-soft);
+}
+.pf-party-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.pf-party-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--c-dark);
+}
+.pf-party-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+/* Type d'enregistrement */
+.pf-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.6rem 0;
+    border-top: 1px dashed var(--pf-border);
+}
+.pf-meta-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pf-muted);
+}
+.pf-chip {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--c-dark);
+    background: var(--c-soft);
+    padding: 0.24rem 0.65rem;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+/* Montants */
+.pf-totals { margin-top: 0.85rem; }
+.pf-total-ht {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.55rem;
+    padding: 0 0.1rem;
+}
+.pf-total-ht-label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pf-muted);
+}
+.pf-total-ht-value {
+    font-weight: 600;
+    color: var(--pf-text);
+    font-variant-numeric: tabular-nums;
+}
+.pf-total-ttc {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid var(--c-soft);
+    border-left: 4px solid var(--c);
+    background: linear-gradient(135deg, var(--c-soft), transparent);
+}
+.pf-total-ttc-cap {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--c-dark);
+}
+.pf-total-ttc-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--c-dark);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* États */
+.pf-apercu-error {
+    margin: 1rem;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+}
+.pf-apercu-empty {
+    padding: 1.1rem;
+    color: var(--pf-muted);
+    font-size: 0.85rem;
+    text-align: center;
+}

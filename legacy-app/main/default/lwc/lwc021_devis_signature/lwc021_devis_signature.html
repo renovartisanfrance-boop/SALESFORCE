@@ -1,0 +1,402 @@
+<template>
+    <!--
+      Modale de devis — autonome et responsive.
+      Le voile est le conteneur de scroll : la carte ne dépasse jamais la hauteur
+      de l'écran, seul son corps défile. Fermeture par le bouton X, par un clic
+      sur le voile ou par la touche Échap.
+    -->
+    <div class="devis-voile" onclick={handleVoileClick} onkeydown={handleKeyDown} tabindex="-1">
+        <section class="devis-modal" role="dialog" aria-modal="true" aria-label={titre}>
+
+            <!-- ══ En-tête ══════════════════════════════════════════════ -->
+            <header class="devis-entete">
+                <div class="devis-entete-texte">
+                    <!-- Le sous-titre « Piste · Statut » a ete retire : le type
+                         d'enregistrement n'apprend rien a qui vient de cliquer
+                         dessus, et le statut est deja porte par la barre
+                         d'onglets et par les messages de l'ecran. -->
+                    <h2 class="devis-titre">{titre}</h2>
+                </div>
+                <button type="button" class="devis-fermer" onclick={handleClose} title={txt.fermer}
+                    aria-label={txt.fermer}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </header>
+
+            <!-- ══ Chargement ═══════════════════════════════════════════ -->
+            <template if:true={isLoading}>
+                <div class="devis-etat">
+                    <div class="devis-spinner"></div>
+                    <p>{txt.chargement}</p>
+                </div>
+            </template>
+
+            <!-- ══ Erreur bloquante ═════════════════════════════════════ -->
+            <template if:true={error}>
+                <div class="devis-etat devis-etat--erreur">
+                    <p>{error}</p>
+                </div>
+            </template>
+
+            <template if:true={afficherContenu}>
+
+                <!-- ══ Parcours du devis ══════════════════════════════════
+                     « ▣ Génération Devis » et « 🟦En Att Signature » : les trois
+                     onglets, champs modifiables. « 🟩Signé » : pas de barre
+                     d'onglets — ongletParDefaut ouvre directement le document,
+                     et estOngletRecap reste faux. -->
+                <template if:true={afficheDevis}>
+
+                    <template if:true={afficheOnglets}>
+                        <!-- Indicateurs d'avancement, PAS des boutons : on avance avec
+                             « Suivant », qui verifie le recapitulatif au passage. Sauter
+                             directement a la signature laissait partir un document
+                             fabrique avec des champs vides. -->
+                        <nav class="devis-tabs" aria-label="Etapes du devis">
+                            <template for:each={onglets} for:item="onglet">
+                                <span key={onglet.id} class={onglet.cssClass}>
+                                    <span class="devis-tab-num">{onglet.num}</span>
+                                    <span class="devis-tab-label">{onglet.label}</span>
+                                </span>
+                            </template>
+                        </nav>
+                    </template>
+
+                    <div class="devis-corps">
+
+                        <!-- ─── Onglet 1 : Récapitulatif ─────────────────── -->
+                        <template if:true={estOngletRecap}>
+                            <p class="devis-intro">{txt.recapIntro}</p>
+
+                            <!-- Champs NATIFS et non <lightning-input> : le style SLDS
+                                 jure avec le design de la modale et n'est que
+                                 partiellement chargé dans un site LWR. Surtout,
+                                 lightning-input émet `change` à la PERTE DE FOCUS :
+                                 on tapait sans que « Enregistrer » ne s'active, ce qui
+                                 donnait un bouton en apparence mort. `oninput` réagit
+                                 à la frappe — et la puissance suit la surface en direct. -->
+                            <div class="devis-grille">
+                                <template for:each={champsAffiches} for:item="champ">
+                                    <div key={champ.key} class={champ.cssClass}>
+                                        <template if:true={champ.editable}>
+                                            <label class="devis-champ-label">
+                                                <span class="devis-champ-titre">{champ.label}</span>
+                                                <!-- Liste de choix : `onchange` en plus de
+                                                     `oninput`, tous les navigateurs n'emettant
+                                                     pas le second sur un <select>. -->
+                                                <template if:true={champ.estListe}>
+                                                    <!-- `value` EN PLUS de `selected` sur les options : une fois
+                                                         le select rendu, changer l'attribut selected ne suffit plus
+                                                         a deplacer la selection — la valeur recommandee recalculee
+                                                         apres une correction de surface restait invisible. -->
+                                                    <select class="devis-champ-input" data-api={champ.apiName}
+                                                        value={champ.valeur}
+                                                        oninput={handleChampChange} onchange={handleChampChange}>
+                                                        <template for:each={champ.options} for:item="option">
+                                                            <option key={option.cle} value={option.cle}
+                                                                selected={option.choisie}>{option.libelle}</option>
+                                                        </template>
+                                                    </select>
+                                                </template>
+                                                <template if:true={champ.estSaisie}>
+                                                    <input class="devis-champ-input" type={champ.type} value={champ.valeur}
+                                                        data-api={champ.apiName} oninput={handleChampChange}
+                                                        autocomplete="off" />
+                                                </template>
+                                                <template if:true={champ.aide}>
+                                                    <span class="devis-champ-aide">{champ.aide}</span>
+                                                </template>
+                                            </label>
+                                        </template>
+                                        <template if:false={champ.editable}>
+                                            <span class="devis-lecture-label">{champ.label}</span>
+                                            <span class="devis-lecture-valeur">{champ.valeur}</span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Le badge « Puissance retenue » a été retiré d'ici :
+                                 la puissance se lit sur le document (onglet 2) et
+                                 dans l'onglet Signature. L'alerte hors cible, elle,
+                                 reste — c'est un blocage, pas un confort. -->
+                            <template if:true={messageHorsCible}>
+                                <p class="devis-msg devis-msg--alerte">{messageHorsCible}</p>
+                            </template>
+
+                            <template if:true={message}>
+                                <p class={message.cssClass}>{message.texte}</p>
+                            </template>
+
+                        </template>
+
+                        <!-- ─── Étape 2 : Document puis signature ─────
+                             Une seule etape la ou il y en avait deux. L'ancien
+                             onglet Document ne montrait plus qu'un lien depuis
+                             que l'apercu canvas a ete coupe ; sa fabrication du
+                             document, elle, restait indispensable. Elle a donc
+                             ete gardee ICI, en tete : tant que le PDF se
+                             prepare, seul le spinner s'affiche, et le reste
+                             apparait des qu'il est pret. Proposer d'envoyer un
+                             devis qui n'existe pas encore n'aurait pas de sens. -->
+                        <template if:true={estOngletSignature}>
+
+                            <template if:true={estSigne}>
+                                <p class="devis-msg devis-msg--ok">{txt.devisSigneInfo}</p>
+                                <!-- La date est ici, et pas seulement en infobulle du
+                                     badge du reporting : sur mobile il n'y a pas de
+                                     survol, et cette modale est le seul endroit ou
+                                     l'information puisse etre lue. -->
+                                <template if:true={dateSignatureAffichee}>
+                                    <p class="devis-signature-datee">{libelleSigneLe}</p>
+                                </template>
+                            </template>
+
+                            <template if:true={messageHorsCible}>
+                                <p class="devis-msg devis-msg--alerte">{messageHorsCible}</p>
+                            </template>
+
+                            <template if:true={pdfErreur}>
+                                <p class="devis-msg devis-msg--alerte">{pdfErreur}</p>
+                            </template>
+
+                            <!-- Chaque etape est nommee : produire le document
+                                 prend quelques secondes, et un spinner muet
+                                 laisse croire a un blocage. -->
+                            <template if:true={pdfEnCours}>
+                                <div class="devis-etat devis-etat--travail">
+                                    <div class="devis-spinner"></div>
+                                    <p class="devis-etape">{libellePdfEtape}</p>
+                                    <p class="devis-etape-aide">{txt.pdfPatienter}</p>
+                                </div>
+                            </template>
+
+                            <!-- Tant qu'aucune version n'est choisie, il n'y a pas de
+                                 document : on le dit, plutot que d'en montrer un. -->
+                            <template if:true={messageVersionAChoisir}>
+                                <p class="devis-msg devis-msg--info">{messageVersionAChoisir}</p>
+                            </template>
+
+                            <!-- Le document est pret : le lien, puis la signature. -->
+                            <template if:true={signaturePrete}>
+                                <!-- Bandeau EN LIGNE, et non cadre centre : le pointille
+                                     et la grande zone vide du premier dessin donnaient le
+                                     code visuel d'une zone de depot, ou l'on croit pouvoir
+                                     glisser un fichier. Ici rien ne se depose, on ouvre. -->
+                                <div class="devis-pdf-invite">
+                                    <div class="devis-pdf-invite-ligne">
+                                        <svg class="devis-pdf-invite-icone" viewBox="0 0 24 24" width="22" height="22"
+                                            fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                        </svg>
+
+                                        <div class="devis-pdf-invite-texte">
+                                            <p class="devis-pdf-invite-titre">{libelleDocumentPret}</p>
+                                            <template if:false={pdfIndisponible}>
+                                                <p class="devis-pdf-invite-aide">{libelleOuvrirAide}</p>
+                                            </template>
+                                        </div>
+
+                                        <template if:false={pdfIndisponible}>
+                                            <a class="devis-btn devis-btn--secondaire devis-pdf-invite-lien"
+                                                href={urlPdf} target="_blank" rel="noopener noreferrer">
+                                                {libelleOuvrirDocument}
+                                            </a>
+                                        </template>
+                                    </div>
+
+                                    <!-- Etat de la demande, DANS la meme carte que le
+                                         document. Le bandeau bleu « une demande a ete
+                                         envoyee » et la phrase « le client recoit un
+                                         lien » flottaient auparavant au milieu de
+                                         l'ecran, entre le document et les boutons :
+                                         trois encadres pour une seule chose a
+                                         comprendre — ou en est ce devis. -->
+                                    <template if:true={afficheSuiviDemande}>
+                                        <div class="devis-pdf-invite-suivi">
+                                            <p class="devis-pdf-invite-envoi">{messageDejaEnvoyee}</p>
+                                            <p class="devis-pdf-invite-aide">{aideAttenteSignature}</p>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Tout ce bloc sert a PREPARER un envoi : destinataire,
+                                     adresse, bouton. Sur un devis deja
+                                     signe il n'y a plus rien a preparer, et l'afficher
+                                     encore obligeait a parcourir des informations sans
+                                     objet pour atteindre la seule qui compte — le lien
+                                     vers le document. -->
+                                <template if:false={estSigne}>
+                                <div class="devis-signature">
+                                    <!-- QUI signe d'abord : le nom du destinataire ouvre
+                                         le bloc, l'adresse le precise ensuite. Il etait
+                                         auparavant en dernier, sous l'email, ce qui
+                                         faisait lire les details avant l'essentiel. -->
+                                    <template if:false={demandeEnCours}>
+                                        <template if:true={nomSignataireAffiche}>
+                                            <p class="devis-signature-destinataire">
+                                                <span class="devis-lecture-label">{libelleDestinataire}</span>
+                                                <span class="devis-lecture-valeur">{nomSignataireAffiche}</span>
+                                            </p>
+                                        </template>
+                                    </template>
+
+                                    <!-- ─── Une demande est deja partie ─────────
+                                         Trois chemins, pas un bouton : un devis reste
+                                         sans reponse pour trois raisons, et une seule
+                                         se corrige en renvoyant le meme mail. -->
+                                    <template if:true={demandeEnCours}>
+                                        <template if:false={editionEmail}>
+                                            <div class="devis-choix">
+                                                <button type="button" class="devis-choix-btn"
+                                                    onclick={handleModifierInfos}>
+                                                    {libelleModifierInfos}
+                                                </button>
+                                                <button type="button" class="devis-choix-btn"
+                                                    onclick={handleModifierEmail}>
+                                                    {libelleModifierEmail}
+                                                </button>
+                                                <button type="button"
+                                                    class="devis-choix-btn devis-choix-btn--primaire"
+                                                    onclick={handleRelancer} disabled={envoiEnCours}>
+                                                    {libelleRelanceFleche}
+                                                </button>
+                                            </div>
+                                        </template>
+
+                                        <template if:true={editionEmail}>
+                                            <label class="devis-champ-label devis-signature-email">
+                                                <span class="devis-champ-titre">{libelleEmailSignataire}</span>
+                                                <input class="devis-champ-input" type="email"
+                                                    value={emailSignataire} oninput={handleEmailSignataire}
+                                                    autocomplete="off" />
+                                            </label>
+                                            <div class="devis-choix">
+                                                <button type="button"
+                                                    class="devis-choix-btn devis-choix-btn--primaire"
+                                                    onclick={handleEnregistrerEtRelancer}
+                                                    disabled={envoiEnCours}>
+                                                    {libelleEnregistrerEtRelancer}
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </template>
+
+                                    <!-- ─── Destinataire ───────────────── -->
+                                    <template if:false={demandeEnCours}>
+                                        <!-- Adresse VERROUILLEE par defaut : c'est le
+                                             destinataire d'un document contractuel, elle se
+                                             decide, elle ne se corrige pas d'un clic distrait.
+                                             Le champ grise dit aussi que la valeur affichee
+                                             vient du dossier, et n'est pas une saisie a faire. -->
+                                        <label class="devis-champ-label devis-signature-email">
+                                            <span class="devis-champ-titre">{libelleEmailSignataire}</span>
+                                            <input class="devis-champ-input" type="email"
+                                                value={emailSignataire} oninput={handleEmailSignataire}
+                                                autocomplete="off" disabled={emailVerrouille} />
+                                            <template if:true={emailVerrouille}>
+                                                <button type="button" class="devis-lien-action"
+                                                    onclick={handleModifierEmail}>
+                                                    {libelleModifierEmailCourt}
+                                                </button>
+                                            </template>
+                                        </label>
+                                    </template>
+
+                                    <!-- Le fichier JOINT au dossier ne correspond plus a
+                                         l'ecran : c'est lui qui partirait a la signature.
+                                         Le bouton d'envoi est grise en meme temps. -->
+                                    <template if:true={messageDocumentObsolete}>
+                                        <p class="devis-msg devis-msg--alerte">
+                                            {messageDocumentObsolete}
+                                        </p>
+                                    </template>
+
+                                    <template if:true={message}>
+                                        <p class={message.cssClass}>{message.texte}</p>
+                                    </template>
+                                </div>
+                                </template>
+                            </template>
+                        </template>
+
+                    </div>
+                </template>
+
+                <!-- ══ Statuts « 🟦En Att Signature » / « 🟩Signé » ══════════
+                     Non implémentés : l'architecture est en place (vueStatut),
+                     seul le contenu métier reste à écrire. -->
+                <template if:true={estStatutInconnu}>
+                    <div class="devis-corps">
+                        <div class="devis-etat devis-etat--info">
+                            <p class="devis-signature-titre">{messageStatut}</p>
+                            <p>{txt.etapeNonDisponible}</p>
+                        </div>
+                    </div>
+                </template>
+
+            </template>
+
+            <!-- ══ Pied : TOUTES les actions ═══════════════════════════════
+                 Elles vivaient dans le corps de chaque onglet, ce qui donnait
+                 deux zones d'action concurrentes — une rangée flottant au
+                 milieu de l'écran, et un « Fermer » isolé en bas. Regroupées
+                 ici, elles occupent toujours la même place quel que soit
+                 l'onglet, alignées à droite, l'action principale en dernier.
+
+                 « Fermer » ouvre la rangée plutôt que de la clore : la lecture
+                 va du retrait vers l'engagement, et le bouton bleu reste le
+                 plus à droite, là où le regard le cherche. -->
+            <footer class="devis-pied">
+                <div class="devis-pied-actions">
+
+
+                    <template if:true={afficheActionsRecap}>
+                        <button type="button" class="devis-btn devis-btn--secondaire" onclick={handleAnnulerModifs}
+                            disabled={enregistrementDesactive}>
+                            {txt.annulerModifs}
+                        </button>
+                        <button type="button" class="devis-btn devis-btn--secondaire" onclick={handleEnregistrer}
+                            disabled={enregistrementDesactive}>
+                            {libelleEnregistrer}
+                        </button>
+                        <!-- « Suivant » enregistre au passage : sans cela une saisie
+                             non validée serait perdue en changeant d'onglet. -->
+                        <button type="button" class="devis-btn devis-btn--primaire" onclick={handleSuivant}
+                            disabled={suivantDesactive}>
+                            {libelleSuivant}
+                        </button>
+                    </template>
+
+
+                    <template if:true={afficheActionsSignature}>
+                        <button type="button" class="devis-btn devis-btn--secondaire" onclick={handlePrecedent}>
+                            {libellePrecedent}
+                        </button>
+                        <!-- L'envoi ne figure au pied que pour le PREMIER envoi. Sur
+                             une demande deja partie, les actions vivent au centre de
+                             l'ecran : le garder ici aurait offert un second chemin
+                             pour relancer, sans le choix qui doit le preceder. -->
+                        <template if:true={afficheEnvoiDansLePied}>
+                            <button type="button" class="devis-btn devis-btn--primaire" onclick={handleSigner}
+                                disabled={signatureDesactivee}>
+                                {libelleBoutonSigner}
+                            </button>
+                        </template>
+                    </template>
+
+                    <button type="button" class="devis-btn devis-btn--discret" onclick={handleClose}>
+                        {txt.fermer}
+                    </button>
+                </div>
+            </footer>
+
+        </section>
+    </div>
+</template>

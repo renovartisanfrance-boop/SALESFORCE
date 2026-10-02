@@ -1,0 +1,508 @@
+/* =====================================================================
+ * CHARTE GRAPHIQUE RENOV — Facturation
+ * Design system "pf-" partagé par les composants de facturation.
+ * Référence : creerFactureWizard, creerLettrageWizard, lierLignesAvecFacture.
+ * ===================================================================== */
+
+:host {
+    --pf-primary: #2da961;
+    --pf-primary-dark: #1f8449;
+    --pf-accent: #a3d977;
+    --pf-success: #10b981;
+    --pf-warning: #f59e0b;
+    --pf-danger: #ef4444;
+    --pf-bg: #f4faf5;
+    --pf-surface: #ffffff;
+    --pf-border: #dbe8d8;
+    --pf-text: #1e293b;
+    --pf-text-muted: #64748b;
+    --pf-shadow-sm: 0 1px 3px rgba(20, 83, 45, 0.06), 0 1px 2px rgba(20, 83, 45, 0.04);
+    --pf-shadow-md: 0 4px 12px rgba(20, 83, 45, 0.08);
+    --pf-shadow-lg: 0 20px 40px -12px rgba(45, 169, 97, 0.25);
+    --pf-radius: 14px;
+    display: block;
+    width: 100%;
+}
+
+/* ----- Conteneur ----- */
+.pf-wrapper {
+    background: linear-gradient(135deg, #f1faf3 0%, #f7fbe9 100%);
+    padding: 1.25rem;
+    border-radius: var(--pf-radius);
+    min-height: 100%;
+}
+
+/* ----- En-tête dégradé avec cercles décoratifs ----- */
+.pf-header {
+    background: linear-gradient(135deg, var(--pf-primary) 0%, var(--pf-accent) 100%);
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow-lg);
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+.pf-header::after {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+}
+.pf-header::before {
+    content: "";
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 180px; height: 180px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+.pf-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+.pf-subtitle {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ----- Indicateur d'étapes (wizards) ----- */
+.pf-progress {
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--pf-shadow-sm);
+    margin-bottom: 1.25rem;
+}
+
+/* ----- Carte de contenu ----- */
+.pf-card {
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 1.25rem;
+    box-shadow: var(--pf-shadow-md);
+    animation: pf-fade 0.35s ease-out;
+    margin-bottom: 1.25rem;
+}
+@keyframes pf-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.pf-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+.pf-card-head .pf-section-title { margin-bottom: 0; }
+
+/* ----- Grille de champs (record-edit-form) ----- */
+.pf-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 0.75rem 1.25rem;
+}
+
+/* ----- Titre de section avec soulignement dégradé ----- */
+.pf-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    background-image: linear-gradient(90deg, var(--pf-primary), var(--pf-accent));
+    background-size: 60px 2px;
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+/* ----- Aides / hints ----- */
+.pf-hint {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    margin: 0 0 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.pf-hint::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--pf-primary);
+    box-shadow: 0 0 0 4px rgba(45, 169, 97, 0.15);
+    flex-shrink: 0;
+}
+.pf-hint-inline {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+/* ----- Barre de filtres ----- */
+.pf-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding: 0.85rem;
+    margin-bottom: 0.85rem;
+    background: #f4faf5;
+    border: 1px solid var(--pf-border);
+    border-radius: 10px;
+}
+.pf-filter-item {
+    flex: 1 1 220px;
+    min-width: 200px;
+}
+
+/* ----- Tableau ----- */
+.pf-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--pf-surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--pf-shadow-sm);
+}
+.pf-table thead tr {
+    background: linear-gradient(135deg, #e8f5ec 0%, #f1f9dd 100%);
+}
+.pf-table thead th {
+    color: var(--pf-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--pf-border);
+}
+.pf-table tbody td {
+    padding: 0.9rem 0.85rem;
+    border-bottom: 1px solid var(--pf-border);
+    color: var(--pf-text);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+.pf-table tbody tr:last-child td { border-bottom: none; }
+.pf-table tbody tr.row-clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.pf-table tbody tr.row-clickable:hover {
+    background: linear-gradient(90deg, rgba(45, 169, 97, 0.05), rgba(163, 217, 119, 0.05));
+    transform: translateX(2px);
+}
+.pf-table tbody tr.row-selected {
+    background: linear-gradient(90deg, rgba(45, 169, 97, 0.12), rgba(163, 217, 119, 0.1)) !important;
+    box-shadow: inset 3px 0 0 var(--pf-primary);
+}
+
+/* ----- Cases à cocher / radios ----- */
+.pf-radio {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--pf-primary);
+    cursor: pointer;
+}
+
+/* ----- Badges de statut ----- */
+.pf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.pf-badge::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+.pf-badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--pf-danger); }
+.pf-badge-success { background: rgba(16, 185, 129, 0.14); color: var(--pf-success); }
+.pf-badge-muted { background: rgba(100, 116, 139, 0.1); color: var(--pf-text-muted); }
+
+/* ----- Montants ----- */
+.pf-amount {
+    font-weight: 700;
+    color: var(--pf-text);
+    font-variant-numeric: tabular-nums;
+}
+.pf-amount-zero {
+    color: var(--pf-text-muted);
+    font-weight: 500;
+}
+
+/* ----- État vide ----- */
+.pf-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--pf-text-muted);
+    background: #f4faf5;
+    border-radius: 12px;
+    border: 2px dashed var(--pf-border);
+}
+.pf-empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+/* ----- Erreur ----- */
+.pf-error {
+    padding: 0.75rem 1rem;
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--pf-danger);
+    border-radius: 10px;
+    border-left: 3px solid var(--pf-danger);
+    font-size: 0.875rem;
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+/* ----- Tableau détail (clé/valeur) ----- */
+.pf-detail-table td:first-child {
+    width: 35%;
+    background: #f4faf5;
+    color: var(--pf-text-muted);
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+.pf-detail-table td { transition: background 0.2s; }
+.pf-detail-table tr:hover td { background: rgba(45, 169, 97, 0.03); }
+
+/* ----- Récap montant (bandeau) ----- */
+.pf-recap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 0.875rem 1.25rem;
+    box-shadow: var(--pf-shadow-sm);
+    margin-bottom: 1.25rem;
+}
+.pf-recap-label {
+    font-size: 0.8rem;
+    color: var(--pf-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.pf-recap-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--pf-text);
+}
+
+/* ----- Totaux ----- */
+.pf-totals {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+}
+.pf-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 0.85rem;
+    background: linear-gradient(135deg, #e8f5ec 0%, #f1f9dd 100%);
+    border-radius: 10px;
+    border-left: 3px solid var(--pf-primary);
+}
+.pf-total-row-dual {
+    justify-content: flex-end;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.pf-total-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+}
+.pf-total-row-dual .pf-total-item + .pf-total-item {
+    padding-left: 2rem;
+    border-left: 2px solid rgba(22, 101, 52, 0.25);
+}
+.pf-total-label {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.pf-total-value {
+    font-size: 1.125rem;
+    color: var(--pf-primary-dark);
+}
+
+/* ----- Lignes de rapprochement (match OK / écart) ----- */
+.pf-match-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+}
+.pf-match-ok   { background: rgba(34, 197, 94, 0.12); color: #15803d; }
+.pf-match-warn { background: rgba(245, 158, 11, 0.12); color: #b45309; }
+.pf-match-ko   { background: #fdeaea; color: #b42318; }
+
+/* Variante "pilule" pour le récap d'étape */
+.pf-match {
+    margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+}
+
+/* ----- Pied de page / actions ----- */
+.pf-footer {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 0 0.25rem 0;
+}
+
+/* ----- Surcouche de chargement ----- */
+.pf-spinner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--pf-radius);
+    z-index: 10;
+}
+
+/* ----- Bouton d'action principal (dégradé) ----- */
+:host lightning-button.pf-next-btn button {
+    background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent)) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(45, 169, 97, 0.3) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+:host lightning-button.pf-next-btn button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(45, 169, 97, 0.4) !important;
+}
+
+/* =====================================================================
+ * Spécifique lwc022PaiementFacturesMasse
+ * ===================================================================== */
+
+/* --- Affichage compact : l'écran peut lister des dizaines de factures --- */
+.pf-header {
+    padding: 0.9rem 1.25rem;
+    margin-bottom: 1rem;
+}
+.pf-title { font-size: 1.15rem; }
+.pf-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.pf-table thead th { padding: 0.5rem 0.6rem; }
+.pf-table tbody td {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8125rem;
+}
+.pf-totals .pf-total-row { padding: 0.6rem 0.85rem; }
+.pf-filters {
+    padding: 0.5rem 0.65rem;
+    margin-bottom: 0.65rem;
+}
+.pf-filter-item { max-width: 22rem; }
+
+/* Champ de recherche du compte bénéficiaire */
+.pf-account-picker { max-width: 26rem; }
+
+/* En-tête repliable de la section compte */
+.compte-head { cursor: pointer; }
+.compte-head .pf-hint-inline {
+    margin-left: auto;
+    margin-right: 0.6rem;
+}
+
+/* Première colonne lecture seule : identité de la ligne mise en avant */
+.cell-strong { font-weight: 700; }
+
+/* Colonnes éditables : libellé + saisie « pour toutes les lignes » dans l'en-tête */
+.th-label { margin-bottom: 0.25rem; white-space: nowrap; }
+.cell-input { min-width: 9rem; }
+.cell-input lightning-input-field { margin: 0; }
+
+/* Astérisque des colonnes obligatoires */
+.required-star {
+    color: var(--pf-danger);
+    margin-left: 0.15rem;
+    font-weight: 700;
+}
+
+/* Bandeau de confirmation après paiement */
+.pf-confirmation { margin-bottom: 1rem; }
+
+/* Modale de confirmation avant paiement */
+.pf-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 9000;
+}
+.pf-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow-lg);
+    padding: 1.5rem;
+    width: min(480px, 90vw);
+    z-index: 9001;
+}
+.pf-modal-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin: 0 0 0.75rem 0;
+}
+.pf-modal-text {
+    font-size: 0.875rem;
+    color: var(--pf-text);
+    line-height: 1.5;
+    margin: 0 0 1.25rem 0;
+}
+.pf-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}

@@ -1,0 +1,739 @@
+<template>
+    <div class={classeRacine}>
+
+        <!-- Controle du sondage Certiko (mode test) : place EN TETE et hors des
+             ecrans, pour rester visible quand on quitte la fiche et verifier
+             que le minuteur s'arrete bien. -->
+        <template lwc:if={afficherControleSondage}>
+            <!-- Texte ecrit A LA MAIN dans le DOM, et non lie au rendu :
+                 le compte a rebours change chaque seconde, et chaque rendu
+                 effacait la selection de l'utilisateur — impossible de copier
+                 un identifiant en mode test. Voir majBandeauSondage(). -->
+            <div class={classeControleSondage} lwc:dom="manual"></div>
+            <template lwc:if={afficherDetailSuivi}>
+                <div class="sondage sondage-refus">{texteDetailSuivi}</div>
+            </template>
+            <template lwc:if={statutRefuse}>
+                <div class="sondage sondage-refus">{texteStatutRefuse}</div>
+            </template>
+        </template>
+
+        <!-- Message d'action (erreur serveur, visite rendue...) : commun a tous les ecrans -->
+        <template lwc:if={messageEcran}>
+            <div class={classeMessage}>{messageEcran}</div>
+        </template>
+
+        <!-- ═════════════════════════ ACCUEIL ═════════════════════════ -->
+        <template lwc:if={estAccueil}>
+            <h2 class="salutation">{salutation}</h2>
+
+            <!-- Contrat parti mais pas signe : le portail est visible et inerte,
+                 avec l'explication juste sous le nom. -->
+            <template lwc:if={contratEnAttente}>
+                <div class="attente">
+                    <p class="attente-titre">{txt.attenteTitre}</p>
+                    <p class="attente-message">{messageAttente}</p>
+
+                    <!-- Recap des informations ENVOYEES : l'intervenant verifie
+                         ici, sans rouvrir le formulaire, s'il s'est trompe. -->
+                    <template lwc:if={aUnRecap}>
+                        <p class="recap-titre">{txt.recapTitre}</p>
+                        <dl class="recap">
+                            <template for:each={recap} for:item="l">
+                                <div class="recap-ligne" key={l.champ}>
+                                    <dt>{l.label}</dt>
+                                    <dd>{l.valeur}</dd>
+                                </div>
+                            </template>
+                        </dl>
+                    </template>
+
+                    <!-- Recours dans l'encadre, juste sous le recap. -->
+                    <div class="attente-actions">
+                        <p class="recours-texte">{txt.attenteErreur}</p>
+                        <div class="attente-boutons">
+                            <button class="recours-bouton" onclick={handleModifierInfos}>
+                                <span aria-hidden="true">✏️</span> {txt.boutonModifierInfos}
+                            </button>
+                            <template lwc:if={urlPdf}>
+                                <a class="attente-lien" href={urlPdf} target="_blank" rel="noopener noreferrer">
+                                    <span aria-hidden="true">🔗</span> {txt.boutonVoirContrat}
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <p class="intro">{txt.intro}</p>
+            </template>
+
+            <div class="boutons">
+                <button class={classeTuile} onclick={handleAPlanifier} disabled={contratEnAttente}>
+                    <span class="tuile-icone" aria-hidden="true">📅</span>
+                    <span class="tuile-texte">
+                        <span class="tuile-titre">{txt.aPlanifierTitre}</span>
+                        <span class="tuile-sous">{txt.aPlanifierSous}</span>
+                        <template lwc:if={afficherCompteurs}>
+                            <span class={classeCompteurAPlanifier}>{compteurAPlanifier}</span>
+                        </template>
+                        <template lwc:if={chargementAccueil}>
+                            <span class="compteur">{txt.chargement}</span>
+                        </template>
+                    </span>
+                </button>
+
+                <button class={classeTuile} onclick={handlePlanifiees} disabled={contratEnAttente}>
+                    <span class="tuile-icone" aria-hidden="true">✅</span>
+                    <span class="tuile-texte">
+                        <span class="tuile-titre">{txt.planifiesTitre}</span>
+                        <span class="tuile-sous">{txt.planifiesSous}</span>
+                        <template lwc:if={afficherCompteurs}>
+                            <span class={classeCompteurPlanifiees}>{compteurPlanifiees}</span>
+                        </template>
+                        <template lwc:if={chargementAccueil}>
+                            <span class="compteur">{txt.chargement}</span>
+                        </template>
+                    </span>
+                </button>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════ À PLANIFIER ═════════════════════════ -->
+        <template lwc:if={estAPlanifier}>
+            <button class="retour" onclick={handleAccueil}>{txt.retour}</button>
+
+            <div class="lv-entete">
+                <div>
+                    <p class="lv-sur-titre">{txt.lvSurTitre}</p>
+                    <h2 class="vue-titre">{txt.aPlanifierTitre}</h2>
+                </div>
+                <div class="lv-entete-actions">
+                    <template lwc:if={carteDisponible}>
+                        <button class="btn btn-ghost btn-sm" onclick={handleBasculerCarte}>{libelleBasculeCarte}</button>
+                    </template>
+                    <button class="btn btn-ghost btn-sm" onclick={handleReinitialiser}>{txt.lvReinitialiser}</button>
+                </div>
+            </div>
+
+            <template lwc:if={carteOuverte}>
+                <c-lwc027_carte
+                    points={pointsAPlanifier}
+                    langue={langue}
+                    action-libelle={txt.boutonFixer}
+                    onaction={handleActionCarte}>
+                </c-lwc027_carte>
+            </template>
+            <template lwc:else>
+
+                <div class="panneau">
+                    <!-- Barre de filtres : recherche, tentatives d'appels, province, anciennete -->
+                    <div class="lv-barre">
+                        <input class="lv-recherche" type="search" placeholder={txt.lvRecherche}
+                               oninput={handleRecherche} />
+                        <select onchange={handleFiltreAppels}>
+                            <template for:each={optionsAppels} for:item="o">
+                                <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                            </template>
+                        </select>
+                        <select onchange={handleFiltreProvince}>
+                            <template for:each={optionsProvince} for:item="o">
+                                <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                            </template>
+                        </select>
+                        <select onchange={handleFiltreAge}>
+                            <template for:each={optionsAnciennete} for:item="o">
+                                <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                            </template>
+                        </select>
+                    </div>
+
+                    <template lwc:if={chargementDossiers}>
+                        <p class="vide">{txt.chargement}</p>
+                    </template>
+
+                    <template lwc:if={aPlanifierAucunResultat}>
+                        <p class="lv-vide">{aPlanifierMessageVide}</p>
+                    </template>
+                    <template lwc:else>
+                        <div class="lv-defilement">
+                            <table class="lvt">
+                                <thead>
+                                    <tr>
+                                        <template for:each={colonnesAPlanifier} for:item="c">
+                                            <th key={c.libelle} class={c.classe} data-col={c.cle} onclick={handleTri}>
+                                                {c.libelle} <span class="lv-fleche">{c.fleche}</span>
+                                            </th>
+                                        </template>
+                                        <th class="lv-large"></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={lignesAPlanifier} for:item="l">
+                                        <tr key={l.id}>
+                                            <td class="lv-gris">{l.creeLe}</td>
+                                            <td class="lv-appels">
+                                                <span class={l.classeNrp}>{l.nrpTexte}</span>
+                                                <template lwc:if={l.peutAppeler}>
+                                                    <button class="lv-plus1" title={txt.lvPlus1Titre}
+                                                            data-id={l.id} data-n={l.prochainNrp}
+                                                            disabled={enCours} onclick={handleNrpRapide}>+1</button>
+                                                </template>
+                                            </td>
+                                            <td class="lv-gris">{l.tentativeTexte}</td>
+                                            <td class="lv-client">{l.nom}</td>
+                                            <td>
+                                                <template lwc:if={l.lienTel}>
+                                                    <a class="lien" href={l.lienTel}>{l.telephone}</a>
+                                                </template>
+                                            </td>
+                                            <td class="lv-gris">{l.province}</td>
+                                            <td class="lv-action">
+                                                <button class="btn btn-ghost btn-sm" data-id={l.id}
+                                                        onclick={handleOuvrirRendre}>{txt.boutonRendreCourt}</button>
+                                            </td>
+                                            <td class="lv-action">
+                                                <button class="btn btn-sm" data-id={l.id}
+                                                        onclick={handleFixer}>{txt.boutonFixerCourt}</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="lv-pied">
+                            <span>{plageAPlanifier}</span>
+                            <div class="lv-pagination">
+                                <label class="lv-taille">{txt.lvAfficher}
+                                    <select onchange={handleTaille}>
+                                        <template for:each={optionsTaille} for:item="o">
+                                            <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                                        </template>
+                                    </select>
+                                    {txt.lvParPage}
+                                </label>
+                                <button class="lv-pgbtn" disabled={premierePage}
+                                        onclick={handlePagePrecedente}>{txt.lvPrecedent}</button>
+                                <span class="lv-pgnum">{pagination}</span>
+                                <button class="lv-pgbtn" disabled={dernierePage}
+                                        onclick={handlePageSuivante}>{txt.lvSuivant}</button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <!-- ═════════════════════════ PLANIFIÉES ═════════════════════════ -->
+        <template lwc:if={estPlanifiees}>
+            <button class="retour" onclick={handleAccueil}>{txt.retour}</button>
+
+            <div class="lv-entete">
+                <div>
+                    <p class="lv-sur-titre">{txt.lvSurTitre}</p>
+                    <h2 class="vue-titre">{txt.planifiesTitre}</h2>
+                </div>
+                <template lwc:if={carteDisponible}>
+                    <div class="lv-entete-actions">
+                        <button class="btn btn-ghost btn-sm" onclick={handleBasculerCarte}>{libelleBasculeCarte}</button>
+                    </div>
+                </template>
+            </div>
+
+            <template lwc:if={carteOuverte}>
+                <c-lwc027_carte
+                    points={pointsPlanifies}
+                    langue={langue}
+                    action-libelle={txt.boutonReplanifier}
+                    onaction={handleActionCarte}>
+                </c-lwc027_carte>
+            </template>
+            <template lwc:else>
+
+                <div class="lv-barre lv-barre-seule">
+                    <input class="lv-recherche" type="search" placeholder={txt.lvRechercheClient}
+                           oninput={handleRecherchePlanifiees} />
+                </div>
+
+                <template lwc:if={chargementDossiers}>
+                    <p class="vide">{txt.chargement}</p>
+                </template>
+                <template lwc:if={planifieesVide}>
+                    <p class="vide">{txt.listeVide}</p>
+                </template>
+
+                <!-- Visites du jour -->
+                <div class="bandeau bandeau-jour">
+                    <span class="bandeau-icone" aria-hidden="true">📍</span>
+                    <span class="bandeau-texte">
+                        <b>{txt.groupeAujourdhui}</b>
+                        <em>{libelleAujourdhui}</em>
+                    </span>
+                    <span class="bandeau-nombre">{nbDuJour}</span>
+                </div>
+                <div class="panneau panneau-espace">
+                    <template lwc:if={aDuJour}>
+                        <div class="lv-defilement">
+                            <table class="lvt">
+                                <thead>
+                                    <tr>
+                                        <th>{txt.colStatut}</th>
+                                        <th>{txt.colClient}</th>
+                                        <th>{txt.colQuand}</th>
+                                        <th class="lv-large">{txt.colAdresse}</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={lignesDuJour} for:item="l">
+                                        <tr key={l.id}>
+                                            <td><span class={l.classePill}>{l.pill}</span></td>
+                                            <td class="lv-client">{l.nom}</td>
+                                            <td class="lv-gris">{l.quand}</td>
+                                            <td class="lv-adresse">{l.adresse}</td>
+                                            <td class="lv-action">
+                                                <template lwc:if={l.afficherReplanif}>
+                                                    <button class="btn btn-ghost btn-sm" data-id={l.id}
+                                                            onclick={handleReplanifier}>{txt.boutonReplanifier}</button>
+                                                </template>
+                                            </td>
+                                            <td class="lv-action">
+                                                <!-- Le libelle DIT l'etat de la visite, la fleche dit
+                                                     qu'on entre dedans. Masque quand il n'y a rien a
+                                                     y faire : visite a venir, ou date passee sans
+                                                     envoi. -->
+                                                <template lwc:if={l.afficherBouton}>
+                                                    <button class={l.classeBouton} data-id={l.id}
+                                                            onclick={handleDemarrer}>{l.libelleBouton}<span
+                                                            class="btn-fleche" aria-hidden="true">→</span></button>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="lv-vide">{txt.lvAucuneAujourdhui}</p>
+                    </template>
+                </div>
+
+                <!-- En attente de retour + a venir -->
+                <div class="bandeau bandeau-reste">
+                    <span class="bandeau-icone" aria-hidden="true">🗂️</span>
+                    <span class="bandeau-texte">
+                        <b>{txt.groupeReste}</b>
+                        <em>{txt.groupeResteSous}</em>
+                    </span>
+                    <span class="bandeau-nombre">{nbReste}</span>
+                </div>
+                <div class="panneau">
+                    <template lwc:if={aDuReste}>
+                        <div class="lv-defilement">
+                            <table class="lvt">
+                                <thead>
+                                    <tr>
+                                        <th>{txt.colStatut}</th>
+                                        <th>{txt.colClient}</th>
+                                        <th>{txt.colQuand}</th>
+                                        <th class="lv-large">{txt.colAdresse}</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={lignesReste} for:item="l">
+                                        <tr key={l.id}>
+                                            <td><span class={l.classePill}>{l.pill}</span></td>
+                                            <td class="lv-client">{l.nom}</td>
+                                            <td class="lv-gris">{l.quand}</td>
+                                            <td class="lv-adresse">{l.adresse}</td>
+                                            <td class="lv-action">
+                                                <template lwc:if={l.afficherReplanif}>
+                                                    <button class="btn btn-ghost btn-sm" data-id={l.id}
+                                                            onclick={handleReplanifier}>{txt.boutonReplanifier}</button>
+                                                </template>
+                                            </td>
+                                            <td class="lv-action">
+                                                <!-- Le libelle DIT l'etat de la visite, la fleche dit
+                                                     qu'on entre dedans. Masque quand il n'y a rien a
+                                                     y faire : visite a venir, ou date passee sans
+                                                     envoi. -->
+                                                <template lwc:if={l.afficherBouton}>
+                                                    <button class={l.classeBouton} data-id={l.id}
+                                                            onclick={handleDemarrer}>{l.libelleBouton}<span
+                                                            class="btn-fleche" aria-hidden="true">→</span></button>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="lv-pied">
+                            <span>{plagePlanifiees}</span>
+                            <div class="lv-pagination">
+                                <label class="lv-taille">{txt.lvAfficher}
+                                    <select onchange={handleTaillePlanifiees}>
+                                        <template for:each={optionsTaillePlanifiees} for:item="o">
+                                            <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                                        </template>
+                                    </select>
+                                    {txt.lvParPage}
+                                </label>
+                                <button class="lv-pgbtn" disabled={premierePagePlanifiees}
+                                        onclick={handlePagePrecedentePlanifiees}>{txt.lvPrecedent}</button>
+                                <span class="lv-pgnum">{paginationPlanifiees}</span>
+                                <button class="lv-pgbtn" disabled={dernierePagePlanifiees}
+                                        onclick={handlePageSuivantePlanifiees}>{txt.lvSuivant}</button>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="lv-vide">{txt.lvAucuneAutre}</p>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <!-- ═════════════════════════ FIXER / REPLANIFIER ═════════════════════════ -->
+        <template lwc:if={estFixer}>
+            <button class="retour" onclick={handleRetourListe}>{libelleRetourFixer}</button>
+            <div class="entete-vue">
+                <h2 class="vue-titre">{titreFixer}</h2>
+            </div>
+
+            <div class="panneau">
+                <!-- Historique du dossier : reconstruit depuis le suivi d'historique -->
+                <template lwc:if={aUnHistorique}>
+                    <div class="section">
+                        <details class="hist-bloc" open>
+                            <summary>
+                                <span class="hist-fleche" aria-hidden="true">▸</span>
+                                {txt.histTitre}
+                                <span class="hist-nombre">{nbEvenements}</span>
+                            </summary>
+                            <ol class="hist">
+                                <template for:each={evenements} for:item="e">
+                                    <li key={e.cle}>
+                                        <span class="hist-quand">{e.quand}</span>
+                                        <span class={e.classeTag}>{e.tag}</span>
+                                        <span class="hist-texte">
+                                            <template for:each={e.morceaux} for:item="m">
+                                                <span key={m.cle} class={m.classe}>{m.texte}</span>
+                                            </template>
+                                        </span>
+                                        <span class="hist-par">{e.auteur}</span>
+                                    </li>
+                                </template>
+                            </ol>
+                        </details>
+                    </div>
+                    <hr class="separateur" />
+                </template>
+
+                <div class="section">
+                    <h3 class="section-titre">{txt.clientTitre}</h3>
+                    <dl class="kv">
+                        <dt>{txt.lblNom}</dt><dd>{dossierCourant.nom}</dd>
+                        <dt>{txt.lblAdresse}</dt>
+                        <dd>{dossierCourant.adresse}
+                            <template lwc:if={lienItineraire}>
+                                · <a class="lien" href={lienItineraire} target="_blank"
+                                     rel="noopener noreferrer">{txt.boutonItineraire} ↗</a>
+                            </template>
+                        </dd>
+                        <dt>{txt.lblTelephone}</dt>
+                        <dd>
+                            <template lwc:if={lienTelCourant}>
+                                <a class="lien" href={lienTelCourant}>{dossierCourant.telephone}</a>
+                            </template>
+                        </dd>
+                        <template lwc:if={rdvActuel}>
+                            <dt>{txt.lblRdvActuel}</dt><dd>{rdvActuel}</dd>
+                        </template>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Carre a part : le premier RAPPELLE le dossier, celui-ci sert a
+                 AGIR dessus. Les coller donnait une suite de champs ou la
+                 lecture et la saisie se melangeaient. -->
+            <div class="panneau">
+                <div class="section">
+                    <h3 class="section-titre">{txt.rdvTitre}</h3>
+                    <div class="grille2">
+                        <div class="champ">
+                            <label for="date-rdv">{txt.lblDate}</label>
+                            <input id="date-rdv" type="date" min={dateMin} value={saisieDate} onchange={handleDate} />
+                        </div>
+                        <div class="champ">
+                            <label for="heure-rdv">{txt.lblHeure}</label>
+                            <select id="heure-rdv" onchange={handleHeure}>
+                                <option value="">{txt.heureChoisir}</option>
+                                <template for:each={optionsHeure} for:item="o">
+                                    <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pied-rdv">
+                        <button class="btn" disabled={confirmerDesactive} onclick={handleConfirmerRdv}>{txt.boutonConfirmerRdv}</button>
+                        <span class="note">{txt.noteSms}</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="consignes">
+                        <b>{txt.prepTitre}</b>
+                        <ul>
+                            <template for:each={consignes} for:item="c">
+                                <li key={c.cle}>
+                                    <template for:each={c.morceaux} for:item="m">
+                                        <span key={m.cle} class={m.classe}>{m.texte}</span>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═════════════════════════ PRÉVISITE (CERTIKO) ═════════════════════════ -->
+        <template lwc:if={estPrevisite}>
+            <button class="retour" onclick={handlePlanifiees}>{txt.retourPlanifiees}</button>
+            <div class="entete-vue">
+                <h2 class="vue-titre">{txt.previsiteTitre}</h2>
+                <!-- Rien sous le titre : le NOM est dans « Le rendez-vous » et
+                     le STATUT dans le carre de la visite technique. Les
+                     repeter ici ne disait rien de plus. -->
+            </div>
+
+            <!-- 1. CE QU'ON SAIT DU DOSSIER : son passe, puis son rendez-vous. -->
+            <div class="panneau">
+                <!-- Historique du dossier : reconstruit depuis le suivi d'historique -->
+                <template lwc:if={aUnHistorique}>
+                    <div class="section">
+                        <details class="hist-bloc" open>
+                            <summary>
+                                <span class="hist-fleche" aria-hidden="true">▸</span>
+                                {txt.histTitre}
+                                <span class="hist-nombre">{nbEvenements}</span>
+                            </summary>
+                            <ol class="hist">
+                                <template for:each={evenements} for:item="e">
+                                    <li key={e.cle}>
+                                        <span class="hist-quand">{e.quand}</span>
+                                        <span class={e.classeTag}>{e.tag}</span>
+                                        <span class="hist-texte">
+                                            <template for:each={e.morceaux} for:item="m">
+                                                <span key={m.cle} class={m.classe}>{m.texte}</span>
+                                            </template>
+                                        </span>
+                                        <span class="hist-par">{e.auteur}</span>
+                                    </li>
+                                </template>
+                            </ol>
+                        </details>
+                    </div>
+                    <hr class="separateur" />
+                </template>
+
+                <div class="section">
+                    <h3 class="section-titre">{txt.rdvSection}</h3>
+                    <dl class="kv">
+                        <dt>{txt.lblNom}</dt><dd>{dossierCourant.nom}</dd>
+                        <dt>{txt.lblAdresse}</dt><dd>{dossierCourant.adresse}</dd>
+                        <template lwc:if={rdvCourant}>
+                            <dt>{txt.lblRdvActuel}</dt><dd>{rdvCourant}</dd>
+                        </template>
+                        <dt>{txt.lblTelephone}</dt>
+                        <dd>
+                            <template lwc:if={lienTelCourant}>
+                                <a class="lien" href={lienTelCourant}>{dossierCourant.telephone}</a>
+                            </template>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- 2. CE QU'IL RESTE A FAIRE : la visite technique, et de quoi s'y
+                 connecter. Les identifiants sont DANS ce carre et non plus en
+                 bas de page : c'est ici qu'on en a besoin, au moment de partir
+                 sur Certiko. -->
+            <div class="panneau">
+                <template lwc:if={certikoEnvoye}>
+                    <div class="section">
+                        <!-- Titre et statut sur UNE ligne : la valeur est ce
+                             qu'on vient lire, la separer de son intitule
+                             obligeait a descendre des yeux pour rien. -->
+                        <h3 class="section-titre section-titre-statut">
+                            {txt.statutTitre} :
+                            <span class="statut-badge">{statutVt}</span>
+                        </h3>
+                        <div class="certiko-actions">
+                            <a class="btn" href={dossierCourant.certikoLien} target="_blank" rel="noopener noreferrer">
+                                {txt.demarrerSurCertiko}
+                            </a>
+                        </div>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="section">
+                        <h3 class="section-titre">{txt.envoiTitre}</h3>
+                        <p class="sous-texte">{txt.envoiAide}</p>
+                        <button class="btn" disabled={enCours} onclick={handleEnvoyerCertiko}>
+                            {txt.envoyerCertiko}
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Identifiants Certiko : PAS une section a part, juste la
+                     suite du bouton — c'est au moment de partir chez eux qu'on
+                     en a besoin. En texte simple : des cadres facon champ de
+                     saisie laissaient croire qu'on pouvait y ecrire. -->
+                <template lwc:if={afficherAcces}>
+                    <div class="section acces-texte-bloc">
+                        <p class="acces-intro">{txt.identifiantsTitre}</p>
+                        <p class="acces-ligne">
+                            {txt.accesLogin} : <span class="acces-mot">{acces.login}</span>
+                            <button class={classeCopieLogin} type="button" data-quoi="login"
+                                    onclick={handleCopierAcces}>{libelleCopieLogin}</button>
+                        </p>
+                        <p class="acces-ligne">
+                            {txt.accesMotDePasse} : <span class="acces-mot">{acces.motDePasse}</span>
+                            <button class={classeCopieMotDePasse} type="button" data-quoi="motDePasse"
+                                    onclick={handleCopierAcces}>{libelleCopieMotDePasse}</button>
+                        </p>
+                        <p class="acces-note">{txt.accesObligatoire}</p>
+                        <!-- Repli quand le presse-papiers est refuse : voir copier(). -->
+                        <div class="zone-copie" lwc:dom="manual"></div>
+                    </div>
+                </template>
+
+                <template lwc:if={afficherAccesEnAttente}>
+                    <div class="section acces-texte-bloc">
+                        <p class="acces-note">{txt.accesEnAttente}</p>
+                    </div>
+                </template>
+
+                <template lwc:if={dossierCourant.certikoErreur}>
+                    <hr class="separateur" />
+                    <div class="section">
+                        <p class="aide">{txt.dernierRefus} {dossierCourant.certikoErreur}</p>
+                    </div>
+                </template>
+            </div>
+
+        </template>
+
+        <!-- ═════════════════════════ CONFIRMÉ + SMS ═════════════════════════ -->
+        <template lwc:if={estConfirme}>
+            <div class="entete-vue">
+                <h2 class="vue-titre">{txt.confirmeTitre}</h2>
+            </div>
+            <div class="banniere-ok">{txt.confirmeBanniere}</div>
+
+            <div class="panneau">
+                <div class="section">
+                    <h3 class="section-titre">{txt.smsTitre}</h3>
+                    <div class="sms">{texteSms}</div>
+                    <p class="aide">{txt.smsNote}</p>
+                    <!-- Zone technique du repli de copie (textarea cree par script) -->
+                    <div class="zone-copie" lwc:dom="manual"></div>
+                </div>
+                <div class="pied">
+                    <button class="btn btn-ghost btn-sm" onclick={handleRetourConfirme}>{txt.retour}</button>
+                    <button class="btn" onclick={handleCopierSms}>{libelleCopier}</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═════════════ FENÊTRE : REPLANIFIER UNE VISITE ENVOYÉE ═════════════
+             La visite est deja partie chez Certiko : reposer une date y
+             detruira le releve commence. On previent AVANT d'ouvrir l'ecran,
+             pendant que le pre-visiteur voit encore sa liste. -->
+        <template lwc:if={replanifConfirmationOuverte}>
+            <div class="modale-fond" role="presentation">
+                <div class="modale" role="dialog" aria-modal="true" aria-label={txt.replanifAlerteTitre}>
+                    <div class="modale-entete">
+                        <h3>{txt.replanifAlerteTitre}</h3>
+                        <p class="modale-sous">{libelleEtatAReplanifier}</p>
+                    </div>
+                    <div class="modale-corps">
+                        <p>{txt.replanifAlerteTexte}</p>
+                        <p class="sous-texte">{txt.replanifAlerteDetail}</p>
+                    </div>
+                    <div class="modale-actions">
+                        <button class="btn btn-ghost btn-sm" onclick={handleAnnulerReplanif}>{txt.annuler}</button>
+                        <button class="btn btn-danger btn-sm"
+                                onclick={handleConfirmerReplanif}>{txt.replanifAlerteConfirmer}</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═════════════ FENÊTRE : RENDRE LA VISITE À ECONATURA ═════════════
+             Ouverte depuis la liste « à planifier » ou depuis la fiche du
+             dossier. Deux temps : le motif, puis la confirmation. -->
+        <template lwc:if={rendreOuvert}>
+            <div class="modale-fond" role="presentation">
+                <div class="modale modale-rendre" role="dialog" aria-modal="true" aria-label={titreFenetreRendre}>
+                    <template lwc:if={rendreConfirmation}>
+                        <div class="modale-entete">
+                            <h3>{txt.confirmRendreTitre}</h3>
+                        </div>
+                        <div class="modale-corps">
+                            <p>{txt.confirmRendreTexte}</p>
+                            <p class="modale-motif">« {motifAEnregistrer} »</p>
+                        </div>
+                        <div class="modale-actions">
+                            <button class="btn btn-ghost btn-sm" onclick={handleAnnulerRendu}>{txt.annuler}</button>
+                            <button class="btn btn-danger btn-sm" disabled={enCours}
+                                    onclick={handleConfirmerRendu}>{txt.confirmer}</button>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="modale-entete">
+                            <h3>{txt.rendreTitre}</h3>
+                            <p class="modale-sous">{nomDossierRendu}</p>
+                        </div>
+                        <div class="modale-corps">
+                            <p class="sous-texte">{txt.rendreIntro}</p>
+                            <div class="champ">
+                                <label for="motif">{txt.lblMotif}</label>
+                                <select id="motif" onchange={handleMotif}>
+                                    <option value="">{txt.motifChoisir}</option>
+                                    <template for:each={optionsMotif} for:item="o">
+                                        <option key={o.cle} value={o.cle} disabled={o.desactive}
+                                                selected={o.selectionne}>{o.libelle}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <template lwc:if={motifAutre}>
+                                <div class="champ champ-libre">
+                                    <label for="motif-libre">{txt.lblMotifLibre}</label>
+                                    <textarea id="motif-libre" rows="3" maxlength="255"
+                                              placeholder={txt.motifLibrePlaceholder}
+                                              oninput={handleMotifLibre}></textarea>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="modale-actions">
+                            <button class="btn btn-ghost btn-sm" onclick={handleFermerRendre}>{txt.annuler}</button>
+                            <button class="btn btn-danger btn-sm" disabled={rendreDesactive}
+                                    onclick={handleDemanderRendu}>{txt.boutonRendreCourt}</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,112 @@
+.search-container {
+    float: right;
+    display: flex;
+    flex-direction: row;
+}
+
+
+:host {
+    --white: #fff;
+    --black: #000;
+    --gray: #2b3c56;
+    --lite: #f1f1f1;
+    --dark: #1d1e22;
+
+    --yellow: #f5b409;
+    --red: #f33e5d;
+    --green: #9bd846;
+    --blue: #029ef6;
+    --orange: #ee712f;
+    --pink: #ef5890;
+
+    --primary: #5487fa;
+    --primary_dark: ;
+    --primary_lite: #e4ecfe;
+
+    --secondary: ;
+    --secondary_dark: ;
+    --secondary_lite: ;
+}
+
+
+.my-table {
+    margin: auto;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--white);
+    border-radius: 10px;
+    position: relative;
+    border-collapse: collapse;
+    z-index: 1;
+    color: var(--gray);
+    white-space: nowrap;
+    border: 1px solid rgba(1, 1, 1, 0.2);
+}
+
+tbody tr:not(:last-child) {
+    border-bottom: 1px solid rgba(1, 1, 1, 0.2);
+}
+
+th,
+td {
+    padding: .3rem;
+    gap: 10px;
+    position: relative;
+    cursor: default;
+}
+
+/**/
+/* tbody td:last-child:hover a {
+    color: var(--black);
+} */
+
+thead {
+    background-color: var(--primary_lite);
+}
+
+th {
+    text-transform: uppercase;
+}
+
+
+tr td:last-child,
+tr td:nth-last-child(2),
+tr td:nth-last-child(3),
+tr td:nth-last-child(4),
+tr td:nth-last-child(6),
+tr td:nth-last-child(7),
+tr td:nth-last-child(8),
+tr td:nth-last-child(9) {
+    /* text-align: center; */
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+td:last-child:hover:after {
+    content: "Project";
+    position: absolute;
+    width: fit-content;
+    left: -10%;
+    top: -40%;
+    transform: translate(0%, 50%);
+    font-size: 12px;
+    color: var(--lite);
+    background-color: var(--dark);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    border-radius: 5px;
+    padding: 2px 4px;
+    z-index: 9;
+}
+.text-center{
+    /* text-align: center; */
+}
+/* .my-table a {
+    color: var(--gray);
+} */
+
+/*  table arround */
+.my-table tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}

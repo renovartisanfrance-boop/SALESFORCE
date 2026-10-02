@@ -1,0 +1,147 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-03-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <template if:false={activer_la_page}>
+      <div class="_initialeParent_header">
+         <h1 class="message_erreur"> Vous n'avez pas le privilège pour accéder à
+            cette page : </h1>
+      </div>
+   </template>
+
+   <template if:true={activer_la_page}>
+      <template if:false={is_community}>
+         <div class="_initialeParent_header">
+            <!-- <h1 class="_titre1"> Vous avez effectué durant le mois en cours :
+            </h1>
+            <h2 class="_soustitre1"> Confirme : <span class="span_st">
+                  {_confirme} </span> | Autre : <span class="span_st"> {_autre}
+               </span> </h2> -->
+            <template if:true={is_admin}>
+               <lightning-button variant="brand" label="Paramétrage"
+                  title="Primary action" data-id="1"
+                  onclick={handleClick_navigation}
+                  class="slds-m-left_x-small _button_parametrage"></lightning-button>
+            </template>
+         </div>
+      </template>
+<!-- 
+      <template if:true={is_community}>
+         <div class="_initialiserParent_community">
+            <h1 class="_titre1_community"> Vous avez effectué durant le mois en
+               cours : </h1>
+            <h2 class="_soustitre1_community"> Confirme : <span class="span_st">
+                  {_confirme} </span> | Autre : <span class="span_st"> {_autre}
+               </span> </h2>
+            <template if:true={is_admin}>
+               <lightning-button variant="brand" label="Paramétrage"
+                  title="Primary action" data-id="1"
+                  onclick={handleClick_navigation}
+                  class="slds-m-left_x-small _button_parametrage"></lightning-button>
+            </template>
+         </div>
+      </template> -->
+
+      <div class="body _initialeParent">
+         <template if:true={index_1}>
+            <c-lwc004_parametrage_planification
+               _planification_metadata={_planification_metadata_all}
+               onsenddata={handleDataFromChild_parametrage}></c-lwc004_parametrage_planification>
+         </template>
+         <template if:true={index_2}>
+            <ul class="menu_selected">
+               <template for:each={_planification_metadata} for:item="item"
+                  for:index="index">
+                  <template lwc:if={index}>
+                     <li key={item.titre_menu} data-id={item.titre_menu}
+                        onclick={go_to_planning}> {item.titre_menu}</li>
+                  </template>
+                  <template lwc:else>
+                     <li key={item.titre_menu} data-id={item.titre_menu}
+                        class="active_item_menu" onclick={go_to_planning}>
+                        {item.titre_menu}</li>
+                  </template>
+               </template>
+               <li onclick={go_to_calcul} class={classDuration} data-id="Opportunité">Urgence - A replacer</li>
+               <li onclick={go_to_calcul} class={classDurationPro} data-id="Pro">PRO</li>
+            </ul>
+            <br />
+            <div class="_div_search" if:true={showDivSearch}>
+               <lightning-layout multiple-rows style="width: 108%;">
+                  <lightning-layout-item size="12" small-device-size="6"
+                     medium-device-size="6" large-device-size="6"
+                     class="slds-p-horizontal_small">
+                     <div class="arrow_all">
+                        <a class="_a_left" onclick={calculer_moins}><div
+                              class="arrow-left"></div></a>
+                        <select class="select_option" onchange={_time_select}>
+                           <option value="1"
+                              class="option_class">{value_week_option}</option>
+                           <!-- <option value="2" class="option_class" >{value_mounth_option}</option> -->
+                        </select>
+                        <a class="_a_right" onclick={calculer_plus}><div
+                              class="arrow-right"></div></a>
+                     </div>
+                  </lightning-layout-item>
+                  <lightning-layout-item size="12" small-device-size="6"
+                     medium-device-size="6" large-device-size="6"
+                     class="slds-p-horizontal_small  _calcule_traget">
+                     <div class="_div_search_2">
+                        <lightning-layout multiple-rows>
+                           <lightning-layout-item size="12"
+                              small-device-size="6" medium-device-size="6"
+                              large-device-size="6"
+                              class="slds-p-horizontal_small ">
+                              <lightning-input type="text" class="_search"
+                                 style="margin-top:-17px;width: 116%;"
+                                 placeholder="Entrer code postale..."></lightning-input>
+                           </lightning-layout-item>
+                           <lightning-layout-item size="12"
+                              small-device-size="6" medium-device-size="6"
+                              large-device-size="6"
+                              class="slds-p-horizontal_small">
+                              <lightning-button variant="brand"
+                                 label="Calculer les trajets"
+                                 title="Calculer les trajets" data-id="1"
+                                 onclick={Calculer_les_trajets}
+                                 class="slds-m-left_x-small"></lightning-button>
+                           </lightning-layout-item>
+                        </lightning-layout>
+                     </div>
+                  </lightning-layout-item>
+               </lightning-layout>
+            </div>
+            <div>
+               <template lwc:if={showCaluclOnglet}>
+                  <c-lwc005-calcul-duration></c-lwc005-calcul-duration>
+               </template>
+               <template lwc:elseif={showCaluclOngletPro}>
+                  <c-lwc016-calcul-duration-dynamic object-api-name="Pro__c" list-view-name="ListPlanning_Pro" field-cordonnees="CoordonneesGPS__c"></c-lwc016-calcul-duration-dynamic>
+               </template>
+               <template lwc:else>
+                  <!-- <template if:true={get_mounth_or_week}>
+                      <c-lwc004_creneaux_all_planification mounth_or_week={mounth_or_week} menu_selected={menu_selected} planification_metadata_all={_planification_metadata_all} prettyjson_week={_prettyjson_week}  prettyjson_month={_prettyjson_month} ></c-lwc004_creneaux_all_planification>
+                     </template> -->
+                  <template if:true={get_mounth_or_week}>
+                     <template for:each={get_prettyjson_month} for:item="item"
+                        for:index="index">
+                        <c-lwc004_creneaux_all_planification mounth_or_week="1"
+                           is_community={is_community} is_admin={is_admin}
+                           key={item} menu_selected={menu_selected}
+                           planification_metadata_all={_planification_metadata_all}
+                           prettyjson_week={item}
+                           index_semaine={index}></c-lwc004_creneaux_all_planification>
+                     </template>
+                  </template>
+               </template>
+
+            </div>
+
+         </template>
+      </div>
+   </template>
+</template>

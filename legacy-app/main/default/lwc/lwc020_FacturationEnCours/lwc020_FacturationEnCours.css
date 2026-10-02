@@ -1,0 +1,242 @@
+/* Tokens recopiés : le CSS LWC ne traverse pas les frontières de composant.
+   Ce bundle ne porte plus AUCUN style de tableau : la table est entièrement
+   rendue par lwc020_FacturationTable. Ne subsistent ici que l'en-tête de
+   l'onglet, les tuiles — passées dans l'emplacement « kpi » de la table, donc
+   stylées par CE composant qui les déclare — et les bandeaux d'état. */
+:host {
+    display: block;
+    width: 100%;
+
+    --blue-600:  #2563eb;
+    --blue-700:  #1d4ed8;
+    --blue-50:   #eff6ff;
+    --blue-200:  #bfdbfe;
+    --slate-900: #0f172a;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50:  #f8fafc;
+    --white:     #ffffff;
+
+    --primary:      var(--blue-600);
+    --primary-dark: var(--blue-700);
+    --primary-bg:   var(--blue-50);
+    --primary-ring: rgba(37, 99, 235, 0.14);
+    --border:       var(--slate-200);
+    --text-heading: var(--slate-900);
+    --text-base:    #1e293b;
+    --text-muted:   var(--slate-500);
+    --text-faint:   var(--slate-400);
+    --surface:      var(--white);
+    --surface-alt:  var(--slate-50);
+
+    --ok:      #15803d;
+    --warn:    #b45309;
+    --warn-bg: #fffbeb;
+    --warn-brd:#fde68a;
+    --ko:      #b91c1c;
+
+    --shadow-xs: 0 1px 2px rgba(15,23,42,.05);
+
+    --r-sm:   6px;
+    --r-md:   10px;
+    --r-lg:   12px;
+    --r-pill: 999px;
+
+    --fs-ui:    clamp(0.68rem, 0.85vw, 0.8rem);
+    --fs-input: clamp(0.63rem, 0.76vw, 0.75rem);
+    --fs-table: 11px;
+    --fs-micro: 9px;
+
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    color: var(--text-base);
+}
+
+.tab-pane { width: 100%; }
+
+.pane-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.pane-head-left { display: flex; flex-direction: column; gap: 1px; }
+
+.pane-title {
+    margin: 0;
+    font-size: var(--fs-ui);
+    font-weight: 700;
+    color: var(--text-heading);
+}
+
+.pane-hint {
+    font-size: var(--fs-micro);
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+.btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-input);
+    font-weight: 500;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.28);
+}
+
+.btn-refresh:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.38);
+    transform: translateY(-1px);
+}
+
+.btn-refresh:active { transform: translateY(0); }
+
+/* ── Tuiles de synthèse ──────────────────────────────────────
+   Le grand chiffre suit les FILTRES ; la ligne de référence en dessous rappelle
+   le total réel du compte, calculé par une requête agrégée côté serveur. Sans
+   elle, un filtre actif ferait passer un sous-total pour la totalité du dû — et
+   au-delà du plafond de chargement, le montant affiché serait tout simplement
+   inférieur à la réalité, sans que rien ne l'indique. */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--slate-300);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-xs);
+}
+
+.kpi-label {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+}
+
+.kpi-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-heading);
+    line-height: 1.3;
+    transition: color 0.18s ease;
+}
+
+.kpi-sub { font-size: var(--fs-micro); color: var(--text-faint); }
+
+.kpi-ref {
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    padding-top: 2px;
+    margin-top: 2px;
+    border-top: 1px dashed var(--slate-200);
+}
+
+.kpi-afacturer { border-left-color: var(--warn); }
+.kpi-afacturer .kpi-value { color: var(--warn); }
+.kpi-apayer    { border-left-color: var(--primary); }
+.kpi-apayer .kpi-value { color: var(--primary-dark); }
+
+/* ── États et bandeaux ─────────────────────────────────────── */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 0.5rem;
+    position: relative;
+    min-height: 70px;
+}
+
+.loading-text { color: var(--text-muted); font-size: var(--fs-input); }
+
+/* Surimpression de rechargement : la table reste en place dessous, avec ses
+   filtres, son tri et sa page intacts.
+   `position: relative` seulement — surtout PAS de transform / filter / contain
+   sur ce conteneur : il deviendrait bloc conteneur et casserait le
+   `position: sticky` des colonnes figées de la table. */
+.table-zone { position: relative; }
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 72px;
+    background: rgba(255, 255, 255, 0.62);
+    border-radius: var(--r-lg);
+}
+
+.error-container {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-left: 3px solid #ef4444;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    margin-bottom: 8px;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: var(--fs-table);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Échec d'UNE seule des deux sources : la table reste utile, mais amputée. */
+.warn-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-brd);
+    border-left: 4px solid var(--warn);
+    border-radius: var(--r-md);
+    padding: 8px 12px;
+    margin-bottom: 10px;
+}
+
+.warn-icon { font-size: 14px; flex-shrink: 0; line-height: 1.4; }
+
+.warn-text {
+    flex: 1;
+    font-size: var(--fs-input);
+    color: var(--warn);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .kpi-row { grid-template-columns: 1fr; }
+}

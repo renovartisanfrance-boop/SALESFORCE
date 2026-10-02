@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Devis - Signature</masterLabel>
+    <description>Modale de devis (récapitulatif, document, signature) d'une Piste ou d'un Dossier. Ouverte depuis le reporting du portail Campagnes ; ne reçoit que le recordId.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="Id de l'enregistrement (Piste ou Dossier)"/>
+            <property name="campaignCode" type="String" label="Token de campagne (sinon lu dans le localStorage)"/>
+            <property name="langue" type="String" default="fr" label="Langue (fr / es)"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

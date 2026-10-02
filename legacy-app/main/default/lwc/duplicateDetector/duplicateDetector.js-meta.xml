@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="objectApiName" type="String" label="API Name de l'objet"
+                description="API name de l'objet Salesforce à interroger (ex: Contact, Account)" />
+            <property name="logicOperator" type="String" label="Opérateur logique"
+                description="AND, OR ou expression custom ex: 1 AND (2 OR 3)" default="AND" />
+            <property name="maxResults" type="Integer" label="Nombre max de résultats"
+                description="Nombre maximum de doublons à retourner" default="10" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

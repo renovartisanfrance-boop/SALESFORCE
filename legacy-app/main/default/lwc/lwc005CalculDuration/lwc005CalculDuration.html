@@ -1,0 +1,143 @@
+<!--
+ * @ Author: Abdessamad AZZOUZI (©S@M+)
+ * @ Create Time: 2024-12-17 01:28:09
+ * @ Modified by: Abdessamad AZZOUZI (©S@M+)
+ * @ Modified time: 2025-01-07 01:01:03
+ * @ Description:
+ -->
+<template>
+    <div class="slds-card">
+        <!-- Search Section -->
+        <div class="slds-grid slds-gutters slds-m-bottom_medium slds-grid_align-end">
+            <div class="slds-col slds-size_1-of-6">
+                <lightning-input 
+                    type="text" 
+                    variant="label-hidden" 
+                    name="codepostale"
+                    placeholder="Entrer le code postal..."
+                    onchange={handleChange}>
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-10">
+                <lightning-button 
+                    variant="brand" 
+                    label="Calculer" 
+                    title="Calculer" 
+                    onclick={CalculerDurationHandle}>
+                </lightning-button>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="slds-scrollable_x">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Nom de l'opportunité">Nom de l'opportunité</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Date de pré-visite">Date de pré-visite</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <span class="slds-truncate" title="Durée">Durée</span>
+                                <div class="slds-button-group slds-m-left_x-small">
+                                    <lightning-button-icon 
+                                        icon-name="utility:arrowdown" 
+                                        variant="bare"
+                                        size="x-small"
+                                        onclick={sortDescHandle}
+                                        alternative-text="Trier décroissant">
+                                    </lightning-button-icon>
+                                    <lightning-button-icon 
+                                        icon-name="utility:arrowup" 
+                                        variant="bare"
+                                        size="x-small"
+                                        onclick={sortAscHandle}
+                                        alternative-text="Trier croissant">
+                                    </lightning-button-icon>
+                                </div>
+                            </div>
+                        </th>
+                        <th scope="col"><div class="slds-truncate">Isolation Extérieur</div></th>
+                        <th scope="col"><div class="slds-truncate">Panneau Solaire</div></th>
+                        <th scope="col"><div class="slds-truncate">Pompe à Chaleur</div></th>
+                        <th scope="col"><div class="slds-truncate">Statut Dossiers</div></th>
+                        <th scope="col"><div class="slds-truncate">Statut RDV</div></th>
+                        <th scope="col"><div class="slds-truncate">Disponibilité Client</div></th>
+                        <th scope="col"><div class="slds-truncate">Commentaire Télépro</div></th>
+                        <th scope="col"><div class="slds-truncate">Commentaire Confirmateur</div></th>
+                        <th scope="col"><div class="slds-truncate">Commentaire Commercial</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={oppList} for:item="opp">
+                        <tr key={opp.Id} class="slds-hint-parent">
+                            <th scope="row">
+                                <div class="slds-truncate">
+                                    <a href={opp.Url} target="_blank" title={opp.Name}>{opp.Name}</a>
+                                </div>
+                            </th>
+                            <td>
+                                <div class="slds-truncate" title={opp.DatePreVisite}>
+                                    {opp.DatePreVisite}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-grid slds-grid_align-center">
+                                    <span class={opp.bdgClass}>{opp.DurationInHeuresMinutes}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.InteresserParIsolationExterieur}>
+                                    {opp.InteresserParIsolationExterieur}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.InteresserParPanneauSolaire}>
+                                    {opp.InteresserParPanneauSolaire}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.InteresserParPompeAChaleur}>
+                                    {opp.InteresserParPompeAChaleur}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.StatutDossiers}>
+                                    {opp.StatutDossiers}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.StatutRDV}>
+                                    {opp.StatutRDV}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.DisponibiliteGeneralClient}>
+                                    {opp.DisponibiliteGeneralClient}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.TeleproCommentaire}>
+                                    {opp.TeleproCommentaire}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.ConfirmateurCommentaire}>
+                                    {opp.ConfirmateurCommentaire}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="slds-truncate" title={opp.CommercialCommentaire}>
+                                    {opp.CommercialCommentaire}
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>

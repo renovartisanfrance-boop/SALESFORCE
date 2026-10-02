@@ -1,0 +1,372 @@
+<template>
+    <div class="pf-wrapper" style="position: relative;">
+
+        <div class="pf-header">
+            <p class="pf-title">Lancement du paiement</p>
+            <p class="pf-subtitle">Gérez les lignes de facture des intervenants en quelques clics</p>
+        </div>
+
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="pf-body">
+
+        <div class="pf-progress">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                <template for:each={steps} for:item="step">
+                    <lightning-progress-step key={step.value} label={step.label} value={step.value}>
+                    </lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </div>
+
+        <template lwc:if={isRecapStep}>
+            <div class="pf-card">
+                <template lwc:if={hasRows}>
+                    <p class="pf-hint">Sélectionnez un intervenant puis cliquez sur « Suivant »</p>
+
+                    <table class="pf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 3rem;"></th>
+                                <th>Intervenant</th>
+                                <th>Commission 1</th>
+                                <th>Échéance 1</th>
+                                <th>Statut 1</th>
+                                <th>Commission 2</th>
+                                <th>Échéance 2</th>
+                                <th>Statut 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={displayRows} for:item="row">
+                                <tr key={row.id}
+                                    data-id={row.id}
+                                    class={row.rowClass}
+                                    onclick={handleRowClick}>
+                                    <td>
+                                        <input type="radio"
+                                               class="pf-radio"
+                                               name="intervenantSelection"
+                                               data-id={row.id}
+                                               checked={row.selected}
+                                               onchange={handleSelect}
+                                               onclick={handleSelect} />
+                                    </td>
+                                    <td>
+                                        <div class="pf-intervenant-cell">
+                                            <strong>{row.intervenant}</strong>
+                                            <template lwc:if={row.warningOrder}>
+                                                <span class="pf-warning-badge" title="Erreur : la commission 2 est validée avant la commission 1">
+                                                    <lightning-icon icon-name="utility:warning" size="xx-small"
+                                                                    alternative-text="Avertissement"
+                                                                    variant="warning"></lightning-icon>
+                                                    Ordre inattendu
+                                                </span>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <template lwc:if={row.com1}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={row.com1}
+                                                    format-style="currency" currency-code="EUR">
+                                                </lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">N/A</span></template>
+                                    </td>
+                                    <td>{row.echeance1}</td>
+                                    <td><span class={row.statutBadgeClass1}>{row.statutPaiement1}</span></td>
+                                    <td>
+                                        <template lwc:if={row.com2}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={row.com2}
+                                                    format-style="currency" currency-code="EUR">
+                                                </lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">N/A</span></template>
+                                    </td>
+                                    <td>{row.echeance2}</td>
+                                    <td><span class={row.statutBadgeClass2}>{row.statutPaiement2}</span></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">✨</span>
+                        Aucune commission à payer sur ce dossier.
+                    </div>
+                </template>
+
+                <template lwc:if={error}>
+                    <div class="pf-error">Erreur lors du chargement du dossier.</div>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={isPaiementStep}>
+            <div class="pf-card">
+                <p class="pf-section-title">Paiement de {selectedIntervenant}</p>
+
+                <table class="pf-table pf-detail-table">
+                    <thead>
+                        <tr>
+                            <th>Infos</th>
+                            <th class="pf-commission-header">Commission 1</th>
+                            <template lwc:if={showCom2Column}>
+                                <th class="pf-commission-header">Commission 2</th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={infoRows} for:item="prow">
+                            <tr key={prow.key}>
+                                <td>{prow.info}</td>
+                                <td>
+                                    <template lwc:if={prow.isComptePicker}>
+                                        <template lwc:if={prow.show1}>
+                                            <lightning-record-picker label="Compte Bénéficiaire"
+                                                variant="label-hidden"
+                                                placeholder="Rechercher un compte…"
+                                                object-api-name="Account"
+                                                data-num="1" value={prow.compteVal1}
+                                                disabled={prow.disabled1}
+                                                onchange={handleIntervenantCompteChange}>
+                                            </lightning-record-picker>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </template>
+                                    <template lwc:elseif={prow.isCurrency}>
+                                        <template lwc:if={prow.val1}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={prow.val1}
+                                                    format-style="currency" currency-code="EUR">
+                                                </lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </template>
+                                    <template lwc:else>{prow.val1}</template>
+                                </td>
+                                <template lwc:if={showCom2Column}>
+                                    <td>
+                                        <template lwc:if={prow.isComptePicker}>
+                                            <template lwc:if={prow.show2}>
+                                                <lightning-record-picker label="Compte Bénéficiaire"
+                                                    variant="label-hidden"
+                                                    placeholder="Rechercher un compte…"
+                                                    object-api-name="Account"
+                                                    data-num="2" value={prow.compteVal2}
+                                                    disabled={prow.disabled2}
+                                                    onchange={handleIntervenantCompteChange}>
+                                                </lightning-record-picker>
+                                            </template>
+                                            <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                        </template>
+                                        <template lwc:elseif={prow.isCurrency}>
+                                            <template lwc:if={prow.val2}>
+                                                <span class="pf-amount">
+                                                    <lightning-formatted-number value={prow.val2}
+                                                        format-style="currency" currency-code="EUR">
+                                                    </lightning-formatted-number>
+                                                </span>
+                                            </template>
+                                            <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                        </template>
+                                        <template lwc:else>{prow.val2}</template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+
+                        <template for:each={editableFieldRows} for:item="f">
+                            <tr key={f.key}>
+                                <td><strong>{f.label}</strong></td>
+                                <td>
+                                    <template lwc:if={f.show1}>
+                                        <template lwc:if={f.isText}>
+                                            <lightning-input type="text" variant="label-hidden"
+                                                data-num="1" data-field={f.apiName} value={f.val1Str}
+                                                required={f.required}
+                                                disabled={f.disabled1} onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:if={f.isNumber}>
+                                            <lightning-input type="number" variant="label-hidden"
+                                                data-num="1" data-field={f.apiName} value={f.val1Str}
+                                                step={f.step} disabled={f.disabled1}
+                                                onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:if={f.isDate}>
+                                            <lightning-input type="date" variant="label-hidden"
+                                                data-num="1" data-field={f.apiName} value={f.val1Str}
+                                                required={f.required}
+                                                disabled={f.disabled1} onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:if={f.isCheckbox}>
+                                            <lightning-input type="checkbox" variant="label-hidden"
+                                                data-num="1" data-field={f.apiName} checked={f.val1Bool}
+                                                disabled={f.disabled1} onchange={handleFieldChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template lwc:if={f.isTextarea}>
+                                            <lightning-textarea variant="label-hidden"
+                                                data-num="1" data-field={f.apiName} value={f.val1Str}
+                                                disabled={f.disabled1} onchange={handleFieldChange}>
+                                            </lightning-textarea>
+                                        </template>
+                                    </template>
+                                    <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                </td>
+                                <template lwc:if={showCom2Column}>
+                                    <td>
+                                        <template lwc:if={f.show2}>
+                                            <template lwc:if={f.isText}>
+                                                <lightning-input type="text" variant="label-hidden"
+                                                    data-num="2" data-field={f.apiName} value={f.val2Str}
+                                                    required={f.required}
+                                                    disabled={f.disabled2} onchange={handleFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:if={f.isNumber}>
+                                                <lightning-input type="number" variant="label-hidden"
+                                                    data-num="2" data-field={f.apiName} value={f.val2Str}
+                                                    step={f.step} disabled={f.disabled2}
+                                                    onchange={handleFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:if={f.isDate}>
+                                                <lightning-input type="date" variant="label-hidden"
+                                                    data-num="2" data-field={f.apiName} value={f.val2Str}
+                                                    required={f.required}
+                                                    disabled={f.disabled2} onchange={handleFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:if={f.isCheckbox}>
+                                                <lightning-input type="checkbox" variant="label-hidden"
+                                                    data-num="2" data-field={f.apiName} checked={f.val2Bool}
+                                                    disabled={f.disabled2} onchange={handleFieldChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:if={f.isTextarea}>
+                                                <lightning-textarea variant="label-hidden"
+                                                    data-num="2" data-field={f.apiName} value={f.val2Str}
+                                                    disabled={f.disabled2} onchange={handleFieldChange}>
+                                                </lightning-textarea>
+                                            </template>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+
+                        <template lwc:if={showLigneFactureRow}>
+                            <tr>
+                                <td><strong>Ligne Facture</strong></td>
+                                <td>
+                                    <template lwc:if={com1LigneUrl}>
+                                        <a href={com1LigneUrl} target="_blank" class="pf-fact-link">
+                                            <lightning-icon icon-name="standard:invoice" size="x-small"
+                                                            class="slds-m-right_xx-small"></lightning-icon>
+                                            Ouvrir la ligne
+                                        </a>
+                                    </template>
+                                    <template lwc:else>
+                                        <span class="pf-amount-zero">—</span>
+                                    </template>
+                                </td>
+                                <template lwc:if={showCom2Column}>
+                                    <td>
+                                        <template lwc:if={com2LigneUrl}>
+                                            <a href={com2LigneUrl} target="_blank" class="pf-fact-link">
+                                                <lightning-icon icon-name="standard:invoice" size="x-small"
+                                                                class="slds-m-right_xx-small"></lightning-icon>
+                                                Ouvrir la ligne
+                                            </a>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="pf-amount-zero">—</span>
+                                        </template>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+
+                        <tr class="pf-action-row">
+                            <td></td>
+                            <td>
+                                <template lwc:if={com1Blocked}>
+                                    <div class="pf-ech-warning">
+                                        <lightning-icon icon-name="utility:info" size="x-small"
+                                                        variant="warning"
+                                                        class="slds-m-right_xx-small"></lightning-icon>
+                                        Échéance « {selectedRow.echeance1} » non encore réalisée.
+                                    </div>
+                                </template>
+                                <template lwc:elseif={com1ShowButton}>
+                                    <lightning-button class="pf-btn-pay pf-next-btn"
+                                                      label={com1Label}
+                                                      variant={com1Variant}
+                                                      disabled={com1Disabled}
+                                                      onclick={handlePayCom1}>
+                                    </lightning-button>
+                                </template>
+                                <template lwc:else>
+                                    <span class="pf-badge pf-badge-success">Ligne créée</span>
+                                </template>
+                            </td>
+                            <template lwc:if={showCom2Column}>
+                                <td>
+                                    <template lwc:if={com2Blocked}>
+                                        <div class="pf-ech-warning">
+                                            <lightning-icon icon-name="utility:info" size="x-small"
+                                                            variant="warning"
+                                                            class="slds-m-right_xx-small"></lightning-icon>
+                                            Échéance « {selectedRow.echeance2} » non encore réalisée.
+                                        </div>
+                                    </template>
+                                    <template lwc:elseif={com2ShowButton}>
+                                        <lightning-button class="pf-btn-pay pf-next-btn"
+                                                          label={com2Label}
+                                                          variant={com2Variant}
+                                                          disabled={com2Disabled}
+                                                          onclick={handlePayCom2}>
+                                        </lightning-button>
+                                    </template>
+                                    <template lwc:else>
+                                        <span class="pf-badge pf-badge-success">Ligne créée</span>
+                                    </template>
+                                </td>
+                            </template>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        </div>
+
+        <div class="pf-footer">
+            <lightning-button label="Fermer" onclick={handleClose}></lightning-button>
+            <template lwc:if={isRecapStep}>
+                <lightning-button class="pf-next-btn" label="Suivant" variant="brand"
+                                  disabled={hasSelectionDisabled} onclick={handleNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isPaiementStep}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,771 @@
+/* ══════════════════════════════════════════════════════════════
+   TOKENS
+   Redéclarés ici et non hérités du parent : le composant doit pouvoir
+   être posé n'importe où (autre onglet du portail, page Experience
+   Builder) sans emprunter la palette de qui l'entoure. Les valeurs
+   sont volontairement IDENTIQUES à celles de lwc020_reporting_v2.
+══════════════════════════════════════════════════════════════ */
+:host {
+    --d-primary:      #2563eb;
+    --d-primary-dark: #1d4ed8;
+    --d-primary-bg:   #eff6ff;
+    --d-border:       #e2e8f0;
+    --d-text-heading: #0f172a;
+    --d-text-base:    #1e293b;
+    --d-text-muted:   #64748b;
+    --d-surface:      #ffffff;
+    --d-surface-alt:  #f8fafc;
+    --d-ok:           #15803d;
+    --d-ok-bg:        #dcfce7;
+    --d-alerte:       #b45309;
+    --d-alerte-bg:    #fef3c7;
+    --d-erreur:       #b91c1c;
+    --d-erreur-bg:    #fee2e2;
+
+    --d-r-sm: 6px;
+    --d-r-md: 10px;
+    --d-r-lg: 14px;
+
+    --d-shadow: 0 20px 60px rgba(15, 23, 42, 0.22), 0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   VOILE + CARTE
+   Le voile porte le centrage ET le scroll de secours (écrans très
+   courts) ; la carte plafonne à 92vh et c'est SON corps qui défile,
+   pour que l'en-tête, les onglets et le pied restent toujours
+   atteignables — y compris le bouton « Fermer ».
+══════════════════════════════════════════════════════════════ */
+.devis-voile {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.devis-modal {
+    background: var(--d-surface);
+    border-radius: var(--d-r-lg);
+    box-shadow: var(--d-shadow);
+    width: 100%;
+    max-width: 960px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--d-text-base);
+}
+
+/* ══ En-tête ══════════════════════════════════════════════════ */
+.devis-entete {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--d-border);
+    background: var(--d-surface-alt);
+}
+
+.devis-titre {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--d-text-heading);
+    line-height: 1.3;
+}
+
+.devis-soustitre {
+    margin: 3px 0 0;
+    font-size: 0.78rem;
+    color: var(--d-text-muted);
+}
+
+.devis-fermer {
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+    border-radius: var(--d-r-sm);
+    color: var(--d-text-muted);
+    cursor: pointer;
+    padding: 6px;
+    line-height: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.devis-fermer:hover {
+    background: rgba(15, 23, 42, 0.07);
+    color: var(--d-text-heading);
+}
+
+/* ══ Onglets ══════════════════════════════════════════════════ */
+.devis-tabs {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--d-border);
+    overflow-x: auto;
+}
+
+.devis-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 11px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--d-text-muted);
+    /* Indicateur d'avancement, pas un bouton : ni curseur main, ni survol. */
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+
+.devis-tab--actif {
+    color: var(--d-primary);
+    border-bottom-color: var(--d-primary);
+}
+
+.devis-tab-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--d-border);
+    color: var(--d-text-base);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.devis-tab--actif .devis-tab-num {
+    background: var(--d-primary);
+    color: #fff;
+}
+
+/* ══ Corps défilant ═══════════════════════════════════════════ */
+.devis-corps {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 18px 20px;
+}
+
+.devis-intro {
+    margin: 0 0 14px;
+    font-size: 0.82rem;
+    color: var(--d-text-muted);
+}
+
+/* ══ Récapitulatif ════════════════════════════════════════════ */
+.devis-grille {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+}
+
+.devis-champ--large {
+    grid-column: 1 / -1;
+}
+
+/* Champ de saisie — natif, stylé ici plutôt que par SLDS : voir le commentaire
+   du template. La grille garde ainsi UN seul langage visuel, celui de la modale. */
+.devis-champ-label {
+    display: block;
+}
+
+.devis-champ-titre {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--d-text-muted);
+    margin-bottom: 5px;
+}
+
+.devis-champ-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid var(--d-border);
+    border-radius: var(--d-r-sm);
+    background: var(--d-surface);
+    /* font: inherit — sans quoi le navigateur impose sa police de formulaire,
+       différente de celle de la modale. */
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--d-text-heading);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.devis-champ-input:hover {
+    border-color: #cbd5e1;
+}
+
+.devis-champ-input:focus {
+    outline: none;
+    border-color: var(--d-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+/* Les flèches du champ nombre déséquilibrent une grille de champs texte. */
+.devis-champ-input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.devis-champ-input[type='number']::-webkit-outer-spin-button,
+.devis-champ-input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Champ modifié non enregistré : la bordure suffit à le signaler, sans
+   décaler la grille comme le faisait la barre latérale précédente. */
+/* Aide sous un champ recommande : discret, mais la — la valeur proposee ne
+   doit pas passer pour une donnee du dossier. */
+.devis-champ-aide {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: var(--d-text-muted);
+}
+
+.devis-champ--modifie .devis-champ-input {
+    border-color: var(--d-primary);
+    background: var(--d-primary-bg);
+}
+
+.devis-champ--modifie .devis-champ-titre {
+    color: var(--d-primary-dark);
+}
+
+.devis-lecture-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--d-text-muted);
+    margin-bottom: 3px;
+}
+
+.devis-lecture-valeur {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--d-text-heading);
+    padding: 5px 0;
+    word-break: break-word;
+}
+
+/* ══ Cases du document ════════════════════════════════════════ */
+.devis-cases-bloc {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--d-border);
+    border-radius: var(--d-r-md);
+    background: var(--d-surface-alt);
+}
+
+.devis-cases-label {
+    display: block;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--d-text-muted);
+    margin-bottom: 8px;
+}
+
+.devis-cases {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.devis-case {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border: 1px solid var(--d-border);
+    border-radius: var(--d-r-sm);
+    background: var(--d-surface);
+    font-size: 0.82rem;
+    color: var(--d-text-muted);
+}
+
+.devis-case--cochee {
+    border-color: var(--d-primary);
+    background: var(--d-primary-bg);
+    color: var(--d-primary-dark);
+    font-weight: 700;
+}
+
+.devis-case-coche {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* ══ Aperçu PDF ═══════════════════════════════════════════════ */
+.devis-pdf-cadre {
+    border: 1px solid var(--d-border);
+    border-radius: var(--d-r-md);
+    overflow: hidden;
+    background: var(--d-surface-alt);
+}
+
+/* Bandeau d'ouverture du document.
+   Trait PLEIN et non pointille : le pointille annonce une zone de depot, et
+   invitait a y glisser un fichier. Disposition en ligne, sans hauteur reservee :
+   il n'y a qu'une phrase et un lien a montrer. */
+.devis-pdf-invite {
+    padding: 12px 14px;
+    border: 1px solid var(--d-border, #d8dee9);
+    border-radius: 8px;
+    background: var(--d-surface-alt, #f8fafc);
+}
+
+/* La ligne d'ouverture du document : icone, texte, lien. */
+.devis-pdf-invite-ligne {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Le suivi de la demande, sous un filet plutot que dans un second encadre :
+   c'est la suite de la meme information — ou en est ce devis — pas un autre
+   message. Le filet suffit a separer l'action (ouvrir) de l'etat (envoye). */
+.devis-pdf-invite-suivi {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--d-border, #d8dee9);
+}
+
+.devis-pdf-invite-envoi {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--d-primary-dark, #1d4ed8);
+}
+
+.devis-pdf-invite-icone {
+    flex: 0 0 auto;
+    color: var(--d-text-muted, #64748b);
+}
+
+/* Occupe l'espace restant : le lien est ainsi repousse a droite. */
+.devis-pdf-invite-texte {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.devis-pdf-invite-titre {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.devis-pdf-invite-aide {
+    margin: 2px 0 0;
+    font-size: 0.75rem;
+    color: var(--d-text-muted, #64748b);
+}
+
+.devis-pdf-invite-lien {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+    /* Sur telephone, le lien passe sous le texte plutot que de le comprimer. */
+    .devis-pdf-invite-ligne {
+        flex-wrap: wrap;
+    }
+
+    .devis-pdf-invite-lien {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.devis-pdf-pages {
+    max-height: 62vh;
+    min-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* Pages dessinées par pdf.js (rendrePdf). Le canvas est rendu en haute
+   définition (devicePixelRatio) puis raccordé à la largeur du cadre ici. */
+.devis-pdf-pages canvas.devis-pdf-page {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto 10px;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.15);
+    background: #fff;
+}
+
+.devis-lien {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--d-primary);
+    text-decoration: underline;
+}
+
+/* ══ Signature ════════════════════════════════════════════════ */
+.devis-signature {
+    text-align: center;
+    padding: 24px 8px;
+}
+
+.devis-signature-titre {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--d-text-heading);
+}
+
+/* ── Onglet 3 : destinataire de la signature ───────────────────────────────
+   Le bloc est centré comme le reste de l'onglet, mais le champ de saisie garde
+   une largeur de lecture confortable : une adresse email étalée sur toute la
+   modale se lit mal, et l'utilisateur doit pouvoir la vérifier d'un coup d'œil
+   avant de l'envoyer. */
+.devis-signature-email {
+    display: block;
+    max-width: 360px;
+    margin: 0 auto 12px;
+    text-align: left;
+}
+
+.devis-signature-destinataire {
+    margin: 0 0 20px;
+    font-size: 0.85rem;
+    color: var(--d-text-muted);
+}
+
+.devis-signature-destinataire .devis-lecture-label {
+    margin-right: 6px;
+}
+
+/* ══ Messages ═════════════════════════════════════════════════ */
+.devis-msg {
+    margin: 12px 0 0;
+    padding: 9px 12px;
+    border-radius: var(--d-r-sm);
+    font-size: 0.8rem;
+}
+
+.devis-msg--ok {
+    background: var(--d-ok-bg);
+    color: var(--d-ok);
+}
+
+.devis-msg--info {
+    background: var(--d-primary-bg);
+    color: var(--d-primary-dark);
+}
+
+.devis-msg--alerte {
+    background: var(--d-alerte-bg);
+    color: var(--d-alerte);
+}
+
+.devis-msg--erreur {
+    background: var(--d-erreur-bg);
+    color: var(--d-erreur);
+}
+
+/* ══ Boutons ══════════════════════════════════════════════════ */
+.devis-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.devis-btn {
+    border-radius: var(--d-r-sm);
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.devis-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.devis-btn--primaire {
+    background: var(--d-primary);
+    color: #fff;
+}
+
+.devis-btn--primaire:not(:disabled):hover {
+    background: var(--d-primary-dark);
+}
+
+.devis-btn--secondaire {
+    background: var(--d-surface);
+    border-color: var(--d-border);
+    color: var(--d-text-base);
+}
+
+.devis-btn--secondaire:not(:disabled):hover {
+    background: var(--d-surface-alt);
+}
+
+.devis-btn--large {
+    padding: 11px 32px;
+    font-size: 0.9rem;
+}
+
+/* ══ États (chargement / erreur / info) ═══════════════════════ */
+.devis-etat {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 44px 20px;
+    font-size: 0.85rem;
+    color: var(--d-text-muted);
+    text-align: center;
+}
+
+/* Zone de travail du document : réserve sa hauteur pendant la fabrication, pour
+   que l'apparition du contenu ne fasse pas sauter la modale. Cette reserve ne
+   vaut QUE pour le spinner — un devis signe n'a que trois lignes a montrer, et
+   une modale a moitie vide donne l'impression qu'il manque quelque chose. */
+.devis-etat--travail {
+    min-height: 180px;
+    gap: 10px;
+}
+
+.devis-etape {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--d-text-heading);
+}
+
+.devis-etape-aide {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--d-text-muted);
+}
+
+.devis-etat--erreur {
+    color: var(--d-erreur);
+}
+
+.devis-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--d-border);
+    border-top-color: var(--d-primary);
+    border-radius: 50%;
+    animation: devis-spin 0.8s linear infinite;
+}
+
+@keyframes devis-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ══ Pied ═════════════════════════════════════════════════════ */
+.devis-pied {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--d-border);
+    background: var(--d-surface-alt);
+}
+
+.devis-pied-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* « Fermer » : disponible, mais jamais concurrent du bouton principal. */
+.devis-btn--discret {
+    background: transparent;
+    border-color: transparent;
+    color: var(--d-text-muted);
+}
+
+.devis-btn--discret:hover:not(:disabled) {
+    background: rgba(15, 23, 42, 0.05);
+    color: var(--d-text);
+}
+
+/* ══ Téléphone ════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+    .devis-voile {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .devis-modal {
+        max-width: none;
+        max-height: 100vh;
+        min-height: 100vh;
+        border-radius: 0;
+    }
+
+    .devis-grille {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .devis-pdf-pages {
+        max-height: 50vh;
+    }
+
+    .devis-actions {
+        flex-direction: column-reverse;
+    }
+
+    .devis-actions .devis-btn {
+        width: 100%;
+    }
+}
+/* Date de signature, sous le bandeau « devis signé ». Discrète : c'est une
+   précision, pas une alerte.
+
+   La marge haute etait NEGATIVE, pour coller la date au bandeau : les deux se
+   touchaient, et la date paraissait deborder du message vert au lieu de le
+   suivre. Elle respire maintenant. */
+.devis-signature-datee {
+    margin: 10px 0 16px;
+    font-size: 0.8rem;
+    color: var(--d-text-muted, #64748b);
+}
+
+/* Champ obligatoire encore vide, apres une tentative d'avancer. */
+.devis-champ--manquant .devis-champ-input {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.devis-champ--manquant .devis-champ-titre {
+    color: #b91c1c;
+}
+
+
+@media (max-width: 640px) {
+    /* Empiler plutot que comprimer : quatre boutons sur une ligne de telephone
+       donnent des libelles tronques et des cibles trop petites. En
+       column-reverse, l'action principale remonte en tete de pile et
+       « Fermer » descend en bas : l'ordre utile sur un pouce. */
+    .devis-pied-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .devis-pied .devis-btn {
+        width: 100%;
+    }
+}
+
+/* ── Ecran de choix d'une relance ──────────────────────────────────────────
+   Trois chemins presentes a plat, en colonne : ils ne sont pas de meme nature
+   — deux corrigent, un envoie — et les aligner sur une ligne aurait suggere
+   une progression qui n'existe pas. */
+.devis-choix {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 340px;
+    margin: 16px auto 0;
+}
+
+.devis-choix-btn {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--d-border, #d8dee9);
+    border-radius: 8px;
+    background: var(--d-surface, #fff);
+    color: var(--d-text, #0f172a);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.devis-choix-btn:hover:not(:disabled) {
+    border-color: var(--d-primaire, #1d4ed8);
+    background: #f8fafc;
+}
+
+.devis-choix-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* L'envoi se distingue : c'est le seul des trois qui parte chez le client. */
+.devis-choix-btn--primaire {
+    border-color: var(--d-primaire, #1d4ed8);
+    background: var(--d-primaire, #1d4ed8);
+    color: #fff;
+}
+
+.devis-choix-btn--primaire:hover:not(:disabled) {
+    background: var(--d-primaire-fonce, #1e40af);
+    border-color: var(--d-primaire-fonce, #1e40af);
+}
+
+/* Champ verrouille : gris, curseur neutre. Il montre une valeur, il n'en
+   attend pas. */
+.devis-champ-input:disabled {
+    background: var(--d-surface-alt, #f1f5f9);
+    color: var(--d-text-muted, #64748b);
+    cursor: default;
+}
+
+/* Petit lien d'action sous un champ verrouille. Discret : deverrouiller n'est
+   pas l'action principale de l'ecran. */
+.devis-lien-action {
+    align-self: flex-start;
+    margin-top: 5px;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--d-primaire, #1d4ed8);
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.devis-lien-action:hover {
+    color: var(--d-primaire-fonce, #1e40af);
+}

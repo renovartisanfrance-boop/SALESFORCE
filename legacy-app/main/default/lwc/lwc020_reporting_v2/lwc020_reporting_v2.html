@@ -1,0 +1,805 @@
+<template>
+    <div class="reporting-container">
+
+        <!-- POPUP 2 — partenaire (accès réduit) : visible desktop + mobile TANT QU'aucun RDV
+             n'existe ; masqué automatiquement dès qu'il y a au moins un dossier. Non fermable. -->
+        <template if:true={showPartnerEmptyMsg}>
+            <div class="partner-empty-banner">
+                <span class="partner-empty-icon">📋</span>
+                <span class="partner-empty-text">
+                    {txt.aucuneDonneeAide}
+                </span>
+            </div>
+        </template>
+
+        <!-- POPUP 1 — optimisation écran : mobile uniquement, fermable (croix). -->
+        <template if:true={showMobileBanner}>
+            <div class="mobile-warning-banner">
+                <span class="mobile-warning-icon">🖥️</span>
+                <span class="mobile-warning-text">
+                    {txt.avertissementMobile}
+                </span>
+                <button class="mobile-warning-close" onclick={handleDismissMobileBanner} title={txt.masquer}>✕</button>
+            </div>
+        </template>
+
+
+
+        <!-- Section Filtres avec Accordion -->
+        <div class="filter-section">
+            <div class="filter-header" onclick={handleToggleFilter}>
+                <div class="filter-header-left">
+                    <lightning-icon icon-name={accordionIcon} size="xx-small"></lightning-icon>
+                    <span class="filter-header-title">{txt.filtresRecherche}</span>
+                    <template if:true={hasActiveFilters}>
+                        <span class="filter-count-badge">{filterCountLabel}</span>
+                    </template>
+                </div>
+                <div class="filter-header-right">
+                    <template if:true={hasActiveFilters}>
+                        <button class="btn-clear-filters" onclick={handleClearFilters}>
+                            <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                            {txt.reinitialiser}
+                        </button>
+                    </template>
+                    <button class="btn-refresh" onclick={handleRefresh}>
+                        {txt.actualiser}
+                    </button>
+                </div>
+            </div>
+            <template if:true={isFilterOpen}>
+                <div class="filter-body">
+                    <div class="filter-grid">
+                        <!-- Filtre Type -->
+                        <!-- <div class="filter-item">
+                            <select class="filter-select" data-id="typeFilter" onchange={handleTypeFilterChange}>
+                                <option value="">Type...</option>
+                                <option value="Piste">Piste</option>
+                                <option value="Opportunité">Opportunité</option>
+                                <option value="Dossier">Dossier</option>
+                            </select>
+                        </div> -->
+                        <!-- Filtres colonnes -->
+                        <template for:each={filterFields} for:item="field">
+                            <div class={field.itemClass} key={field.key}>
+                                <template if:true={field.isPicklist}>
+                                    <div class={field.wrapperClass} data-key={field.key}
+                                        onclick={handlePicklistWrapperClick}>
+                                        <button type="button" class="filter-select picklist-trigger"
+                                            data-key={field.key} onclick={handlePicklistToggle}>
+                                            <span class="picklist-trigger-label">{field.displayLabel}</span>
+                                            <span class="picklist-arrow">&#9660;</span>
+                                        </button>
+                                        <template if:true={field.isOpen}>
+                                            <div class="picklist-dropdown">
+                                                <input type="text" class="picklist-search" placeholder={txt.rechercherPh}
+                                                    data-key={field.key} oninput={handlePicklistSearch}>
+                                                <div class="picklist-options">
+                                                    <template if:true={field.hasOptions}>
+                                                        <template for:each={field.options} for:item="opt">
+                                                            <label class="picklist-option" key={opt.value}>
+                                                                <input type="checkbox" class="picklist-checkbox"
+                                                                    checked={opt.selected} value={opt.value}
+                                                                    data-key={field.key}
+                                                                    onchange={handlePicklistOptionChange}>
+                                                                <span>{opt.label}</span>
+                                                            </label>
+                                                        </template>
+                                                    </template>
+                                                    <template if:false={field.hasOptions}>
+                                                        <div class="picklist-empty">{txt.aucunResultat}</div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template if:false={field.isPicklist}>
+                                    <input type="text" class="filter-input" placeholder={field.label}
+                                        data-key={field.key} value={field.value} onkeyup={handleFilterChange}>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Spinner de chargement -->
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text={txt.chargement} size="medium"></lightning-spinner>
+                <p class="loading-text">{txt.chargementDonnees}</p>
+            </div>
+        </template>
+
+        <!-- Message d'erreur -->
+        <template if:true={error}>
+            <div class="error-container">
+                <p class="error-message">{error}</p>
+            </div>
+        </template>
+
+        <!-- Tableau de données -->
+        <template if:false={isLoading}>
+            <template if:true={hasData}>
+                <div class="table-wrapper">
+                    <table class="reporting-table">
+                        <thead>
+                            <tr>
+                                <!-- <th class="th-sortable rr-divider" data-sortkey="type" onclick={handleSort}>
+                                    Type <lightning-icon class={sortIcons.type.cls} icon-name={sortIcons.type.icon}
+                                        size="xx-small"></lightning-icon>
+                                </th> -->
+                                <th class="th-sortable" data-sortkey="createdDate" onclick={handleSort}>
+                                    {txt.thCreation} <lightning-icon class={sortIcons.createdDate.cls}
+                                        icon-name={sortIcons.createdDate.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="lastModifiedDate" onclick={handleSort}>
+                                    {txt.thLastModif} <lightning-icon class={sortIcons.lastModifiedDate.cls}
+                                        icon-name={sortIcons.lastModifiedDate.icon} size="xx-small"></lightning-icon>
+                                </th>
+
+                                <th class="th-sortable r-divider" data-sizable="true" data-sortkey="apporteur"
+                                    onclick={handleSort} if:false={hideApporteur}>
+                                    {txt.thAppAffaire} <lightning-icon class={sortIcons.apporteur.cls}
+                                        icon-name={sortIcons.apporteur.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <!-- Confirmateur / Nom Télépro / Note : profils listés dans COLUMNS_CONFIG.profils -->
+                                <th class="th-sortable" data-sizable="true" data-sortkey="confirmateur"
+                                    onclick={handleSort} if:true={colonnesProfil.Confirmateur}>
+                                    {txt.colConfirmateur} <lightning-icon class={sortIcons.confirmateur.cls}
+                                        icon-name={sortIcons.confirmateur.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sizable="true" data-sortkey="nomTelepro"
+                                    onclick={handleSort} if:true={colonnesProfil.NomTelepro}>
+                                    {txt.colNomTelepro} <lightning-icon class={sortIcons.nomTelepro.cls}
+                                        icon-name={sortIcons.nomTelepro.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="typeFicheCEE" onclick={handleSort}
+                                    if:false={hideTypeFicheCEE}>
+                                    {txt.colTypeFiche} <lightning-icon class={sortIcons.typeFicheCEE.cls}
+                                        icon-name={sortIcons.typeFicheCEE.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sizable="true" data-sortkey="nomClient"
+                                    onclick={handleSort}>
+                                    {txt.thNomClient} <lightning-icon class={sortIcons.nomClient.cls}
+                                        icon-name={sortIcons.nomClient.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="phone" onclick={handleSort} if:false={hidePhone}>
+                                    {txt.colTelephone} <lightning-icon class={sortIcons.phone.cls}
+                                        icon-name={sortIcons.phone.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-docs" if:false={hideDocs}>{txt.thDocs}</th>
+                                <!-- Note (DR- Cotation 060) : voir COLUMNS_CONFIG.profils -->
+                                <th class="th-sortable" data-sortkey="note"
+                                    onclick={handleSort} if:true={colonnesProfil.Note}>
+                                    {txt.colNote} <lightning-icon class={sortIcons.note.cls}
+                                        icon-name={sortIcons.note.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <!-- Statut Devis — Espagne uniquement. Colonne d'ACTION : non triable,
+                                     comme la colonne Com. -->
+                                <th class="th-devis" if:true={afficheStatutDevis}>{txt.colStatutDevis}</th>
+                                <th class="th-sortable r-divider" data-sortkey="etape1" onclick={handleSort}>
+                                    {txt.colStatutConfirmation} <lightning-icon class={sortIcons.etape1.cls}
+                                        icon-name={sortIcons.etape1.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <!-- <th class="th-sortable" data-sortkey="typeTravaux" onclick={handleSort}>
+                                    Type de Travaux <lightning-icon class={sortIcons.typeTravaux.cls}
+                                        icon-name={sortIcons.typeTravaux.icon} size="xx-small"></lightning-icon>
+                                </th> -->
+                                <th class="th-sortable r-divider" data-sortkey="etape11" onclick={handleSort}>
+                                    {txt.colStatutAdmin} <lightning-icon class={sortIcons.etape11.cls}
+                                        icon-name={sortIcons.etape11.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="etape2" onclick={handleSort}>
+                                    {txt.colStatutInstallation} <lightning-icon class={sortIcons.etape2.cls}
+                                        icon-name={sortIcons.etape2.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="etape3" onclick={handleSort}>
+                                    {txt.colInfosDossier} <lightning-icon class={sortIcons.etape3.cls}
+                                        icon-name={sortIcons.etape3.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="th-sortable" data-sortkey="etape4" onclick={handleSort}
+                                    if:false={hideStatutPaiement}>
+                                    {txt.colStatutPaiement} <lightning-icon class={sortIcons.etape4.cls}
+                                        icon-name={sortIcons.etape4.icon} size="xx-small"></lightning-icon>
+                                </th>
+                                <th class="r-divider">{txt.thCom}</th>
+                                <!-- Colonne propre aux pièces jointes : mêlée à « Com »,
+                                     la pastille se calait mal sur la bulle de commentaires
+                                     (deux SVG de hauteurs différentes sur la même ligne). -->
+                                <!-- <th class="">Com2</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={paginatedData} for:item="ligne">
+                                <tr key={ligne.id}>
+                                    <!-- Type : badge coloré -->
+                                    <!-- <td class="ll-divider">
+                                        <span class={ligne.typeCssClass}>
+                                            {ligne.type}
+                                        </span>
+                                    </td> -->
+                                    <!-- Date de création -->
+                                    <td>
+                                        {ligne.CreatedDate.value}
+                                    </td>
+                                    <!-- Last modif. -->
+                                    <td>
+                                        {ligne.LastModifiedDate.value}
+                                    </td>
+                                    <!-- Apporteur d'Affaire -->
+                                    <td class="r-divider" if:false={hideApporteur}>
+                                        <span style={ligne.ApporteurAffaire.style}>
+                                            {ligne.ApporteurAffaire.value}
+                                        </span>
+                                    </td>
+                                    <!-- Nom Télépro + Confirmateur -->
+                                    <td if:true={colonnesProfil.Confirmateur}>
+                                        {ligne.Confirmateur.value}
+                                    </td>
+                                    <td class="r-divider" if:true={colonnesProfil.NomTelepro}>
+                                        {ligne.NomTelepro.value}
+                                    </td>
+                                    <!-- Type Client -->
+                                    <!-- Type Fiche CEE -->
+                                    <td if:false={hideTypeFicheCEE}>
+                                        <!-- <template lwc:if={ligne.isLead}>
+                                            <template lwc:if={ligne.TypeFicheCEE.isBadge}>
+                                                <template for:each={ligne.TypeFicheCEE.value} for:item="type">
+                                                    <lightning-badge key={type} label={type}></lightning-badge>
+                                                </template>
+                                            </template>
+                                        </template>
+                                        <template lwc:if={ligne.isDossier}>
+                                            <lightning-badge label={ligne.TypeFicheCEE.value}></lightning-badge>
+                                        </template> -->
+                                        {ligne.TypeFicheCEE.value}
+                                    </td>
+                                    <!-- Nom client / Société -->
+                                    <td>
+                                        <span style="text-transform: uppercase; font-weight: bold;">
+                                            {ligne.NomClient.desktopValue}
+                                            <!-- {ligne.NomClient.desktopValue} -->
+                                        </span>
+                                        <!--<span style="text-transform: uppercase;" class="nom-mobile">
+                                            {ligne.NomClient.valueMobile}
+                                        </span> -->
+                                    </td>
+                                    <!-- Téléphone -->
+                                    <td if:false={hidePhone}>
+                                        {ligne.Phone.value}
+                                    </td>
+                                    <!-- Documents : pastille seule dans sa colonne -->
+                                    <td class="td-docs" if:false={hideDocs}>
+                                        <!-- Le nombre est AU CENTRE de l'icône, comme dans la bulle de
+                                             commentaires. Ouvre c/lwc026_documents, qui décide seul de ce
+                                             qui est permis (ajout et suppression sur une Piste,
+                                             consultation seule sur un Dossier).
+                                             Le titre vient de `txt`, donc résolu AU RENDU : un changement
+                                             de langue ne laisse pas d'ancien libellé derrière lui. -->
+                                        <span class="doc-icon" data-id={ligne.id} title={txt.docTitre}
+                                            onclick={handleOuvrirDocuments}>
+                                            <svg class="doc-icon-svg" viewBox="0 0 22 26" aria-hidden="true">
+                                                <path
+                                                    d="M4,0 H15 L22,7 V22 C22,24.2 20.2,26 18,26 H4 C1.8,26 0,24.2 0,22 V4 C0,1.8 1.8,0 4,0 Z"
+                                                    fill={ligne.Documents.couleur} />
+                                                <!-- Coin corné : ce qui fait lire « document » et non « badge ». -->
+                                                <path d="M15,0 L22,7 H17 C15.9,7 15,6.1 15,5 Z"
+                                                    fill="rgba(255,255,255,0.45)" />
+                                                <text x="11" y="16" text-anchor="middle" dominant-baseline="middle"
+                                                    fill={ligne.Documents.couleurTexte} font-size="11"
+                                                    font-weight="bold"
+                                                    font-family="sans-serif">{ligne.Documents.nombre}</text>
+                                            </svg>
+                                        </span>
+                                    </td>
+                                    <!-- Note (DR- Cotation 060) -->
+                                    <td if:true={colonnesProfil.Note}>
+                                        {ligne.Note.value}
+                                    </td>
+                                    <!-- Statut Devis : un seul clic, quel que soit l'état — la modale
+                                         lwc021_devis_signature s'aiguille elle-même sur le statut. -->
+                                    <td class="th-devis" if:true={afficheStatutDevis}>
+                                        <!-- Cellule VIDE si la fiche de cette ligne ne gere
+                                             pas la signature : le reporting melange les
+                                             produits, et la colonne peut etre affichee pour
+                                             ses voisines. -->
+                                        <template if:true={ligne.StatutDevis.actif}>
+                                        <!-- Une branche par état : le libellé et le titre viennent de `txt`,
+                                             donc résolus AU RENDU et non figés dans la ligne — sinon un changement
+                                             de langue laisserait les cellules dans l'ancienne. -->
+                                        <template if:true={ligne.StatutDevis.estGenerer}>
+                                            <span class="devis-etat devis-etat--generer" title={txt.devisGenererTitre}
+                                                data-id={ligne.id} onclick={handleSignerDevis}>{txt.devisGenerer}</span>
+                                        </template>
+                                        <!-- Att. signature : le statut n'est plus qu'une INDICATION, il ne
+                                             s'ouvre plus. La seule action possible depuis cette cellule est
+                                             la relance, portee par la pastille qui suit : « + relance »
+                                             tant qu'il n'y en a eu aucune, « Relance - 2 » ensuite. -->
+                                        <template if:true={ligne.StatutDevis.estAttente}>
+                                            <span class="devis-etat devis-etat--attente devis-etat--inerte"
+                                                title={txt.devisAttSignatureTitre}>
+                                                <span class="devis-etat-texte">{txt.devisAttSignature}</span>
+                                            </span>
+                                            <template if:false={ligne.StatutDevis.nbRelances}>
+                                                <span class="devis-relance-action" title={txt.devisRelancerTitre}
+                                                    data-id={ligne.id} data-onglet="signature" onclick={handleSignerDevis}>
+                                                    {txt.devisRelanceAjouter}
+                                                </span>
+                                            </template>
+                                            <template if:true={ligne.StatutDevis.nbRelances}>
+                                                <span class="devis-relance-action devis-relance-action--compte"
+                                                    title={txt.devisRelancerTitre}
+                                                    data-id={ligne.id} data-onglet="signature" onclick={handleSignerDevis}>
+                                                    {txt.devisRelance} - {ligne.StatutDevis.nbRelances}
+                                                </span>
+                                            </template>
+                                        </template>
+                                        <!-- Signé : le (i) est DANS le badge, non a cote. Pose dehors, il
+                                             portait son propre curseur et son propre survol, et l'infobulle
+                                             s'affichait de travers. Il est ici purement decoratif
+                                             (pointer-events: none) : c'est le badge qui porte le titre et
+                                             le clic, donc un seul comportement au lieu de deux. -->
+                                        <template if:true={ligne.StatutDevis.estSigne}>
+                                            <span class="devis-etat devis-etat--signe" title={ligne.StatutDevis.dateSignature}
+                                                data-id={ligne.id} onclick={handleSignerDevis}>
+                                                <span class="devis-etat-texte">{txt.devisSigne}</span>
+                                                <template if:true={ligne.StatutDevis.dateSignature}>
+                                                    <svg class="devis-etat-info" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                                    </svg>
+                                                </template>
+                                            </span>
+                                        </template>
+                                        </template>
+                                    </td>
+                                    <!-- Statut Confirmation -->
+                                    <td class="r-divider">
+                                        <span class={ligne.Etape1StatutConfirmateur.customClass}
+                                            style={ligne.Etape1StatutConfirmateur.customCSS}>
+                                            {ligne.Etape1StatutConfirmateur.value}
+                                        </span>
+                                    </td>
+                                    <!-- Type de Travaux -->
+                                    <!-- <td>
+                                        {ligne.TypeTravaux.value}
+                                    </td> -->
+                                    <!-- Etape 11 : Statut admin -->
+                                    <td>
+                                        <template for:each={ligne.Etape11StatutAdmin.badges} for:item="badge">
+                                            <span key={badge.value} class={badge.customClass} style={badge.customCSS}>
+                                                {badge.value}
+                                            </span>
+                                        </template>
+                                    </td>
+
+                                    <!-- Etape 2 :  Statut Installation -->
+                                    <td>
+                                        <span class={ligne.Etape2StatutSecretariat.customClass}
+                                            style={ligne.Etape2StatutSecretariat.customCSS}>
+                                            <template if:true={ligne.Etape2StatutSecretariat.displayValue}>
+                                                {ligne.Etape2StatutSecretariat.displayValue}
+                                            </template>
+                                            <template if:false={ligne.Etape2StatutSecretariatBiss}>
+                                                {ligne.Etape2StatutSecretariat.value}
+                                            </template>
+
+                                        </span>
+                                        <template if:true={ligne.Etape2StatutSecretariatBiss}>
+                                            <template for:each={ligne.Etape2StatutSecretariatBiss.badges}
+                                                for:item="badge">
+                                                <span key={badge.value} class={badge.customClass}
+                                                    style={badge.customCSS}>
+                                                    {badge.value}
+                                                </span>
+                                            </template>
+                                        </template>
+                                    </td>
+                                    <!-- Etape 3 :  Informations Dossier -->
+                                    <!--! Old traitment-->
+                                    <!-- <td>{ligne.Etape3StatutInstallation.value}</td> -->
+                                    <!--! New traitment with badge -->
+                                    <td>{ligne.Etape3InfosInstallation.value}</td>
+                                    <!-- Statut Paiement — masque pour la mini-regie
+                                         (niveau 2) : le reglement se traite entre la
+                                         regie mere et le siege. -->
+                                    <td if:false={hideStatutPaiement}>
+                                        <span class={ligne.Etape4StatutPaiement.customClass}
+                                            style={ligne.Etape4StatutPaiement.customCSS}>
+                                            {ligne.Etape4StatutPaiement.value}
+                                        </span>
+                                    </td>
+                                    <!-- Infos Confirmation : 💬 avec tooltip au survol -->
+                                    <td class="r-divider">
+                                        <!-- Piste : bulle SVG interactive avec nombre de commentaires -->
+                                        <template if:true={ligne.isLead}>
+                                            <span class="infos-icon" data-id={ligne.id} data-type={ligne.type}
+                                                onclick={handleInfosClick}>
+                                                <svg class="chat-bubble-svg" viewBox="0 0 26 24" aria-hidden="true">
+                                                    <!-- Corps de la bulle -->
+                                                    <path
+                                                        d="M4,0 H22 C24.2,0 26,1.8 26,4 V15 C26,17.2 24.2,19 22,19 H13 L7,24 L8.5,19 H4 C1.8,19 0,17.2 0,15 V4 C0,1.8 1.8,0 4,0 Z"
+                                                        fill="#4A86F0" />
+                                                    <!-- Nombre centré dans la bulle -->
+                                                    <text x="13" y="11" text-anchor="middle" dominant-baseline="middle"
+                                                        fill="white" font-size="12" font-weight="bold"
+                                                        font-family="sans-serif">{ligne.InfosConfirmation.nombreCommentaires}</text>
+                                                </svg>
+                                            </span>
+                                        </template>
+                                        <!-- Dossier : bulle grisée désactivée -->
+                                        <!-- <template if:true={ligne.isDossier}>
+                                            <span class="infos-icon infos-icon--disabled">
+                                                <svg class="chat-bubble-svg" viewBox="0 0 26 24" aria-hidden="true">
+                                                    <path
+                                                        d="M4,0 H22 C24.2,0 26,1.8 26,4 V15 C26,17.2 24.2,19 22,19 H13 L7,24 L8.5,19 H4 C1.8,19 0,17.2 0,15 V4 C0,1.8 1.8,0 4,0 Z"
+                                                        fill="#cbd5e1" />
+                                                    <text x="13" y="11" text-anchor="middle" dominant-baseline="middle"
+                                                        fill="#94a3b8" font-size="9" font-weight="bold"
+                                                        font-family="sans-serif">–</text>
+                                                </svg>
+                                            </span>
+                                        </template> -->
+                                        <template if:true={ligne.isDossier}>
+                                            <span class="infos-icon" data-id={ligne.id} data-type={ligne.type}
+                                                onclick={handleInfosClick}>
+                                                <svg class="chat-bubble-svg" viewBox="0 0 26 24" aria-hidden="true">
+                                                    <path
+                                                        d="M4,0 H22 C24.2,0 26,1.8 26,4 V15 C26,17.2 24.2,19 22,19 H13 L7,24 L8.5,19 H4 C1.8,19 0,17.2 0,15 V4 C0,1.8 1.8,0 4,0 Z"
+                                                        fill="#4A86F0" />
+                                                    <text x="13" y="11" text-anchor="middle" dominant-baseline="middle"
+                                                        fill="white" font-size="12" font-weight="bold"
+                                                        font-family="sans-serif">{ligne.InfosInstallation.nombreCommentaires}</text>
+                                                </svg>
+                                            </span>
+                                        </template>
+                                    </td>
+                                    <!-- Informations Installation : champs combinés -->
+                                    <!-- <td class="rr-divider">
+                                        
+                                    </td> -->
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <!-- Barre de pagination -->
+                    <div class="pagination-bar">
+                        <span class="pagination-info">
+                            {startRecord}–{endRecord} sur {totalRecords} résultat(s)
+                        </span>
+                        <div class="pagination-size">
+                            <select class="page-size-select" onchange={handlePageSizeChange}>
+                                <template for:each={pageSizeOptions} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}
+                                    </option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn-page" onclick={handlePagePrev} disabled={isPrevDisabled}>{txt.precedent}</button>
+                            <span class="page-indicator">{pageInfo}</span>
+                            <button class="btn-page" onclick={handlePageNext} disabled={isNextDisabled}>{txt.suivant}</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══ Tableau mobile (colonnes réduites) ══════════════════ -->
+                <div class="mobile-table-wrapper">
+                    <div class="mobile-table-scroll">
+                        <table class="reporting-table-mobile">
+                            <thead>
+                                <tr>
+                                    <th class="th-sortable mobile-sticky-col" data-sortkey="nomClient"
+                                        onclick={handleSort}>
+                                        {txt.thNom} <lightning-icon class={sortIcons.nomClient.cls}
+                                            icon-name={sortIcons.nomClient.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="apporteur" onclick={handleSort}
+                                        if:false={hideApporteur}>
+                                        {txt.thAppAffaire} <lightning-icon class={sortIcons.apporteur.cls}
+                                            icon-name={sortIcons.apporteur.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="confirmateur" onclick={handleSort}
+                                        if:true={colonnesProfil.Confirmateur}>
+                                        {txt.colConfirmateur} <lightning-icon class={sortIcons.confirmateur.cls}
+                                            icon-name={sortIcons.confirmateur.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="nomTelepro" onclick={handleSort}
+                                        if:true={colonnesProfil.NomTelepro}>
+                                        {txt.colNomTelepro} <lightning-icon class={sortIcons.nomTelepro.cls}
+                                            icon-name={sortIcons.nomTelepro.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="typeFicheCEE" onclick={handleSort}
+                                        if:false={hideTypeFicheCEE}>
+                                        {txt.colTypeFiche} <lightning-icon class={sortIcons.typeFicheCEE.cls}
+                                            icon-name={sortIcons.typeFicheCEE.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="phone" onclick={handleSort}
+                                        if:false={hidePhone}>
+                                        {txt.colTelephone} <lightning-icon class={sortIcons.phone.cls}
+                                            icon-name={sortIcons.phone.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-docs" if:false={hideDocs}>{txt.thDocs}</th>
+                                    <th class="th-sortable" data-sortkey="note" onclick={handleSort}
+                                        if:true={colonnesProfil.Note}>
+                                        {txt.colNote} <lightning-icon class={sortIcons.note.cls}
+                                            icon-name={sortIcons.note.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <!-- Statut Devis — Espagne uniquement. Colonne d'ACTION : non triable,
+                                         comme la colonne Com. -->
+                                    <th class="th-devis" if:true={afficheStatutDevis}>{txt.colStatutDevis}</th>
+                                    <th class="th-sortable" data-sortkey="etape1" onclick={handleSort}>
+                                        {txt.thStatutConf} <lightning-icon class={sortIcons.etape1.cls}
+                                            icon-name={sortIcons.etape1.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="etape11" onclick={handleSort}>
+                                        {txt.colStatutAdmin} <lightning-icon class={sortIcons.etape11.cls}
+                                            icon-name={sortIcons.etape11.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="etape2" onclick={handleSort}>
+                                        {txt.thStatutInstall} <lightning-icon class={sortIcons.etape2.cls}
+                                            icon-name={sortIcons.etape2.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="etape3" onclick={handleSort}>
+                                        <!-- Info Install. <lightning-icon class={sortIcons.etape3.cls} icon-name={sortIcons.etape3.icon} size="xx-small"></lightning-icon> -->
+                                        {txt.thInfosDossier} <lightning-icon class={sortIcons.etape3.cls}
+                                            icon-name={sortIcons.etape3.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th class="th-sortable" data-sortkey="etape4" onclick={handleSort}
+                                        if:false={hideStatutPaiement}>
+                                        {txt.colStatutPaiement} <lightning-icon class={sortIcons.etape4.cls}
+                                            icon-name={sortIcons.etape4.icon} size="xx-small"></lightning-icon>
+                                    </th>
+                                    <th>{txt.thCom}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={paginatedData} for:item="ligne">
+                                    <tr key={ligne.id}>
+                                        <!-- Nom (figé) -->
+                                        <td class="mobile-sticky-col">
+                                            <span
+                                                style="text-transform: uppercase; font-weight: bold;">{ligne.NomClient.valueMobile}</span>
+                                        </td>
+                                        <!-- App. Affaire -->
+                                        <td if:false={hideApporteur}>
+                                            <span
+                                                style={ligne.ApporteurAffaire.style}>{ligne.ApporteurAffaire.value}</span>
+                                        </td>
+                                        <!-- Nom Télépro + Confirmateur -->
+                                        <td if:true={colonnesProfil.Confirmateur}>{ligne.Confirmateur.value}</td>
+                                        <td if:true={colonnesProfil.NomTelepro}>{ligne.NomTelepro.value}</td>
+                                        
+                                        <!-- Type Fiche CEE -->
+                                        <td if:false={hideTypeFicheCEE}>{ligne.TypeFicheCEE.value}</td>
+                                        <!-- Téléphone -->
+                                        <td if:false={hidePhone}>{ligne.Phone.value}</td>
+                                        <!-- Documents : pastille seule dans sa colonne -->
+                                        <td class="td-docs" if:false={hideDocs}>
+                                            <!-- Le nombre est AU CENTRE de l'icône, comme dans la bulle de
+                                                 commentaires. Ouvre c/lwc026_documents, qui décide seul de ce
+                                                 qui est permis (ajout et suppression sur une Piste,
+                                                 consultation seule sur un Dossier).
+                                                 Le titre vient de `txt`, donc résolu AU RENDU : un changement
+                                                 de langue ne laisse pas d'ancien libellé derrière lui. -->
+                                            <span class="doc-icon" data-id={ligne.id} title={txt.docTitre}
+                                                onclick={handleOuvrirDocuments}>
+                                                <svg class="doc-icon-svg" viewBox="0 0 22 26" aria-hidden="true">
+                                                    <path
+                                                        d="M4,0 H15 L22,7 V22 C22,24.2 20.2,26 18,26 H4 C1.8,26 0,24.2 0,22 V4 C0,1.8 1.8,0 4,0 Z"
+                                                        fill={ligne.Documents.couleur} />
+                                                    <!-- Coin corné : ce qui fait lire « document » et non « badge ». -->
+                                                    <path d="M15,0 L22,7 H17 C15.9,7 15,6.1 15,5 Z"
+                                                        fill="rgba(255,255,255,0.45)" />
+                                                    <text x="11" y="16" text-anchor="middle" dominant-baseline="middle"
+                                                        fill={ligne.Documents.couleurTexte} font-size="11"
+                                                        font-weight="bold"
+                                                        font-family="sans-serif">{ligne.Documents.nombre}</text>
+                                                </svg>
+                                            </span>
+                                        </td>
+                                        <!-- Note (DR- Cotation 060) -->
+                                        <td if:true={colonnesProfil.Note}>{ligne.Note.value}</td>
+                                        <!-- Statut Devis : un seul clic, quel que soit l'état — la modale
+                                             lwc021_devis_signature s'aiguille elle-même sur le statut. -->
+                                        <td class="th-devis" if:true={afficheStatutDevis}>
+                                            <!-- Voir le commentaire du tableau desktop. -->
+                                            <template if:true={ligne.StatutDevis.actif}>
+                                            <!-- Une branche par état : le libellé et le titre viennent de `txt`,
+                                                 donc résolus AU RENDU et non figés dans la ligne — sinon un changement
+                                                 de langue laisserait les cellules dans l'ancienne. -->
+                                            <template if:true={ligne.StatutDevis.estGenerer}>
+                                                <span class="devis-etat devis-etat--generer" title={txt.devisGenererTitre}
+                                                    data-id={ligne.id} onclick={handleSignerDevis}>{txt.devisGenerer}</span>
+                                            </template>
+                                            <!-- Att. signature : le statut n'est plus qu'une INDICATION, il ne
+                                                 s'ouvre plus. La seule action possible depuis cette cellule est
+                                                 la relance, portee par la pastille qui suit : « + relance »
+                                                 tant qu'il n'y en a eu aucune, « Relance - 2 » ensuite. -->
+                                            <template if:true={ligne.StatutDevis.estAttente}>
+                                                <span class="devis-etat devis-etat--attente devis-etat--inerte"
+                                                    title={txt.devisAttSignatureTitre}>
+                                                    <span class="devis-etat-texte">{txt.devisAttSignature}</span>
+                                                </span>
+                                                <template if:false={ligne.StatutDevis.nbRelances}>
+                                                    <span class="devis-relance-action" title={txt.devisRelancerTitre}
+                                                        data-id={ligne.id} data-onglet="signature" onclick={handleSignerDevis}>
+                                                        {txt.devisRelanceAjouter}
+                                                    </span>
+                                                </template>
+                                                <template if:true={ligne.StatutDevis.nbRelances}>
+                                                    <span class="devis-relance-action devis-relance-action--compte"
+                                                        title={txt.devisRelancerTitre}
+                                                        data-id={ligne.id} data-onglet="signature" onclick={handleSignerDevis}>
+                                                        {txt.devisRelance} - {ligne.StatutDevis.nbRelances}
+                                                    </span>
+                                                </template>
+                                            </template>
+                                            <!-- Signé : le (i) est DANS le badge, non a cote. Pose dehors, il
+                                                 portait son propre curseur et son propre survol, et l'infobulle
+                                                 s'affichait de travers. Il est ici purement decoratif
+                                                 (pointer-events: none) : c'est le badge qui porte le titre et
+                                                 le clic, donc un seul comportement au lieu de deux. -->
+                                            <template if:true={ligne.StatutDevis.estSigne}>
+                                                <span class="devis-etat devis-etat--signe" title={ligne.StatutDevis.dateSignature}
+                                                    data-id={ligne.id} onclick={handleSignerDevis}>
+                                                    <span class="devis-etat-texte">{txt.devisSigne}</span>
+                                                    <template if:true={ligne.StatutDevis.dateSignature}>
+                                                        <svg class="devis-etat-info" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <circle cx="12" cy="12" r="10" />
+                                                            <line x1="12" y1="16" x2="12" y2="12" />
+                                                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                                                        </svg>
+                                                    </template>
+                                                </span>
+                                            </template>
+                                            </template>
+                                        </td>
+                                        <!-- Statut Conf. -->
+                                        <td>
+                                            <span class={ligne.Etape1StatutConfirmateur.customClass}
+                                                style={ligne.Etape1StatutConfirmateur.customCSS}>
+                                                {ligne.Etape1StatutConfirmateur.value}
+                                            </span>
+                                        </td>
+                                        <!-- Statut Admin -->
+                                        <td>
+                                            <template for:each={ligne.Etape11StatutAdmin.badges} for:item="badge">
+                                                <span key={badge.value} class={badge.customClass}
+                                                    style={badge.customCSS}>{badge.value}</span>
+                                            </template>
+                                        </td>
+                                        <!-- Statut Install. -->
+                                        <td>
+                                            <span class={ligne.Etape2StatutSecretariat.customClass}
+                                                style={ligne.Etape2StatutSecretariat.customCSS}>
+                                                {ligne.Etape2StatutSecretariat.value}
+                                            </span>
+                                        </td>
+                                        <!-- Info Install. -->
+                                        <!--! Old traitment-->
+                                        <!-- <td>{ligne.Etape3StatutInstallation.value}</td> -->
+                                        <!--! New traitment with badge -->
+                                        <td>{ligne.Etape3InfosInstallation.value}</td>
+                                        <!-- Statut Paiement — voir le commentaire du
+                                             tableau desktop. -->
+                                        <td if:false={hideStatutPaiement}>
+                                            <span class={ligne.Etape4StatutPaiement.customClass}
+                                                style={ligne.Etape4StatutPaiement.customCSS}>
+                                                {ligne.Etape4StatutPaiement.value}
+                                            </span>
+                                        </td>
+                                        <!-- Commentaire -->
+                                        <td>
+                                            <template if:true={ligne.isLead}>
+                                                <span class="infos-icon" data-id={ligne.id} data-type={ligne.type}
+                                                    onclick={handleInfosClick}>
+                                                    <svg class="chat-bubble-svg" viewBox="0 0 26 24" aria-hidden="true">
+                                                        <path
+                                                            d="M4,0 H22 C24.2,0 26,1.8 26,4 V15 C26,17.2 24.2,19 22,19 H13 L7,24 L8.5,19 H4 C1.8,19 0,17.2 0,15 V4 C0,1.8 1.8,0 4,0 Z"
+                                                            fill="#4A86F0" />
+                                                        <text x="13" y="11" text-anchor="middle"
+                                                            dominant-baseline="middle" fill="white" font-size="12"
+                                                            font-weight="bold"
+                                                            font-family="sans-serif">{ligne.InfosConfirmation.nombreCommentaires}</text>
+                                                    </svg>
+                                                </span>
+                                            </template>
+                                            <template if:true={ligne.isDossier}>
+                                                <span class="infos-icon" data-id={ligne.id} data-type={ligne.type}
+                                                    onclick={handleInfosClick}>
+                                                    <svg class="chat-bubble-svg" viewBox="0 0 26 24" aria-hidden="true">
+                                                        <path
+                                                            d="M4,0 H22 C24.2,0 26,1.8 26,4 V15 C26,17.2 24.2,19 22,19 H13 L7,24 L8.5,19 H4 C1.8,19 0,17.2 0,15 V4 C0,1.8 1.8,0 4,0 Z"
+                                                            fill="#4A86F0" />
+                                                        <text x="13" y="11" text-anchor="middle"
+                                                            dominant-baseline="middle" fill="white" font-size="12"
+                                                            font-weight="bold"
+                                                            font-family="sans-serif">{ligne.InfosInstallation.nombreCommentaires}</text>
+                                                    </svg>
+                                                </span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div><!-- fin mobile-table-scroll -->
+                    <!-- Barre de pagination mobile -->
+                    <div class="pagination-bar">
+                        <span class="pagination-info">
+                            {startRecord}–{endRecord} sur {totalRecords} résultat(s)
+                        </span>
+                        <div class="pagination-size">
+                            <select class="page-size-select" onchange={handlePageSizeChange}>
+                                <template for:each={pageSizeOptions} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}
+                                    </option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn-page" onclick={handlePagePrev} disabled={isPrevDisabled}>{txt.precedent}</button>
+                            <span class="page-indicator">{pageInfo}</span>
+                            <button class="btn-page" onclick={handlePageNext} disabled={isNextDisabled}>{txt.suivant}</button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Aucune donnée -->
+            <template if:false={hasData}>
+                <template if:false={error}>
+                    <div class="empty-container">
+                        <p class="empty-message">{txt.aucuneDonnee}</p>
+                    </div>
+                </template>
+            </template>
+        </template>
+
+        <!-- Tooltip flottant Infos Confirmation -->
+        <template if:true={tooltip.visible}>
+            <div class="floating-tooltip" style={tooltip.style} onclick={handleTooltipClick}>
+                <div class="tooltip-header">
+                    <span>💬 {tooltip.title}</span>
+                    <button class="tooltip-close" onclick={handleTooltipClose}>✕</button>
+                </div>
+                <template for:each={tooltip.fields} for:item="field">
+                    <div class="tooltip-row" key={field.label} style={field.customCSS}>
+                        <div class="tooltip-field-header">
+                            <span class="tooltip-label">{field.label}</span>
+                            <template if:true={field.lastModified}>
+                                <span class="tooltip-date-inline">{field.lastModified}</span>
+                            </template>
+                        </div>
+                        <span class="tooltip-value">{field.value}</span>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Modale « Signer devis » — composant autonome, ne reçoit que le recordId.
+             Toute la logique métier du devis vit dans c/lwc021_devis_signature. -->
+        <template if:true={devisRecordId}>
+            <c-lwc021_devis_signature record-id={devisRecordId} campaign-code={campaignCode} langue={langue} etape-initiale={devisEtapeInitiale}
+                is-community-user={isCommunityUser}
+                onclose={handleCloseDevis}></c-lwc021_devis_signature>
+        </template>
+
+        <!-- Modale « Documents » — composant autonome, ne reçoit que le recordId.
+             Il identifie seul la Piste ou le Dossier, charge ses pièces jointes
+             et décide de ce qui est permis. `documentschange` remet la pastille
+             à jour sans recharger tout le tableau. -->
+        <template if:true={documentsRecordId}>
+            <c-lwc026_documents record-id={documentsRecordId} campaign-code={campaignCode} langue={langue}
+                onclose={handleCloseDocuments} ondocumentschange={handleDocumentsChange}></c-lwc026_documents>
+        </template>
+    </div>
+</template>

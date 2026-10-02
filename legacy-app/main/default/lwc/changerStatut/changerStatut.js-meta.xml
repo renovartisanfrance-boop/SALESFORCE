@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Changer Statut</masterLabel>
+    <description>Affiche et modifie un champ picklist (ex. Statut) sans le composant Chemin standard. Compatible Experience Cloud / portail.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightningCommunity__Page</target>
+    </targets>
+    <targetConfigs>
+        <!-- Pages Lightning interne : recordId est fourni automatiquement -->
+        <targetConfig targets="lightning__RecordPage">
+            <property name="objectApiName" type="String" label="API Name de l'objet" default="Facture__c"
+                description="API Name de l'objet (ex. Facture__c)." />
+            <property name="fieldApiName" type="String" label="API Name du champ statut" default="Statut__c"
+                description="API Name du champ picklist à modifier (ex. Statut__c)." />
+            <property name="cardTitle" type="String" label="Titre" default="Statut" />
+            <property name="readOnly" type="Boolean" label="Lecture seule" default="true"
+                description="Si coché, le statut est affiché sans possibilité de modification." />
+            <!-- Conservée pour compatibilité : non utilisée (le libellé est calculé automatiquement). -->
+            <property name="buttonLabel" type="String" label="Libellé du bouton (obsolète)" default="Enregistrer" />
+        </targetConfig>
+        <!-- Experience Cloud : lier recordId à {!recordId} dans le Builder -->
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="recordId" type="String" label="Record Id" default="{!recordId}"
+                description="Id de l'enregistrement. Laissez {!recordId} sur une page de détail." />
+            <property name="objectApiName" type="String" label="API Name de l'objet" default="Facture__c"
+                description="API Name de l'objet (ex. Facture__c)." />
+            <property name="fieldApiName" type="String" label="API Name du champ statut" default="Statut__c"
+                description="API Name du champ picklist à modifier (ex. Statut__c)." />
+            <property name="cardTitle" type="String" label="Titre" default="Statut" />
+            <property name="readOnly" type="Boolean" label="Lecture seule" default="true"
+                description="Si coché, le statut est affiché sans possibilité de modification." />
+            <!-- Conservée pour compatibilité : non utilisée (le libellé est calculé automatiquement). -->
+            <property name="buttonLabel" type="String" label="Libellé du bouton (obsolète)" default="Enregistrer" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

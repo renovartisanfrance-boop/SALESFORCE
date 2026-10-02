@@ -1,0 +1,156 @@
+<template>
+    <lightning-card title="Dossiers" icon-name="standard:opportunity">
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-grid slds-gutters slds-m-bottom_medium slds-grid_align-end">
+                <div class="slds-col slds-size_1-of-12" lwc:if={isLoading}>
+                    <div class="loader"></div>
+                </div>
+                <div class="slds-col slds-size_1-of-6" >
+                    <lightning-input type="search" variant="label-hidden" placeholder="Trouver un dossier..."
+                        onchange={handleSearch} class="search-input">
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-input type="text" variant="label-hidden" name="codepostale"
+                        placeholder="Entrer le code postal..." onchange={handlePostalCodeChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-10">
+                    <lightning-button variant="brand" label="Calculer" title="Calculer"
+                        onclick={CalculerDurationHandle}>
+                    </lightning-button>
+                </div>
+            </div>
+            <!-- <div class="slds-m-bottom_medium">
+
+                <lightning-input type="text" label="Code postal" placeholder="Enter postal code"
+                    onchange={handlePostalCodeChange} class="search-input">
+                </lightning-input>
+                <lightning-button variant="brand" label="Calculer" title="Calculer" onclick={CalculerDurationHandle}>
+                </lightning-button>
+            </div> -->
+
+            <template if:true={errorMessage}>
+                <div class="slds-m-vertical_medium">
+                    <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <h2>{errorMessage}</h2>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-m-vertical_large">
+                    <lightning-spinner alternative-text="Loading" size="medium">
+                    </lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={error}>
+                <div class="slds-m-vertical_medium">
+                    <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <h2>Error loading records: {error.body.message}</h2>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={hasRecords}>
+                <div class="table-container">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <template for:each={columns} for:item="column">
+                                    <th key={column.fieldName} scope="col" if:false={column.hideFromTable}>
+                                        <div class="slds-truncate" title={column.label} >
+                                            {column.label}
+                                            <template if:true={column.isSortable}>
+                                                <div class="slds-button-group slds-m-left_x-small">
+                                                    <lightning-button-icon icon-name="utility:arrowdown" variant="bare"
+                                                        size="x-small" onclick={sortDescHandle}
+                                                        alternative-text="Trier décroissant">
+                                                    </lightning-button-icon>
+                                                    <lightning-button-icon icon-name="utility:arrowup" variant="bare"
+                                                        size="x-small" onclick={sortAscHandle}
+                                                        alternative-text="Trier croissant">
+                                                    </lightning-button-icon>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={paginatedRecords} for:item="record">
+                                <tr key={record.Id} class="slds-hint-parent">
+                                    <!-- <template for:each={columns} for:item="column"> -->
+                                    <!-- <td key={column.fieldName} data-label={column.label}> -->
+                                    <template for:each={record.fields} for:item="field">
+                                        <td key={field.name} data-label={field.columnLabel}
+                                            if:false={field.hideFromTable}>
+                                            <template lwc:if={field.isFieldDuree}>
+                                                <span class={field.bdgClass}>{field.value}</span>
+                                            </template>
+                                            <template lwc:else>
+                                                <div class="slds-truncate" title={field.value}>
+                                                    {field.value}
+                                                </div>
+                                            </template>
+
+                                        </td>
+                                        <!-- <template if:true={field.isMatch}> -->
+
+                                        <!-- </template> -->
+                                    </template>
+                                    <!-- </td> -->
+                                    <!-- </template> -->
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- <div class="slds-m-top_medium pagination-container">
+                    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                        <div class="slds-col">
+                            <span class="slds-text-body_small">
+                                Showing {showingFrom} - {showingTo} of {totalRecords} records
+                            </span>
+                        </div>
+                        <div class="slds-col">
+                            <lightning-button-group>
+                                <lightning-button label="Previous" icon-name="utility:chevronleft"
+                                    onclick={handlePrevious} disabled={isPreviousDisabled}>
+                                </lightning-button>
+                                <lightning-button label={currentPage} disabled>
+                                </lightning-button>
+                                <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right"
+                                    onclick={handleNext} disabled={isNextDisabled}>
+                                </lightning-button>
+                            </lightning-button-group>
+                        </div>
+                    </div>
+                </div> -->
+            </template>
+
+            <template if:false={hasRecords}>
+                <template if:false={isLoading}>
+                    <div class="slds-text-align_center slds-m-vertical_large">
+                        <lightning-icon icon-name="utility:search" size="large" alternative-text="No records">
+                        </lightning-icon>
+                        <p class="slds-text-heading_small slds-m-top_small">
+                            Aucun enregistrement trouvé.
+                        </p>
+                        <template if:true={searchTerm}>
+                            <p class="slds-text-body_small slds-text-color_weak">
+                                Essayez de modifier ou de supprimer vos critères de recherche.
+                            </p>
+                        </template>
+                    </div>
+                </template>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

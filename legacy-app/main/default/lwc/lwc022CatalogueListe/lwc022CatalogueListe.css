@@ -1,0 +1,314 @@
+:host {
+    --pf-primary: #2da961;
+    --pf-primary-dark: #1f8449;
+    --pf-accent: #a3d977;
+    --pf-success: #10b981;
+    --pf-danger: #ef4444;
+    --pf-surface: #ffffff;
+    --pf-border: #dbe8d8;
+    --pf-text: #1e293b;
+    --pf-text-muted: #64748b;
+    --pf-shadow-sm: 0 1px 3px rgba(20, 83, 45, 0.06);
+    --pf-shadow-md: 0 4px 12px rgba(20, 83, 45, 0.08);
+    --pf-radius: 14px;
+    display: block;
+    width: 100%;
+}
+
+.pf-card {
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 1.25rem;
+    box-shadow: var(--pf-shadow-md);
+}
+.pf-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.pf-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin: 0;
+    padding-bottom: 0.5rem;
+    background-image: linear-gradient(90deg, var(--pf-primary), var(--pf-accent));
+    background-size: 60px 2px;
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+.pf-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem 1rem;
+    padding: 0.85rem;
+    margin-bottom: 1rem;
+    background: #f4faf5;
+    border: 1px solid var(--pf-border);
+    border-radius: 10px;
+}
+.pf-filter-item {
+    flex: 1 1 200px;
+    min-width: 160px;
+}
+.pf-filter-reset {
+    flex: 0 0 auto;
+}
+
+.pf-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--pf-surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--pf-shadow-sm);
+}
+.pf-table thead tr {
+    background: linear-gradient(135deg, #e8f5ec 0%, #f1f9dd 100%);
+}
+.pf-table thead th {
+    color: var(--pf-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--pf-border);
+}
+.pf-table tbody td {
+    padding: 0.85rem;
+    border-bottom: 1px solid var(--pf-border);
+    color: var(--pf-text);
+    font-size: 0.875rem;
+    vertical-align: middle;
+}
+.pf-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.pf-table tbody tr:hover {
+    background: linear-gradient(90deg, rgba(45, 169, 97, 0.04), rgba(163, 217, 119, 0.04));
+}
+
+.pf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.pf-badge-success { background: rgba(16, 185, 129, 0.14); color: var(--pf-success); }
+.pf-badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--pf-danger); }
+.pf-badge-muted { background: rgba(100, 116, 139, 0.1); color: var(--pf-text-muted); }
+
+.pf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+.pf-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, rgba(45, 169, 97, 0.12), rgba(163, 217, 119, 0.12));
+    color: var(--pf-primary-dark);
+}
+
+.pf-amount-zero {
+    color: var(--pf-text-muted);
+    font-weight: 500;
+}
+
+/* ---- Dépliage du récap des règles (accordéon par ligne) ---- */
+.pf-rules-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.3rem;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.pf-rules-toggle:hover {
+    background: rgba(45, 169, 97, 0.08);
+}
+.pf-rules-toggle lightning-icon {
+    --slds-c-icon-color-foreground-default: var(--pf-primary-dark);
+}
+
+.pf-table tbody tr.pf-detail-tr,
+.pf-table tbody tr.pf-detail-tr:hover {
+    background: #f7fbf8;
+}
+.pf-detail-cell {
+    padding: 0.75rem 1rem 0.9rem !important;
+    border-left: 3px solid var(--pf-primary);
+}
+.pf-detail-loading {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding-left: 3rem;
+    color: var(--pf-text-muted);
+    font-size: 0.82rem;
+}
+.pf-detail-echeance {
+    font-size: 0.8rem;
+    color: var(--pf-text);
+    margin-bottom: 0.5rem;
+}
+.pf-detail-empty {
+    color: var(--pf-text-muted);
+    font-size: 0.82rem;
+    font-style: italic;
+}
+.pf-detail-warn {
+    font-size: 0.8rem;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.5rem;
+}
+.pf-detail-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.pf-detail-rule {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.55rem 0.75rem;
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: 10px;
+}
+.pf-detail-rule-head {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--pf-primary-dark);
+}
+
+/* Récap SI / ALORS (mêmes conventions visuelles que le formulaire). */
+.pf-summary-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.pf-summary-tag {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 5px;
+    color: #fff;
+}
+.pf-summary-if {
+    background: var(--pf-primary);
+}
+.pf-summary-then {
+    background: var(--pf-primary-dark);
+}
+.pf-summary-conds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+.pf-summary-cond {
+    background: #eef7f0;
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--pf-text);
+}
+.pf-summary-text {
+    font-size: 0.82rem;
+    color: var(--pf-text);
+}
+.pf-summary-note {
+    font-size: 0.78rem;
+    color: var(--pf-text-muted);
+    font-style: italic;
+}
+
+.pf-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.pf-actions lightning-button-icon {
+    --slds-c-button-radius-border: 8px;
+}
+.pf-icon-action {
+    --slds-c-button-icon-color-foreground: var(--pf-primary-dark);
+    --slds-c-button-icon-color-foreground-hover: var(--pf-primary);
+}
+.pf-icon-danger {
+    --slds-c-button-icon-color-foreground: var(--pf-danger);
+    --slds-c-button-icon-color-foreground-hover: #b91c1c;
+}
+
+.pf-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--pf-text-muted);
+    background: #f4faf5;
+    border-radius: 12px;
+    border: 2px dashed var(--pf-border);
+}
+.pf-empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.pf-error {
+    padding: 0.75rem 1rem;
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--pf-danger);
+    border-radius: 10px;
+    border-left: 3px solid var(--pf-danger);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.pf-spinner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--pf-radius);
+    z-index: 10;
+}
+
+:host lightning-button.pf-next-btn button {
+    background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent)) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}

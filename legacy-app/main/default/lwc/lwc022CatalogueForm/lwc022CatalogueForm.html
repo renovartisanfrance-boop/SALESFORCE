@@ -1,0 +1,699 @@
+<template>
+    <div class="pf-form" style="position: relative;">
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="pf-progress">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                <template for:each={steps} for:item="step">
+                    <lightning-progress-step key={step.value} label={step.label} value={step.value}
+                        data-step={step.value} onclick={handleStepClick}>
+                    </lightning-progress-step>
+                </template>
+            </lightning-progress-indicator>
+        </div>
+
+        <!-- ÉTAPE 1 : champs fixes du catalogue -->
+        <template lwc:if={isStepInfos}>
+            <div class="pf-card pf-card-infos">
+                <p class="pf-section-title">Informations du catalogue</p>
+
+                <!-- Type d'enregistrement : choisi en premier -->
+                <div class="pf-field">
+                    <c-lwc022-searchable-combobox
+                        label="Type d'enregistrement"
+                        value={recordType}
+                        options={recordTypeOptions}
+                        required
+                        disabled={rtLocked}
+                        placeholder="Standard, Supplémentaire ou Acompte…"
+                        data-field="__rt"
+                        onchange={handleRecordTypeChange}>
+                    </c-lwc022-searchable-combobox>
+                </div>
+
+                <!-- Paiement (Émis/Reçu) : juste après le type, Standard uniquement -->
+                <template lwc:if={isStandard}>
+                    <div class="pf-field">
+                        <c-lwc022-searchable-combobox
+                            label={paiementLabel}
+                            value={paiementValue}
+                            options={paiementOptions}
+                            required
+                            placeholder="Sélectionner…"
+                            data-field="Paiement__c"
+                            onchange={handleFixedChange}>
+                        </c-lwc022-searchable-combobox>
+                    </div>
+                </template>
+
+                <template lwc:if={rtSelected}>
+                <p class="pf-hint">Les champs marqués d'un * sont obligatoires. L'intervenant est facultatif (ligne spécifique à un compte). Pour le type Standard, les échéances se définissent par règle (écran « Règles &amp; montants »).</p>
+                <div class="pf-fields-grid">
+                    <template for:each={catalogueInputs} for:item="f">
+                        <div key={f.apiName} class={f.cssClass}>
+                            <template lwc:if={f.isPicklist}>
+                                <c-lwc022-searchable-combobox
+                                    label={f.label}
+                                    value={f.value}
+                                    options={f.options}
+                                    required={f.required}
+                                    placeholder="Sélectionner…"
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </c-lwc022-searchable-combobox>
+                            </template>
+                            <template lwc:elseif={f.isLookup}>
+                                <lightning-record-picker
+                                    label={f.label}
+                                    object-api-name={f.referenceTo}
+                                    value={f.lookupValue}
+                                    placeholder="Rechercher un compte…"
+                                    data-field={f.apiName}
+                                    onchange={handleLookupChange}>
+                                </lightning-record-picker>
+                            </template>
+                            <template lwc:elseif={f.isDatetime}>
+                                <lightning-input
+                                    type="datetime"
+                                    label={f.label}
+                                    value={f.value}
+                                    required={f.required}
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </lightning-input>
+                            </template>
+                            <template lwc:elseif={f.isDate}>
+                                <lightning-input
+                                    type="date"
+                                    label={f.label}
+                                    value={f.value}
+                                    required={f.required}
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </lightning-input>
+                            </template>
+                            <template lwc:elseif={f.isNumber}>
+                                <lightning-input
+                                    type="number"
+                                    label={f.label}
+                                    value={f.value}
+                                    required={f.required}
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </lightning-input>
+                            </template>
+                            <template lwc:elseif={f.isCheckbox}>
+                                <lightning-input
+                                    type="toggle"
+                                    label={f.label}
+                                    message-toggle-active="Oui"
+                                    message-toggle-inactive="Non"
+                                    checked={f.checked}
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </lightning-input>
+                            </template>
+                            <template lwc:else>
+                                <lightning-input
+                                    type="text"
+                                    label={f.label}
+                                    value={f.value}
+                                    required={f.required}
+                                    data-field={f.apiName}
+                                    onchange={handleFixedChange}>
+                                </lightning-input>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Échéance (type Supplémentaire) : champ ligne dépendant du rôle -->
+                <template lwc:if={isSupplementaire}>
+                    <div class="pf-field">
+                        <c-lwc022-searchable-combobox
+                            label={echeanceSuppLabel}
+                            value={echeanceSuppValue}
+                            options={echeanceSuppOptions}
+                            required
+                            placeholder="Échéance (selon le rôle)…"
+                            data-field="echeanceSupp__c"
+                            onchange={handleFixedChange}>
+                        </c-lwc022-searchable-combobox>
+                    </div>
+                </template>
+
+                <!-- Intervenants (multi-comptes) : un seul catalogue pour plusieurs comptes -->
+                <div class="pf-intervenants">
+                    <label class="pf-intervenants-label">Intervenants</label>
+                    <p class="pf-hint">Choisissez un ou plusieurs comptes. Laisser vide = la ligne s'applique à tous les dossiers de la fiche.</p>
+                    <lightning-record-picker
+                        label="Ajouter un compte"
+                        variant="label-hidden"
+                        placeholder="Rechercher un compte à ajouter…"
+                        object-api-name="Account"
+                        data-role="intervenant-picker"
+                        onchange={handleAddIntervenant}>
+                    </lightning-record-picker>
+                    <template lwc:if={hasIntervenants}>
+                        <div class="pf-pills">
+                            <template for:each={intervenantPills} for:item="iv">
+                                <span key={iv.id} class="pf-pill">
+                                    <span class="pf-pill-label">{iv.name}</span>
+                                    <button type="button" class="pf-pill-remove"
+                                        title="Retirer ce compte" aria-label="Retirer ce compte"
+                                        data-id={iv.id} onclick={handleRemoveIntervenant}>×</button>
+                                </span>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ÉTAPE 2 : sélection des variables de décision du dossier -->
+        <template lwc:if={isStepVariables}>
+            <div class="pf-card">
+                <p class="pf-section-title">Variables de décision (dossier)</p>
+                <p class="pf-hint">Cochez les champs du dossier servant à choisir le montant, puis le mode de comparaison.</p>
+
+                <lightning-input
+                    type="search"
+                    label="Rechercher un champ du dossier"
+                    placeholder="Zone, précarité, surface, code postal..."
+                    onchange={handleSearch}>
+                </lightning-input>
+
+                <div class="pf-two-col">
+                    <div class="pf-field-list">
+                        <template for:each={filteredDossierFields} for:item="field">
+                            <div key={field.apiName} class="pf-field-row">
+                                <lightning-input
+                                    type="checkbox"
+                                    label={field.label}
+                                    field-level-help={field.apiName}
+                                    checked={field.selected}
+                                    data-field={field.apiName}
+                                    onchange={handleToggleVariable}>
+                                </lightning-input>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="pf-selected-panel">
+                        <p class="pf-panel-title">Variables sélectionnées</p>
+                        <template lwc:if={hasSelectedVariables}>
+                            <template for:each={selectedVariablesView} for:item="v">
+                                <div key={v.field} class="pf-selected-item">
+                                    <div class="pf-selected-head">
+                                        <span class="pf-selected-label">{v.label}</span>
+                                        <span class="pf-badge pf-badge-muted">{v.typeLabel}</span>
+                                        <lightning-button-icon
+                                            icon-name="utility:close"
+                                            variant="bare"
+                                            size="small"
+                                            alternative-text="Retirer"
+                                            data-field={v.field}
+                                            onclick={handleRemoveVariable}>
+                                        </lightning-button-icon>
+                                    </div>
+                                    <template lwc:if={v.showComparison}>
+                                        <lightning-combobox
+                                            label="Mode de comparaison"
+                                            variant="label-hidden"
+                                            value={v.comparison}
+                                            options={v.comparisonOptions}
+                                            data-field={v.field}
+                                            onchange={handleComparisonChange}>
+                                        </lightning-combobox>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <div class="pf-empty-small">Aucune variable sélectionnée.</div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ÉTAPE 3 : règles & montants -->
+        <template lwc:if={isStepRegles}>
+            <div class="pf-card">
+                <div class="pf-card-head">
+                    <p class="pf-section-title">Règles de tarification</p>
+                    <lightning-button
+                        label="Ajouter une règle"
+                        icon-name="utility:add"
+                        onclick={handleAddRule}>
+                    </lightning-button>
+                </div>
+                <p class="pf-hint">Pour chaque combinaison de variables, définissez les montants 1 et 2 (fixe ou formule) et l'échéance de paiement qui déclenche chacun.</p>
+
+                <template lwc:if={ruleConflictBanner}>
+                    <div class={ruleConflictBanner.class}>
+                        <lightning-icon icon-name="utility:warning" size="x-small"
+                            alternative-text="Avertissement" class="slds-m-right_xx-small"></lightning-icon>
+                        <span>{ruleConflictBanner.text}</span>
+                    </div>
+                </template>
+
+                <template lwc:if={hasRules}>
+                    <template for:each={ruleViews} for:item="rule">
+                        <div key={rule.id} class={rule.rowClass}>
+                            <div class="pf-rule-head">
+                                <div class="pf-rule-head-main" data-id={rule.id} onclick={handleToggleCollapse}>
+                                    <lightning-icon
+                                        icon-name={rule.collapseIcon} size="x-small"
+                                        alternative-text="Plier / déplier la règle" class="pf-rule-chevron">
+                                    </lightning-icon>
+                                    <span class="pf-rule-num">{rule.index}</span>
+                                    <span class="pf-rule-title">Règle {rule.index}</span>
+                                    <template lwc:if={rule.hasConflict}>
+                                        <span class={rule.conflictBadgeClass} title={rule.conflictMessage}>
+                                            <span aria-hidden="true">⚠ </span>{rule.conflictLabel}
+                                        </span>
+                                    </template>
+                                </div>
+                                <div class="pf-rule-actions">
+                                    <lightning-button-icon
+                                        icon-name="utility:up" variant="bare" size="small"
+                                        alternative-text="Monter" title="Monter la règle"
+                                        disabled={rule.isFirst} data-id={rule.id} data-dir="up"
+                                        onclick={handleMoveRule}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        icon-name="utility:down" variant="bare" size="small"
+                                        alternative-text="Descendre" title="Descendre la règle"
+                                        disabled={rule.isLast} data-id={rule.id} data-dir="down"
+                                        onclick={handleMoveRule}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        icon-name="utility:copy" variant="bare" size="small"
+                                        alternative-text="Dupliquer la règle" title="Dupliquer la règle"
+                                        data-id={rule.id} onclick={handleDuplicateRule}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        icon-name="utility:delete" variant="bare" size="small"
+                                        alternative-text="Supprimer la règle" class="pf-icon-danger"
+                                        data-id={rule.id} onclick={handleRemoveRule}>
+                                    </lightning-button-icon>
+                                </div>
+                            </div>
+
+                            <template lwc:if={rule.hasConflict}>
+                                <div class="pf-rule-conflict-msg">{rule.conflictMessage}</div>
+                            </template>
+
+                            <!-- Repliée : récap en lecture seule -->
+                            <template lwc:if={rule.collapsed}>
+                                <div class="pf-rule-summary">
+                                    <div class="pf-summary-row">
+                                        <span class="pf-summary-tag pf-summary-if">SI</span>
+                                        <template lwc:if={rule.summary.hasConditions}>
+                                            <span class="pf-summary-conds">
+                                                <template for:each={rule.summary.conditions} for:item="c">
+                                                    <span key={c.key} class="pf-summary-cond">{c.text}</span>
+                                                </template>
+                                            </span>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="pf-summary-text">Tous les dossiers de la fiche</span>
+                                        </template>
+                                    </div>
+                                    <div class="pf-summary-row">
+                                        <span class="pf-summary-tag pf-summary-then">ALORS</span>
+                                        <span class="pf-summary-text">
+                                            <template lwc:if={rule.summary.showMontant2}>
+                                                M1&nbsp;: <strong>{rule.summary.montant1Text}</strong>
+                                                &nbsp;&middot;&nbsp; M2&nbsp;: <strong>{rule.summary.montant2Text}</strong>
+                                            </template>
+                                            <template lwc:else>
+                                                Montant&nbsp;: <strong>{rule.summary.montant1Text}</strong>
+                                            </template>
+                                        </span>
+                                    </div>
+                                    <template lwc:if={rule.summary.hasComment}>
+                                        <div class="pf-summary-row">
+                                            <span class="pf-summary-note">📝 {rule.commentaire}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Dépliée : édition -->
+                            <template lwc:else>
+
+                            <div class="pf-rule-note">
+                                <lightning-input
+                                    type="text" variant="label-hidden" label="Commentaire"
+                                    placeholder="📝 Note (facultatif) — réutilisée plus tard en facturation"
+                                    value={rule.commentaire} data-id={rule.id}
+                                    onchange={handleRuleComment}>
+                                </lightning-input>
+                            </div>
+
+                            <!-- SI : conditions -->
+                            <div class="pf-rule-block pf-rule-if">
+                                <span class="pf-block-label pf-block-if">SI</span>
+                            <template lwc:if={hasSelectedVariables}>
+                                <div class="pf-conditions">
+                                    <template for:each={rule.cells} for:item="cell">
+                                        <div key={cell.key} class="pf-condition">
+                                            <span class="pf-condition-label">{cell.label}</span>
+
+                                            <template lwc:if={cell.isPicklist}>
+                                                <div class="pf-cond-picklist">
+                                                    <c-lwc022-searchable-combobox
+                                                        class="pf-cond-operator"
+                                                        label="Opérateur"
+                                                        variant="label-hidden"
+                                                        value={cell.operator}
+                                                        options={cell.operatorOptions}
+                                                        placeholder="Opérateur…"
+                                                        data-rule={cell.ruleId}
+                                                        data-field={cell.field}
+                                                        onchange={handleConditionOperator}>
+                                                    </c-lwc022-searchable-combobox>
+
+                                                    <template lwc:if={cell.isPicklistExact}>
+                                                        <c-lwc022-searchable-combobox
+                                                            label={cell.label}
+                                                            variant="label-hidden"
+                                                            value={cell.value}
+                                                            options={cell.options}
+                                                            placeholder="Valeur…"
+                                                            data-rule={cell.ruleId}
+                                                            data-field={cell.field}
+                                                            data-part="value"
+                                                            onchange={handleConditionChange}>
+                                                        </c-lwc022-searchable-combobox>
+                                                    </template>
+
+                                                    <template lwc:if={cell.isPicklistMulti}>
+                                                        <c-lwc022-searchable-combobox
+                                                            label="Ajouter une valeur"
+                                                            variant="label-hidden"
+                                                            placeholder="+ Ajouter une valeur…"
+                                                            resetonselect={resetTrue}
+                                                            keepopenonselect={resetTrue}
+                                                            value={blankValue}
+                                                            options={cell.remainingOptions}
+                                                            data-rule={cell.ruleId}
+                                                            data-field={cell.field}
+                                                            onchange={handleAddConditionValue}>
+                                                        </c-lwc022-searchable-combobox>
+                                                        <template lwc:if={cell.hasSelectedPills}>
+                                                            <div class="pf-pills pf-cond-pills">
+                                                                <template for:each={cell.selectedPills} for:item="pv">
+                                                                    <span key={pv.key} class="pf-pill">
+                                                                        <span class="pf-pill-label">{pv.label}</span>
+                                                                        <button type="button" class="pf-pill-remove"
+                                                                            title="Retirer cette valeur" aria-label="Retirer cette valeur"
+                                                                            data-rule={cell.ruleId} data-field={cell.field} data-value={pv.value}
+                                                                            onclick={handleRemoveConditionValue}>×</button>
+                                                                    </span>
+                                                                </template>
+                                                            </div>
+                                                        </template>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template lwc:elseif={cell.isBoolean}>
+                                                <lightning-combobox
+                                                    label={cell.label}
+                                                    variant="label-hidden"
+                                                    value={cell.value}
+                                                    options={cell.booleanOptions}
+                                                    data-rule={cell.ruleId}
+                                                    data-field={cell.field}
+                                                    data-part="value"
+                                                    onchange={handleConditionChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template lwc:elseif={cell.isExactNumber}>
+                                                <lightning-input
+                                                    type="number" variant="label-hidden" label={cell.label}
+                                                    value={cell.value}
+                                                    data-rule={cell.ruleId} data-field={cell.field} data-part="value"
+                                                    onchange={handleConditionChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:elseif={cell.isIntervalNumber}>
+                                                <div class="pf-interval">
+                                                    <lightning-input
+                                                        type="number" variant="label-hidden" label="Min" placeholder="Min"
+                                                        value={cell.min}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="min"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                    <span class="pf-interval-sep">→</span>
+                                                    <lightning-input
+                                                        type="number" variant="label-hidden" label="Max" placeholder="Max"
+                                                        value={cell.max}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="max"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </template>
+                                            <template lwc:elseif={cell.isExactDate}>
+                                                <lightning-input
+                                                    type="date" variant="label-hidden" label={cell.label}
+                                                    value={cell.value}
+                                                    data-rule={cell.ruleId} data-field={cell.field} data-part="value"
+                                                    onchange={handleConditionChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:elseif={cell.isIntervalDate}>
+                                                <div class="pf-interval">
+                                                    <lightning-input
+                                                        type="date" variant="label-hidden" label="Du"
+                                                        value={cell.min}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="min"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                    <span class="pf-interval-sep">→</span>
+                                                    <lightning-input
+                                                        type="date" variant="label-hidden" label="Au"
+                                                        value={cell.max}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="max"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </template>
+                                            <template lwc:elseif={cell.isExactDatetime}>
+                                                <lightning-input
+                                                    type="datetime" variant="label-hidden" label={cell.label}
+                                                    value={cell.value}
+                                                    data-rule={cell.ruleId} data-field={cell.field} data-part="value"
+                                                    onchange={handleConditionChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template lwc:elseif={cell.isIntervalDatetime}>
+                                                <div class="pf-interval">
+                                                    <lightning-input
+                                                        type="datetime" variant="label-hidden" label="Du"
+                                                        value={cell.min}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="min"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                    <span class="pf-interval-sep">→</span>
+                                                    <lightning-input
+                                                        type="datetime" variant="label-hidden" label="Au"
+                                                        value={cell.max}
+                                                        data-rule={cell.ruleId} data-field={cell.field} data-part="max"
+                                                        onchange={handleConditionChange}>
+                                                    </lightning-input>
+                                                </div>
+                                            </template>
+                                            <template lwc:else>
+                                                <lightning-input
+                                                    type="text" variant="label-hidden" label={cell.label}
+                                                    value={cell.value}
+                                                    data-rule={cell.ruleId} data-field={cell.field} data-part="value"
+                                                    onchange={handleConditionChange}>
+                                                </lightning-input>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template lwc:else>
+                                <p class="pf-block-empty">Aucune variable : s'applique à tous les dossiers de la fiche.</p>
+                            </template>
+                            </div>
+
+                            <!-- ALORS : montants -->
+                            <div class="pf-rule-block pf-rule-then">
+                                <span class="pf-block-label pf-block-then">ALORS</span>
+                                <div class="pf-montants">
+                                <template for:each={rule.montants} for:item="m">
+                                    <div key={m.num} class="pf-montant">
+                                        <span class="pf-montant-label">{m.label}</span>
+                                        <lightning-combobox
+                                            label="Mode" variant="label-hidden"
+                                            value={m.mode} options={m.modeOptions}
+                                            data-rule={rule.id} data-montant={m.num}
+                                            onchange={handleMontantMode}>
+                                        </lightning-combobox>
+
+                                        <template lwc:if={m.isFixed}>
+                                            <lightning-input
+                                                type="number" variant="label-hidden" label="Montant" placeholder="0,00 €"
+                                                value={m.value}
+                                                data-rule={rule.id} data-montant={m.num} data-part="value"
+                                                onchange={handleMontantPart}>
+                                            </lightning-input>
+                                        </template>
+
+                                        <template lwc:if={m.isFormula}>
+                                            <div class="pf-formula">
+                                                <lightning-textarea
+                                                    class="pf-formula-input" variant="label-hidden" label="Formule"
+                                                    placeholder="Ex : MIN(2000, {Surface} * 40) + 100"
+                                                    value={m.expression}
+                                                    data-rule={rule.id} data-montant={m.num}
+                                                    onchange={handleExpressionChange}>
+                                                </lightning-textarea>
+
+                                                <div class="pf-formula-toolbar">
+                                                    <c-lwc022-searchable-combobox
+                                                        class="pf-formula-fieldpicker" variant="label-hidden" label="Insérer un champ"
+                                                        placeholder="+ Champ du dossier" resetonselect={resetTrue}
+                                                        value={blankValue} options={m.fieldOptions}
+                                                        data-rule={rule.id} data-montant={m.num}
+                                                        onchange={handleInsertField}>
+                                                    </c-lwc022-searchable-combobox>
+                                                    <template for:each={functionChips} for:item="fn">
+                                                        <button key={fn.key} type="button" class="pf-chip-btn" title={fn.title}
+                                                            data-rule={rule.id} data-montant={m.num} data-snippet={fn.snippet}
+                                                            onclick={handleInsertSnippet}>{fn.label}</button>
+                                                    </template>
+                                                    <template for:each={operatorChips} for:item="op">
+                                                        <button key={op.key} type="button" class="pf-chip-btn pf-chip-op"
+                                                            data-rule={rule.id} data-montant={m.num} data-snippet={op.snippet}
+                                                            onclick={handleInsertSnippet}>{op.label}</button>
+                                                    </template>
+                                                    <button type="button" class="pf-chip-btn pf-chip-clear" title="Effacer la formule"
+                                                        data-rule={rule.id} data-montant={m.num}
+                                                        onclick={handleClearFormula}>Effacer</button>
+                                                </div>
+
+                                                <template lwc:if={m.hasExpression}>
+                                                    <div class="pf-formula-preview">{m.expressionPreview}</div>
+                                                    <template lwc:if={m.expressionValid}>
+                                                        <div class="pf-formula-status pf-formula-ok">✓ Formule valide</div>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <div class="pf-formula-status pf-formula-ko">✗ {m.expressionError}</div>
+                                                    </template>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="pf-hint-inline">Composez avec « Insérer un champ », les fonctions et les opérateurs ci-dessus.</span>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        <template lwc:if={m.showEcheance}>
+                                            <div class="pf-montant-echeance">
+                                                <span class="pf-montant-echeance-label">Échéance Base {m.num}</span>
+                                                <c-lwc022-searchable-combobox
+                                                    label="Échéance de paiement"
+                                                    variant="label-hidden"
+                                                    value={m.echeance}
+                                                    options={m.echeanceOptions}
+                                                    placeholder="Échéance de paiement…"
+                                                    data-rule={rule.id}
+                                                    data-montant={m.num}
+                                                    onchange={handleMontantEcheance}>
+                                                </c-lwc022-searchable-combobox>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            </div>
+
+                            <!-- DÉSIGNATION (RT Acompte uniquement) : gabarit texte -->
+                            <template lwc:if={isAcompte}>
+                                <div class="pf-rule-block pf-rule-designation">
+                                    <span class="pf-block-label pf-block-designation">DÉSIGNATION</span>
+                                    <div class="pf-designation">
+                                        <lightning-input
+                                            type="text" variant="label-hidden" label="Désignation Acompte"
+                                            placeholder="Ex : Prévisite effectué — {catalogue.RoleIntervenant__c}"
+                                            value={rule.designation} data-rule={rule.id}
+                                            onchange={handleDesignationChange}>
+                                        </lightning-input>
+
+                                        <div class="pf-formula-toolbar">
+                                            <c-lwc022-searchable-combobox
+                                                class="pf-formula-fieldpicker" variant="label-hidden"
+                                                label="Insérer un champ du dossier"
+                                                placeholder="+ Champ du dossier" resetonselect={resetTrue}
+                                                value={blankValue} options={designationDossierOptions}
+                                                data-rule={rule.id} onchange={handleInsertDesignationField}>
+                                            </c-lwc022-searchable-combobox>
+                                            <c-lwc022-searchable-combobox
+                                                class="pf-formula-fieldpicker" variant="label-hidden"
+                                                label="Insérer un champ du catalogue"
+                                                placeholder="+ Champ du catalogue" resetonselect={resetTrue}
+                                                value={blankValue} options={designationCatalogueOptions}
+                                                data-rule={rule.id} onchange={handleInsertDesignationField}>
+                                            </c-lwc022-searchable-combobox>
+                                            <button type="button" class="pf-chip-btn pf-chip-clear"
+                                                title="Effacer la désignation"
+                                                data-rule={rule.id} onclick={handleClearDesignation}>Effacer</button>
+                                        </div>
+
+                                        <template lwc:if={rule.designationPreview}>
+                                            <div class="pf-formula-preview">{rule.designationPreview}</div>
+                                        </template>
+                                        <template lwc:else>
+                                            <span class="pf-hint-inline">Texte libre. Insérez des champs du dossier ou du catalogue — ils seront remplacés à la création de la facture d'acompte.</span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">🧮</span>
+                        Aucune règle. Cliquez sur « Ajouter une règle » pour commencer.
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Pied de page. En mode édition, « Enregistrer » est disponible sur les 3 écrans
+             (mêmes vérifications que handleSave). « Suivant »/« Retour » restent inchangés. -->
+        <div class="pf-footer">
+            <lightning-button label="Annuler" onclick={handleCancel}></lightning-button>
+            <template lwc:if={isStepInfos}>
+                <template lwc:if={isEditMode}>
+                    <lightning-button label={saveLabel} onclick={handleSave}></lightning-button>
+                </template>
+                <lightning-button class="pf-next-btn" variant="brand" label="Suivant" onclick={handleNext}></lightning-button>
+            </template>
+            <template lwc:if={isStepVariables}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+                <template lwc:if={isEditMode}>
+                    <lightning-button label={saveLabel} onclick={handleSave}></lightning-button>
+                </template>
+                <lightning-button class="pf-next-btn" variant="brand" label="Suivant" onclick={handleNext}></lightning-button>
+            </template>
+            <template lwc:if={isStepRegles}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+                <lightning-button class="pf-next-btn" variant="brand" label={saveLabel} onclick={handleSave}></lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

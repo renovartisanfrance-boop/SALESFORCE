@@ -1,0 +1,246 @@
+<template>
+    <div class="pf-card" style="position: relative;">
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class="pf-card-head">
+            <p class="pf-section-title">Lignes du catalogue</p>
+            <lightning-button
+                class="pf-next-btn"
+                variant="brand"
+                label="Nouvelle ligne"
+                icon-name="utility:add"
+                onclick={handleNew}>
+            </lightning-button>
+        </div>
+
+        <template lwc:if={error}>
+            <div class="pf-error">{error}</div>
+        </template>
+
+        <template lwc:if={hasAnyRows}>
+            <div class="pf-filters">
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Type" placeholder="Tous"
+                    value={filters.recordType} options={recordTypeOptions}
+                    data-filter="recordType" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Paiement" placeholder="Tous"
+                    value={filters.paiement} options={paiementOptions}
+                    data-filter="paiement" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Fiche CEE" placeholder="Tous"
+                    value={filters.fiche} options={ficheOptions}
+                    data-filter="fiche" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Rôle Intervenant" placeholder="Tous"
+                    value={filters.role} options={roleOptions}
+                    data-filter="role" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Intervenant" placeholder="Tous"
+                    value={filters.intervenant} options={intervenantOptions}
+                    data-filter="intervenant" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <c-lwc022-searchable-combobox
+                    class="pf-filter-item" label="Statut" placeholder="Tous"
+                    value={filters.statut} options={statutOptions}
+                    data-filter="statut" onchange={handleFilterChange}>
+                </c-lwc022-searchable-combobox>
+                <template lwc:if={isFiltered}>
+                    <lightning-button
+                        class="pf-filter-reset" label="Réinitialiser" variant="base"
+                        icon-name="utility:clear" onclick={handleResetFilters}>
+                    </lightning-button>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={hasRows}>
+            <table class="pf-table">
+                <thead>
+                    <tr>
+                        <th>N° Catalogue</th>
+                        <th>Fiche CEE</th>
+                        <th>Rôle Intervenant</th>
+                        <th>Intervenant</th>
+                        <th>Statut</th>
+                        <th>Validité</th>
+                        <th>Règles</th>
+                        <th>Montants modif.</th>
+                        <th style="width: 9rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={rows} for:item="row">
+                        <tr key={row.id} class="slds-hint-parent">
+                            <td><strong>{row.name}</strong></td>
+                            <td>{row.fiche}</td>
+                            <td>{row.role}</td>
+                            <td>{row.intervenantsLabel}</td>
+                            <td><span class={row.statutBadgeClass}>{row.statut}</span></td>
+                            <td>
+                                <template lwc:if={row.debut}>
+                                    <lightning-formatted-date-time value={row.debut}></lightning-formatted-date-time>
+                                    <template lwc:if={row.fin}>
+                                        &nbsp;→&nbsp;
+                                        <lightning-formatted-date-time value={row.fin}></lightning-formatted-date-time>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <span class="pf-amount-zero">—</span>
+                                </template>
+                            </td>
+                            <td>
+                                <button
+                                    class="pf-rules-toggle"
+                                    type="button"
+                                    data-id={row.id}
+                                    onclick={handleToggleDetail}
+                                    title="Voir le récap des règles"
+                                    aria-expanded={row.expanded}>
+                                    <span class="pf-badge pf-badge-success">{row.nbRegles}</span>
+                                    <lightning-icon
+                                        icon-name={row.detailIcon}
+                                        size="xx-small"
+                                        alternative-text="Déplier le récap des règles">
+                                    </lightning-icon>
+                                </button>
+                            </td>
+                            <td>
+                                <span class={row.montantsModifiablesBadgeClass}>{row.montantsModifiablesLabel}</span>
+                            </td>
+                            <td>
+                                <div class="pf-actions">
+                                    <lightning-button-icon
+                                        class="pf-icon-action"
+                                        icon-name="utility:edit"
+                                        variant="border-filled"
+                                        size="small"
+                                        alternative-text="Modifier"
+                                        title="Modifier"
+                                        data-id={row.id}
+                                        onclick={handleEdit}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        class="pf-icon-action"
+                                        icon-name="utility:copy"
+                                        variant="border-filled"
+                                        size="small"
+                                        alternative-text="Dupliquer"
+                                        title="Dupliquer"
+                                        data-id={row.id}
+                                        onclick={handleClone}>
+                                    </lightning-button-icon>
+                                    <lightning-button-icon
+                                        class="pf-icon-danger"
+                                        icon-name="utility:delete"
+                                        variant="border-filled"
+                                        size="small"
+                                        alternative-text="Supprimer"
+                                        title="Supprimer"
+                                        data-id={row.id}
+                                        onclick={handleDelete}>
+                                    </lightning-button-icon>
+                                </div>
+                            </td>
+                        </tr>
+                        <template lwc:if={row.expanded}>
+                            <tr key={row.detailKey} class="pf-detail-tr">
+                                <td colspan="9" class="pf-detail-cell">
+                                    <template lwc:if={row.detailLoading}>
+                                        <div class="pf-detail-loading">
+                                            <lightning-spinner
+                                                alternative-text="Chargement des règles..."
+                                                size="small">
+                                            </lightning-spinner>
+                                            <span>Chargement des règles…</span>
+                                        </div>
+                                    </template>
+                                    <template lwc:if={row.detailError}>
+                                        <div class="pf-error">{row.detailError}</div>
+                                    </template>
+                                    <template lwc:if={row.detailReady}>
+                                        <template lwc:if={row.detailEcheanceSupp}>
+                                            <div class="pf-detail-echeance">
+                                                Échéance déclenchante&nbsp;:
+                                                <span class="pf-badge pf-badge-success">{row.detailEcheanceSupp}</span>
+                                            </div>
+                                        </template>
+                                        <template lwc:if={row.detailParseError}>
+                                            <div class="pf-detail-warn">
+                                                ⚠ Paramètres de règles illisibles pour cette ligne (ouvrez-la en modification pour les corriger).
+                                            </div>
+                                        </template>
+                                        <template lwc:if={row.detailHasRegles}>
+                                            <div class="pf-detail-rules">
+                                                <template for:each={row.detailRegles} for:item="regle">
+                                                    <div key={regle.key} class="pf-detail-rule">
+                                                        <div class="pf-detail-rule-head">Règle {regle.index}</div>
+                                                        <div class="pf-summary-row">
+                                                            <span class="pf-summary-tag pf-summary-if">SI</span>
+                                                            <template lwc:if={regle.hasConditions}>
+                                                                <span class="pf-summary-conds">
+                                                                    <template for:each={regle.conditions} for:item="c">
+                                                                        <span key={c.key} class="pf-summary-cond">{c.text}</span>
+                                                                    </template>
+                                                                </span>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                <span class="pf-summary-text">Tous les dossiers de la fiche</span>
+                                                            </template>
+                                                        </div>
+                                                        <div class="pf-summary-row">
+                                                            <span class="pf-summary-tag pf-summary-then">ALORS</span>
+                                                            <span class="pf-summary-text">
+                                                                <template lwc:if={regle.showMontant2}>
+                                                                    M1&nbsp;: <strong>{regle.montant1Text}</strong>
+                                                                    &nbsp;&middot;&nbsp; M2&nbsp;: <strong>{regle.montant2Text}</strong>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    Montant&nbsp;: <strong>{regle.montant1Text}</strong>
+                                                                </template>
+                                                            </span>
+                                                        </div>
+                                                        <template lwc:if={regle.hasComment}>
+                                                            <div class="pf-summary-row">
+                                                                <span class="pf-summary-note">📝 {regle.commentaire}</span>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template lwc:if={row.detailShowEmpty}>
+                                            <div class="pf-detail-empty">Aucune règle paramétrée sur cette ligne.</div>
+                                        </template>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template lwc:else>
+            <template lwc:if={hasAnyRows}>
+                <div class="pf-empty">
+                    <span class="pf-empty-icon">🔍</span>
+                    Aucune ligne ne correspond aux filtres.
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="pf-empty">
+                    <span class="pf-empty-icon">📋</span>
+                    Aucune ligne de catalogue. Cliquez sur « Nouvelle ligne » pour en créer une.
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

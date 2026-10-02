@@ -1,0 +1,99 @@
+<template>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         CONTENU RÉEL — deux onglets
+         Affiché quand la case « Afficher le contenu du composant » est cochée
+         dans App Builder / Experience Builder (voir .js-meta.xml).
+         ═══════════════════════════════════════════════════════════════════ -->
+    <!-- Accès réduit (partenaire) : pas d'onglet du tout, un seul tableau qui
+         réunit dossiers à facturer, factures impayées et factures réglées, chaque
+         ligne portant son statut de paiement. -->
+    <template lwc:if={estPartenaire}>
+        <div class="pay-wrapper">
+            <c-lwc020_-facturation-partenaire langue={langue}
+                campaign-code={campaignCode}
+                record-id={recordId}>
+            </c-lwc020_-facturation-partenaire>
+        </div>
+    </template>
+
+    <template lwc:elseif={afficherContenu}>
+        <div class="pay-wrapper">
+            <div class={classeTabBar} role="tablist">
+                <!-- Pastille glissante : un seul élément animé, dont la couleur d'accent
+                     reprend la sémantique de l'onglet (bleu = en cours, vert = payé). -->
+                <span class="tab-slider" aria-hidden="true"></span>
+
+                <button class={classeOngletEnCours} data-tab="en-cours" onclick={handleTab}
+                    role="tab" aria-selected={ariaEnCours}>
+                    <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <polyline points="12 7 12 12 15.5 14" />
+                    </svg>
+                    <span class="tab-label">{txt.ongletEnCours}</span>
+                </button>
+
+                <button class={classeOngletPayees} data-tab="payees" onclick={handleTab}
+                    role="tab" aria-selected={ariaPayees}>
+                    <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" />
+                        <polyline points="8 12.2 11 15 16 9.5" />
+                    </svg>
+                    <span class="tab-label">{txt.ongletPayees}</span>
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Les onglets sont montés/démontés : chaque enfant recharge ses
+                     données à l'affichage, ce qui évite d'afficher un état périmé. -->
+                <template lwc:if={isEnCours}>
+                    <c-lwc020_-facturation-en-cours langue={langue}
+                        campaign-code={campaignCode}
+                        record-id={recordId}>
+                    </c-lwc020_-facturation-en-cours>
+                </template>
+                <template lwc:else>
+                    <c-lwc020_-facturation-payees langue={langue}
+                        campaign-code={campaignCode}
+                        record-id={recordId}>
+                    </c-lwc020_-facturation-payees>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:else>
+        <!-- PLACEHOLDER — « Bientôt disponible ».
+             Le commentaire est À L'INTÉRIEUR du bloc : lwc:else doit suivre
+             immédiatement son lwc:if frère. -->
+        <div class="container">
+            <div class="coming-soon-card">
+                <div class="icon-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        class="coming-soon-icon">
+                        <rect x="2" y="5" width="20" height="14" rx="3" />
+                        <path d="M2 10h20" />
+                        <path d="M7 15h2" />
+                        <path d="M12 15h5" />
+                    </svg>
+                </div>
+                <h2 class="coming-soon-title">Facturation</h2>
+                <div class="badge-wrap">
+                    <span class="badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="badge-icon">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        Bientôt disponible
+                    </span>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

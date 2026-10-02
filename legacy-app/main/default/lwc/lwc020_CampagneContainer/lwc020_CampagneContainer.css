@@ -1,0 +1,879 @@
+:host {
+    --primary-color: #0066cc;
+    --primary-dark: #004db8;
+    --primary-light: #e3f2fd;
+    --secondary-color: #f5a623;
+    --success-color: #27ae60;
+    --danger-color: #d32f2f;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --border-color: #e0e0e0;
+    --text-dark: #1a1a2e;
+    --text-light: #666666;
+    --text-muted: #999999;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --nav-height: 70px;
+}
+
+/* Flux naturel : on ne verrouille PAS la hauteur (height:100% ne se résout pas
+   quand les ancêtres Experience Cloud sont en hauteur auto -> l'ancien scroll
+   interne s'effondrait et ne bougeait que de quelques pixels sur iOS/Chrome).
+   min-height:100% => le pied de page descend en bas quand le contenu est court,
+   et c'est le DOCUMENT qui scrolle quand le contenu dépasse. */
+.container {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--light-bg);
+}
+
+/* ========================================
+   Modern Navigation Header
+   ======================================== */
+.nav-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: var(--nav-height);
+}
+
+/* Brand Section */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    /* Autorise le rétrécissement du nom de la régie (ellipse) sans casser la ligne. */
+    flex: 1 1 auto;
+    min-width: 0;
+    margin-right: 12px;
+    /* min-width:0 autorise la boîte à devenir plus étroite que son contenu ; sans
+       overflow:hidden le titre (nowrap) débordait PAR-DESSUS le menu entre 900 et
+       1200px — c'est le chevauchement « Espacio CAE / Crear accesos ». */
+    overflow: hidden;
+}
+
+/* Nom de la régie (Campagne.Name) — toujours sur UNE seule ligne, ellipse si trop long. */
+.nav-regie-sep {
+    flex-shrink: 0;
+    width: 1px;
+    height: 22px;
+    background: var(--border-color, #e2e8f0);
+}
+
+.nav-regie {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-light, #64748b);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 100%;
+    line-height: 1.2;
+}
+
+.nav-logo {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.nav-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    /* Le titre du site n'est JAMAIS rétréci ni tronqué, quelle que soit la langue.
+       C'est le nom de la régie (.nav-regie, ellipse) qui absorbe le manque de
+       place, puis le menu qui passe en icônes seules à 1200px. */
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    /* Resserré (8px -> 3px) : le menu ne rétrécit jamais (flex-shrink: 0), donc
+       chaque pixel repris ici est rendu au nom de la régie, qui était écrasé. */
+    gap: 3px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+/* Navigation Links */
+.nav-link {
+    display: flex;
+    align-items: center;
+    /* Densité resserrée (gap 10->8, padding 12/20 -> 9/13) : mêmes couleurs,
+       rayons, graisses et effets de survol — seule l'emprise horizontale baisse. */
+    gap: 8px;
+    padding: 9px 13px;
+    white-space: nowrap;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px 3px 0 0;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.nav-link:hover::before {
+    width: 60%;
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    font-weight: 600;
+}
+
+.nav-link.active::before {
+    width: 80%;
+}
+
+.nav-link.disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Logout Button */
+.logout-link {
+    color: var(--danger-color);
+    margin-left: 6px;
+    border: 1px solid var(--danger-color);
+    border-radius: 8px;
+}
+
+.logout-link:hover {
+    background: #fde8e8;
+    color: var(--danger-color);
+}
+
+.logout-link::before {
+    background: var(--danger-color);
+}
+
+.nav-link.disabled:hover {
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.nav-link.disabled:hover::before {
+    width: 0;
+}
+
+/* Navigation Icons */
+.nav-icon {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    flex-shrink: 0;
+}
+
+/* Coming Soon Badge */
+.coming-soon {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--secondary-color);
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== Sélecteur de langue (campagnes Espagne uniquement) =====
+   Dernier enfant de .nav-container => coin haut-droit sur desktop, après le
+   bouton de déconnexion. Sous 768px, l'ordre CSS le replace juste avant le
+   burger : il reste donc TOUJOURS visible, jamais enfermé dans le menu mobile.
+   Hauteur ~26px pour ne pas modifier la hauteur de l'en-tête. */
+.lang-switch {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    margin-left: 10px;
+    background: var(--light-bg, #f1f5f9);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 999px;
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.3px;
+    color: var(--text-light, #64748b);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.lang-option:hover {
+    color: var(--text-dark, #0f172a);
+}
+
+.lang-option.active {
+    background: #ffffff;
+    color: var(--text-dark, #0f172a);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+/* Drapeaux en SVG inline (les emoji drapeaux ne sont pas rendus sous Windows). */
+.lang-flag {
+    display: block;
+    flex-shrink: 0;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+/* Mobile Menu Toggle Button */
+.nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.nav-toggle:hover {
+    background: var(--light-bg);
+}
+
+/* Hamburger Icon */
+.hamburger-icon {
+    position: relative;
+    width: 24px;
+    height: 2px;
+    background: var(--text-dark);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+.hamburger-icon::before,
+.hamburger-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 24px;
+    height: 2px;
+    background: var(--text-dark);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+.hamburger-icon::before {
+    top: -8px;
+}
+
+.hamburger-icon::after {
+    bottom: -8px;
+}
+
+/* Hamburger Animation (Open State) */
+.hamburger-icon.open {
+    background: transparent;
+}
+
+.hamburger-icon.open::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.hamburger-icon.open::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+}
+
+/* ========================================
+   Content Area
+   ======================================== */
+/* Pas d'overflow ici : le contenu circule dans le flux et c'est le document
+   qui scrolle (scroll natif, aucun conflit de conteneurs imbriqués sur iOS). */
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.view-container {
+    flex: 1;
+    /* Un enfant de conteneur flex a min-width:auto : il refuse de devenir plus
+       étroit que son contenu. Sans ce 0, un tableau large repoussait la largeur
+       de toute la page et l'overflow-x interne du tableau ne se déclenchait
+       jamais — c'est la page qui défilait, en emportant l'en-tête sticky. */
+    min-width: 0;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Barre alignée sur le formulaire RDV (mêmes max-width / centrage / padding latéral
+   que son .container) : le bouton « Retour » se cale juste au-dessus de la carte
+   « Informations », hors du formulaire, sans casser l'alignement. Pas de box-sizing
+   explicite -> même modèle de boîte hérité que le .container du formulaire. */
+.rdv-back-bar {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 24px 0;
+}
+
+/* Bouton « Retour aux produits » — au-dessus du formulaire RDV (accès réduit).
+   Aligné sur l'UI du site : même code couleur que les liens de nav (gris -> bleu
+   au survol, fond bleu clair), coins et transition des tokens du conteneur. */
+.rdv-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 6px 12px;
+    background: var(--white);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.rdv-back-btn:hover {
+    color: var(--primary-color);
+    background: var(--primary-light);
+    border-color: var(--primary-light);
+}
+
+.rdv-back-btn svg {
+    flex-shrink: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.view-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.view-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.view-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.view-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ========================================
+   Error Container
+   ======================================== */
+.error-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+    min-height: 70vh;
+}
+
+.error-box {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 48px 40px;
+    max-width: 480px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    border-top: 4px solid var(--danger-color);
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.error-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 24px;
+    color: var(--danger-color);
+    stroke-width: 1.5;
+}
+
+.error-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 12px 0;
+}
+
+.error-message {
+    font-size: 15px;
+    color: var(--text-light);
+    line-height: 1.7;
+    margin: 0 0 24px 0;
+}
+
+.error-actions {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.error-hint {
+    font-size: 14px;
+    color: var(--text-light);
+    margin: 0;
+    line-height: 1.6;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   Tablet Responsive (max-width: 900px)
+   ======================================== */
+/* Icônes seules (le libellé reste sur l'onglet actif) — motif déjà présent dans
+   le design system, simplement déclenché plus tôt : à 1200px et en dessous, les
+   libellés complets ne laissent plus assez de place au titre du site, qui ne doit
+   jamais être tronqué. Un seul palier, pas deux : la zone intermédiaire où les
+   libellés étaient encore affichés mais trop serrés était précisément celle où le
+   titre se faisait rogner. */
+@media (max-width: 1200px) {
+    .nav-container {
+        padding: 0 16px;
+    }
+
+    .nav-link {
+        gap: 7px;
+        padding: 9px 11px;
+        font-size: 13px;
+    }
+
+    .nav-icon {
+        width: 17px;
+        height: 17px;
+    }
+
+    .nav-link span {
+        display: none;
+    }
+
+    .nav-link.active span {
+        display: inline;
+    }
+
+    .coming-soon {
+        display: none;
+    }
+
+    .lang-switch {
+        margin-left: 6px;
+    }
+}
+
+
+/* ========================================
+   Mobile Responsive (max-width: 768px)
+   ======================================== */
+@media (max-width: 768px) {
+    :host {
+        --nav-height: 60px;
+    }
+
+    .nav-toggle {
+        display: flex;
+        /* Le burger passe en dernier pour que le sélecteur de langue reste
+           visible à sa gauche, hors du menu mobile. */
+        order: 2;
+    }
+
+    .lang-switch {
+        order: 1;
+        margin-left: auto;
+        margin-right: 6px;
+    }
+
+    .lang-option {
+        padding: 4px 7px;
+    }
+
+    .nav-title {
+        font-size: 18px;
+    }
+
+    .nav-logo {
+        height: 36px;
+    }
+
+    .nav-regie {
+        font-size: 13px;
+    }
+
+    .nav-regie-sep {
+        height: 18px;
+    }
+
+    /* Mobile Menu Overlay */
+    .nav-menu {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 16px;
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .nav-menu.open {
+        transform: translateX(0);
+    }
+
+    .nav-list {
+        flex-direction: column;
+        width: 100%;
+        gap: 4px;
+    }
+
+    .nav-item {
+        width: 100%;
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 16px;
+        justify-content: flex-start;
+    }
+
+    .nav-link span {
+        display: inline !important;
+    }
+
+    .nav-link::before {
+        display: none;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background: var(--primary-light);
+    }
+
+    .nav-link.active {
+        border-left: 4px solid var(--primary-color);
+        border-radius: 0 12px 12px 0;
+    }
+
+    .nav-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .coming-soon {
+        display: inline;
+        margin-left: auto;
+    }
+
+    /* Error styles for mobile */
+    .error-box {
+        padding: 32px 24px;
+        margin: 16px;
+    }
+
+    .error-title {
+        font-size: 22px;
+    }
+
+    .error-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* ========================================
+   Small Mobile (max-width: 480px)
+   ======================================== */
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 12px;
+    }
+
+    .nav-brand {
+        gap: 8px;
+        margin-right: 8px;
+    }
+
+    /* Très petits écrans : on ne garde que les drapeaux, le code ES/FR est
+       redondant avec le drapeau et coûte une largeur précieuse. */
+    .lang-switch {
+        margin-left: auto;
+        margin-right: 4px;
+    }
+
+    .lang-option {
+        gap: 0;
+        padding: 5px 7px;
+    }
+
+    .lang-option span {
+        display: none;
+    }
+
+    .nav-title {
+        font-size: 16px;
+    }
+
+    .nav-regie {
+        font-size: 12px;
+    }
+
+    .nav-regie-sep {
+        height: 16px;
+    }
+
+    .nav-logo {
+        height: 32px;
+    }
+
+    .nav-link {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    .error-box {
+        padding: 24px 20px;
+    }
+
+    .error-title {
+        font-size: 20px;
+    }
+
+    .error-message {
+        font-size: 14px;
+    }
+}
+
+/* ========================================
+   Pied de page contact (fixe, réductible)
+   ======================================== */
+/* Footer DANS LE FLUX (flex-shrink:0) : il occupe sa place en bas sans recouvrir le contenu,
+   donc le scroll de .view-container fonctionne correctement (fix scroll iOS). */
+.contact-footer {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px;
+}
+
+.contact-footer__card {
+    width: 100%;
+    max-width: 760px;
+    box-sizing: border-box;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.contact-footer__text {
+    flex: 1;
+    min-width: 160px;
+}
+
+.contact-footer__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.contact-footer__subtitle {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.contact-footer__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.contact-footer__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--white);
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.contact-footer__btn--call { background: #2563eb; }
+.contact-footer__btn--wa { background: #25d366; }
+
+.contact-footer__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+}
+
+.contact-footer__close:hover {
+    background: var(--light-bg);
+    color: var(--text-dark);
+}
+
+.contact-footer__fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text-dark);
+    color: var(--white);
+    border: none;
+    border-radius: 9999px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+}
+
+/* Pied de page — mobile */
+@media (max-width: 768px) {
+    .contact-footer__card {
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .contact-footer__text {
+        min-width: 0;
+    }
+
+    .contact-footer__actions {
+        width: 100%;
+    }
+
+    .contact-footer__btn {
+        flex: 1;
+        padding: 12px;
+    }
+
+    .contact-footer__close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+    .contact-footer__fab {
+        gap: 0;
+        padding: 14px;
+    }
+
+    /* Sur mobile : pastille ronde, icône seule (le texte prend trop de place) */
+    .contact-footer__fab span {
+        display: none;
+    }
+}

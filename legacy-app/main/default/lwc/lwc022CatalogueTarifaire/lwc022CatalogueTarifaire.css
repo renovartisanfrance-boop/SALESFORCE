@@ -1,0 +1,83 @@
+:host {
+    --pf-primary: #2da961;
+    --pf-primary-dark: #1f8449;
+    --pf-accent: #a3d977;
+    --pf-surface: #ffffff;
+    --pf-border: #dbe8d8;
+    --pf-text: #1e293b;
+    --pf-text-muted: #64748b;
+    --pf-shadow-lg: 0 20px 40px -12px rgba(45, 169, 97, 0.25);
+    --pf-radius: 14px;
+    display: block;
+    width: 100%;
+}
+
+.pf-wrapper {
+    background: linear-gradient(135deg, #f1faf3 0%, #f7fbe9 100%);
+    padding: 1.25rem;
+    border-radius: var(--pf-radius);
+    min-height: 100%;
+}
+
+.pf-header {
+    background: linear-gradient(135deg, var(--pf-primary) 0%, var(--pf-accent) 100%);
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--pf-radius);
+    box-shadow: var(--pf-shadow-lg);
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+}
+.pf-header::after {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+}
+.pf-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+.pf-subtitle {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Barre d'onglets maison */
+.pf-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 2px solid var(--pf-border);
+    margin-bottom: 1.25rem;
+}
+.pf-tab {
+    border: none;
+    background: transparent;
+    padding: 0.65rem 1.15rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--pf-text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+}
+.pf-tab:hover {
+    color: var(--pf-primary-dark);
+}
+.pf-tab-active {
+    color: var(--pf-primary-dark);
+    border-bottom-color: var(--pf-primary);
+}
+.pf-tab-content {
+    min-height: 4rem;
+}

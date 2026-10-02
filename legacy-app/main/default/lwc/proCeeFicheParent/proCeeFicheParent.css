@@ -1,0 +1,327 @@
+/* ===== VARIABLES ===== */
+:host {
+    --color-primary:        #0176D3;
+    --color-primary-dark:   #014486;
+    --color-bg-page:        #F3F3F3;
+    --color-bg-card:        #FFFFFF;
+    --color-border:         #E5E5E5;
+    --color-text-label:     #706E6B;
+    --color-text-value:     #181818;
+    --color-badge-bar:      #2E844A;
+    --color-badge-bat:      #0176D3;
+    --color-badge-none:     #706E6B;
+    --font-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --radius-card: 14px;
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== WRAPPER ===== */
+.parent-wrapper {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    font-family: var(--font-base);
+}
+
+/* Largeur configurable — s'applique à partir de 768px (md) */
+@media (min-width: 768px) {
+    .parent-wrapperr {
+        width: var(--comp-width, 100%);
+        max-width: var(--comp-width, 100%);
+    }
+}
+
+/* ===== HEADER ===== */
+.parent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    background: var(--color-bg-card);
+    border-bottom: 1.5px solid var(--color-border);
+}
+
+.parent-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.parent-header-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+    border-radius: 10px;
+}
+
+.parent-icon {
+    --lwc-colorTextIconDefault: #ffffff;
+}
+
+.parent-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-value);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+/* ===== BADGES ===== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.badge--bar {
+    background: #EAF5EE;
+    color: var(--color-badge-bar);
+    border: 1px solid #C2E0CC;
+}
+
+.badge--bar .badge-dot {
+    background: var(--color-badge-bar);
+}
+
+.badge--bat {
+    background: #EAF4FF;
+    color: var(--color-badge-bat);
+    border: 1px solid #B8D9F5;
+}
+
+.badge--bat .badge-dot {
+    background: var(--color-badge-bat);
+}
+
+.badge--none {
+    background: #F3F2F2;
+    color: var(--color-badge-none);
+    border: 1px solid #E0DFDF;
+}
+
+/* ===== BODY ===== */
+.parent-body {
+    background: var(--color-bg-page);
+    padding: 20px;
+}
+
+/* ===== ÉTATS (vide / BAT) ===== */
+.state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 56px 32px;
+    gap: 12px;
+}
+
+.state-container--empty {
+    background: var(--color-bg-page);
+}
+
+.state-container--bat {
+    background: #EAF4FF;
+}
+
+.state-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 8px;
+}
+
+.state-icon {
+    --lwc-colorTextIconDefault: var(--color-primary);
+}
+
+.empty-svg {
+    width: 48px;
+    height: 48px;
+}
+
+.state-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text-value);
+    margin: 0;
+}
+
+.state-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-label);
+    margin: 0;
+    max-width: 340px;
+    line-height: 1.6;
+}
+
+/* ===== SECTION DOUBLONS ===== */
+.dup-section {
+    padding: 16px 20px 20px;
+    background: #FFF8ED;
+    border-bottom: 1.5px solid #F5E0B5;
+}
+
+.dup-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.dup-header-icon {
+    --lwc-colorTextIconDefault: #C07400;
+    flex-shrink: 0;
+}
+
+.dup-header-label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #7A4600;
+    letter-spacing: 0.01em;
+}
+
+.dup-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dup-card {
+    background: var(--color-bg-card);
+    border: 1.5px solid #F0D8A0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 6px rgba(180, 120, 0, 0.08);
+    flex: 1 1 calc(33.333% - 8px);
+    min-width: 200px;
+    box-sizing: border-box;
+}
+
+.dup-card-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.dup-card-badge--pro,
+.dup-card-badge--lead {
+    flex-shrink: 0;
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.dup-card-badge--pro {
+    background: #EAF4FF;
+    color: #014486;
+    border: 1px solid #B8D9F5;
+}
+
+.dup-card-badge--lead {
+    background: #F3EEFF;
+    color: #5A1B9B;
+    border: 1px solid #D5B8F5;
+}
+
+.dup-card-title a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.dup-card-title a:hover {
+    text-decoration: underline;
+}
+
+.dup-card-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 6px;
+}
+
+.dup-card-row:last-child {
+    margin-bottom: 0;
+}
+
+.dup-card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-label);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.dup-card-value {
+    font-size: 0.82rem;
+    color: var(--color-text-value);
+    word-break: break-word;
+}
+
+.dup-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1.5px solid #D4A017;
+    border-radius: 20px;
+    color: #7A4600;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.dup-toggle-btn:hover {
+    background: #F5E0B5;
+}
+
+.dup-toggle-icon {
+    --lwc-colorTextIconDefault: #C07400;
+}
+
+.dup-grid--extra {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #F0D8A0;
+}
+
+/* Bloc "Infos autres dossiers" — séparé visuellement du dup-section */
+.infos-section {
+    background: var(--color-bg-card);
+    border-bottom: 1.5px solid var(--color-border);
+    padding: 10px 20px;
+}

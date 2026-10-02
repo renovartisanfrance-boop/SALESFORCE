@@ -1,0 +1,80 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-02-2023
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+
+  <template if:true={get_global_option}>
+    <div class="_tile" style={styleTile} data-label={date_crenaux}>
+      {somme_duration_string} - {somme_duration_km_string}
+      <div class="_icon_creneaux">
+        <lightning-icon icon-name="standard:dashboard" alternative-text="" title="all traget time"></lightning-icon>
+      </div>
+    </div>
+  </template>
+  <template if:true={get_option_option}>
+    <template if:true={spinner}>
+      <div class="demo-only" style="height:6rem;position:relative;transform: scale(-0.5);">
+        <div class="slds-spinner_container">
+          <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+            <span class="slds-assistive-text">Loading</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template if:false={spinner}>
+      <template if:true={event_remplis}>
+
+        <div data-label={date_crenaux} class="container">
+          <div class="_tile creneaux " style={styleTile}>
+            <span class="date_crenaux_vraie">{date_crenaux_vraie}</span>{value_a_afficher_cote_date} <a
+              href={lien_to_object_cible} class="_a_a"> - {value_a_afficher} <span lwc:if={isBadge}
+                class="my-badge">{badge}</span></a>
+          </div>
+
+          <div class="info">
+            <!-- <p style="font-size: 10px !important;">Informations supplémentaires </p>
+              <div class="value_a_afficher_info_supp">
+
+              </div>  -->
+            <template if:true={get_value_a_afficher_info_supp}>
+              <section aria-describedby="dialog-body-id-110" aria-label="Dialog Title"
+                class="slds-popover slds-nubbin_top" role="dialog"
+                style="position: absolute; background: #000000cc !important; opacity: 1 !important; border-radius: 9px;">
+                <div class="slds-popover__body" id="dialog-body-id-110">
+                  <div class="slds-media">
+                    <div class="slds-media__body" style="color:white !important;">
+                      <!-- <header class="slds-popover__header">
+                        <h2 class="slds-text-heading_small" id="dialog-heading-id-117">Informations supplémentaires
+                        </h2>
+                      </header> -->
+                      <div class="value_a_afficher_info_supp">
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </template>
+
+          </div>
+        </div>
+
+
+
+      </template>
+      <template if:false={event_remplis}>
+        <div class="_tile creneaux" style={styleTile} data-label={date_crenaux}> {value_crenaux} / <span
+            class="_date_sous"> {date_crenaux_opt} </span> <br>
+          <div class="_a_a_before" style="display: inline;"> &nbsp;{value_a_afficher_before}&nbsp;</div>&nbsp;<div
+            class="_a_a_after"> {value_a_afficher_after}&nbsp;</div>
+        </div>
+      </template>
+    </template>
+  </template>
+</template>

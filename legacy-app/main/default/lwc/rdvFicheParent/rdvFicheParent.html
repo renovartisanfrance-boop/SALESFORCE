@@ -1,0 +1,119 @@
+<template>
+    <div class="parent-wrapperr" style={wrapperStyle}>
+
+        <!-- Détection de doublons par numéro de téléphone -->
+        <template if:true={phone}>
+            <c-duplicate-detector
+                data-source="lead"
+                hide-result="true"
+                object-api-name="Lead"
+                fields-config={duplicateFieldsConfig}
+                logic-operator="AND"
+                record-id={recordId}
+                max-results="500"
+                fields-to-query="Name,TypeDeDossier__c<mpl>,CONFIRM_Traitement__c<pl>,CONFIRM_Commentaire__c"
+                onduplicatesfound={handleDuplicatesFound}
+                onnoduplicates={handleNoDuplicates}>
+            </c-duplicate-detector>
+            <c-duplicate-detector
+                data-source="pro"
+                hide-result="true"
+                object-api-name="Pro__c"
+                fields-config={proDuplicateFieldsConfig}
+                logic-operator="AND"
+                max-results="500"
+                fields-to-query="Name,Fiche_CEE__c<pl>,PAC_STATUT_DOSSIER__c<pl>,INSTALLATIONN_PAC__c<pl>,RDV_Commentaire_Annulation__c"
+                onduplicatesfound={handleProDuplicatesFound}
+                onnoduplicates={handleProNoDuplicates}>
+            </c-duplicate-detector>
+        </template>
+
+        <!-- Cartes de doublons détectés -->
+        <template if:true={hasDuplicateCards}>
+            <div class="dup-section">
+                <div class="dup-section-header">
+                    <lightning-icon icon-name="utility:warning" size="x-small" class="dup-header-icon"></lightning-icon>
+                    <span class="dup-header-label">{duplicateCardsCountLabel}</span>
+                </div>
+
+                <!-- 3 premières cartes — toujours visibles -->
+                <div class="dup-grid">
+                    <template for:each={visibleCards} for:item="card">
+                        <div key={card.id} class="dup-card">
+                            <div class="dup-card-title">
+                                <span class={card.sourceBadgeClass}>{card.sourceBadge}</span>
+                                <a href={card.recordUrl} target="_blank">{card.name}</a>
+                            </div>
+                            <div class="dup-card-row">
+                                <span class="dup-card-label">{card.row1Label}</span>
+                                <span class="dup-card-value">{card.row1Value}</span>
+                            </div>
+                            <div class="dup-card-row">
+                                <span class="dup-card-label">{card.row2Label}</span>
+                                <span class="dup-card-value">{card.row2Value}</span>
+                            </div>
+                            <template if:true={card.showRow3}>
+                                <div class="dup-card-row">
+                                    <span class="dup-card-label">{card.row3Label}</span>
+                                    <span class="dup-card-value">{card.row3Value}</span>
+                                </div>
+                            </template>
+                            <template if:true={card.showRow4}>
+                                <div class="dup-card-row">
+                                    <span class="dup-card-label">{card.row4Label}</span>
+                                    <span class="dup-card-value">{card.row4Value}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Accordion pour les doublons supplémentaires -->
+                <template if:true={hasExtraCards}>
+                    <button class="dup-toggle-btn" onclick={handleToggleExtra}>
+                        <lightning-icon icon-name={accordionIconName} size="x-small" class="dup-toggle-icon"></lightning-icon>
+                        {extraCardsLabel}
+                    </button>
+                    <template if:true={showMoreOpen}>
+                        <div class="dup-grid dup-grid--extra">
+                            <template for:each={extraCards} for:item="card">
+                                <div key={card.id} class="dup-card">
+                                    <div class="dup-card-title">
+                                        <span class={card.sourceBadgeClass}>{card.sourceBadge}</span>
+                                        <a href={card.recordUrl} target="_blank">{card.name}</a>
+                                    </div>
+                                    <div class="dup-card-row">
+                                        <span class="dup-card-label">{card.row1Label}</span>
+                                        <span class="dup-card-value">{card.row1Value}</span>
+                                    </div>
+                                    <div class="dup-card-row">
+                                        <span class="dup-card-label">{card.row2Label}</span>
+                                        <span class="dup-card-value">{card.row2Value}</span>
+                                    </div>
+                                    <template if:true={card.showRow3}>
+                                        <div class="dup-card-row">
+                                            <span class="dup-card-label">{card.row3Label}</span>
+                                            <span class="dup-card-value">{card.row3Value}</span>
+                                        </div>
+                                    </template>
+                                    <template if:true={card.showRow4}>
+                                        <div class="dup-card-row">
+                                            <span class="dup-card-label">{card.row4Label}</span>
+                                            <span class="dup-card-value">{card.row4Value}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+
+            </div>
+        </template>
+
+        <!-- CONTENU RDV -->
+        <div class="parent-bodyy">
+            <c-rdv-fiche-standard record-id={recordId} is-community-user={isCommunityUser}></c-rdv-fiche-standard>
+        </div>
+    </div>
+</template>

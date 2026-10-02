@@ -1,0 +1,41 @@
+.rf-container {
+    position: relative;
+    min-width: 24rem;
+}
+
+.rf-container.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.rf-info {
+    display: flex;
+    align-items: flex-start;
+}
+
+.rf-list {
+    max-height: 18rem;
+    overflow-y: auto;
+}
+
+.rf-champ {
+    padding: 0.25rem 0.25rem;
+}
+
+.rf-selectall {
+    border-bottom: 1px solid #dddbda;
+    padding-bottom: 0.5rem;
+}
+
+.rf-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.rf-result h2,
+.rf-result p {
+    margin: 0;
+    max-width: 28rem;
+}

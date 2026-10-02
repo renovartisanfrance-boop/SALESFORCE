@@ -1,0 +1,754 @@
+<template>
+    <div class="container">
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <p>{txt.chargementRegie}</p>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={hasError}>
+            <div class="error-container">
+                <div class="error-box">
+                    <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <h3 class="error-title">{txt.regieIntrouvable}</h3>
+                    <p class="error-message">{errorMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Inactive Campaign State -->
+        <template if:true={isCampaignInactive}>
+            <div class="error-container">
+                <div class="error-box">
+                    <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z" />
+                    </svg>
+                    <h3 class="error-title">{txt.regieDesactivee}</h3>
+                    <p class="error-message">{txt.regieDesactiveeMsg}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Lead Creation Form -->
+        <template if:true={isValidCampaign}>
+            <!-- Product Information Section -->
+            <template if:true={canSeeProductsInfo}>
+                <template if:true={infoProduits}>
+                    <div class="campaign-info-section">
+                        <div class="section-header section-header-with-action">
+                            <div class="section-title-wrap">
+                                <h2>{infoProduits.title}</h2>
+                                <template if:true={infoProduits.subtitle}>
+                                    <p class="section-subtitle">{infoProduits.subtitle}</p>
+                                </template>
+                            </div>
+                            <div class="section-action">
+                                <button class={collapseBtnClass} onclick={toggleProductsCollapse}
+                                    aria-pressed={productsCollapsed} title={collapseButtonAriaLabel}
+                                    aria-label={collapseButtonAriaLabel}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="collapse-icon">
+                                        <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class={productsWrapClass} aria-hidden={productsCollapsed}>
+                            <template for:each={produitsGroupes} for:item="groupe">
+                                <div key={groupe.typeEnregistrement} class="products-container">
+                                    <div class="product-type-title" style={groupe.titreStyle}>{groupe.titre}</div>
+                                    <div class="products-grid" style={groupe.gridStyle}>
+                                        <template for:each={groupe.products} for:item="product">
+                                            <div key={product.typeEnregistrement} class={product.cardClass}
+                                                data-type={product.typeEnregistrement} onclick={handleProductClick}>
+                                                <div class="product-header">
+                                                    <div class="product-name" style={product.couleurStyle}>
+                                                        {product.nomProduit}</div>
+                                                    <template if:true={product.isAvailable}>
+                                                        <div class="product-badge">✓</div>
+                                                    </template>
+                                                    <template if:false={product.isAvailable}>
+                                                        <div class="product-badge-unavailable">✕</div>
+                                                    </template>
+                                                </div>
+                                                <div class="product-footer">
+                                                    <template if:true={product.isAvailable}>
+                                                        <template if:true={product.downloadLink}>
+                                                            <a href={product.downloadLink} target="_blank"
+                                                                class="cdc-link">
+                                                                <svg class="cdc-icon" xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                                    <circle cx="12" cy="12" r="3" />
+                                                                </svg>
+                                                                <span>{txt.cahierDesCharges}</span>
+                                                            </a>
+                                                        </template>
+                                                        <template if:false={product.downloadLink}>
+                                                            <div class="cdc-placeholder"></div>
+                                                        </template>
+                                                    </template>
+                                                    <template if:false={product.isAvailable}>
+                                                        <span class="cdc-demande-text">{txt.demandezCdc}</span>
+                                                    </template>
+                                                    <div class="availability-text">
+                                                        <template if:true={product.isAvailable}>
+                                                            <span class="available-text">{txt.disponible}</span>
+                                                        </template>
+                                                        <template if:false={product.isAvailable}>
+                                                            <span class="unavailable-text">{txt.nonDispo}</span>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Lead Creation Form -->
+            <div class="form-section">
+                <!-- Titre masqué pour les partenaires (accès réduit). -->
+                <template if:false={accesReduit}>
+                    <div class="section-header">
+                        <h2>{txt.titreCreerRdv}</h2>
+                    </div>
+                </template>
+
+
+
+                <div class="form-card">
+                    <!-- Checkbox product selector -->
+                    <div class="checkbox-products" if:true={showProductDropdown}>
+                        <div class="checkbox-products-header">
+                            <label class="checkbox-section-label"
+                                if:true={showCheckboxList}>{txt.choisirProduits}</label>
+                        </div>
+                        <template if:true={showCheckboxList}>
+                            <div class="checkbox-groupes reveal-section">
+                                <template for:each={groupesProduits} for:item="groupe">
+                                    <div key={groupe.key} class="checkbox-groupe">
+                                        <span class="checkbox-groupe-titre"
+                                            style={groupe.titreStyle}>{groupe.label}</span>
+                                        <div class="checkbox-list">
+                                            <template for:each={groupe.items} for:item="item">
+                                                <label key={item.value} class="checkbox-item" data-value={item.value}>
+                                                    <input type="checkbox" data-value={item.value}
+                                                        onchange={handleCheckboxChange} checked={item.checked} />
+                                                    <span class="custom-checkbox" style={item.checkboxStyle}></span>
+                                                    <span class="checkbox-label"
+                                                        style={item.couleurStyle}>{item.label}</span>
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                    <template if:true={showFormFields}>
+                        <div class="reveal-section">
+                            <!-- Section: Informations -->
+                            <div class="form-subsection">
+                                <!-- <div class="form-subsection-title">
+                                    <lightning-icon icon-name="utility:identity" size="xx-small"></lightning-icon>
+                                    <span>Informations</span>
+                                </div> -->
+
+                                <div class="form-subsection-row">
+                                    <template if:true={showFieldsPro}>
+                                        <div class="form-group">
+                                            <label for="nomDirigeant" class="form-label">{txt.nomSociete} <span
+                                                    class="required">*</span></label>
+                                            <div class="input-wrapper">
+                                                <lightning-icon icon-name="utility:company" size="xx-small"
+                                                    class="input-icon"></lightning-icon>
+                                                <input id="nomDirigeant" type="text" class="form-input has-icon"
+                                                    placeholder={txt.nomSocietePh} data-field="nomDirigeant"
+                                                    value={formData.nomDirigeant} onchange={handleInputChange}
+                                                    disabled={isSavingLead} maxlength="60">
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="form-group">
+                                        <label for="lastName" class="form-label"
+                                            if:false={accesReduit}>{txt.nomClient} <span
+                                                class="required">*</span></label>
+                                        <label for="lastName" class="form-label"
+                                            if:true={accesReduit}>{txt.nomClientFilleul}
+                                            <span class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:user" size="xx-small" class="input-icon">
+                                            </lightning-icon>
+                                            <input id="lastName" type="text" class="form-input has-icon"
+                                                placeholder={txt.nomClientPh} data-field="lastName" value={formData.lastName}
+                                                onchange={handleInputChange} disabled={isSavingLead} maxlength="20">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="firstName" class="form-label"
+                                            if:false={accesReduit}>{txt.prenom} <span
+                                                class="required">*</span></label>
+                                        <label for="firstName" class="form-label"
+                                            if:true={accesReduit}>{txt.prenomFilleul} <span
+                                                class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:user" size="xx-small" class="input-icon">
+                                            </lightning-icon>
+                                            <input id="firstName" type="text" class="form-input has-icon"
+                                                placeholder={txt.prenomPh} data-field="firstName" value={formData.firstName}
+                                                onchange={handleInputChange} disabled={isSavingLead} maxlength="20">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-subsection-row">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label" if:false={accesReduit}>{txt.email} <span
+                                                class="required">*</span></label>
+                                        <label for="email" class="form-label"
+                                            if:true={accesReduit}>{txt.emailFilleul}
+                                            <span class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:email" size="xx-small"
+                                                class="input-icon"></lightning-icon>
+                                            <input id="email" type="email" class="form-input has-icon"
+                                                placeholder={txt.emailPh} data-field="email" value={formData.email}
+                                                onchange={handleInputChange} disabled={isSavingLead}>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label"
+                                            if:false={accesReduit}>{txt.telephone} <span
+                                                class="required">*</span></label>
+                                        <label for="phone" class="form-label"
+                                            if:true={accesReduit}>{txt.telephoneFilleul}
+                                            <span class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <input id="phone" type="tel" class="form-input" placeholder={txt.telephonePh}
+                                                data-field="phone" value={formData.phone} oninput={handlePhoneInput}
+                                                disabled={isSavingLead} maxlength="10">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Adresse — masquée pour les partenaires (accès réduit). -->
+                            <template if:false={accesReduit}>
+                                <div class="form-subsection">
+                                    <div class="form-subsection-title">
+                                        <lightning-icon icon-name="utility:location" size="xx-small"></lightning-icon>
+                                        <span><span class="required">*</span> {txt.adresse}</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <!-- <label for="adresseComplete" class="form-label">Adresse complète <span class="required">*</span></label> -->
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:location" size="xx-small"
+                                                class="input-icon">
+                                            </lightning-icon>
+                                            <input id="adresseComplete" type="text" class="form-input has-icon"
+                                                placeholder={txt.adressePh}
+                                                data-field="adresseComplete" value={formData.adresseComplete}
+                                                onchange={handleInputChange} disabled={isSavingLead}>
+                                        </div>
+                                    </div>
+
+                                    <!-- Champs de fiche rattachés à l'adresse (zone climatique,
+                                         référence cadastrale). Obligatoires : astérisque +
+                                         contrôle à la soumission (voir validateForm). -->
+                                    <template if:true={aChampsFicheAdresse}>
+                                        <div class="form-subsection-row">
+                                            <template for:each={champsFicheAdresse} for:item="cf">
+                                                <div key={cf.apiName} class="form-group">
+                                                    <label for={cf.apiName} class="form-label">{cf.label} <span
+                                                            class="required">*</span></label>
+                                                    <template if:true={cf.isPicklist}>
+                                                        <select id={cf.apiName} class="form-input form-select"
+                                                            data-field={cf.apiName}
+                                                            onchange={handleInputChange} disabled={isSavingLead} required>
+                                                            <option value=""
+                                                                selected={cf.aucunSelectionne}>{txt.aucunChoix}</option>
+                                                            <template for:each={cf.picklistValues} for:item="opt">
+                                                                <option key={opt.value} value={opt.value}
+                                                                    selected={opt.selected}>{opt.label}</option>
+                                                            </template>
+                                                        </select>
+                                                    </template>
+                                                    <template if:true={cf.isInput}>
+                                                        <input id={cf.apiName} type={cf.renderType}
+                                                            class="form-input" placeholder={cf.placeholder}
+                                                            data-field={cf.apiName} value={cf.currentValue}
+                                                            maxlength={cf.maxlength}
+                                                            max={cf.max} step={cf.step}
+                                                            data-entiers={cf.entiers} data-decimales={cf.decimales}
+                                                            oninput={handleLimiteChiffres}
+                                                            onchange={handleInputChange} disabled={isSavingLead} required />
+                                                    </template>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Champs « logement » de la fiche produit (obligatoires), sans titre
+                                 de section : ils suivent directement l'adresse et les libellés
+                                 des champs se suffisent à eux-mêmes. Grille imposée à 2 colonnes
+                                 (et non auto-fit) pour garder 2 champs par ligne. -->
+                            <template if:true={aChampsFicheLogement}>
+                                <div class="form-subsection">
+                                    <div class="form-grid form-grid--paire">
+                                        <template for:each={champsFicheLogement} for:item="cf">
+                                            <div key={cf.apiName} class="form-group">
+                                                <label for={cf.apiName} class="form-label">{cf.label} <span
+                                                        class="required">*</span></label>
+                                                <template if:true={cf.isPicklist}>
+                                                    <select id={cf.apiName} class="form-input form-select"
+                                                        data-field={cf.apiName}
+                                                        onchange={handleInputChange} disabled={isSavingLead} required>
+                                                        <option value=""
+                                                            selected={cf.aucunSelectionne}>{txt.aucunChoix}</option>
+                                                        <template for:each={cf.picklistValues} for:item="opt">
+                                                            <option key={opt.value} value={opt.value}
+                                                                selected={opt.selected}>{opt.label}</option>
+                                                        </template>
+                                                    </select>
+                                                </template>
+                                                <template if:true={cf.isInput}>
+                                                    <input id={cf.apiName} type={cf.renderType} class="form-input"
+                                                        placeholder={cf.placeholder} data-field={cf.apiName}
+                                                        value={cf.currentValue} maxlength={cf.maxlength}
+                                                        max={cf.max} step={cf.step}
+                                                        data-entiers={cf.entiers} data-decimales={cf.decimales}
+                                                        oninput={handleLimiteChiffres}
+                                                        onchange={handleInputChange} disabled={isSavingLead} required />
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Champ « Suivi Signature » de la fiche produit (obligatoire).
+                                 Sa valeur pilote l'affichage du bloc date/créneau ci-dessous :
+                                 pas de rappel à planifier quand le partenaire gère la signature. -->
+                            <template if:true={aChampsFicheSignature}>
+                                <div class="form-subsection">
+                                    <template for:each={champsFicheSignature} for:item="cf">
+                                        <div key={cf.apiName} class="form-group">
+                                            <label for={cf.apiName} class="form-label">{cf.label} <span
+                                                    class="required">*</span></label>
+                                            <template if:true={cf.isPicklist}>
+                                                <select id={cf.apiName} class="form-input form-select"
+                                                    data-field={cf.apiName}
+                                                    onchange={handleInputChange} disabled={isSavingLead} required>
+                                                    <option value=""
+                                                        selected={cf.aucunSelectionne}>{txt.aucunChoix}</option>
+                                                    <template for:each={cf.picklistValues} for:item="opt">
+                                                        <option key={opt.value} value={opt.value}
+                                                            selected={opt.selected}>{opt.label}</option>
+                                                    </template>
+                                                </select>
+                                            </template>
+                                            <template if:true={cf.isInput}>
+                                                <input id={cf.apiName} type={cf.renderType} class="form-input"
+                                                    placeholder={cf.placeholder} data-field={cf.apiName}
+                                                    value={cf.currentValue} maxlength={cf.maxlength}
+                                                    onchange={handleInputChange} disabled={isSavingLead} required />
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <template if:true={afficherRappel}>
+                                <!-- Section: Date et Créneau de Rappel -->
+                                <div class="form-subsection">
+                                    <!-- <div class="form-subsection-title">
+                                        <lightning-icon icon-name="utility:event" size="xx-small"></lightning-icon>
+                                        <span>Disponibilité pour le rappel</span>
+                                    </div> -->
+                                    <div class="form-subsection-row">
+                                        <div class="form-group">
+                                            <label for="dateRappel" class="form-label"
+                                                if:false={accesReduit}>{txt.dateRappel} <span
+                                                    class="required">*</span></label>
+                                            <label for="dateRappel" class="form-label"
+                                                if:true={accesReduit}>{txt.dateRappelFilleul} <span
+                                                    class="required">*</span></label>
+                                            <div class="input-wrapper">
+                                                <lightning-icon icon-name="utility:date_input" size="xx-small"
+                                                    class="input-icon"></lightning-icon>
+                                                <input id="dateRappel" type="date" class="form-input has-icon"
+                                                    data-field="dateRappel" value={formData.dateRappel}
+                                                    onchange={handleInputChange} disabled={isSavingLead}>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="creneauRappel" class="form-label"
+                                                if:false={accesReduit}>{txt.heureRappel} <span
+                                                    class="required">*</span></label>
+                                            <label for="creneauRappel" class="form-label"
+                                                if:true={accesReduit}>{txt.heureRappelFilleul} <span
+                                                    class="required">*</span></label>
+                                            <select id="creneauRappel" class={creneauSelectClass} data-field="creneauRappel"
+                                                onchange={handleInputChange}>
+                                                <option value="">{txt.aucunChoix}</option>
+                                                <template for:each={creneauOptions} for:item="opt">
+                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                </template>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Champs dynamiques -->
+                            <template if:true={hasDynamicFields}>
+                                <div class="form-subsection">
+                                    <div class="form-subsection-title">
+                                        <lightning-icon icon-name="utility:settings" size="xx-small"></lightning-icon>
+                                        <span>{txt.detailsSupplementaires}</span>
+                                    </div>
+                                    <div class="form-grid">
+                                        <template for:each={dynamicFields} for:item="df">
+                                            <div key={df.apiName} class="form-group">
+                                                <label for={df.apiName} class="form-label">{df.label} <span
+                                                        class="required">*</span></label>
+
+                                                <template if:true={df.isPicklist}>
+                                                    <select id={df.apiName} class="form-input form-select"
+                                                        data-field={df.apiName} value={df.currentValue}
+                                                        onchange={handleInputChange} disabled={isSavingLead} required>
+                                                        <option value="">{txt.aucunChoix}</option>
+                                                        <template for:each={df.picklistValues} for:item="opt">
+                                                            <option key={opt.value} value={opt.value}>{opt.label}
+                                                            </option>
+                                                        </template>
+                                                    </select>
+                                                </template>
+
+                                                <template if:true={df.isTextarea}>
+                                                    <textarea id={df.apiName} class="form-input" data-field={df.apiName}
+                                                        onchange={handleInputChange} disabled={isSavingLead}
+                                                        required>{df.currentValue}</textarea>
+                                                </template>
+
+                                                <template if:true={df.isInput}>
+                                                    <input id={df.apiName} type={df.renderType} class="form-input"
+                                                        data-field={df.apiName} value={df.currentValue}
+                                                        onchange={handleInputChange} disabled={isSavingLead} required />
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Informations d'appel — partenaires (accès réduit) uniquement.
+                                 Champs facultatifs enregistrés sur le Lead via les champs dynamiques. -->
+                            <template if:true={accesReduit}>
+                                <div class="form-subsection">
+                                    <!-- <div class="form-subsection-title">
+                                        <lightning-icon icon-name="utility:call" size="xx-small"></lightning-icon>
+                                        <span>Informations d'appel</span>
+                                    </div> -->
+                                    <div class="form-group">
+                                        <label for="apporteurPresentation"
+                                            class="form-label">{txt.apporteurPresentation}</label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:identity" size="xx-small"
+                                                class="input-icon"></lightning-icon>
+                                            <input id="apporteurPresentation" type="text" class="form-input has-icon"
+                                                placeholder={txt.apporteurPresentationPh}
+                                                data-field="Apporteur_Presentation__c"
+                                                value={formData.Apporteur_Presentation__c} onchange={handleInputChange}
+                                                disabled={isSavingLead} maxlength="255" />
+                                        </div>
+                                    </div>
+                                    <!-- Questions Oui/Non en cartes sélectionnables -->
+                                    <div class="form-subsection-row">
+                                        <div class="form-group">
+                                            <label class="form-label">{txt.clientPrevenu}</label>
+                                            <div class="tgl-cards tgl-cards--inline" role="group"
+                                                aria-label={txt.clientPrevenuAria}>
+                                                <template for:each={apporteurPrevenuToggle} for:item="opt">
+                                                    <button key={opt.value} type="button" class={opt.cardClass}
+                                                        data-field="Apporteur_ClientPrevenuAppel__c"
+                                                        data-value={opt.value} aria-pressed={opt.selected}
+                                                        onclick={handleToggleSelect} disabled={isSavingLead}>
+                                                        <span class="tgl-card-txt">{opt.label}</span>
+                                                        <span class="tgl-card-check">✓</span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <!-- Question « reste à charge » : Air/Air uniquement (masquée pour Air/Eau). -->
+                                        <template if:true={showApporteurRac}>
+                                        <div class="form-group">
+                                            <label class="form-label">{txt.clientRac}</label>
+                                            <div class="tgl-cards" role="group" aria-label={txt.clientRacAria}>
+                                                <template for:each={apporteurRacToggle} for:item="opt">
+                                                    <button key={opt.value} type="button" class={opt.cardClass}
+                                                        data-field="Apporteur_ClientInformeRAC__c"
+                                                        data-value={opt.value} aria-pressed={opt.selected}
+                                                        onclick={handleToggleSelect} disabled={isSavingLead}>
+                                                        <span class="tgl-card-txt">{opt.label}</span>
+                                                        <span class="tgl-card-check">✓</span>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Commentaire -->
+                            <div class="form-subsection">
+                                <!-- <div class="form-subsection-title">
+                                    <lightning-icon icon-name="utility:comments" size="xx-small"></lightning-icon>
+                                    <span if:false={accesReduit}>Commentaire</span>
+                                    <span if:true={accesReduit}>
+                                        Informations sur votre filleul&nbsp;<span class="bareme-wrap">
+                                            <button type="button" class="bareme-trigger" onclick={handleToggleBareme}
+                                                aria-expanded={isBaremeOpen}
+                                                aria-label="Afficher le barème de revenus">barème<svg
+                                                    class="bareme-info-icon" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24" width="13" height="13" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                                </svg></button>
+                                        </span>
+                                    </span>
+                                </div> -->
+                                <div class="form-group">
+                                    <label for="commentaire" class="form-label"
+                                        if:false={accesReduit}>{txt.commentaire}</label>
+                                    <label for="commentaire" class="form-label" if:true={accesReduit}>{txt.commentaireFilleul}
+                                        <!--&nbsp;
+                                        <span class="bareme-wrap">
+                                            <button type="button" class="infos-fill-trigger"
+                                                onclick={handleToggleInfosFill} aria-expanded={isInfosFillOpen}
+                                                aria-label="Afficher le barème de revenus"><svg class="bareme-info-icon"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13"
+                                                    height="13" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                                </svg></button>
+                                        </span>
+                                         <div class={infosFillPopupClass} role="tooltip" onclick={handleToggleInfosFill}>
+                                            <div class="bareme-popup-title">
+                                                Indiquez toute information pouvant faciliter le premier contact : le nom
+                                                sous lequel nous devons nous présenter, le meilleur moment pour appeler,
+                                                la situation du logement, le projet du filleul, ses contraintes
+                                                éventuelles, ou toute autre précision utile.
+                                            </div>
+                                        </div> -->
+                                    </label>
+                                    <textarea id="commentaire" class="form-input" maxlength="255" rows="2"
+                                        placeholder="" data-field="commentaire"
+                                        oninput={handleInputChange}
+                                        disabled={isSavingLead}>{formData.commentaire}</textarea>
+                                    <div class={commentaireCounterClass}>
+                                        {commentaireLength}/255
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Certification obligatoire (accès réduit) — validation front, non stockée -->
+                        <template if:true={accesReduit}>
+                            <div class="certification-accord"
+                                style="display:flex;align-items:flex-start;gap:10px;padding:14px 16px;margin:4px 0 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">
+                                <input type="checkbox" id="certificationAccord" checked={certificationAccord}
+                                    onchange={handleCertificationChange} disabled={isSavingLead}
+                                    style="margin-top:2px;width:18px;height:18px;flex-shrink:0;cursor:pointer;" />
+                                <label for="certificationAccord"
+                                    style="font-size:0.88rem;color:#334155;line-height:1.45;cursor:pointer;">
+                                    <span class="required">*</span> {txt.certification}
+                                </label>
+                            </div>
+                        </template>
+
+                        <!-- Bloc final, en colonne : zones de dépôt -> bouton -> récapitulatif.
+                             Un seul conteneur permet d'intercaler le bouton entre les deux sans
+                             dupliquer son markup, et laisse l'ordre historique (bouton puis dépôt
+                             générique) intact quand la fiche n'impose pas de sections photo. -->
+                        <div class="bloc-final">
+
+                            <!-- Zones de dépôt de la fiche — AVANT le bouton.
+                                 Les 3 types sur une ligne : le partenaire voit d'un coup d'œil
+                                 ceux qui restent vides, sans avoir à faire défiler. -->
+                            <template if:false={accesReduit}>
+                                <template if:true={aSectionsPhotos}>
+                                    <div class="photos-fiche__zones">
+                                        <template for:each={sectionsPhotos} for:item="sec">
+                                            <c-custom-file-upload key={sec.cle} data-section={sec.cle}
+                                                label={sec.label} compact="true" multiple="true"
+                                                accepted-formats=".jpg,.jpeg,.png,.heic,.webp,.pdf"
+                                                max-file-size="3000000" max-total-size="3000000"
+                                                compresser-images="true" langue={langue}
+                                                onfileschange={handlePhotosChange}>
+                                            </c-custom-file-upload>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+
+                        <div class="form-actions">
+                            <button class={submitBtnClass} onclick={handleSubmit} disabled={isSavingLead}>
+                                <template if:false={isSavingLead}>
+                                    <svg class="btn-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 5v14M5 12h14" />
+                                    </svg>
+                                    <template if:true={accesReduit}>{txt.btnCreerRecommandation}</template>
+                                    <template if:false={accesReduit}>{txt.btnCreerRdv}</template>
+                                </template>
+                                <template if:true={isSavingLead}>
+                                    <span class="spinner-mini"></span>
+                                    {txt.btnCreationEnCours}
+                                </template>
+                            </button>
+                        </div>
+
+                        <!-- File Upload Section (masquée en accès réduit) -->
+                        <template if:false={accesReduit}>
+                            <!-- Sections de photos imposées par la fiche produit : une zone de
+                                 dépôt par type de document, toutes multi-fichiers et facultatives.
+                                 Les fichiers sont renommés « <préfixe> 1, 2... n » à la soumission
+                                 (voir _nommerPhoto). Compression activée : sans elle une seule
+                                 photo de smartphone saturerait la limite Apex. -->
+                            <template if:true={aSectionsPhotos}>
+                                    <!-- Récapitulatif global : tous types confondus, avec le nom
+                                         définitif tel qu'il sera enregistré dans Salesforce. -->
+                                    <div class="recap">
+                                        <div class="recap__entete">
+                                            <span class="recap__titre">{txt.recapTitre}
+                                                <template if:true={aRecapPieces}>({nbRecapPieces})</template>
+                                            </span>
+                                            <span class="recap__taille">{tailleRecap} / {tailleMaxRecap}</span>
+                                        </div>
+                                        <div class="recap-jauge">
+                                            <div class={classeJaugeRecap} style={styleJaugeRecap}></div>
+                                        </div>
+
+                                        <template if:false={aRecapPieces}>
+                                            <p class="recap__vide">{txt.recapVide}</p>
+                                        </template>
+
+                                        <template if:true={aRecapPieces}>
+                                            <div class="recap__tableau" role="table">
+                                                <div class="recap__ligne recap__ligne--tete" role="row">
+                                                    <span role="columnheader">{txt.recapDocument}</span>
+                                                    <span role="columnheader">{txt.recapType}</span>
+                                                    <span role="columnheader">{txt.recapTaille}</span>
+                                                    <span></span>
+                                                </div>
+                                                <template for:each={recapPieces} for:item="p">
+                                                    <div key={p.cleLigne} class="recap__ligne" role="row">
+                                                        <span class="recap__nom" role="cell"
+                                                            title={p.nomFinal}>{p.nomFinal}</span>
+                                                        <span class="recap__type" role="cell">{p.categorie}</span>
+                                                        <span class="recap__poids" role="cell">{p.taille}</span>
+                                                        <button type="button" class="recap__suppr"
+                                                            data-section={p.section} data-fichier={p.fichierId}
+                                                            title={txt.supprimerFichier}
+                                                            aria-label={txt.supprimerFichier}
+                                                            onclick={handleSupprimerPiece} disabled={isSavingLead}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                width="14" height="14" fill="none"
+                                                                stroke="currentColor" stroke-width="2"
+                                                                stroke-linecap="round">
+                                                                <line x1="18" y1="6" x2="6" y2="18" />
+                                                                <line x1="6" y1="6" x2="18" y2="18" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                            </template>
+
+                            <div class="file-upload-section" if:true={afficherUploadGenerique}>
+                                <c-custom-file-upload multiple="true" max-file-size="3000000" max-total-size="3000000"
+                                    compresser-images="true"
+                                    langue={langue} onuploadsuccess={handleFileUploadSuccess}>
+                                </c-custom-file-upload>
+
+                                <!-- Uploaded Files List -->
+                                <template if:true={hasUploadedFiles}>
+                                    <div class="uploaded-files-container">
+                                        <h3 class="uploaded-files-title">
+                                            {txt.fichiersSelectionnes} ({uploadedFilesCount})
+                                        </h3>
+                                        <ul class="uploaded-files-list">
+                                            <template for:each={pendingFiles} for:item="file">
+                                                <li key={file.id} class="uploaded-file-item">
+                                                    <svg class="file-icon" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2">
+                                                        <path
+                                                            d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                                                        <polyline points="13 2 13 9 20 9" />
+                                                    </svg>
+                                                    <span class="file-name">{file.fileName}</span>
+                                                    <button class="btn-remove-file" data-fileid={file.id}
+                                                        onclick={handleRemoveFile} title={txt.supprimerFichier}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            fill="none" stroke="currentColor" stroke-width="2">
+                                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                                        </svg>
+                                                    </button>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        </div>
+                        <!-- fin .bloc-final -->
+                    </template>
+
+                    <!-- Success Animation -->
+                    <template if:true={showSuccessAnimation}>
+                        <div class="success-animation">
+                            <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <p>{txt.succesRdv}</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

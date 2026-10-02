@@ -1,0 +1,92 @@
+<template>
+    <template if:false={hideResult}>
+        <div class="duplicate-detector">
+
+            <!-- Zone de chargement -->
+            <!-- <template if:true={isLoading}>
+            <div class="slds-is-relative slds-m-vertical_medium">
+                <lightning-spinner alternative-text="Recherche en cours..." size="small"></lightning-spinner>
+            </div>
+        </template> -->
+
+            <!-- Message d'erreur -->
+            <template if:true={errorMessage}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-vertical_small" role="alert">
+                    <span class="slds-assistive-text">Erreur</span>
+                    <lightning-icon icon-name="utility:error" alternative-text="Erreur" size="x-small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    {errorMessage}
+                </div>
+            </template>
+
+            <!-- Tableau des doublons trouvés -->
+            <template if:true={hasDuplicates}>
+                <div class="slds-m-top_small">
+                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                        <span class="slds-assistive-text">Avertissement</span>
+                        <lightning-icon icon-name="utility:warning" alternative-text="Attention" size="x-small"
+                            class="slds-m-right_x-small"></lightning-icon>
+                        <strong>{duplicateCountLabel}</strong>
+                    </div>
+
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" role="grid"
+                        aria-label="Doublons détectés">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <!-- Colonne Name toujours présente -->
+                                <th scope="col" class="slds-text-title_caps">
+                                    <div class="slds-truncate" title="Nom">Nom</div>
+                                </th>
+                                <!-- Colonnes dynamiques issues de fieldsConfig (hors Name) -->
+                                <template for:each={tableColumns} for:item="col">
+                                    <th key={col.fieldApiName} scope="col" class="slds-text-title_caps">
+                                        <div class="slds-truncate" title={col.label}>{col.label}</div>
+                                    </th>
+                                </template>
+                                <!-- Colonne action -->
+                                <th scope="col" class="slds-text-title_caps">
+                                    <div class="slds-truncate" title="Action">Action</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- duplicatesWithColumns pré-calcule les valeurs de chaque colonne
+                             pour éviter l'accès calculé {record[field]} interdit en LWC < v66 -->
+                            <template for:each={duplicatesWithColumns} for:item="record">
+                                <tr key={record.Id}>
+                                    <!-- Nom de l'enregistrement -->
+                                    <td data-label="Nom">
+                                        <div class="slds-truncate" title={record.Name}>{record.Name}</div>
+                                    </td>
+                                    <!-- Valeurs dynamiques des colonnes configurées (via record.columns) -->
+                                    <template for:each={record.columns} for:item="col">
+                                        <td key={col.key} data-label={col.label}>
+                                            <div class="slds-truncate" title={col.value}>{col.value}</div>
+                                        </td>
+                                    </template>
+                                    <!-- Lien vers l'enregistrement -->
+                                    <td data-label="Action">
+                                        <a href={record.recordUrl} target="_blank" class="slds-truncate">
+                                            Voir
+                                        </a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+
+            <!-- Aucun doublon trouvé (affiché uniquement après une recherche) -->
+            <template if:true={showNoDuplicateMessage}>
+                <div class="slds-notify slds-notify_alert slds-alert_success slds-m-vertical_small" role="alert">
+                    <span class="slds-assistive-text">Succès</span>
+                    <lightning-icon icon-name="utility:success" alternative-text="Succès" size="x-small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    Aucun doublon détecté.
+                </div>
+            </template>
+
+        </div>
+    </template>
+</template>

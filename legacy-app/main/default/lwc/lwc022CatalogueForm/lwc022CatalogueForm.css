@@ -1,0 +1,678 @@
+:host {
+    --pf-primary: #2da961;
+    --pf-primary-dark: #1f8449;
+    --pf-accent: #a3d977;
+    --pf-success: #10b981;
+    --pf-danger: #ef4444;
+    --pf-surface: #ffffff;
+    --pf-border: #dbe8d8;
+    --pf-text: #1e293b;
+    --pf-text-muted: #64748b;
+    --pf-shadow-sm: 0 1px 3px rgba(20, 83, 45, 0.06);
+    --pf-shadow-md: 0 4px 12px rgba(20, 83, 45, 0.08);
+    --pf-radius: 14px;
+    display: block;
+    width: 100%;
+}
+
+.pf-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.pf-progress {
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--pf-shadow-sm);
+    margin-bottom: 1.25rem;
+}
+
+.pf-card {
+    background: var(--pf-surface);
+    border-radius: var(--pf-radius);
+    padding: 1.25rem;
+    box-shadow: var(--pf-shadow-md);
+    margin-bottom: 1.25rem;
+}
+/* Écran 1 (Informations) : carte centrée à 50% de la largeur. */
+.pf-card-infos {
+    width: 50%;
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (max-width: 768px) {
+    .pf-card-infos { width: 100%; max-width: 100%; }
+}
+.pf-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.pf-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin: 0 0 0.75rem 0;
+    padding-bottom: 0.5rem;
+    background-image: linear-gradient(90deg, var(--pf-primary), var(--pf-accent));
+    background-size: 60px 2px;
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+.pf-hint {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    margin: 0 0 0.75rem 0;
+}
+.pf-hint-inline {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    font-style: italic;
+    margin: 0.25rem 0;
+}
+
+.pf-fields-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+/* Un champ par ligne par défaut ; demi-largeur pour les champs appairés. */
+.pf-fields-grid .pf-field {
+    flex: 1 1 100%;
+}
+.pf-fields-grid .pf-field-half {
+    flex: 1 1 calc(50% - 0.375rem);
+    min-width: 0;
+}
+
+/* ---- Intervenants (multi-comptes) ---- */
+.pf-intervenants {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed var(--pf-border);
+}
+.pf-intervenants-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--pf-text);
+    margin-bottom: 0.1rem;
+}
+.pf-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+}
+.pf-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.4rem 0.2rem 0.6rem;
+    background: rgba(45, 169, 97, 0.12);
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--pf-text);
+}
+.pf-pill-label {
+    line-height: 1.2;
+}
+.pf-pill-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.05rem;
+    height: 1.05rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pf-text-muted);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.pf-pill-remove:hover {
+    background: rgba(15, 23, 42, 0.1);
+    color: var(--pf-text);
+}
+
+/* ---- Étape 2 : deux colonnes ---- */
+.pf-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-top: 0.85rem;
+}
+@media (max-width: 900px) {
+    .pf-two-col { grid-template-columns: 1fr; }
+}
+
+.pf-field-list {
+    max-height: 60vh;
+    min-height: 16rem;
+    overflow-y: auto;
+    border: 1px solid var(--pf-border);
+    border-radius: 10px;
+    padding: 0.35rem;
+    background: #f9fdfa;
+}
+.pf-field-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+}
+.pf-field-row:hover {
+    background: rgba(45, 169, 97, 0.06);
+}
+
+.pf-selected-panel {
+    border: 1px solid var(--pf-border);
+    border-radius: 10px;
+    padding: 0.85rem;
+    background: var(--pf-surface);
+    max-height: 60vh;
+    min-height: 16rem;
+    overflow-y: auto;
+}
+.pf-panel-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pf-text-muted);
+    margin: 0 0 0.5rem 0;
+}
+.pf-selected-item {
+    border: 1px solid var(--pf-border);
+    border-radius: 8px;
+    padding: 0.6rem 0.7rem;
+    margin-bottom: 0.5rem;
+    background: #f9fdfa;
+}
+.pf-selected-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+.pf-selected-label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.pf-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.pf-badge-muted { background: rgba(100, 116, 139, 0.12); color: var(--pf-text-muted); }
+
+.pf-empty-small {
+    color: var(--pf-text-muted);
+    font-size: 0.85rem;
+    padding: 1rem 0.5rem;
+    text-align: center;
+}
+
+/* ---- Étape 3 : règles ---- */
+.pf-rule {
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: 12px;
+    margin-bottom: 0.7rem;
+    box-shadow: var(--pf-shadow-sm);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.pf-rule:hover {
+    box-shadow: var(--pf-shadow-md);
+    transform: translateY(-1px);
+}
+
+/* ---- Conflits entre règles (détection front) ---- */
+.pf-rule-conflict-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.85rem;
+    margin-bottom: 0.85rem;
+    border-radius: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+.pf-rule-conflict-banner.pf-conflict-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+.pf-rule-conflict-banner.pf-conflict-warning {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid rgba(217, 119, 6, 0.35);
+}
+.pf-rule.pf-rule-flagged {
+    border-color: rgba(217, 119, 6, 0.55);
+    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.25);
+}
+.pf-rule-conflict {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.pf-rule-conflict.pf-conflict-danger {
+    background: var(--pf-danger);
+    color: #fff;
+}
+.pf-rule-conflict.pf-conflict-warning {
+    background: #d97706;
+    color: #fff;
+}
+.pf-rule-conflict-msg {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+    color: #92400e;
+    background: #fffbeb;
+    border-bottom: 1px solid var(--pf-border);
+}
+.pf-rule-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.85rem;
+    background: linear-gradient(135deg, #e8f5ec 0%, #f1f9dd 100%);
+    border-bottom: 1px solid var(--pf-border);
+    border-radius: 12px 12px 0 0;
+}
+.pf-rule-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent));
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(45, 169, 97, 0.3);
+}
+.pf-rule-title {
+    font-weight: 700;
+    color: var(--pf-primary-dark);
+    font-size: 0.9rem;
+    flex: 1;
+}
+.pf-rule-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 0.1rem 0.2rem;
+}
+.pf-rule-actions lightning-button-icon:not(.pf-icon-danger) {
+    --slds-c-button-icon-color-foreground: var(--pf-primary-dark);
+    --slds-c-button-icon-color-foreground-hover: var(--pf-primary);
+}
+.pf-rule-head-main {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+}
+.pf-rule-chevron {
+    flex-shrink: 0;
+}
+
+/* Récap (règle repliée) */
+.pf-rule-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.6rem 0.85rem 0.75rem;
+}
+.pf-summary-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.pf-summary-tag {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 5px;
+    color: #fff;
+}
+.pf-summary-if {
+    background: var(--pf-primary);
+}
+.pf-summary-then {
+    background: var(--pf-primary-dark);
+}
+.pf-summary-conds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+.pf-summary-cond {
+    background: #eef7f0;
+    border: 1px solid var(--pf-border);
+    border-radius: 999px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--pf-text);
+}
+.pf-summary-text {
+    font-size: 0.82rem;
+    color: var(--pf-text);
+}
+.pf-summary-note {
+    font-size: 0.78rem;
+    color: var(--pf-text-muted);
+    font-style: italic;
+}
+
+.pf-rule-note {
+    padding: 0.45rem 0.75rem 0;
+}
+
+/* Bloc SI / ALORS / DÉSIGNATION : l'étiquette est placée en COLONNE GAUCHE
+   (au lieu d'une ligne dédiée) — gain de hauteur sur chaque bloc. */
+.pf-rule-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: 0.4rem 0.75rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--pf-border);
+}
+/* Le contenu du bloc occupe tout l'espace restant à droite de l'étiquette. */
+.pf-rule-block > .pf-conditions,
+.pf-rule-block > .pf-montants,
+.pf-rule-block > .pf-designation,
+.pf-rule-block > .pf-block-empty {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.pf-rule-if {
+    border-left-color: var(--pf-primary);
+    background: #f4faf5;
+}
+.pf-rule-then {
+    border-left-color: var(--pf-accent);
+    background: #fbfdf2;
+}
+.pf-block-label {
+    flex: 0 0 auto;
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    padding: 0.12rem 0.5rem;
+    border-radius: 6px;
+    margin-top: 0.3rem;
+    color: #fff;
+}
+.pf-block-if {
+    background: var(--pf-primary);
+}
+.pf-block-then {
+    background: var(--pf-primary-dark);
+}
+/* Bloc DÉSIGNATION (RT Acompte) : gabarit texte + insertion de champs. */
+.pf-rule-designation {
+    border-left-color: #6366f1;
+    background: #f6f7ff;
+}
+.pf-block-designation {
+    background: #6366f1;
+}
+.pf-designation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.pf-block-empty {
+    color: var(--pf-text-muted);
+    font-size: 0.8125rem;
+    font-style: italic;
+    margin: 0.35rem 0 0;
+}
+
+.pf-conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+.pf-condition {
+    /* Base élargie : la picklist rend l'opérateur et la valeur sur UNE ligne. */
+    flex: 1 1 320px;
+    min-width: 280px;
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.5rem;
+}
+.pf-condition-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--pf-text-muted);
+    margin-bottom: 0.15rem;
+}
+.pf-interval {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.pf-interval-sep {
+    color: var(--pf-text-muted);
+    font-weight: 700;
+}
+
+/* Condition picklist compacte : opérateur (Égal à / Une parmi / Différent de)
+   et valeur sur LA MÊME LIGNE ; les pills (multi-valeurs) passent en dessous
+   sur toute la largeur. */
+.pf-cond-picklist {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 8.5rem) 1fr;
+    gap: 0.3rem 0.35rem;
+    align-items: start;
+}
+.pf-cond-pills {
+    grid-column: 1 / -1;
+    margin-top: 0.1rem;
+    gap: 0.25rem;
+}
+/* Pills de condition : plus petites que celles des intervenants. */
+.pf-cond-pills .pf-pill {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.3rem 0.1rem 0.45rem;
+}
+/* Écran étroit : on repasse l'opérateur au-dessus de la valeur. */
+@media (max-width: 640px) {
+    .pf-cond-picklist {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pf-montants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+}
+@media (max-width: 768px) {
+    .pf-montants { grid-template-columns: 1fr; }
+}
+.pf-montant {
+    background: var(--pf-surface);
+    border: 1px solid var(--pf-border);
+    border-radius: 8px;
+    padding: 0.45rem 0.55rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+.pf-montant-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--pf-text);
+}
+.pf-montant-echeance {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.1rem;
+    padding-top: 0.35rem;
+    border-top: 1px dashed var(--pf-border);
+}
+.pf-montant-echeance-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--pf-text-muted);
+}
+.pf-formula {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+.pf-formula-input {
+    width: 100%;
+    font-family: "SF Mono", "Consolas", "Menlo", monospace;
+}
+.pf-formula-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+.pf-formula-fieldpicker {
+    width: 16rem;
+    margin-right: 0.25rem;
+}
+.pf-chip-btn {
+    border: 1px solid var(--pf-border);
+    background: var(--pf-surface);
+    color: var(--pf-text);
+    border-radius: 8px;
+    padding: 0.25rem 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.2;
+    transition: background 0.15s, border-color 0.15s;
+}
+.pf-chip-btn:hover {
+    background: rgba(45, 169, 97, 0.08);
+    border-color: var(--pf-primary);
+}
+.pf-chip-op {
+    min-width: 2rem;
+    color: var(--pf-primary-dark);
+}
+.pf-chip-clear {
+    margin-left: auto;
+    color: var(--pf-danger);
+    border-color: rgba(239, 68, 68, 0.4);
+}
+.pf-chip-clear:hover {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: var(--pf-danger);
+}
+.pf-formula-preview {
+    font-size: 0.8125rem;
+    color: var(--pf-text);
+    background: #f4faf5;
+    border: 1px solid var(--pf-border);
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    font-weight: 600;
+}
+.pf-formula-status {
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.pf-formula-ok {
+    color: #15803d;
+}
+.pf-formula-ko {
+    color: var(--pf-danger);
+}
+
+.pf-icon-danger {
+    color: var(--pf-danger);
+    --slds-c-button-icon-color-foreground: var(--pf-danger);
+    --slds-c-button-icon-color-foreground-hover: #b91c1c;
+}
+
+.pf-empty {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--pf-text-muted);
+    background: #f4faf5;
+    border-radius: 12px;
+    border: 2px dashed var(--pf-border);
+}
+.pf-empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.pf-footer {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0 0.25rem 0;
+}
+
+.pf-spinner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--pf-radius);
+    z-index: 10;
+}
+
+:host lightning-button.pf-next-btn button {
+    background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent)) !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}

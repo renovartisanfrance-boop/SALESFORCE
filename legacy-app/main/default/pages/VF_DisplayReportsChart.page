@@ -1,0 +1,83 @@
+<apex:page controller="VF_DisplayReportsChartController">
+    <style>
+        .reportFooter {  
+            visibility:hidden;  
+        }
+    </style>
+    <apex:repeat value="{!counts}" var="count" id="theRepeat">
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="3" collapsible="true">
+                <apex:repeat value="{!developerNameReports}" var="devNameReport" id="theRepeat">
+                    <apex:repeat value="{!mapDevNameInfos[devNameReport]}" var="url">
+                    <apex:pageBlockSectionItem >
+                        <apex:pageBlockSection columns="1" collapsible="true">
+                            <apex:pageBlockSectionItem >
+                        <analytics:reportChart developerName="{!devNameReport}" size="tiny" hideOnError="true" cacheResults="false" filter="[{column:'{!column}',operator:'equals',value:'{!accountName}'}]"
+                        />
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <a href="{!url}" target="_blank">View Report</a>
+                    </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+                </apex:repeat>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:repeat>
+
+
+
+
+    <!-- <script type="text/javascript">
+
+
+
+
+        setTimeout(() => {
+
+            var url_s = [];
+
+            var elements = document.getElementsByClassName("reportFooter");
+            var reportId1 = document.getElementById("report1").innerHTML;
+            var reportId2 = document.getElementById("report2").innerHTML;
+            var reportId3 = document.getElementById("report3").innerHTML;
+            var reportId4 = document.getElementById("report4").innerHTML;
+            var reportId5 = document.getElementById("report5").innerHTML;
+            var reportId6 = document.getElementById("report6").innerHTML;
+
+
+
+            // link khedam mzzn : /lightning/r/Report/00OMU000000O6Yj2AK/view?reportFilters=[{"column": "CRM_V360_T01_UW__c.ClientName__c","operator": "equals","value": "VIDAL ASSURANCE"}]
+
+
+            url_s.push('/lightning/r/Report/' + reportId1 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+            url_s.push('/lightning/r/Report/' + reportId2 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+            url_s.push('/lightning/r/Report/' + reportId3 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+            url_s.push('/lightning/r/Report/' + reportId4 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+            url_s.push('/lightning/r/Report/' + reportId5 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+            url_s.push('/lightning/r/Report/' + reportId6 + '/view?reportFilters=[{"column": "{!column}","operator": "equals","value": "{!accountName}"}]');
+
+
+
+
+            // var url_s = ["https://scr-maroc--dev.sandbox.lightning.force.com/lightning/r/Report/00OMU000000O5fo2AC/view?queryScope=userFolders", "https://scr-maroc--dev.sandbox.lightning.force.com/lightning/r/Report/00OMU000000O5ft2AC/view?queryScope=userFolders", "https://scr-maroc--dev.sandbox.lightning.force.com/lightning/r/Report/00OMU000000O5fu2AC/view?queryScope=userFolders"];
+
+
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].querySelector('a').href = url_s[i];
+                elements[i].querySelector('a').setAttribute('target', '_blank');
+
+            }
+
+
+        }, 5000);
+
+
+
+
+
+
+    </script> -->
+
+</apex:page>

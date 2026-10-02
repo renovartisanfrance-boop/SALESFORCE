@@ -1,0 +1,1381 @@
+:host {
+    --primary-color: #2563eb;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --light-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-dark: #1e293b;
+    --text-light: #64748b;
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.2s ease;
+    --radius: 12px;
+}
+
+.container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: slideInUp 0.5s ease;
+}
+
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    gap: 24px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--light-bg);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-container p {
+    font-size: 16px;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* Section Styling */
+.section-header {
+    margin-bottom: 10px;
+}
+
+.section-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.3px;
+}
+
+.section-subtitle {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+.section-header-with-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.section-title-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-action {
+    display: flex;
+    align-items: center;
+}
+
+.collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #fff, #f3f6fb);
+    border: 1px solid rgba(16, 24, 40, 0.06);
+    cursor: pointer;
+    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.collapse-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.06);
+}
+
+.collapse-btn .collapse-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 280ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.collapse-btn.collapsed .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.products-wrap {
+    overflow: hidden;
+    transition: max-height 360ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 220ms ease;
+    opacity: 1;
+    max-height: 2000px;
+}
+
+.products-wrap.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.campaign-info-section {
+    animation: slideInUp 0.6s ease 0.1s backwards;
+}
+
+.products-container {
+    margin-top: 10px;
+    padding: 4px 12px 12px 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(250, 250, 250, 0.6));
+    border-radius: 14px;
+    box-shadow: 0 6px 30px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(16, 24, 40, 0.04);
+}
+
+.product-type-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 4px;
+    padding-left: 6px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+    .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 800px) {
+    .products-grid { grid-template-columns: 1fr; }
+}
+
+/* Accès réduit : un seul produit -> carte nettement plus large sur desktop
+   (au lieu de 1/4 de la grille). Sur mobile, la carte reste pleine largeur. */
+.container--acces-reduit .products-grid {
+    grid-template-columns: minmax(0, 640px);
+}
+
+.product-card {
+    padding: 8px 10px 10px;
+    border-radius: 10px;
+    cursor: default;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.2s ease;
+    border: 1px solid rgba(16, 24, 40, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(250, 250, 255, 0.9));
+    display: flex;
+    flex-direction: column;
+    min-height: 70px;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-available {
+    background: linear-gradient(180deg, rgba(232, 245, 233, 0.9), rgba(245, 255, 246, 0.8));
+    border-color: rgba(39, 174, 96, 0.18);
+    box-shadow: 0 8px 18px rgba(39, 174, 96, 0.06);
+}
+
+.product-unavailable {
+    background: linear-gradient(180deg, #fafafa, #f6f7f9);
+    border-color: rgba(0, 0, 0, 0.03);
+    opacity: 0.85;
+    filter: grayscale(0.05);
+}
+
+.product-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(16, 24, 40, 0.06);
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+
+.product-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: var(--success-color);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.product-badge-unavailable {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #bdbdbd;
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.action-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border: 1px solid;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.action-link:hover {
+    transform: translateY(-1px);
+}
+
+.action-icon {
+    width: 13px;
+    height: 13px;
+    stroke-width: 2.4;
+    flex-shrink: 0;
+}
+
+/* CDC button — bleu */
+.action-link--cdc {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.08), rgba(0, 102, 204, 0.14));
+    border-color: rgba(0, 102, 204, 0.28);
+    color: #1d4ed8;
+}
+
+.action-link--cdc:hover {
+    background: linear-gradient(135deg, rgba(0, 102, 204, 0.16), rgba(0, 102, 204, 0.22));
+    border-color: rgba(0, 102, 204, 0.45);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
+}
+
+/* Catalogue button — violet */
+.action-link--catalogue {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.14));
+    border-color: rgba(124, 58, 237, 0.28);
+    color: #7c3aed;
+}
+
+.action-link--catalogue:hover {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.16), rgba(124, 58, 237, 0.22));
+    border-color: rgba(124, 58, 237, 0.45);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.22);
+}
+
+/* Simulateur button — orange */
+.action-link--simulateur {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.1), rgba(234, 88, 12, 0.16));
+    border-color: rgba(234, 88, 12, 0.3);
+    color: #c2410c;
+}
+
+.action-link--simulateur:hover {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.18), rgba(234, 88, 12, 0.26));
+    border-color: rgba(234, 88, 12, 0.5);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+
+.cdc-demande-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: #e67e22;
+    text-align: center;
+    padding: 4px 0;
+}
+
+@media (max-width: 768px) {
+    .container { padding: 16px; }
+    .section-header h2 { font-size: 18px; }
+}
+
+/* Simulateurs Section */
+.simulators-section {
+    margin-top: 24px;
+}
+
+.simulators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+    padding: 4px 12px 12px 12px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(250, 250, 250, 0.6));
+    border-radius: 14px;
+    box-shadow: 0 6px 30px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(16, 24, 40, 0.04);
+}
+
+.simulator-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(184, 132, 26, 0.25);
+    background: linear-gradient(135deg, #fffcf5 0%, #f4ede0 100%);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    font-family: inherit;
+}
+
+.simulator-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(184, 132, 26, 0.55);
+    box-shadow: 0 8px 22px rgba(184, 132, 26, 0.18);
+}
+
+.simulator-btn:focus {
+    outline: none;
+    border-color: #b8841a;
+    box-shadow: 0 0 0 3px rgba(184, 132, 26, 0.25);
+}
+
+.simulator-btn-code {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8e6312;
+}
+
+.simulator-btn-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.25;
+}
+
+/* Simulator Modal */
+.sim-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    animation: simBackdropFade 0.25s ease;
+}
+
+@keyframes simBackdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.sim-modal-wrapper {
+    position: relative;
+    width: 80vw;
+    height: 90vh;
+    max-width: 720px;
+    max-height: 90vh;
+    animation: simContentRise 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sim-modal-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-radius: 16px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    background: white;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.5) transparent;
+}
+
+.sim-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sim-modal-content::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+.sim-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.45);
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background 0.2s ease;
+}
+
+.sim-modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7);
+    background-clip: content-box;
+}
+
+.sim-modal-content::-webkit-scrollbar-thumb:active {
+    background: rgba(71, 85, 105, 0.85);
+    background-clip: content-box;
+}
+
+.sim-modal-inner {
+    width: 100%;
+}
+
+@keyframes simContentRise {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.sim-modal-close {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 0;
+    max-width: 40px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1.5px solid #e2e8f0;
+    background: white;
+    color: #1e293b;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 500;
+    cursor: pointer;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+.sim-modal-close:hover {
+    color: #ef4444;
+    border-color: #fecaca;
+    transform: scale(1.08) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .sim-modal-backdrop {
+        padding: 0;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+    .sim-modal-wrapper {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        max-width: none;
+        max-height: none;
+    }
+    .sim-modal-content {
+        border-radius: 0;
+        box-shadow: none;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+    .sim-modal-close {
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 10px);
+        right: calc(env(safe-area-inset-right, 0px) + 10px);
+        width: 36px !important;
+        height: 36px !important;
+        max-width: 36px;
+        font-size: 22px;
+    }
+}
+
+/* Bandeau reconnexion — accès réduit, toujours visible (desktop + mobile).
+   Style repris du bandeau info du reporting (valeurs littérales : les var() du
+   reporting n'existent pas dans ce composant). */
+.reconnexion-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fcd34d;
+    border-left: 4px solid #f59e0b;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+}
+
+.reconnexion-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    line-height: 1.4;
+}
+
+.reconnexion-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.reconnexion-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #92400e;
+    line-height: 1.35;
+}
+
+.reconnexion-text {
+    font-size: 0.7rem;
+    color: #92400e;
+    font-weight: 500;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.reconnexion-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #b45309;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0.7;
+    align-self: flex-start;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.reconnexion-close:hover {
+    opacity: 1;
+    background: rgba(180, 83, 9, 0.1);
+}
+
+/* Encadré CDC (accès réduit) : message (gauche) + flèche (droite), bouton à l'intérieur.
+   La couleur --cdc-color est fournie inline (couleur du produit ; bleu par défaut). */
+.cdc-hint-box {
+    --cdc-color: #1d4ed8;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--cdc-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #fbfbff;
+    /* background: color-mix(in srgb, var(--cdc-color) 7%, #ffffff); */
+}
+
+.cdc-hint-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cdc-hint-text {
+    flex: 1;
+    color: var(--cdc-color);
+    font-weight: 600;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.cdc-hint-arrow {
+    flex-shrink: 0;
+    color: var(--cdc-color);
+}
+
+/* Carte "Recommander un contact" (accès réduit) : même look que les cartes produit. */
+.recommander-card {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 24, 40, 0.08);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(250, 250, 255, 0.9));
+    box-shadow: 0 6px 30px rgba(15, 23, 42, 0.06);
+}
+
+/* Dans cette section uniquement : pas de bordure bleue sur l'encadré interne. */
+.recommander-card .cdc-hint-box {
+    border: none;
+}
+
+/* Boutons dans un encadré CDC (partenaire + « Recommander un contact ») : les rendre
+   clairement cliquables — fond plein (couleur du produit), texte blanc souligné, hover marqué. */
+.cdc-hint-box .action-link--cdc {
+    background: var(--cdc-color);
+    border-color: var(--cdc-color);
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+    padding: 10px 14px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, 0.18);
+}
+
+.cdc-hint-box .action-link--cdc:hover {
+    filter: brightness(0.93);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px rgba(16, 24, 40, 0.25);
+}
+
+/* Infos partenaire (marques + rémunération) — accès réduit, panneau moderne. */
+.partner-info {
+    margin-top: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(16, 24, 40, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.partner-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.partner-info-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.partner-info-icon--brand {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+}
+
+.partner-info-icon--money {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+}
+
+.partner-info-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.partner-info-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #64748b;
+    line-height: 1.3;
+}
+
+.partner-info-value {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.45;
+}
+
+.partner-brands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.partner-brand {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #c7d2fe;
+    color: #4338ca;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.partner-info-amount {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 4px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+.partner-info-sub {
+    color: #475569;
+    font-weight: 500;
+    font-size: 0.84rem;
+}
+
+/* ============================================================
+   Fiche partenaire dédiée (accès réduit) — design mockup
+   ============================================================ */
+.partner-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #94a3b8;
+    margin: 4px 2px 8px;
+}
+
+
+/* ============================================================
+   Carte campagne « Pompe à Chaleur » (accès réduit)
+   Design : maquette format-B-mobile (palette #0f6b46/#189663,
+   carte radius 18, chips vertes, boutons tactiles 52px).
+   ============================================================ */
+
+/* Accès réduit : la carte prend la même largeur que le bandeau e-mail au-dessus
+   (pleine largeur du conteneur, desktop comme mobile) — pas de max-width. */
+.pac-card {
+    background: #ffffff;
+    border: 1px solid #e6e8f0;
+    border-radius: 18px;
+    box-shadow: 0 1px 3px rgba(26, 29, 41, 0.05);
+}
+
+/* En-tête vert (campagne) — pleine largeur de la carte, coins hauts arrondis */
+.pac-card-header {
+    background: linear-gradient(135deg, #0f6b46, #189663);
+    border-radius: 17px 17px 0 0;
+    padding: 12px 16px;
+    color: #ffffff;
+}
+
+.pac-card-title {
+    font-size: clamp(21px, 5.2vw, 31px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    color: #ffffff;
+}
+
+.pac-card-subtitle {
+    font-size: clamp(13px, 3.6vw, 16px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.25;
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.pac-card-remu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #ffffff;
+}
+
+.pac-card-remu svg {
+    flex-shrink: 0;
+}
+
+/* Deux offres : 2 par ligne (desktop) / 1 par ligne (mobile).
+   Le bandeau vert « Pompe à Chaleur » reste au-dessus, pleine largeur. */
+.pac-products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Cartes de même hauteur -> les bandeaux d'actions (bas de carte) s'alignent */
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+}
+
+/* Une seule offre visible (Air/Air masquée) : la carte restante occupe toute la
+   largeur. Se désactive tout seul si l'Air/Air est restaurée (2 cartes à nouveau). */
+.pac-products-grid .pac-product:only-child {
+    grid-column: 1 / -1;
+}
+
+/* Bloc offre (PAC Air/Eau, PAC Air/Air) — carte autonome (cf. maquette) */
+.pac-product {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 14px 14px;
+    border: 1px solid #e6e8f0;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(26, 29, 41, 0.05);
+}
+
+@media (max-width: 768px) {
+    /* Mobile : marges/paddings réduits pour limiter les retours à la ligne. */
+    .container--acces-reduit {
+        padding: 10px;
+    }
+    .pac-products-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+    }
+    .pac-card-header {
+        padding: 10px 14px;
+    }
+    .pac-card-remu {
+        margin-top: 7px;
+        padding: 6px 10px;
+        font-size: 11.5px;
+    }
+    .pac-product {
+        padding: 12px;
+    }
+    .product-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+    }
+    .pac-product-title {
+        font-size: 15px;
+    }
+    .pac-product-desc {
+        font-size: 10px;
+    }
+    .pac-price-amount {
+        font-size: 18px;
+    }
+    .pac-line {
+        gap: 7px;
+        margin-top: 8px;
+        font-size: 13px;
+    }
+    .pac-criteres-link {
+        margin-top: 8px;
+    }
+}
+
+/* Ligne nom + rémunération : l'info clé en premier */
+.pac-product-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Tuile icône appareil (SVG climatiseur — Air/Eau · Air/Air), à gauche du nom de l'offre.
+   overflow: hidden -> le fond carré du SVG est rogné par les coins arrondis. */
+.product-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: #e7f6ef;
+}
+
+.product-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.pac-product-name {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+/* Libellé « métier » (petit, vert) au-dessus du nom technique, pour la
+   compréhension. Volontairement petit pour ne pas déséquilibrer la puce « Gagnez ». */
+.pac-product-desc {
+    font-size: 11px;
+    font-weight: 600;
+    color: #178a5c;
+    line-height: 1.2;
+}
+
+.pac-product-title {
+    font-size: 16.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #1a1d29;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.pac-price-chip {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #e7f6ef;
+    border-radius: 12px;
+    padding: 6px 12px;
+    text-align: center;
+}
+
+.pac-price-gain {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #178a5c;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.pac-price-amount {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0f6b46;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.pac-price-label {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #178a5c;
+    white-space: nowrap;
+}
+
+/* Lignes d'info : coût client puis marques */
+.pac-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 13.5px;
+    color: #565b6e;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
+/* Interligne entre le bloc coût client et la ligne marques */
+.pac-line + .pac-line {
+    margin-top: 10px;
+}
+
+.pac-line-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    color: #178a5c;
+}
+
+/* Le corps de ligne prend TOUTE la largeur : le popup barème (ancré dessus)
+   s'étale ainsi sur la largeur de la carte → tableaux côte à côte sur desktop. */
+.pac-line-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.pac-line-label {
+    color: #565b6e;
+}
+
+.pac-line-value strong,
+.pac-cout-list strong {
+    font-weight: 700;
+    color: #1a1d29;
+}
+
+/* Coût client — liste à tirets. Retrait négatif à gauche pour aligner les tirets
+   tout à gauche, au niveau de l'icône ⊕ (annule icône 16px + gap 7px). */
+.pac-cout-list {
+    list-style: none;
+    margin: 3px 0 0 -23px;
+    padding: 0;
+}
+
+.pac-cout-list li {
+    position: relative;
+    /* icône(16) + gap(7) : le texte des tirets s'aligne sous « Éligibilité : ». */
+    padding-left: 23px;
+    margin-top: 3px;
+}
+
+.pac-cout-list li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    /* Tiret centré dans la même colonne de 16px que l'icône ⊕ → parfaitement sous l'icône. */
+    width: 16px;
+    text-align: center;
+    color: #565b6e;
+    font-weight: 700;
+}
+
+/* Ancre de positionnement du popup barème */
+.pac-line--cout {
+    position: relative;
+}
+
+/* Bouton « Recommander un contact » — hauteur tactile.
+   Dans le bandeau .pac-cta : occupe l'espace disponible (flex). */
+.pac-reco-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 47px;
+    padding: 11px 16px;
+    background: linear-gradient(135deg, #0f6b46, #189663);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(15, 107, 70, 0.28);
+    transition: transform 0.12s ease;
+}
+
+.pac-reco-btn:hover {
+    filter: brightness(1.05);
+}
+
+.pac-reco-btn:active {
+    transform: scale(0.97);
+}
+
+.pac-reco-btn:focus-visible {
+    outline: 3px solid #1a1d29;
+    outline-offset: 2px;
+}
+
+.pac-reco-btn svg {
+    flex-shrink: 0;
+}
+
+/* Bandeau d'actions, collé au bas de la carte (margin-top:auto) pour que les
+   boutons « Recommander » s'alignent entre les 2 offres. Côte à côte sur desktop. */
+.pac-cta {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+/* Lien discret « Voir les critères d'éligibilité » — sous le bouton Recommander
+   (ouvre le PDF du cahier des charges). Volontairement peu contrasté. */
+.pac-criteres-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    align-self: center;
+    margin-top: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.12s ease;
+}
+
+/* Toujours vert + souligné, quel que soit le navigateur : certains thèmes
+   Experience Cloud imposent un bleu de lien par défaut (vu sur mobile) → !important
+   sur tous les états pour garantir le rendu souligné. */
+.pac-criteres-link,
+.pac-criteres-link:link,
+.pac-criteres-link:visited,
+.pac-criteres-link:hover,
+.pac-criteres-link:focus,
+.pac-criteres-link:active {
+    color: #178a5c !important;
+    text-decoration: underline !important;
+}
+
+.pac-criteres-link:hover {
+    color: #0f6b46 !important;
+}
+
+.pac-criteres-link svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+/* Bouton « Cahier des charges » — bouton secondaire (contour), ouvre le PDF */
+.pac-cdc-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 52px;
+    padding: 14px 14px;
+    background: #ffffff;
+    color: #1a1d29;
+    border: 1.5px solid #d5dae6;
+    border-radius: 13px;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+/* C'est un bouton désormais : pas de soulignement, quel que soit l'état. */
+.pac-cdc-btn,
+.pac-cdc-btn:link,
+.pac-cdc-btn:visited,
+.pac-cdc-btn:hover,
+.pac-cdc-btn:active,
+.pac-cdc-btn:focus {
+    text-decoration: none !important;
+}
+
+.pac-cdc-btn:hover {
+    border-color: #0f6b46;
+    background: #f4faf7;
+    color: #0f6b46;
+}
+
+.pac-cdc-btn:focus-visible {
+    outline: 3px solid #1a1d29;
+    outline-offset: 2px;
+}
+
+.pac-cdc-btn svg {
+    flex-shrink: 0;
+}
+
+/* Mobile : offres empilées -> boutons empilés pleine largeur (confort tactile) */
+@media (max-width: 768px) {
+    .pac-cta {
+        flex-direction: column;
+    }
+    .pac-cta > .pac-reco-btn,
+    .pac-cta > .pac-cdc-btn {
+        flex: none;
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pac-reco-btn,
+    .pac-cdc-btn {
+        transition: none;
+    }
+}
+
+/* ============================================================
+   Popup barème (PAC Air/Eau) — survol desktop / clic mobile.
+   Popover ancré sous la ligne « Coût client », pas un modal.
+   ============================================================ */
+.bareme-wrap {
+    display: inline;
+}
+
+.bareme-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: #0f6b46;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    vertical-align: baseline;
+}
+
+.bareme-trigger:hover {
+    color: #178a5c;
+}
+
+.bareme-info-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.bareme-popup {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    /* Assez large pour 2 tableaux côte à côte, sans s'étirer sur les très grands écrans. */
+    max-width: 720px;
+    z-index: 60;
+    background: #ffffff;
+    border: 1px solid #e6e8f0;
+    border-radius: 12px;
+    box-shadow: 0 14px 38px rgba(26, 29, 41, 0.2);
+    padding: 12px 14px;
+    max-height: 62vh;
+    overflow-y: auto;
+    animation: baremeFade 0.18s ease;
+}
+
+/* Desktop : la carte Air/Eau ne fait plus que la moitié de la largeur (grille 2 colonnes).
+   Le popup déborde vers la droite pour garder les 2 tableaux côte à côte, sans dépasser
+   l'écran (clamp sur la largeur du viewport). */
+@media (min-width: 769px) {
+    .bareme-popup {
+        right: auto;
+        width: 560px;
+        max-width: calc(100vw - 32px);
+    }
+}
+
+/* Pont invisible : garde le popup ouvert quand la souris traverse l'espace
+   entre le mot « barème » et le popup (survol desktop). */
+.bareme-popup::before {
+    content: '';
+    position: absolute;
+    top: -36px;
+    left: 0;
+    right: 0;
+    height: 36px;
+}
+
+@keyframes baremeFade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ouverture au clic (mobile + desktop) */
+.bareme-popup--open {
+    display: block;
+}
+
+/* Ouverture au survol (desktop uniquement) */
+@media (hover: hover) and (pointer: fine) {
+    .bareme-trigger:hover + .bareme-popup,
+    .bareme-popup:hover {
+        display: block;
+    }
+}
+
+.bareme-popup-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f6b46;
+    margin-bottom: 10px;
+    line-height: 1.35;
+}
+
+.bareme-tables {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+}
+
+.bareme-table-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    background: #0f6b46;
+    border-radius: 6px 6px 0 0;
+    padding: 5px 8px;
+    text-align: center;
+}
+
+.bareme-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+    color: #1a1d29;
+}
+
+.bareme-table th {
+    background: #e7f6ef;
+    color: #0f6b46;
+    font-weight: 700;
+    padding: 5px 8px;
+    text-align: left;
+    line-height: 1.3;
+    border: 1px solid #d5ecdf;
+}
+
+.bareme-table td {
+    padding: 4px 8px;
+    border: 1px solid #e6e8f0;
+    line-height: 1.35;
+}
+
+.bareme-table td:last-child {
+    font-weight: 700;
+    white-space: nowrap;
+}

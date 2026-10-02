@@ -1,0 +1,157 @@
+<template>
+    <div class="custom-file-upload-container">
+        <!-- File Upload Section with Drag & Drop -->
+        <div class="upload-section">
+            <!-- Mode NORMAL seulement. En compact, le libellé est porté par la
+                 carte elle-même (zone-compacte__titre) : le rendre ici aussi
+                 affichait le nom du type deux fois l'un sous l'autre. -->
+            <label class="file-label" lwc:if={afficherLabelSepare}>
+                {label}
+                <template if:true={required}>
+                    <span class="required-asterisk">*</span>
+                </template>
+            </label>
+
+            <!-- Variante COMPACTE : carte réduite, pensée pour plusieurs zones
+                 côte à côte. La liste des fichiers est alors affichée par le
+                 parent dans un récapitulatif global. -->
+            <template if:true={compact}>
+                <div class={carteCompacteClass} ondragover={handleDragOver} ondragleave={handleDragLeave}
+                    ondrop={handleDrop} onclick={triggerFileInput}>
+                    <input type="file" class="file-input" accept={acceptedFormats} onchange={handleFileChange}
+                        disabled={disabled} multiple={multiple} />
+                    <span class="zone-compacte__icone">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </span>
+                    <span class="zone-compacte__texte">
+                        <span class="zone-compacte__titre">{label}</span>
+                        <span class="zone-compacte__resume">{resumeCompact}</span>
+                    </span>
+                    <template if:true={hasSelectedFiles}>
+                        <span class="zone-compacte__pastille">{selectedFilesCount}</span>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Drag & Drop Zone -->
+            <div
+                lwc:if={modeNormal}
+                class={dropZoneClass}
+                ondragover={handleDragOver}
+                ondragleave={handleDragLeave}
+                ondrop={handleDrop}
+                onclick={triggerFileInput}
+            >
+                <input
+                    type="file"
+                    class="file-input"
+                    accept={acceptedFormats}
+                    onchange={handleFileChange}
+                    disabled={disabled}
+                    multiple={multiple}
+                />
+
+                <div class="drop-zone-content">
+                    <svg class="upload-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <p class="drop-zone-text">
+                        <span class="drop-zone-primary">{txt.dropPrimaire}</span>
+                        <span class="drop-zone-secondary">{txt.dropSecondaire}</span>
+                    </p>
+                    <template if:true={acceptedFormats}>
+                        <span class="accepted-formats">{txt.formatsAcceptes} {acceptedFormats}</span>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected Files List -->
+        <template if:true={afficherListeInterne}>
+            <div class="selected-files-section">
+                <div class="selected-files-header">
+                    <span class="selected-files-title">{txt.fichiersSelectionnes} ({selectedFilesCount})</span>
+                    <button class="clear-all-button" onclick={clearAllFiles} type="button">
+                        {txt.toutSupprimer}
+                    </button>
+                </div>
+                <ul class="selected-files-list">
+                    <template for:each={selectedFilesDisplay} for:item="file">
+                        <li key={file.id} class="selected-file-item">
+                            <div class="file-item-info">
+                                <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                <div class="file-details">
+                                    <span class="file-item-name">{file.fileName}</span>
+                                    <span class="file-item-size">{file.formattedSize}</span>
+                                </div>
+                            </div>
+                            <button
+                                class="remove-file-button"
+                                onclick={handleRemoveFile}
+                                data-file-id={file.id}
+                                type="button"
+                                title={txt.supprimerCeFichier}
+                            >
+                                <svg class="remove-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                    <line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+
+        <!-- Upload Progress -->
+        <template if:true={isUploading}>
+            <div class="upload-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style={progressBarStyle}></div>
+                </div>
+                <span class="progress-text">{texteProgression}</span>
+            </div>
+        </template>
+
+        <!-- Success Message -->
+        <template if:true={uploadSuccess}>
+            <div class="success-message">
+                <svg class="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>{texteSucces}</span>
+            </div>
+        </template>
+
+        <!-- Error Message -->
+        <template if:true={errorMessage}>
+            <div class="error-message">
+                <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>{errorMessage}</span>
+            </div>
+        </template>
+
+        <!-- File Info -->
+        <template if:true={afficherInfoTaille}>
+            <div class="file-info">
+                <span class="info-label">{txt.tailleTotale}</span>
+                <span class="info-value">{totalFileSize}</span>
+            </div>
+        </template>
+    </div>
+</template>

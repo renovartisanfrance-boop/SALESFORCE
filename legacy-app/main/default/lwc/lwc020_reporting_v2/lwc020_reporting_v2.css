@@ -1,0 +1,1288 @@
+/* ══════════════════════════════════════════════════════════════
+   TOKENS & VARIABLES
+══════════════════════════════════════════════════════════════ */
+:host {
+    /* Palette principale */
+    --blue-600:   #2563eb;
+    --blue-700:   #1d4ed8;
+    --blue-50:    #eff6ff;
+    --blue-100:   #dbeafe;
+    --blue-200:   #bfdbfe;
+    --slate-950:  #020617;
+    --slate-900:  #0f172a;
+    --slate-800:  #1e293b;
+    --slate-700:  #334155;
+    --slate-500:  #64748b;
+    --slate-400:  #94a3b8;
+    --slate-300:  #cbd5e1;
+    --slate-200:  #e2e8f0;
+    --slate-100:  #f1f5f9;
+    --slate-50:   #f8fafc;
+    --white:      #ffffff;
+
+    /* Sémantique */
+    --primary:       var(--blue-600);
+    --primary-dark:  var(--blue-700);
+    --primary-bg:    var(--blue-50);
+    --primary-ring:  rgba(37, 99, 235, 0.14);
+    --border:        var(--slate-200);
+    --border-strong: var(--slate-700);
+    --text-heading:  var(--slate-900);
+    --text-base:     var(--slate-800);
+    --text-muted:    var(--slate-500);
+    --text-faint:    var(--slate-400);
+    --surface:       var(--white);
+    --surface-alt:   var(--slate-50);
+
+    /* Ombres */
+    --shadow-xs: 0 1px 2px rgba(15,23,42,.05);
+    --shadow-sm: 0 1px 4px rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.04);
+    --shadow-md: 0 4px 14px rgba(15,23,42,.09), 0 2px 4px rgba(15,23,42,.05);
+
+    /* Rayon */
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  12px;
+    --r-pill: 999px;
+
+    /* Typographie */
+    --fs-title:  clamp(0.9rem,  1.2vw, 1.05rem);
+    --fs-ui:     clamp(0.68rem, 0.85vw, 0.8rem);
+    --fs-input:  clamp(0.63rem, 0.76vw, 0.75rem);
+    --fs-table:  11px;
+    --fs-badge:  10px;
+    --fs-micro:  9px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CONTAINER
+══════════════════════════════════════════════════════════════ */
+.reporting-container {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+    color: var(--text-base);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════════════════ */
+.reporting-header {
+    display: none;
+}
+
+/* Accent bleu sous le titre */
+.reporting-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 48px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: var(--r-pill);
+}
+
+.reporting-title {
+    margin: 0;
+    font-size: var(--fs-title);
+    font-weight: 700;
+    color: var(--text-heading);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+/* Point indicateur bleu */
+/* .reporting-title::before {
+    content: '';
+    display: block;
+    width: 7px;
+    height: 7px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px var(--blue-100);
+    flex-shrink: 0;
+} */
+
+/* Bouton Actualiser */
+.btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-input);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.28);
+    letter-spacing: 0.1px;
+}
+
+.btn-refresh:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.38);
+    transform: translateY(-1px);
+}
+
+.btn-refresh:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION FILTRES
+══════════════════════════════════════════════════════════════ */
+.filter-section {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--primary);
+    margin-bottom: 10px;
+    overflow: visible;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--surface-alt);
+    transition: background 0.15s ease;
+}
+
+.filter-header:hover {
+    background: var(--blue-50);
+}
+
+.filter-header-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.filter-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-header-title {
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    color: var(--text-base);
+}
+
+.filter-count-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-badge);
+    font-weight: 700;
+    background: var(--primary);
+    color: #fff;
+    line-height: 1.5;
+}
+
+.btn-clear-filters {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border: 1px solid #fca5a5;
+    border-radius: var(--r-pill);
+    background: #fff5f5;
+    color: #dc2626;
+    font-size: var(--fs-input);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-clear-filters:hover {
+    background: #fef2f2;
+    border-color: #f87171;
+    color: #b91c1c;
+}
+
+.filter-body {
+    padding: 6px 12px 10px;
+    border-top: 1px solid var(--slate-100);
+    background: var(--surface);
+    animation: filterSlideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes filterSlideDown {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 5px;
+    padding-top: 6px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-input,
+.filter-select {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: var(--fs-input);
+    font-family: inherit;
+    color: var(--text-base);
+    background: var(--surface-alt);
+    transition: all 0.14s ease;
+    box-sizing: border-box;
+}
+
+.filter-input:hover,
+.filter-select:hover {
+    border-color: var(--slate-300);
+    background: var(--surface);
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-ring);
+    background: var(--surface);
+}
+
+.filter-input::placeholder {
+    color: var(--text-faint);
+    font-size: var(--fs-micro);
+}
+
+/* ── Picklist dropdown custom ──────────────────────────────── */
+.picklist-wrapper {
+    position: relative;
+}
+
+.picklist-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    background: var(--surface-alt);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 5px 8px;
+    font-size: var(--fs-input);
+    font-family: inherit;
+    color: var(--text-base);
+    transition: all 0.14s ease;
+    box-sizing: border-box;
+}
+
+.picklist-trigger:hover {
+    border-color: var(--slate-300);
+    background: var(--surface);
+}
+
+.picklist-wrapper--open .picklist-trigger {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-ring);
+    background: var(--surface);
+}
+
+.picklist-trigger-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.picklist-arrow {
+    font-size: 8px;
+    color: var(--text-faint);
+    margin-left: 4px;
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.picklist-wrapper--open .picklist-arrow {
+    transform: rotate(180deg);
+}
+
+.picklist-dropdown {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    min-width: 180px;
+    width: max-content;
+    max-width: 280px;
+    background: var(--surface);
+    border: 1.5px solid var(--primary);
+    border-radius: var(--r-sm);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.picklist-search {
+    width: 100%;
+    padding: 5px 8px;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    font-size: var(--fs-input);
+    font-family: inherit;
+    color: var(--text-base);
+    background: var(--surface-alt);
+    box-sizing: border-box;
+    outline: none;
+}
+
+.picklist-search:focus {
+    background: var(--surface);
+    border-bottom-color: var(--primary);
+}
+
+.picklist-options {
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 2px 0;
+}
+
+.picklist-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: var(--fs-input);
+    color: var(--text-base);
+    transition: background 0.1s ease;
+    user-select: none;
+}
+
+.picklist-option:hover {
+    background: var(--blue-50);
+    color: var(--primary);
+}
+
+.picklist-checkbox {
+    cursor: pointer;
+    accent-color: var(--primary);
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.picklist-empty {
+    padding: 8px;
+    text-align: center;
+    font-size: var(--fs-input);
+    color: var(--text-faint);
+    font-style: italic;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLE WRAPPER
+══════════════════════════════════════════════════════════════ */
+.table-wrapper {
+    /* Le tableau défile HORIZONTALEMENT dans son propre cadre : sans cela il
+       élargissait la page entière, et l'en-tête sticky partait vers la gauche
+       au scroll horizontal (sticky ne fige que la verticale).
+       L'ancien « overflow: visible » visait à laisser sortir .floating-tooltip,
+       mais celui-ci est un FRÈRE de .table-wrapper (rendu en fin de template),
+       et il est position:fixed : aucun overflow d'ancêtre ne peut le rogner.
+       Rien d'autre en position:absolute ne vit ici (.picklist-dropdown est dans
+       le bloc filtres), donc le passage en auto est sans effet de bord. */
+    overflow-x: auto;
+    width: 100%;
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    margin-bottom: 300px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLEAU
+══════════════════════════════════════════════════════════════ */
+.reporting-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+/* ── En-tête ───────────────────────────────────────────────── */
+.reporting-table thead {
+    background: linear-gradient(180deg, var(--slate-800) 0%, var(--slate-900) 100%);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.reporting-table th {
+    color: var(--slate-300);
+    font-weight: 600;
+    font-size: var(--fs-table);
+    letter-spacing: 0.25px;
+    padding: 7px 8px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid rgba(255, 255, 255, 0.055);
+    border-bottom: 2px solid var(--slate-700);
+    line-height: 1.3;
+    vertical-align: middle;
+}
+
+.reporting-table th:last-child {
+    border-right: none;
+}
+
+/* ── Colonne triable ──────────────────────────────────────── */
+.reporting-table th.th-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.reporting-table th.th-sortable:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sort-icon {
+    opacity: 0.35;
+    margin-left: 2px;
+    vertical-align: middle;
+    --sds-c-icon-color-foreground-default: var(--slate-300);
+}
+
+.sort-icon--active {
+    opacity: 1;
+    --sds-c-icon-color-foreground-default: #93c5fd;
+}
+
+/* ── Colonne redimensionnable ─────────────────────────────── */
+.reporting-table th[data-sizable="true"] {
+    position: relative;
+}
+
+/* Indicateur ⇔ avant le titre */
+.reporting-table th[data-sizable="true"]::before {
+    content: '';
+    font-size: 8px;
+    font-weight: normal;
+    color: rgba(250, 204, 21, 0.85);
+    margin-right: 4px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+
+/* Barre de drag sur le bord droit */
+.reporting-table th[data-sizable="true"]::after {
+    content: '';
+    position: absolute;
+    top: 22%;
+    right: 2px;
+    width: 2px;
+    height: 56%;
+    background: rgba(164, 164, 0, 0.923);
+    border-radius: var(--r-pill);
+    pointer-events: none;
+}
+
+/* ── Corps ─────────────────────────────────────────────────── */
+.reporting-table td {
+    padding: 2px 2px;
+    font-size: var(--fs-table);
+    font-weight: 400;
+    color: var(--text-base);
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    line-height: 1.35;
+    border-right: 1px solid var(--slate-100);
+    border-bottom: 1px solid var(--slate-100);
+}
+
+.reporting-table td:last-child {
+    border-right: none;
+}
+
+/* ── Dividers section ──────────────────────────────────────── */
+.reporting-table th.l-divider,
+.reporting-table td.l-divider {
+    border-left: 2px solid var(--slate-700);
+}
+
+.reporting-table th.r-divider,
+.reporting-table td.r-divider {
+    border-right: 2px solid var(--slate-700);
+}
+
+.reporting-table th.l-divider {
+    border-left-color: rgba(255, 255, 255, 0.13);
+}
+
+.reporting-table th.r-divider {
+    border-right-color: rgba(255, 255, 255, 0.13);
+}
+
+/* ── Zebra & hover ─────────────────────────────────────────── */
+.reporting-table tbody tr:nth-child(odd) {
+    background-color: var(--surface);
+}
+
+.reporting-table tbody tr:nth-child(even) {
+    background-color: #dde8fb;
+}
+
+.reporting-table tbody tr:hover {
+    background-color: var(--blue-50);
+}
+
+.reporting-table tbody tr:hover td {
+    color: var(--slate-900);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BADGES TYPE (Piste / Opportunité / Dossier)
+══════════════════════════════════════════════════════════════ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    font-size: var(--fs-badge);
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+    border: 1px solid transparent;
+}
+
+.badge-piste {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.badge-opportunite {
+    background: #f0fdf4;
+    color: #15803d;
+    border-color: #bbf7d0;
+}
+
+.badge-dossier {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ÉTATS
+══════════════════════════════════════════════════════════════ */
+
+/* Chargement */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 0.5rem;
+}
+
+.loading-text {
+    color: var(--text-muted);
+    font-size: var(--fs-input);
+}
+
+/* Erreur */
+.error-container {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-left: 3px solid #ef4444;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    margin-bottom: 8px;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: var(--fs-table);
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Aucune donnée */
+.empty-container {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    border: 1px dashed var(--border);
+}
+
+.empty-message {
+    color: var(--text-faint);
+    font-size: var(--fs-ui);
+    margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ICÔNE INFOS (bulle SVG)
+══════════════════════════════════════════════════════════════ */
+.infos-icon {
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.infos-icon--disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COLONNE « STATUT DEVIS » (Espagne)
+   Chaque état est un bouton vers la modale de devis : d'où le curseur
+   et le survol sur toute la pastille, et non sur une icône seule.
+══════════════════════════════════════════════════════════════ */
+.th-devis {
+    white-space: nowrap;
+}
+
+.devis-etat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: var(--r-pill);
+    border: 1px solid transparent;
+    font-size: var(--fs-badge);
+    font-weight: 700;
+    line-height: 1.5;
+    cursor: pointer;
+    user-select: none;
+    transition: filter 0.15s ease, transform 0.12s ease;
+}
+
+.devis-etat:hover {
+    filter: brightness(0.94);
+    transform: translateY(-1px);
+}
+
+/* À générer : appel à l'action, donc la teinte primaire. */
+.devis-etat--generer {
+    background: var(--primary-bg);
+    border-color: var(--blue-200);
+    color: var(--primary-dark);
+}
+
+/* En attente : information, pas action urgente — ambre. */
+.devis-etat--attente {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+/* Signé : état final atteint — vert. */
+.devis-etat--signe {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #15803d;
+}
+
+.devis-etat-icone,
+.devis-etat-info {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+}
+
+.devis-etat-info {
+    opacity: 0.75;
+}
+
+/* Action « Signer devis » — posée à côté de la bulle de commentaires dans la
+   colonne Com. Même comportement au survol que la bulle, mais en trait plutôt
+   qu'en aplat pour ne pas concurrencer visuellement le compteur de messages. */
+.devis-icon {
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    vertical-align: middle;
+    color: var(--primary);
+}
+
+.devis-sign-svg {
+    width: 19px;
+    height: 19px;
+    display: block;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.devis-icon:hover .devis-sign-svg {
+    transform: scale(1.18);
+    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.5));
+}
+
+.chat-bubble-svg {
+    width: 22px;
+    height: 20px;
+    display: block;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.infos-icon:not(.infos-icon--disabled):hover .chat-bubble-svg {
+    transform: scale(1.22);
+    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.5));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PASTILLE « DOCUMENTS » (colonne Com)
+   Posée à côté de la bulle de commentaires, même gabarit et même
+   effet de survol : les deux se lisent comme une seule famille
+   d'actions. La couleur de remplissage vient de la ligne (violet
+   s'il y a des pièces jointes, gris pâle sinon), pas d'ici.
+══════════════════════════════════════════════════════════════ */
+/* La pastille occupe SEULE sa cellule : elle y est centrée, et la cellule
+   centre elle-même son contenu verticalement. Tant qu'elle cohabitait avec la
+   bulle de commentaires, les deux SVG — de hauteurs et de formes différentes —
+   se calaient sur la ligne de base et ne s'alignaient jamais vraiment. */
+.th-docs,
+.td-docs {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.doc-icon {
+    cursor: pointer;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.doc-icon-svg {
+    width: 18px;
+    height: 21px;
+    display: block;
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.doc-icon:hover .doc-icon-svg {
+    transform: scale(1.22);
+    filter: drop-shadow(0 2px 6px rgba(124, 58, 237, 0.5));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOOLTIP FLOTTANT
+══════════════════════════════════════════════════════════════ */
+.floating-tooltip {
+    position: fixed;
+    z-index: 9999;
+    background: var(--surface);
+    border-radius: var(--r-md);
+    padding: 0;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.16), 0 3px 8px rgba(15, 23, 42, 0.08);
+    min-width: 280px;
+    max-width: min(480px, 30vw);
+    border: 1px solid var(--border);
+}
+
+/* Flèche (côté droit — tooltip à gauche de la bulle) */
+.floating-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -11px;
+    transform: translateY(-50%);
+    border: 11px solid transparent;
+    border-left-color: var(--border);
+    border-right-width: 0;
+    z-index: 0;
+}
+
+.floating-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -9px;
+    transform: translateY(-50%);
+    border: 9px solid transparent;
+    border-left-color: var(--surface);
+    border-right-width: 0;
+    z-index: 1;
+}
+
+.tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+    padding: 8px 12px;
+    border-radius: 9px 9px 0 0;
+    letter-spacing: 0.2px;
+}
+
+.tooltip-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 12px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.14s ease;
+}
+
+.tooltip-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Ligne par champ : label+date / valeur */
+.tooltip-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--slate-100);
+}
+
+.tooltip-header + .tooltip-row {
+    padding-top: 8px;
+}
+
+.tooltip-row:last-child {
+    border-bottom: none;
+    padding-bottom: 8px;
+}
+
+.tooltip-field-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.tooltip-label {
+    font-size: var(--fs-badge);
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+}
+
+.tooltip-date-inline {
+    font-size: var(--fs-micro);
+    color: var(--blue-600);
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--blue-50);
+    padding: 1px 5px;
+    border-radius: var(--r-pill);
+}
+
+.tooltip-value {
+    font-size: 11px;
+    color: var(--text-base);
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BARRE DE PAGINATION
+══════════════════════════════════════════════════════════════ */
+.pagination-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px;
+    border-top: 1px solid var(--slate-100);
+    background: var(--surface-alt);
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+}
+
+.pagination-info {
+    font-size: var(--fs-input);
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.pagination-size {
+    display: flex;
+    align-items: center;
+}
+
+.page-size-select {
+    padding: 3px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--text-base);
+    font-size: var(--fs-input);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.page-size-select:hover {
+    border-color: var(--blue-200);
+    background: var(--primary-bg);
+    color: var(--primary);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-page {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--text-base);
+    font-size: var(--fs-input);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-page:hover:not(:disabled) {
+    background: var(--primary-bg);
+    border-color: var(--blue-200);
+    color: var(--primary);
+}
+
+.btn-page:disabled {
+    opacity: 0.38;
+    cursor: default;
+}
+
+.page-indicator {
+    font-size: var(--fs-input);
+    font-weight: 600;
+    color: var(--text-base);
+    min-width: 50px;
+    text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLEAU MOBILE — caché sur desktop par défaut
+══════════════════════════════════════════════════════════════ */
+.mobile-table-wrapper {
+    display: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BANNIÈRE AVERTISSEMENT MOBILE
+   Cachée sur desktop, visible uniquement sur mobile
+══════════════════════════════════════════════════════════════ */
+.mobile-warning-banner {
+    display: none; /* masquée par défaut (desktop) */
+}
+
+@media (max-width: 768px) {
+    .mobile-warning-banner {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 1px solid #fcd34d;
+        border-left: 4px solid #f59e0b;
+        border-radius: var(--r-md);
+        padding: 10px 14px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .mobile-warning-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+        line-height: 1.4;
+    }
+
+    .mobile-warning-text {
+        font-size: var(--fs-input);
+        color: #92400e;
+        font-weight: 500;
+        line-height: 1.5;
+        flex: 1;
+    }
+
+    .mobile-warning-close {
+        flex-shrink: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #b45309;
+        font-size: 14px;
+        line-height: 1;
+        padding: 2px 4px;
+        border-radius: 4px;
+        opacity: 0.7;
+        transition: opacity 0.15s ease, background 0.15s ease;
+        align-self: flex-start;
+    }
+
+    .mobile-warning-close:hover {
+        opacity: 1;
+        background: rgba(180, 83, 9, 0.1);
+    }
+}
+
+/* POPUP 2 — message partenaire (accès réduit, tant qu'aucun RDV) : visible desktop + mobile. */
+.partner-empty-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #3b82f6;
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.partner-empty-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    line-height: 1.4;
+}
+
+.partner-empty-text {
+    flex: 1;
+    font-size: var(--fs-input);
+    color: #1e40af;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (scroll horizontal activé)
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    /* Cacher le tableau desktop, afficher le tableau mobile */
+    .table-wrapper {
+        display: none;
+    }
+
+    .filter-item--desktop-only {
+        display: none;
+    }
+
+    .mobile-table-wrapper {
+        display: block;
+        width: 100%;
+        background: var(--surface);
+        border-radius: var(--r-md);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .mobile-table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+    }
+
+    .reporting-table-mobile {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto;
+        min-width: 680px;
+    }
+
+    .reporting-table-mobile thead {
+        background: linear-gradient(180deg, var(--slate-800) 0%, var(--slate-900) 100%);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .reporting-table-mobile th {
+        color: var(--slate-300);
+        font-weight: 600;
+        font-size: var(--fs-table);
+        letter-spacing: 0.25px;
+        padding: 7px 6px;
+        text-align: center;
+        white-space: nowrap;
+        border-right: 1px solid rgba(255, 255, 255, 0.055);
+        border-bottom: 2px solid var(--slate-700);
+        line-height: 1.3;
+        vertical-align: middle;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .reporting-table-mobile th:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .reporting-table-mobile th:last-child {
+        border-right: none;
+    }
+
+    .reporting-table-mobile td {
+        padding: 3px 4px;
+        font-size: var(--fs-table);
+        font-weight: 400;
+        color: var(--text-base);
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        line-height: 1.35;
+        border-right: 1px solid var(--slate-100);
+        border-bottom: 1px solid var(--slate-100);
+    }
+
+    .reporting-table-mobile td:last-child {
+        border-right: none;
+    }
+
+    .reporting-table-mobile tbody tr:nth-child(odd) {
+        background-color: var(--surface);
+    }
+
+    .reporting-table-mobile tbody tr:nth-child(even) {
+        background-color: #dde8fb;
+    }
+
+    .reporting-table-mobile tbody tr:hover {
+        background-color: var(--blue-50);
+    }
+
+    /* ── Colonne Nom figée (sticky left) ───────────────────── */
+    .reporting-table-mobile .mobile-sticky-col {
+        position: sticky;
+        left: 0;
+        z-index: 2;
+        border-right: 2px solid var(--slate-300);
+        background-color: var(--surface);
+    }
+
+    .reporting-table-mobile thead .mobile-sticky-col {
+        z-index: 3;
+        background: linear-gradient(180deg, var(--slate-800) 0%, var(--slate-900) 100%);
+        border-right-color: rgba(255, 255, 255, 0.13);
+    }
+
+    .reporting-table-mobile tbody tr:nth-child(even) .mobile-sticky-col {
+        background-color: #dde8fb;
+    }
+
+    .reporting-table-mobile tbody tr:hover .mobile-sticky-col {
+        background-color: var(--blue-50);
+    }
+
+    .floating-tooltip {
+        max-width: min(320px, 88vw);
+    }
+
+    .filter-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    }
+}
+
+/* ── Nom Client : affichage desktop / mobile ─────────────────────────────── */
+.nom-mobile { display: none; }
+.nom-desktop { display: inline; }
+
+@media (max-width: 768px) {
+    .nom-desktop { display: none; }
+    .nom-mobile  { display: inline; }
+}
+/* ── Colonne Statut Devis : pictogrammes d'action ─────────────────────────
+   Le stylo (relance de signature) et le (i) (date de signature) sont posés à
+   CÔTÉ du badge, non dedans : imbriqués, tout le badge devenait cliquable pour
+   la relance alors que seul le pictogramme doit l'être. */
+/* Le (i) vit DANS le badge « Signé ». Purement decoratif : sans
+   pointer-events: none il portait son propre survol et sa propre infobulle,
+   qui s'affichait de travers sous le curseur d'aide. Le badge porte seul le
+   titre (la date) et le clic. */
+.devis-etat--signe .devis-etat-info {
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    vertical-align: -1px;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+
+/* ── Colonne Statut Devis : statut inerte, action separee ──────────────────
+   « Att. signature » n'est plus cliquable : c'est un etat, pas une commande.
+   Seule la pastille de relance agit, ce qui evite qu'un clic destine a
+   consulter declenche un envoi au client. */
+.devis-etat--inerte {
+    cursor: default;
+}
+
+/* Meme gabarit que .devis-etat — padding, rayon, taille et hauteur de ligne.
+   Les deux pastilles se suivent sur la meme ligne : une plus petite que
+   l'autre donnait l'impression d'un element secondaire, alors que c'est la
+   SEULE action possible depuis cette cellule. Seules les couleurs different. */
+.devis-relance-action {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 5px;
+    padding: 3px 9px;
+    border: 1px solid #fcd34d;
+    border-radius: var(--r-pill);
+    background: #fffbeb;
+    color: #92400e;
+    font-size: var(--fs-badge);
+    line-height: 1.5;
+    font-weight: 700;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.devis-relance-action:hover {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+/* Des qu'une relance a eu lieu, la pastille se remplit : plus le client tarde,
+   plus elle se voit. Ambre et non rouge — une relance n'est pas un echec. */
+.devis-relance-action--compte {
+    background: #fef3c7;
+    border-color: #f59e0b;
+}

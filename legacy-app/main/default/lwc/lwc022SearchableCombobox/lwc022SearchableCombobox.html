@@ -1,0 +1,56 @@
+<template>
+    <div class="pf-sc">
+        <template lwc:if={showLabel}>
+            <label class="pf-sc-label">
+                {label}<template lwc:if={required}><abbr class="pf-sc-req" title="Obligatoire">*</abbr></template>
+            </label>
+        </template>
+
+        <div class="pf-sc-field">
+            <input
+                type="text"
+                class={inputClass}
+                role="combobox"
+                aria-haspopup="listbox"
+                aria-autocomplete="list"
+                aria-expanded={open}
+                value={displayValue}
+                placeholder={placeholder}
+                disabled={disabled}
+                autocomplete="off"
+                onfocus={handleFocus}
+                onclick={handleClick}
+                oninput={handleInput}
+                onblur={handleBlur}
+                onkeydown={handleKeyDown} />
+            <template lwc:if={showClear}>
+                <button
+                    type="button"
+                    class="pf-sc-clear"
+                    title="Effacer"
+                    aria-label="Effacer la sélection"
+                    tabindex="-1"
+                    onmousedown={handleClearMouseDown}>×</button>
+            </template>
+            <span class="pf-sc-arrow"></span>
+
+            <div class={dropdownClass}>
+                <ul class="pf-sc-list" role="listbox">
+                    <template for:each={filteredOptions} for:item="opt">
+                        <li
+                            key={opt.value}
+                            class={opt.cls}
+                            role="option"
+                            data-value={opt.value}
+                            onmousedown={handleOptionMouseDown}>
+                            {opt.label}
+                        </li>
+                    </template>
+                    <template lwc:if={noResults}>
+                        <li class="pf-sc-empty">{emptyMessage}</li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>

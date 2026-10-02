@@ -1,0 +1,152 @@
+<template>
+    <div class="previsite-app">
+
+        <!-- Chargement : etat par defaut, le controle d'acces est asynchrone -->
+        <template lwc:if={isLoading}>
+            <div class="etat-centre">
+                <div class="spinner"></div>
+                <p class="etat-texte">{txt.verification}</p>
+            </div>
+        </template>
+
+        <!-- Ecran d'erreur : un seul bloc pour tous les cas, le texte vient de la cle -->
+        <template lwc:elseif={hasError}>
+            <div class="etat-centre">
+                <div class="carte-erreur">
+                    <img src={logoEconatura} alt="ECONATURA" class="logo-erreur" />
+                    <div class="icone-erreur" aria-hidden="true">!</div>
+                    <h1 class="titre-erreur">{errorTitle}</h1>
+                    <p class="message-erreur">{errorMessage}</p>
+
+                    <!-- Bascule disponible AUSSI sur l'erreur : un message qu'on ne
+                         comprend pas est le pire moment pour priver du choix.
+                         Reservee au mode test (?c__test=true). -->
+                    <template lwc:if={afficherBasculeLangue}>
+                        <button class="bascule bascule-erreur" onclick={handleBasculerLangue}>
+                            {libelleBascule}
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- Acces accorde : token valide + role du portail (Pre-visiteur ou Installateur) + compte actif -->
+        <template lwc:elseif={accesAccorde}>
+            <!-- En-tete FIXE : l'en-tete et son bandeau degrade restent colles en
+                 haut de l'ecran pendant le defilement. -->
+            <div class="entete-fixe">
+            <header class="entete">
+                <img src={logoEconatura} alt="ECONATURA" class="logo" />
+
+                <!-- Menu present UNIQUEMENT le contrat signe : avant, le portail
+                     ne doit offrir aucune autre destination. -->
+                <template lwc:if={afficherNav}>
+                    <nav class={classeNav}>
+                        <!-- Premier lien selon le role : « Mes previsites » ou
+                             « Mes installations ». -->
+                        <a href="#" data-vue={vueActivite} class={classeNavActivite} onclick={handleNav}>
+                            {libelleNavActivite}
+                        </a>
+                        <a href="#" data-vue="facturation" class={classeNavFacturation}
+                           onclick={handleNav} title={titreNavFacturation}>
+                            {txt.navFacturation}
+                        </a>
+                    </nav>
+                </template>
+
+                <div class="entete-droite">
+                    <span class="nom-previsiteur">{nomPrevisiteur}</span>
+
+                    <!-- Bouton de menu : n'existe qu'en dessous de 640px (CSS).
+                         Place a DROITE, le logo restant a gauche. -->
+                    <template lwc:if={afficherNav}>
+                        <button
+                            class={classeBoutonMenu}
+                            onclick={handleBasculerMenu}
+                            aria-expanded={menuOuvert}
+                            aria-label="Menu">
+                            <span class="menu-barre" aria-hidden="true"></span>
+                            <span class="menu-barre" aria-hidden="true"></span>
+                            <span class="menu-barre" aria-hidden="true"></span>
+                        </button>
+                    </template>
+                    <template lwc:if={afficherBasculeLangue}>
+                        <button
+                            class="bascule"
+                            onclick={handleBasculerLangue}
+                            title={libelleBascule}
+                            aria-label={libelleBascule}>
+                            <span class="bascule-globe" aria-hidden="true">🌐</span>
+                            <span class="bascule-code">{libelleBascule}</span>
+                        </button>
+                    </template>
+                </div>
+            </header>
+            <div class="grad"></div>
+            </div>
+
+            <main class="contenu">
+                <!-- Contrat non signe : c'est le SEUL ecran accessible. -->
+                <template lwc:if={afficherContrat}>
+                    <c-lwc027_gestion_contrat
+                        token={tokenCourant}
+                        langue={langue}
+                        edition-directe={retourFormulaire}
+                        oncontratsigne={handleContratSigne}
+                        oncontratenvoye={handleContratEnvoye}>
+                    </c-lwc027_gestion_contrat>
+                </template>
+
+                <!-- Contrat signe : le portail s'ouvre, une vue a la fois. -->
+                <!-- Ecrans du role : memes proprietes, composants distincts. -->
+                <template lwc:if={vuePrevisites}>
+                    <c-lwc027_gestion_previsite
+                        token={tokenCourant}
+                        nom={nomPrevisiteur}
+                        langue={langue}
+                        contrat-en-attente={contratEnAttente}
+                        email={emailPrevisiteur}
+                        mode-test={modeTest}
+                        onmodifierinfos={handleModifierInfos}>
+                    </c-lwc027_gestion_previsite>
+                </template>
+
+                <template lwc:if={vueInstallations}>
+                    <c-lwc027_gestion_installations
+                        token={tokenCourant}
+                        nom={nomPrevisiteur}
+                        langue={langue}
+                        contrat-en-attente={contratEnAttente}
+                        email={emailPrevisiteur}
+                        onmodifierinfos={handleModifierInfos}>
+                    </c-lwc027_gestion_installations>
+                </template>
+
+                <template lwc:if={vueFacturationPrevisiteur}>
+                    <c-lwc027_facturation_previsiteur
+                        token={tokenCourant}
+                        nom={nomPrevisiteur}
+                        societe={societe}
+                        nif={nif}
+                        activite={activite}
+                        date-signature={dateSignature}
+                        langue={langue}>
+                    </c-lwc027_facturation_previsiteur>
+                </template>
+
+                <template lwc:if={vueFacturationInstallateur}>
+                    <c-lwc027_facturation_installateur
+                        token={tokenCourant}
+                        nom={nomPrevisiteur}
+                        societe={societe}
+                        nif={nif}
+                        activite={activite}
+                        date-signature={dateSignature}
+                        langue={langue}>
+                    </c-lwc027_facturation_installateur>
+                </template>
+            </main>
+        </template>
+
+    </div>
+</template>

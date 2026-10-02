@@ -1,0 +1,6 @@
+<aura:component implements="lightning:actionOverride">
+    <div class="slds-align_absolute-center">
+        <c:lwc014_AjouterNStocks  />
+         <!-- Hello -->
+    </div>
+</aura:component>

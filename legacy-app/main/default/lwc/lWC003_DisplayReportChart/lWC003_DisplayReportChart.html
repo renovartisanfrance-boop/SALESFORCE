@@ -1,0 +1,26 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 04-11-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+   <lightning-spinner alternative-text="Loading" size="large" lwc:if={showSpinner}></lightning-spinner>
+   <div lwc:else>
+         <lightning-card  variant="Narrow"  title={title} icon-name="standard:metrics" >
+           <!--  <lightning-button variant="brand"  label="Show report" title="Show report" onclick={handleClickr_to_url} class="slds-m-left_x-small butt_show_report"></lightning-button>
+             <button class="slds-button slds-button_outline-brand" if:true={developerNameReport1} slot="actions">Show Report 1</button>
+            <button class="slds-button slds-button_outline-brand" if:true={developerNameReport2} slot="actions">Show Report 2</button>
+            <button class="slds-button slds-button_outline-brand" if:true={developerNameReport3} slot="actions">Show Report 3</button>
+            <button class="slds-button slds-button_outline-brand" if:true={developerNameReport4} slot="actions">Show Report 4</button>
+            <button class="slds-button slds-button_outline-brand" if:true={developerNameReport5} slot="actions">Show Report 5</button>
+            <button class="slds-button slds-button_outline-brand" if:true={developerNameReport6} slot="actions">Show Report 6</button> -->
+            <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions" onclick={displayCharts} if:true={showCharts}></lightning-button-icon>
+            <lightning-button-icon  icon-name="utility:left" variant="border-filled" alternative-text="Show More" slot="actions" onclick={displayCharts} if:false={showCharts}></lightning-button-icon>
+            <div  if:true={showCharts} class="frameContainer">
+                  <iframe src={urlVf} width="100%" height={height} frameborder="0"></iframe>
+            </div>
+         </lightning-card>
+   </div>
+</template>

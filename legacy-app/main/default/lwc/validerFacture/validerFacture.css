@@ -1,0 +1,50 @@
+.vf-container {
+    position: relative;
+    min-width: 24rem;
+}
+
+/* Zone de contenu : hauteur stable pour éviter tout saut au chargement */
+.vf-content {
+    min-height: 9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.vf-placeholder {
+    min-height: 9rem;
+}
+
+/* Pendant le chargement, le contenu reste visible mais estompé sous le spinner */
+.vf-container.is-loading .vf-content {
+    opacity: 0.4;
+}
+
+/* Bloc résultat (succès / échec) : icône + textes empilés et centrés */
+.vf-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.vf-result h2 {
+    margin: 0;
+}
+
+.vf-result p {
+    margin: 0;
+    max-width: 28rem;
+}
+
+.vf-erreur {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.5rem 0.25rem;
+    text-align: left;
+}
+
+.vf-erreur-icon {
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}

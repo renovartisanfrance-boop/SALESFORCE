@@ -1,0 +1,9 @@
+<aura:component implements="lightning:actionOverride">
+    <div class="form-container">
+        <c:lwc008_dynamicObjectForm onsaverecord="{!c.handleClose}"/>
+         <!-- Hello -->
+          <!-- <button class="slds-button slds-button_brand" onclick="{!c.handleClose}">
+            click me
+          </button> -->
+    </div>
+</aura:component>

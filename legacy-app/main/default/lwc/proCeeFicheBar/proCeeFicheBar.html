@@ -1,0 +1,119 @@
+<template>
+    <div class="fb-root">
+
+        <!-- ADMIN — "Voir en tant que" : simule un profil pour tester le rendu -->
+        <template if:true={isAdmin}>
+            <div class="fb-admin-impersonate">
+                <lightning-icon icon-name="utility:user_role" size="x-small" class="fb-admin-impersonate-icon"></lightning-icon>
+                <span class="fb-admin-impersonate-label">Voir en tant que :</span>
+                <lightning-combobox
+                    name="simulateProfile"
+                    label="Voir en tant que"
+                    variant="label-hidden"
+                    value={simulatedProfile}
+                    options={simulateProfileOptions}
+                    onchange={handleSimulateProfile}
+                    class="fb-admin-impersonate-select"
+                ></lightning-combobox>
+            </div>
+        </template>
+
+        <!-- TOPBAR -->
+        <div class="fb-topbar">
+            <div class="fb-topbar-left">
+                <span class="fb-chip">
+                    <svg viewBox="0 0 8 8" class="fb-chip-dot"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
+                    {ficheTitre} - {currentProfile}
+                </span>
+            </div>
+            <div class="fb-topbar-right">
+                <template if:false={isEditing}>
+                    <template if:true={hasEditableSections}>
+                        <button type="button" class="fb-btn fb-btn--blue" onclick={handleEditAll}>
+                            <lightning-icon icon-name="utility:edit" size="x-small" class="fb-icon-white"></lightning-icon>
+                            Modifier
+                        </button>
+                    </template>
+                </template>
+            </div>
+        </div>
+
+        <!-- FORMULAIRE (toujours présent — sections basculent individuellement en édition) -->
+        <lightning-record-edit-form
+            record-id={recordId}
+            object-api-name="Pro__c"
+            onsubmit={handleFormSubmit}
+            onsuccess={handleSuccess}
+            onerror={handleError}
+        >
+            <lightning-messages></lightning-messages>
+            <div class="fb-body">
+                <template for:each={sections} for:item="section">
+                    <div key={section.nom} class={section.sectionClass}>
+                        <div class="fb-section-header">
+                            <span class="fb-section-name">{section.nom}</span>
+                            <div class="fb-section-header-actions">
+                                <template if:true={section.showEditButton}>
+                                    <button type="button" class="fb-btn fb-btn--blue fb-btn--sm" data-section={section.nom} onclick={handleEditSection}>
+                                        <lightning-icon icon-name="utility:edit" size="x-small" class="fb-icon-white"></lightning-icon>
+                                        Modifier
+                                    </button>
+                                </template>
+                                <template if:true={section.isEditing}>
+                                    <span class="fb-section-edit-badge">
+                                        <lightning-icon icon-name="utility:edit" size="x-small" class="fb-icon-hint"></lightning-icon>
+                                        En cours de modification
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class={section.gridClass}>
+                            <template for:each={section.champs} for:item="champ">
+                                <div key={champ.apiName} class={champ.currentCellClass}>
+                                    <template if:true={champ.isField}>
+                                        <template if:true={champ.showInput}>
+                                            <lightning-input-field field-name={champ.apiName} onchange={handleFieldChange}></lightning-input-field>
+                                        </template>
+                                        <template if:false={champ.showInput}>
+                                            <template if:true={champ.plainToHtml}>
+                                                <lightning-formatted-rich-text value={champ.htmlValue}></lightning-formatted-rich-text>
+                                            </template>
+                                            <template if:false={champ.plainToHtml}>
+                                                <lightning-output-field field-name={champ.apiName}></lightning-output-field>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </lightning-record-edit-form>
+
+        <!-- BARRE STICKY — visible dès qu'une section est en mode édition -->
+        <template if:true={isEditing}>
+            <div class="fb-sticky-bar">
+                <span class="fb-sticky-hint">
+                    <lightning-icon icon-name="utility:edit" size="x-small" class="fb-icon-hint"></lightning-icon>
+                    Modification : {editingLabel}
+                </span>
+                <div class="fb-sticky-actions">
+                    <button type="button" class="fb-btn fb-btn--grey" onclick={handleCancel} disabled={isSaving}>
+                        Annuler
+                    </button>
+                    <button class="fb-btn fb-btn--green" onclick={handleSaveClick} disabled={isSaving}>
+                        <template if:true={isSaving}>
+                            <lightning-spinner size="x-small" alternative-text="Sauvegarde..." class="fb-spinner-inline"></lightning-spinner>
+                        </template>
+                        <template if:false={isSaving}>
+                            <lightning-icon icon-name="utility:check" size="x-small" class="fb-icon-white"></lightning-icon>
+                        </template>
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

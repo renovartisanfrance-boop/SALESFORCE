@@ -1,0 +1,72 @@
+<template>
+    <template if:true={isVisible}>
+        <div class={notificationClass}>
+            <!-- Layout horizontal avec bouton à gauche -->
+            <div class="horizontal-layout">
+
+                <!-- GAUCHE: Bouton Nouveau Dossier -->
+                <div class="action-section">
+                    <button class="action-btn" onclick={handleNewFolder}>
+                        <svg class="btn-icon" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor" />
+                        </svg>
+                        Nouveau Dossier
+                    </button>
+                </div>
+
+                <!-- DROITE: Reste du composant (Message + Compte à rebours + Flèche) -->
+                <div class="content-section countdown-section">
+
+                    <!-- Message avec icône -->
+                    <div class="message-section">
+                        <div class="message-content">
+                            <!-- <h3 class="title">{urgentIcon} Actualisation recommandée</h3> -->
+                            <p class="message">Cliquez sur <strong>« Actualiser »</strong>&nbsp;ci dessous pour vos
+                                stats
+                                récentes</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </template>
+
+    <!-- MODAL POPUP -->
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+
+                <!-- Modal Header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Fermer" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Fermer" variant="inverse"
+                            size="small">
+                        </lightning-icon>
+                        <span class="slds-assistive-text">Fermer</span>
+                    </button>
+                    <h2 class="slds-modal__title slds-hyphenate">Nouveau Dossier</h2>
+                </header>
+
+                <!-- Modal Body - Insérez votre composant LWC ici -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <!-- REMPLACEZ PAR VOTRE COMPOSANT LWC -->
+                    <c-lwc008_dynamic-object-form exp-object-api-name="Lead"></c-lwc008_dynamic-object-form>
+                </div>
+
+                <!-- Modal Footer -->
+                <!-- <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Annuler" onclick={closeModal}>
+                    </lightning-button>
+                    <lightning-button variant="brand" label="Créer" onclick={handleSave}>
+                    </lightning-button>
+                </footer> -->
+
+            </div>
+        </section>
+
+        <!-- Backdrop (overlay sombre) -->
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
