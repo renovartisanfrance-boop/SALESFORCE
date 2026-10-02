@@ -139,3 +139,17 @@ Constats (données) :
 ⚠️ **Décision à prendre** : passer régies, pré-visiteurs et sous-traitants en vrais utilisateurs Experience demande des licences
 supplémentaires (128 régies actives). Options à chiffrer : licences « Login » (facturées à la connexion), Customer Community Plus,
 ou garder un accès invité sécurisé (jeton signé, durée limitée) pour les acteurs occasionnels.
+
+### Comptabilité, pré-visiteurs, sous-traitants
+
+| Sujet | Réponse de Micke |
+|---|---|
+| Comptabilité | **Selon l'échéance prévue dans la grille tarifaire**, une **demande de facturation** est envoyée au prestataire (confirmateur ou autre), qui **envoie sa facture**. |
+| Pré-visiteurs (17) | **Sous-traitants externes.** |
+| Sous-traitants installateurs | Portail avec **planning, SAV, facturation**. |
+| Licences | Souhait de Micke : **tous en utilisateurs Experience sans licence**, comme ce qui existe avec l'objet Campagne. |
+
+⚠️ Point à valider avec Salesforce avant de concevoir : un accès **avec identifiant et espace personnel durable** construit sur l'utilisateur invité
+(sans licence) contourne le modèle de licences et pose des risques de sécurité (toutes les données passent par du code `without sharing`).
+L'accès invité est fait pour des usages **ponctuels et sans compte** (formulaire, signature, compte rendu d'une visite par lien unique).
+Architecture prévue pour supporter les deux : lien sécurisé à usage limité pour l'occasionnel, compte Experience pour l'usage régulier.
