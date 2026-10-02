@@ -53,7 +53,44 @@ Statut CEE : En attente envoi → Déposé → Validation délégataire.
 - **Parrainage** : rémunération gérée par l'objet **Grille tarifaire** (qui gère tous les prix) ; pour l'instant **prix fixe** par filleul.
 - **Formulaires de pub et achats de leads** : arrivent **automatiquement** dans Salesforce (outil à identifier).
 
-### Constat important
+### Constat (données)
 
 `Pro__c` est **le vrai dossier client** (397 champs personnalisés), créé à partir du Lead.
 Le Lead sert de fiche de prospection, puis le dossier vit sur `Pro__c`.
+
+## Bloc 2 — Utilisateurs
+
+### Télépro (11 utilisateurs, licence Partner)
+
+| Sujet | Aujourd'hui | Nouvelle version |
+|---|---|---|
+| Attribution des leads | Le **responsable télépro distribue** les leads à la main | Idem (outil de distribution à prévoir pour le responsable) |
+| Visibilité | — | **Ses leads + les dossiers issus de ses leads** (pour suivre ses résultats) |
+| NRP | Compteur NRP 1x, 2x, 3x… puis le lead est **laissé de côté** | **Relances automatiques par SMS, e-mail et WhatsApp** (demande de Micke) |
+| Téléphonie | **Aircall et Ringover** | À préciser (qui utilise quoi) |
+
+### Confirmateur (5 utilisateurs, licence Partner)
+
+| Sujet | Réponse de Micke |
+|---|---|
+| Ce qu'il vérifie | Une **liste de champs obligatoires qui bloquent la conversion** s'ils ne sont pas remplis : des **champs communs à toutes les fiches** + des **champs spécifiques à chaque fiche CEE**. |
+| Réception — régies / externe | Une **vue filtrée** des leads venant des régies ou de l'externe, avec les informations nécessaires à la confirmation. |
+| Réception — interne | Le télépro passe son statut Leads à **« Envoyé en confirmation »**. |
+| Pré-visite | Si la fiche **nécessite une pré-visite**, le confirmateur le signale. Il la **planifie lui-même** s'il a la réponse du pré-visiteur en temps réel ; sinon il **convertit avec « passage demandé »**. Le résultat de la visite (effectuée ou autre) est ensuite géré **sur le dossier**. |
+| Suite | Conversion de la piste (Lead) en dossier (`Pro__c`). |
+| Visibilité | **Ses dossiers uniquement.** |
+
+À retenir pour la nouvelle version : règles « champs obligatoires par fiche » paramétrables (Custom Metadata), sans code à modifier pour chaque nouvelle fiche.
+
+### Secrétariat (licence Partner)
+
+| Sujet | Réponse de Micke |
+|---|---|
+| Rôle | Gère la **pré-visite**, les **documents** et les **dépôts de dossiers** (aides). |
+| Profils multiples | **Erreur historique** : un seul profil Secrétariat dans la nouvelle version. |
+| Visibilité | **Tous les dossiers de son périmètre** (marché + pays). |
+
+### Devis (réponse de Micke)
+
+- Aujourd'hui : un **modèle PDF publiposté**, toujours le même, fait par le développeur ; « rien de réactif ».
+- Nouvelle version : **devis automatisé par fiche CEE**, à partir d'un **modèle que l'on définira** ensemble (prix issus de la Grille tarifaire).
