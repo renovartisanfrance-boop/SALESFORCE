@@ -94,3 +94,48 @@ Le Lead sert de fiche de prospection, puis le dossier vit sur `Pro__c`.
 
 - Aujourd'hui : un **modèle PDF publiposté**, toujours le même, fait par le développeur ; « rien de réactif ».
 - Nouvelle version : **devis automatisé par fiche CEE**, à partir d'un **modèle que l'on définira** ensemble (prix issus de la Grille tarifaire).
+
+### Closer (licence Partner)
+
+| Sujet | Réponse de Micke |
+|---|---|
+| Rôle | **Envoie en installation.** Intervient **après** : confirmation → pré-visite effectuée (si nécessaire) → documents récupérés. |
+| SAV | Le **closer transmet aux sous-traitants**. Un accès Experience pour les sous-traitants (planning + SAV) était en cours de développement. |
+
+Retrouvé dans le code : menu « Portail Sous-traitant » (Installation, SAV, Facturation), composants `lwc027_gestion_installations`,
+`lwc027_facturation_installateur`, `lwc027_facturation_previsiteur` (modifiés en septembre 2026), 2 profils « Sous-traitant » sans connexion récente.
+
+### Stock (réponse de Micke)
+
+**À refondre entièrement** : un objet moderne, **dynamique**, simple, qui s'adapte sans développement **quand une nouvelle fiche est ajoutée**.
+
+### Planning (réponse de Micke)
+
+Ancien besoin (planification par distances entre codes postaux) : **à moderniser**.
+
+### Apporteurs d'affaires et régies
+
+| Sujet | Réponse de Micke |
+|---|---|
+| Apporteur | **Crée des régies**, **suit leurs dossiers** et **sa facturation**. Doit passer en utilisateur Experience. |
+| Organisation actuelle | Ont un vrai compte utilisateur : **télépros, confirmateurs, secrétaires, apporteurs**. **Tout le reste est géré dans l'objet Campagne** (régies, pré-visiteurs, parrains). **Objectif : tout passer sur Experience.** |
+| Rémunération régies / apporteurs | **Selon la grille tarifaire** (par régie / fiche). |
+| Visibilité d'une régie | **Ses RDV + leur suite + sa facturation.** |
+
+Constats (données) :
+- 637 campagnes : **619 régies** (`EstREGIE__c`), **17 pré-visiteurs**, 1 « Régie » ; France 608, Espagne 29 ; 56 rattachées à une campagne parente (apporteur).
+- **128 régies actives** (au moins un lead inséré sur 90 jours).
+- Accès des régies / pré-visiteurs aujourd'hui : sites invités (Campagnes, Gestion Previsites) avec **jeton** (`CampaignToken__c`) et identifiants envoyés à une API externe — **pas de vrais comptes Salesforce**.
+- ⚠️ Un champ `CERTIKO_Mot_De_Passe__c` stocke un mot de passe en clair sur la campagne (1 renseigné).
+
+### Licences (constat)
+
+| Licence | Achetées | Utilisées |
+|---|---|---|
+| Salesforce | 2 | 2 |
+| **Partner Community** | **35** | **35 (toutes)** |
+| Guest User | 25 | 5 |
+
+⚠️ **Décision à prendre** : passer régies, pré-visiteurs et sous-traitants en vrais utilisateurs Experience demande des licences
+supplémentaires (128 régies actives). Options à chiffrer : licences « Login » (facturées à la connexion), Customer Community Plus,
+ou garder un accès invité sécurisé (jeton signé, durée limitée) pour les acteurs occasionnels.
