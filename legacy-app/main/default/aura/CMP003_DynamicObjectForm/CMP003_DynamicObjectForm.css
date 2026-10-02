@@ -1,0 +1,9 @@
+.THIS {
+    /* min-width: 80% !important; */
+}
+
+/* .myform */
+.THIS.form-container {
+    max-width: 60vw !important;
+    margin: auto;
+}

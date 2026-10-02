@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>false</isExposed>
+    <masterLabel>Carte Leaflet</masterLabel>
+    <description>Carte Leaflet autonome : points (geocodage de l adresse si besoin), position de l utilisateur, itineraire vers le point choisi</description>
+</LightningComponentBundle>

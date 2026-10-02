@@ -1,0 +1,170 @@
+<template>
+    <div class="pf-wrapper" style="position: relative;">
+        <div class="pf-header">
+            <p class="pf-title"> Nouvelle facture</p>
+            <p class="pf-subtitle">Renseignez les informations puis sélectionnez les lignes à rattacher</p>
+        </div>
+
+        <template lwc:if={isClassique}>
+            <div class="pf-progress">
+                <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                    <template for:each={steps} for:item="step">
+                        <lightning-progress-step key={step.value} label={step.label} value={step.value}>
+                        </lightning-progress-step>
+                    </template>
+                </lightning-progress-indicator>
+            </div>
+        </template>
+
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <div class={infosStepClass}>
+            <div class="pf-card">
+                <lightning-record-edit-form object-api-name={objectApiName}>
+                    <div class="pf-fields-grid">
+                        <template for:each={fields} for:item="f">
+                            <lightning-input-field key={f.apiName} field-name={f.apiName} value={f.savedValue}
+                                required={f.isRequired} disabled={f.isReadOnly}>
+                            </lightning-input-field>
+                        </template>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+
+        <template lwc:if={isAcomptesStep}>
+            <div class="pf-card">
+                <div class="pf-card-head">
+                    <p class="pf-section-title">Acomptes (avances) du bénéficiaire</p>
+                    <span class="pf-hint-inline">{acompteSelectionSummary}</span>
+                </div>
+
+                <template lwc:if={hasAcomptes}>
+                    <p class="pf-hint">
+                        Sélectionnez les factures d'acompte à rattacher à cette facture.
+                        Leur total HT s'ajoute au montant HT de la facture lors de la
+                        comparaison avec les lignes de facturation.
+                    </p>
+
+                    <table class="pf-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 3rem;"></th>
+                                <th>N° Facture</th>
+                                <th>N° Externe</th>
+                                <th>Date facture</th>
+                                <th>Statut</th>
+                                <th>Montant HT</th>
+                                <th>Montant TTC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={acomptesDisplay} for:item="a">
+                                <tr key={a.id} data-id={a.id} class={a.rowClass} onclick={handleAcompteToggleRow}>
+                                    <td>
+                                        <input type="checkbox" class="pf-radio" data-id={a.id} checked={a.selected}
+                                            onclick={handleAcompteCheckboxChange} />
+                                    </td>
+                                    <td><strong>{a.name}</strong></td>
+                                    <td>{a.numExterne}</td>
+                                    <td>
+                                        <template lwc:if={a.dateFacture}>
+                                            <lightning-formatted-date-time value={a.dateFacture}>
+                                            </lightning-formatted-date-time>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                    <td><span class={a.statutBadgeClass}>{a.statut}</span></td>
+                                    <td>
+                                        <template lwc:if={a.montantHT}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={a.montantHT} format-style="currency"
+                                                    currency-code="EUR"></lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                    <td>
+                                        <template lwc:if={a.montantTTC}>
+                                            <span class="pf-amount">
+                                                <lightning-formatted-number value={a.montantTTC} format-style="currency"
+                                                    currency-code="EUR"></lightning-formatted-number>
+                                            </span>
+                                        </template>
+                                        <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <div class="pf-totals">
+                        <div class="pf-total-row pf-total-row-dual">
+                            <span class="pf-total-item">
+                                <span class="pf-total-label">Total acomptes HT</span>
+                                <span class="pf-amount pf-total-value">
+                                    <lightning-formatted-number value={totalAcomptesHT} format-style="currency"
+                                        currency-code="EUR"></lightning-formatted-number>
+                                </span>
+                            </span>
+                            <span class="pf-total-item">
+                                <span class="pf-total-label">Montant HT facture</span>
+                                <span class="pf-amount pf-total-value">
+                                    <lightning-formatted-number value={montantHtSaisi} format-style="currency"
+                                        currency-code="EUR"></lightning-formatted-number>
+                                </span>
+                            </span>
+                            <span class="pf-total-item">
+                                <span class="pf-total-label">Total attendu des lignes</span>
+                                <span class="pf-amount pf-total-value">
+                                    <lightning-formatted-number value={montantHtAttendu} format-style="currency"
+                                        currency-code="EUR"></lightning-formatted-number>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </template>
+
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">💶</span>
+                        Aucune facture d'acompte disponible pour ce bénéficiaire.
+                        Vous pouvez passer directement à la sélection des lignes.
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={isLignesStep}>
+            <c-lier-lignes-avec-facture
+                mode="creation"
+                montant-ht={montantHtSaisi}
+                montant-acomptes-ht={totalAcomptesHT}
+                destinataire-compte-id={destinataireCompteIdSaisi}
+                onselectionchange={handleSelectionChange}>
+            </c-lier-lignes-avec-facture>
+        </template>
+
+        <div class="pf-footer">
+            <lightning-button label="Annuler" onclick={handleCancel}></lightning-button>
+            <template lwc:if={isInfosStep}>
+                <lightning-button class="pf-next-btn" label={nextLabel} variant="brand" onclick={handleNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isAcomptesStep}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+                <lightning-button class="pf-next-btn" label="Suivant" variant="brand" onclick={handleAcomptesNext}>
+                </lightning-button>
+            </template>
+            <template lwc:if={isLignesStep}>
+                <lightning-button label="Retour" onclick={handleBack}></lightning-button>
+                <lightning-button class="pf-next-btn" label="Créer la facture" variant="brand" onclick={handleSave}>
+                </lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

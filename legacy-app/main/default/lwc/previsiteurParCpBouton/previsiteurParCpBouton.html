@@ -1,0 +1,17 @@
+<template>
+    <lightning-button label={libelle} icon-name="utility:search" onclick={ouvrir}></lightning-button>
+
+    <template if:true={ouvert}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-label={libelle} class="slds-modal slds-fade-in-open" onkeydown={handleKeydown}>
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close" title="Fermer" onclick={fermer}>
+                    <lightning-icon icon-name="utility:close" size="small" variant="inverse" alternative-text="Fermer"></lightning-icon>
+                </button>
+                <div class="slds-modal__content">
+                    <c-previsiteur-par-cp record-id={recordId} onfermer={fermer}></c-previsiteur-par-cp>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>

@@ -1,0 +1,515 @@
+.custom-file-upload-container {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    margin: 16px 0;
+}
+
+.upload-section {
+    margin-bottom: 12px;
+}
+
+.file-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3e3e3c;
+    margin-bottom: 8px;
+}
+
+.required-asterisk {
+    color: #c23934;
+    margin-left: 4px;
+}
+
+/* ===== Variante compacte =================================================
+   Carte sur une ligne, conçue pour être posée à plusieurs côte à côte. Le
+   libellé est porté par la carte elle-même (pas de .file-label au-dessus),
+   et la liste des fichiers est affichée par le parent. */
+.custom-file-upload-container.compacte,
+:host(.compacte) .custom-file-upload-container {
+    margin: 0;
+}
+
+.zone-compacte {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px dashed #d0d5dd;
+    border-radius: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.zone-compacte:hover {
+    border-color: #0176d3;
+    background: #f2f8ff;
+}
+
+.zone-compacte--survol {
+    border-color: #0176d3;
+    border-style: solid;
+    background: #e8f3ff;
+    box-shadow: 0 0 0 3px rgba(1, 118, 211, 0.12);
+}
+
+/* Une section déjà remplie passe en trait plein + accent vert : d'un coup d'œil
+   on distingue les types fournis de ceux qui manquent encore. */
+.zone-compacte--remplie {
+    border-style: solid;
+    border-color: #b7e0c4;
+    background: #f3fbf5;
+}
+
+.zone-compacte--inactive {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.zone-compacte__icone {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: #eef2f7;
+    color: #5b6b80;
+}
+
+.zone-compacte--remplie .zone-compacte__icone {
+    background: #dff3e5;
+    color: #2e7d4f;
+}
+
+.zone-compacte__texte {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
+.zone-compacte__titre {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: #1e293b;
+    /* Les libellés sont longs (« Foto de la caldera + placa de características ») :
+       on autorise 2 lignes puis on coupe, plutôt que de déformer la carte. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.zone-compacte__resume {
+    font-size: 11.5px;
+    color: #64748b;
+}
+
+.zone-compacte--remplie .zone-compacte__resume {
+    color: #2e7d4f;
+    font-weight: 600;
+}
+
+.zone-compacte__pastille {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #2e7d4f;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+}
+
+/* Drop Zone Styles */
+.drop-zone {
+    border: 2px dashed #d8d8d8;
+    border-radius: 8px;
+    padding: 32px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #fafaf9;
+}
+
+.drop-zone:hover {
+    border-color: #0176d3;
+    background-color: #f0f8ff;
+}
+
+.drop-zone-active {
+    border-color: #0176d3;
+    background-color: #e5f2ff;
+    border-style: solid;
+}
+
+.drop-zone-disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: #f3f3f3;
+}
+
+.drop-zone-disabled:hover {
+    border-color: #d8d8d8;
+    background-color: #f3f3f3;
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.upload-icon-large {
+    width: 48px;
+    height: 48px;
+    stroke: #706e6b;
+    transition: stroke 0.2s ease;
+}
+
+.drop-zone:hover .upload-icon-large {
+    stroke: #0176d3;
+}
+
+.drop-zone-active .upload-icon-large {
+    stroke: #0176d3;
+}
+
+.drop-zone-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+}
+
+.drop-zone-primary {
+    font-size: 16px;
+    font-weight: 600;
+    color: #3e3e3c;
+}
+
+.drop-zone-secondary {
+    font-size: 14px;
+    color: #706e6b;
+}
+
+.accepted-formats {
+    font-size: 12px;
+    color: #969492;
+    margin-top: 4px;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Selected Files List */
+.selected-files-section {
+    margin-top: 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.selected-files-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.selected-files-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3e3e3c;
+}
+
+.clear-all-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #c23934;
+    background: transparent;
+    border: 1px solid #c23934;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-all-button:hover {
+    background-color: #c23934;
+    color: white;
+}
+
+.selected-files-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.selected-file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s ease;
+}
+
+.selected-file-item:last-child {
+    border-bottom: none;
+}
+
+.selected-file-item:hover {
+    background-color: #fafaf9;
+}
+
+.file-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.file-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #706e6b;
+    flex-shrink: 0;
+}
+
+.file-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.file-item-name {
+    font-size: 14px;
+    color: #3e3e3c;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-item-size {
+    font-size: 12px;
+    color: #706e6b;
+}
+
+.remove-file-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-file-button:hover {
+    background-color: #fee;
+}
+
+.remove-icon {
+    width: 18px;
+    height: 18px;
+    stroke: #706e6b;
+    transition: stroke 0.2s ease;
+}
+
+.remove-file-button:hover .remove-icon {
+    stroke: #c23934;
+}
+
+/* Legacy styles for backward compatibility */
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.file-select-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #0176d3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.file-select-button:hover:not(:disabled) {
+    background: #014486;
+}
+
+.file-select-button:disabled {
+    background: #c9c9c9;
+    cursor: not-allowed;
+}
+
+.upload-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #3e3e3c;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.file-placeholder {
+    font-size: 14px;
+    color: #706e6b;
+    font-style: italic;
+}
+
+/* Progress */
+.upload-progress {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f3f3f3;
+    border-radius: 4px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #dddbda;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #0176d3;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 13px;
+    color: #3e3e3c;
+}
+
+/* Messages */
+.success-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px;
+    background: #dff0d8;
+    border: 1px solid #4bca81;
+    border-radius: 4px;
+    color: #027e46;
+}
+
+.success-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #027e46;
+    flex-shrink: 0;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px;
+    background: #fee;
+    border: 1px solid #c23934;
+    border-radius: 4px;
+    color: #c23934;
+}
+
+.error-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #c23934;
+    flex-shrink: 0;
+}
+
+.file-info {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #706e6b;
+}
+
+.info-label {
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+.info-value {
+    color: #3e3e3c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .drop-zone {
+        padding: 24px 16px;
+    }
+
+    .upload-icon-large {
+        width: 40px;
+        height: 40px;
+    }
+
+    .drop-zone-primary {
+        font-size: 14px;
+    }
+
+    .drop-zone-secondary {
+        font-size: 13px;
+    }
+
+    .selected-file-item {
+        padding: 10px 12px;
+    }
+
+    .file-item-name {
+        font-size: 13px;
+    }
+
+    .file-input-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .file-select-button {
+        width: 100%;
+        justify-content: center;
+    }
+}

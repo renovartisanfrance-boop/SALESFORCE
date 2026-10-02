@@ -1,0 +1,175 @@
+<template>
+    <!-- ==========================================================================
+         TROIS PRÉSENTATIONS AU CHOIX, pilotées par l'attribut `variante`.
+         Une fois la variante retenue, supprimer les deux blocs inutiles ci-dessous
+         (chacun est autonome) et le getter correspondant dans le .js.
+         ========================================================================== -->
+
+    <!-- ─────────────────────────────────────────────────────────────────────────
+         VARIANTE « aligne » — libellé à gauche, saisie à droite, comme un champ
+         normal du formulaire (densité Compact).
+         ───────────────────────────────────────────────────────────────────────── -->
+    <template lwc:if={isAligne}>
+        <div class="aa aa--aligne">
+            <label class="aa-label-inline" for="aa-input-aligne">{label}</label>
+            <div class="aa-field">
+                <lightning-icon icon-name="utility:search" size="xx-small" class="aa-icon"></lightning-icon>
+                <input
+                    id="aa-input-aligne"
+                    type="text"
+                    class="aa-input aa-input--icone"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    aria-expanded={open}
+                    value={query}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    autocomplete="off"
+                    oninput={handleInput}
+                    onfocus={handleFocus}
+                    onblur={handleBlur}
+                    onkeydown={handleKeyDown} />
+                <template lwc:if={isLoading}>
+                    <div class="aa-spinner">
+                        <lightning-spinner size="x-small" alternative-text="Recherche en cours"></lightning-spinner>
+                    </div>
+                </template>
+                <div class={dropdownClass}>
+                    <ul class="aa-list" role="listbox">
+                        <template for:each={options} for:item="opt">
+                            <li key={opt.key} class={opt.cls} role="option"
+                                data-index={opt.index} onmousedown={handleOptionMouseDown}>
+                                <span class="aa-option-label">{opt.label}</span>
+                                <template lwc:if={opt.sub}>
+                                    <span class="aa-option-sub">{opt.sub}</span>
+                                </template>
+                            </li>
+                        </template>
+                        <template lwc:if={showNoResults}>
+                            <li class="aa-empty">Aucune adresse trouvée</li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────
+         VARIANTE « bandeau » — barre pleine largeur, fond bleu pâle. On voit tout
+         de suite que c'est un outil de saisie rapide et non un champ enregistré.
+         ───────────────────────────────────────────────────────────────────────── -->
+    <template lwc:elseif={isBandeau}>
+        <div class="aa aa--bandeau">
+            <div class="aa-field aa-field--bandeau">
+                <lightning-icon icon-name="utility:search" size="x-small" class="aa-icon aa-icon--bandeau"></lightning-icon>
+                <input
+                    id="aa-input-bandeau"
+                    type="text"
+                    class="aa-input aa-input--bandeau"
+                    role="combobox"
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    aria-expanded={open}
+                    aria-label={label}
+                    value={query}
+                    placeholder={placeholder}
+                    disabled={disabled}
+                    autocomplete="off"
+                    oninput={handleInput}
+                    onfocus={handleFocus}
+                    onblur={handleBlur}
+                    onkeydown={handleKeyDown} />
+                <template lwc:if={isLoading}>
+                    <div class="aa-spinner">
+                        <lightning-spinner size="x-small" alternative-text="Recherche en cours"></lightning-spinner>
+                    </div>
+                </template>
+                <div class={dropdownClass}>
+                    <ul class="aa-list" role="listbox">
+                        <template for:each={options} for:item="opt">
+                            <li key={opt.key} class={opt.cls} role="option"
+                                data-index={opt.index} onmousedown={handleOptionMouseDown}>
+                                <span class="aa-option-label">{opt.label}</span>
+                                <template lwc:if={opt.sub}>
+                                    <span class="aa-option-sub">{opt.sub}</span>
+                                </template>
+                            </li>
+                        </template>
+                        <template lwc:if={showNoResults}>
+                            <li class="aa-empty">Aucune adresse trouvée</li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────
+         VARIANTE « loupe » — encombrement nul : un simple bouton loupe aligné sur
+         la colonne des libellés, qui ouvre la recherche en surimpression.
+         ───────────────────────────────────────────────────────────────────────── -->
+    <template lwc:else>
+        <div class="aa aa--loupe">
+            <button
+                type="button"
+                class="aa-trigger"
+                title={label}
+                aria-label={label}
+                aria-expanded={popoverOuvert}
+                disabled={disabled}
+                onclick={handleTriggerClick}>
+                <lightning-icon icon-name="utility:search" size="xx-small" class="aa-icon"></lightning-icon>
+                <span class="aa-trigger-texte">Rechercher une adresse</span>
+            </button>
+
+            <template lwc:if={popoverOuvert}>
+                <div class="aa-popover">
+                    <div class="aa-popover-titre">{label}</div>
+                    <div class="aa-field">
+                        <input
+                            id="aa-input-loupe"
+                            type="text"
+                            class="aa-input"
+                            role="combobox"
+                            aria-haspopup="listbox"
+                            aria-autocomplete="list"
+                            aria-expanded={open}
+                            value={query}
+                            placeholder={placeholder}
+                            autocomplete="off"
+                            oninput={handleInput}
+                            onfocus={handleFocus}
+                            onblur={handleBlur}
+                            onkeydown={handleKeyDown} />
+                        <template lwc:if={isLoading}>
+                            <div class="aa-spinner">
+                                <lightning-spinner size="x-small" alternative-text="Recherche en cours"></lightning-spinner>
+                            </div>
+                        </template>
+                        <div class={dropdownClass}>
+                            <ul class="aa-list" role="listbox">
+                                <template for:each={options} for:item="opt">
+                                    <li key={opt.key} class={opt.cls} role="option"
+                                        data-index={opt.index} onmousedown={handleOptionMouseDown}>
+                                        <span class="aa-option-label">{opt.label}</span>
+                                        <template lwc:if={opt.sub}>
+                                            <span class="aa-option-sub">{opt.sub}</span>
+                                        </template>
+                                    </li>
+                                </template>
+                                <template lwc:if={showNoResults}>
+                                    <li class="aa-empty">Aucune adresse trouvée</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <template lwc:if={errorMessage}>
+        <p class="aa-error">{errorMessage}</p>
+    </template>
+</template>

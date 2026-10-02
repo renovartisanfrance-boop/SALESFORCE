@@ -1,0 +1,266 @@
+<template>
+    <div class="container">
+        <!-- Error Message (Full Screen) -->
+        <template if:true={hasError}>
+            <div class="error-container">
+                <div class="error-box">
+                    <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <h2 class="error-title">{errorTitle}</h2>
+                    <p class="error-message">{errorMessage}</p>
+                    <div class="error-actions">
+                        <p class="error-hint">💡 {txt.conseilLien}</p>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Normal Content (when token is valid and campaign exists) -->
+        <template if:true={isValidToken}>
+
+            <!-- Modern Navigation Bar -->
+            <header class="nav-header">
+                <div class="nav-container">
+                    <div class="nav-brand">
+                        <img src={logoRenov} alt={txt.logoAlt} class="nav-logo">
+                        <span class="nav-title">{titreSite}</span>
+                        <!-- Nom de la régie (Campagne.Name) — desktop + mobile, toujours sur UNE ligne
+                             (ellipse si trop long, jamais coupé en 2 lignes). -->
+                        <template if:true={regieName}>
+                            <span class="nav-regie-sep" aria-hidden="true"></span>
+                            <span class="nav-regie" title={regieName}>{regieName}</span>
+                        </template>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="nav-toggle" onclick={handleToggleMenu} aria-label={txt.menuAria}>
+                        <span class={menuIconClass}></span>
+                    </button>
+
+                    <!-- Navigation Links -->
+                    <nav class={navMenuClass}>
+                        <ul class="nav-list">
+                            <template if:true={showTabCreerRegie}>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0)" class={isCreerRegieActive} data-view="creer-regie"
+                                        onclick={handleMenuClick}>
+                                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                        </svg>
+                                        <span>{txt.creerAcces}</span>
+                                    </a>
+                                </li>
+                            </template>
+                            <template if:true={showTabNouveauRdv}>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0)" class={isNouveauRdvActive} data-view="nouveau-rdv"
+                                        onclick={handleMenuClick}>
+                                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 5v14M5 12h14" />
+                                        </svg>
+                                        <span>{txt.nouveauRdv}</span>
+                                    </a>
+                                </li>
+                            </template>
+                            <li class="nav-item">
+                                <a href="javascript:void(0)" class={isMyReportingActive} data-view="my-reporting"
+                                    onclick={handleMenuClick}>
+                                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 11H7v8h2V11zm4-7H11v15h2V4zm4-1h-2v16h2V3z" />
+                                    </svg>
+                                    <span>{txt.reporting}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="javascript:void(0)" class={isCahierChargesActive} data-view="cahier-charges"
+                                    onclick={handleMenuClick}>
+                                    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10 9 9 9 8 9" />
+                                    </svg>
+                                    <span>{txt.cahierCharges}</span>
+                                </a>
+                            </li>
+                            <template if:true={showTabFacturation}>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0)" class={isFacturationActive} data-view="facturation"
+                                        onclick={handleMenuClick}>
+                                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10h-6a3 3 0 0 0-6 0H3v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V10z" />
+                                            <path d="M16 5a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
+                                        </svg>
+                                        <!-- « Facturation/Contrat » en accès réduit,
+                                             « Facturation » partout ailleurs. -->
+                                        <span>{libelleFacturation}</span>
+                                        <!-- <span class="coming-soon">Bientôt</span> -->
+                                    </a>
+                                </li>
+                            </template>
+                        </ul>
+                        <template if:true={voirDeconnexion}>
+                            <a href="javascript:void(0)" class="nav-link logout-link" onclick={handleDeconnexion}>
+                                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                    <polyline points="16 17 21 12 16 7" />
+                                    <line x1="21" y1="12" x2="9" y2="12" />
+                                </svg>
+                                <span>{txt.deconnexion}</span>
+                            </a>
+                        </template>
+                    </nav>
+
+                    <!-- Sélecteur de langue — campagnes Espagne uniquement (Pays__c = 'Espagne').
+                         Dernier enfant de .nav-container : coin haut-droit sur desktop, et sous
+                         768px l'ordre CSS le replace juste avant le burger. Il reste donc TOUJOURS
+                         hors du menu burger — un choix de langue caché derrière un burger est une
+                         mauvaise UX. Drapeaux en SVG inline et non en emoji : Windows ne rend pas
+                         les emoji drapeaux (🇪🇸 s'y affiche « ES » en lettres encadrées). -->
+                    <template if:true={afficherSelecteurLangue}>
+                        <div class="lang-switch" role="group" aria-label={txt.choixLangueAria}>
+                            <button type="button" class={classeLangueEs} data-langue="es"
+                                aria-pressed={estEspagnol} title={txt.langueEsTitre}
+                                onclick={handleChangerLangue}>
+                                <svg class="lang-flag" viewBox="0 0 3 2" width="15" height="11"
+                                    aria-hidden="true">
+                                    <rect width="3" height="2" fill="#AA151B" />
+                                    <rect y="0.5" width="3" height="1" fill="#F1BF00" />
+                                </svg>
+                                <span>ES</span>
+                            </button>
+                            <button type="button" class={classeLangueFr} data-langue="fr"
+                                aria-pressed={estFrancais} title={txt.langueFrTitre}
+                                onclick={handleChangerLangue}>
+                                <svg class="lang-flag" viewBox="0 0 3 2" width="15" height="11"
+                                    aria-hidden="true">
+                                    <rect width="3" height="2" fill="#FFFFFF" />
+                                    <rect width="1" height="2" fill="#000091" />
+                                    <rect x="2" width="1" height="2" fill="#E1000F" />
+                                </svg>
+                                <span>FR</span>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class={contentWrapperClass}>
+                <!-- Nouveau RDV Component -->
+                <template if:true={showNouveauRdv}>
+                    <div class="view-container nouveau-rdv-view">
+                        <!-- Accès réduit : bouton « Retour » fiable (bascule la vue du conteneur).
+                             Barre .rdv-back-bar alignée sur la largeur du formulaire pour placer le
+                             bouton juste au-dessus de la carte « Informations », hors du formulaire. -->
+                        <template if:true={isAccesReduit}>
+                            <div class="rdv-back-bar">
+                                <button type="button" class="rdv-back-btn" onclick={handleBackToCahierCharges}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <line x1="19" y1="12" x2="5" y2="12" />
+                                        <polyline points="12 19 5 12 12 5" />
+                                    </svg>
+                                    <span>{txt.retourProduits}</span>
+                                </button>
+                            </div>
+                        </template>
+                        <c-lwc020_-nouveau-rdv campaign-code={campaignCode} products={produits}
+                            acces-reduit={isAccesReduit} langue={langue}
+                            type-pompe-chaleur={typePompeChaleurRdv}></c-lwc020_-nouveau-rdv>
+                    </div>
+                </template>
+
+                <!-- My Reporting Component -->
+                <template if:true={showMyReporting}>
+                    <div class="view-container my-reporting-view">
+                        <!-- <c-lwc020_-my-reporting campaign-code={campaignCode}></c-lwc020_-my-reporting> -->
+                        <c-lwc020_reporting_v2 campaign-code={campaignCode} langue={langue}
+                            acces-reduit={isAccesReduit} pays={paysCampagne}
+                            mini-regie={isMiniRegie}></c-lwc020_reporting_v2>
+                    </div>
+                </template>
+
+                <!-- Créer REGIE Component -->
+                <template if:true={showCreerRegie}>
+                    <div class="view-container creer-regie-view">
+                        <c-lwc020_-gestion-campagnes parent-id={campaignId} is-guest-user={isGuestUser}
+                            parent-token={campaignCode} cant-create-regie={cantCreateRegie}
+                            current-user-produits={currentUserProduits} pays={paysCampagne} langue={langue}>
+                        </c-lwc020_-gestion-campagnes>
+                    </div>
+                </template>
+
+                <!-- Cahier de Charges Component -->
+                <template if:true={showCahierCharges}>
+                    <div class="view-container cahier-charges-view">
+                        <c-lwc020_-cahier-charges campaign-code={campaignCode} acces-reduit={isAccesReduit}
+                            langue={langue}
+                            oncreaterdv={handleNavigateToCreateRdv}></c-lwc020_-cahier-charges>
+                    </div>
+                </template>
+
+                <!-- Facturation Component -->
+                <template if:true={showFacturation}>
+                    <div class="view-container facturation-view">
+                        <c-lwc020_-facturation campaign-code={campaignCode} acces-reduit={isAccesReduit}
+                            langue={langue}
+                            oncreaterdv={handleNavigateToCreateRdv} afficher-contenu={afficherContenu}></c-lwc020_-facturation>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Pied de page contact — UNIQUEMENT pour les partenaires (accès réduit).
+                 Toujours visible en bas de la page, non réductible (pas de bouton). -->
+            <template if:true={isAccesReduit}>
+            <footer class="contact-footer">
+                <div class="contact-footer__card">
+                    <div class="contact-footer__text">
+                        <div class="contact-footer__title">{txt.besoinAide}</div>
+                        <!-- TODO: rétablir « ou WhatsApp » quand le numéro WhatsApp sera opérationnel. -->
+                        <div class="contact-footer__subtitle">{txt.contactTel}</div>
+                    </div>
+                    <div class="contact-footer__actions">
+                        <a class="contact-footer__btn contact-footer__btn--call" href={contactPhoneHref}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                            </svg>
+                            <span>{txt.appeler}</span>
+                        </a>
+                        <!-- WhatsApp masqué temporairement — numéro non encore opérationnel.
+                             À rétablir tel quel quand le WhatsApp sera prêt (getter contactWhatsappHref conservé dans le JS).
+                        <a class="contact-footer__btn contact-footer__btn--wa" href={contactWhatsappHref}
+                            target="_blank" rel="noopener noreferrer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"
+                                fill="currentColor">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                            </svg>
+                            <span>WhatsApp</span>
+                        </a>
+                        -->
+                    </div>
+                </div>
+            </footer>
+            </template>
+        </template>
+    </div>
+</template>

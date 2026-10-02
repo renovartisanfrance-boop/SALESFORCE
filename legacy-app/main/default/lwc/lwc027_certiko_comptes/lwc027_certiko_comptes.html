@@ -1,0 +1,298 @@
+<template>
+    <div class="certiko-admin">
+
+        <!-- En-tete : a qui appartient la cle + actions principales -->
+        <div class="entete">
+            <div class="entete-titre">
+                <p class="sur-titre">Certiko</p>
+                <h1 class="titre">{titrePoseur}</h1>
+                <p class="resume">{resumeCle}</p>
+            </div>
+            <div class="entete-actions">
+                <label class="bascule" title="Afficher aussi les équipes et comptes désactivés">
+                    <input type="checkbox" checked={inclureInactifs} onchange={handleInclureInactifs} />
+                    Désactivés
+                </label>
+                <button class="btn btn-ghost btn-icone" disabled={enCours} onclick={handleRafraichir}
+                        title="Relire Certiko">&#x21bb; Actualiser</button>
+                <button class="btn btn-ghost" disabled={chargement} onclick={handleOuvrirEquipes}>
+                    Gestion équipes <span class="compteur">{nbEquipesActives}</span>
+                </button>
+                <button class="btn" disabled={chargement} onclick={handleOuvrirNouveauCompte}>+ Nouveau compte</button>
+            </div>
+        </div>
+
+        <template lwc:if={afficherMessagePage}>
+            <div class={classeMessage} role="status">
+                <span>{message}</span>
+                <button class="message-fermer" onclick={handleFermerMessage} title="Fermer">&times;</button>
+            </div>
+        </template>
+
+        <template lwc:if={chargement}>
+            <p class="vide">Lecture de Certiko…</p>
+        </template>
+
+        <template lwc:else>
+
+            <!-- ═══════════ Indicateurs (cliquables = filtres) ═══════════ -->
+            <div class="indicateurs">
+                <button class={classeTuileAOuvrir} onclick={handleBasculerAOuvrir}>
+                    <span class="tuile-valeur">{nbAOuvrir}</span>
+                    <span class="tuile-libelle">Écarts</span>
+                </button>
+                <button class={classeTuileActifs} onclick={handleFiltreTous}>
+                    <span class="tuile-valeur">{nbActifs}</span>
+                    <span class="tuile-libelle">Comptes actifs</span>
+                </button>
+                <button class={classeTuileJamais} onclick={handleFiltreJamais}>
+                    <span class="tuile-valeur">{nbJamaisConnectes}</span>
+                    <span class="tuile-libelle">Jamais connectés</span>
+                </button>
+            </div>
+
+            <!-- ═══════════ 1. Ecarts avec Certiko (repliable) ═══════════ -->
+            <template lwc:if={aDesComptesAOuvrir}>
+                <section class="alerte-bloc">
+                    <button class="alerte-entete" onclick={handleBasculerAOuvrir} aria-expanded={aOuvrirDeplieTexte}>
+                        <span class="alerte-icone">!</span>
+                        <span class="alerte-texte"><b>{resumeAOuvrir}</b> — à reprendre depuis Certiko.</span>
+                        <span class="alerte-chevron">{chevronAOuvrir}</span>
+                    </button>
+                    <template lwc:if={aOuvrirDeplie}>
+                        <ul class="liste-a-ouvrir">
+                            <template for:each={aOuvrir} for:item="p">
+                                <li key={p.campagneId} class={p.classeLigne}>
+                                    <div class="a-ouvrir-infos">
+                                        <span class="fort">{p.nom}</span>
+                                        <span class="dim">{p.email}</span>
+                                        <template lwc:if={p.motif}>
+                                            <span class="erreur-texte">{p.motif}</span>
+                                        </template>
+                                        <template lwc:if={p.erreur}>
+                                            <span class="erreur-texte" title={p.erreur}>Dernier échec : {p.erreur}</span>
+                                        </template>
+                                    </div>
+                                    <button class="btn btn-sm" data-id={p.campagneId}
+                                            disabled={enCours}
+                                            onclick={handleOuvrirCompte}>{p.libelleBouton}</button>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </section>
+            </template>
+
+            <!-- ═══════════ 2. Comptes ═══════════ -->
+            <section class="bloc">
+                <div class="barre">
+                    <input class="champ champ-large" type="search" placeholder="Rechercher un email, un nom…"
+                           value={recherche} oninput={handleRecherche} />
+                    <select class="champ" onchange={handleFiltreEquipe} aria-label="Filtrer par équipe">
+                        <template for:each={optionsFiltre} for:item="o">
+                            <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                        </template>
+                    </select>
+                    <template lwc:if={aDesFiltres}>
+                        <button class="btn btn-lien" onclick={handleEffacerFiltres}>Effacer les filtres</button>
+                    </template>
+                    <span class="barre-compte">{resumeListe}</span>
+                </div>
+
+                <template lwc:if={aDesMembres}>
+                    <div class="tableau-cadre">
+                        <table class="tableau">
+                            <thead>
+                                <tr>
+                                    <th class="grow">Compte</th>
+                                    <th>Équipe</th>
+                                    <th>Dernière connexion</th>
+                                    <th>État</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={membresVue} for:item="m">
+                                    <tr key={m.id} class={m.classeLigne}>
+                                        <td>
+                                            <div class="compte">
+                                                <span class="avatar">{m.initiales}</span>
+                                                <div class="compte-texte">
+                                                    <span class="fort">{m.nomComplet}</span>
+                                                    <span class="dim petit">{m.email}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <select class="champ champ-mini" data-id={m.email}
+                                                    disabled={enCours} onchange={handleDeplacer}
+                                                    title="Déplacer vers une autre équipe">
+                                                <option value="">{m.equipeNom}</option>
+                                                <template for:each={equipesOptions} for:item="o">
+                                                    <option key={o.cle} value={o.cle}>{o.libelle}</option>
+                                                </template>
+                                            </select>
+                                        </td>
+                                        <td class={m.classeConnexion}>{m.connexion}</td>
+                                        <td><span class={m.classePastille}>{m.etat}</span></td>
+                                        <td class="action">
+                                            <button class="btn btn-ghost btn-sm" data-id={m.email}
+                                                    disabled={enCours} title={titreMotDePasse}
+                                                    onclick={handleReinitialiser}>Réinit. mot de passe</button>
+                                            <button class={m.classeBascule} data-id={m.email}
+                                                    data-actif={m.actif} disabled={enCours}
+                                                    onclick={handleBasculerCompte}>{m.libelleBascule}</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <p class="vide">Aucun compte ne correspond.</p>
+                </template>
+            </section>
+
+        </template>
+
+        <!-- ═══════════ Modale : Gestion des equipes ═══════════ -->
+        <template lwc:if={modaleEquipes}>
+            <div class="fond" onclick={handleFermerModales}></div>
+            <div class="modale" role="dialog" aria-modal="true" aria-labelledby="titre-equipes"
+                 tabindex="-1" onkeydown={handleToucheModale}>
+                <div class="modale-entete">
+                    <div>
+                        <h2 id="titre-equipes">Gestion des équipes</h2>
+                        <p class="dim petit">Certiko affecte les dossiers à une équipe, pas à une personne : une équipe par pré-visiteur.</p>
+                    </div>
+                    <button class="modale-fermer" onclick={handleFermerModales} title="Fermer">&times;</button>
+                </div>
+
+                <div class="modale-corps">
+                    <template lwc:if={message}>
+                        <div class={classeMessage} role="status">{message}</div>
+                    </template>
+
+                    <template lwc:if={formEquipeOuvert}>
+                        <div class="form-equipe">
+                            <label class="etiquette" for="nouvelle-equipe">Nom de la nouvelle équipe</label>
+                            <div class="barre barre-serree">
+                                <input id="nouvelle-equipe" class="champ champ-large champ-equipe" type="text"
+                                       placeholder="ex. Equipo Jose Manuel"
+                                       value={nouvelleEquipe} oninput={handleNouvelleEquipe}
+                                       onkeydown={handleToucheEquipe} />
+                                <button class="btn btn-ghost" onclick={handleAnnulerEquipe}>Annuler</button>
+                                <button class="btn" disabled={creerEquipeDesactive} onclick={handleCreerEquipe}>Créer</button>
+                            </div>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="modale-outils">
+                            <span class="dim petit">{resumeEquipes}</span>
+                            <button class="btn btn-sm" disabled={enCours} onclick={handleOuvrirFormEquipe}>+ Créer une équipe</button>
+                        </div>
+                    </template>
+
+                    <div class="tableau-cadre">
+                        <table class="tableau">
+                            <thead>
+                                <tr>
+                                    <th class="grow">Équipe</th>
+                                    <th>Membres</th>
+                                    <th>État</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={equipesVue} for:item="e">
+                                    <tr key={e.id}>
+                                        <td class="fort">{e.nom}</td>
+                                        <td>
+                                            <button class="btn-lien" data-nom={e.nom} onclick={handleVoirMembres}
+                                                    title="Afficher les comptes de cette équipe">{e.membresTexte}</button>
+                                        </td>
+                                        <td><span class={e.classePastille}>{e.etat}</span></td>
+                                        <td class="action">
+                                            <button class={e.classeBascule} data-id={e.id}
+                                                    data-active={e.active} disabled={enCours}
+                                                    onclick={handleBasculerEquipe}>{e.libelleBascule}</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="modale-pied">
+                    <button class="btn btn-ghost" onclick={handleFermerModales}>Fermer</button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════ Modale : Nouveau compte ═══════════ -->
+        <template lwc:if={modaleCompte}>
+            <div class="fond" onclick={handleFermerModales}></div>
+            <div class="modale modale-etroite" role="dialog" aria-modal="true" aria-labelledby="titre-compte"
+                 tabindex="-1" onkeydown={handleToucheModale}>
+                <div class="modale-entete">
+                    <div>
+                        <h2 id="titre-compte">Nouveau compte Certiko</h2>
+                        <p class="dim petit">Pour un pré-visiteur déjà sous contrat, préférez « Ouvrir le compte » dans la liste « À ouvrir ».</p>
+                    </div>
+                    <button class="modale-fermer" onclick={handleFermerModales} title="Fermer">&times;</button>
+                </div>
+
+                <div class="modale-corps">
+                    <template lwc:if={message}>
+                        <div class={classeMessage} role="status">{message}</div>
+                    </template>
+
+                    <div class="formulaire">
+                        <div class="champ-groupe pleine-largeur">
+                            <label class="etiquette" for="c-email">Email <abbr title="obligatoire">*</abbr></label>
+                            <input id="c-email" class="champ champ-email" type="email" data-champ="email"
+                                   placeholder="prenom@exemple.es"
+                                   value={nouveauCompte.email} oninput={handleSaisieCompte} />
+                        </div>
+                        <div class="champ-groupe">
+                            <label class="etiquette" for="c-prenom">Prénom</label>
+                            <input id="c-prenom" class="champ" type="text" data-champ="prenom"
+                                   value={nouveauCompte.prenom} oninput={handleSaisieCompte} />
+                        </div>
+                        <div class="champ-groupe">
+                            <label class="etiquette" for="c-nom">Nom</label>
+                            <input id="c-nom" class="champ" type="text" data-champ="nom"
+                                   value={nouveauCompte.nom} oninput={handleSaisieCompte} />
+                        </div>
+                        <div class="champ-groupe">
+                            <label class="etiquette" for="c-tel">Téléphone</label>
+                            <input id="c-tel" class="champ" type="tel" data-champ="telephone"
+                                   placeholder="facultatif"
+                                   value={nouveauCompte.telephone} oninput={handleSaisieCompte} />
+                        </div>
+                        <div class="champ-groupe">
+                            <label class="etiquette" for="c-equipe">Équipe <abbr title="obligatoire">*</abbr></label>
+                            <select id="c-equipe" class="champ" data-champ="equipe" onchange={handleSaisieCompte}>
+                                <option value="">— Choisir —</option>
+                                <template for:each={equipesOptionsCompte} for:item="o">
+                                    <option key={o.cle} value={o.cle} selected={o.choisi}>{o.libelle}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+
+                    <p class="note">Mot de passe posé à la création : <b>{motDePasseInitial}</b> — le même pour tous.
+                        À faire changer par le pré-visiteur depuis Certiko après sa première connexion.</p>
+                </div>
+
+                <div class="modale-pied">
+                    <button class="btn btn-ghost" onclick={handleFermerModales}>Annuler</button>
+                    <button class="btn" disabled={creerCompteDesactive} onclick={handleCreerCompte}>Créer le compte</button>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

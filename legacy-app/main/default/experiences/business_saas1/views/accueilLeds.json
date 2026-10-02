@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "853dcb4d-1a06-43cf-9565-5557e5f754e0",
+  "label" : "Accueil - Leds",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "455a4fd8-5866-4873-8c41-709a5a127115",
+          "columns" : [ {
+            "UUID" : "2984e75a-aa54-43cf-b13d-604e72b07289",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 120
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "455a4fd8-5866-4873-8c41-709a5a127115",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "typePage" : "LEDS"
+          },
+          "componentName" : "c:securityCheck",
+          "id" : "46d41ab8-6613-45a3-8792-44e58f20d642",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "2984e75a-aa54-43cf-b13d-604e72b07289",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "7c60b13d-e3c0-4f8f-a820-99c3f2f0e853",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Accueil - Leds"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "3a53215c-4080-41e8-9fa4-06f52832215b",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "870e8df0-5762-4a6f-a54f-90555c1c3268",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-accueil-leds"
+}

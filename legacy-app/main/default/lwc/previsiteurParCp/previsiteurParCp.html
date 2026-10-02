@@ -1,0 +1,239 @@
+<template>
+    <div class="style-hote" lwc:dom="manual"></div>
+    <lightning-card title="Quel prévisiteur pour ce client ?" icon-name="standard:location">
+        <template if:true={afficherAdmin}>
+            <lightning-button slot="actions" label="Gérer les provinces" icon-name="utility:settings" onclick={ouvrirModale}></lightning-button>
+        </template>
+        <div class="slds-p-horizontal_medium">
+            <template if:false={modeFiche}>
+                <p class="slds-text-color_weak slds-m-bottom_small">
+                    Saisissez le code postal du client : l'onglet affiche les prévisiteurs de la zone, puis ceux des zones adjacentes.
+                </p>
+            </template>
+            <template if:true={modeFiche}>
+                <div class="fiche slds-m-bottom_small">
+                    <div>Prévisiteur actuel : <b>{previsiteurActuel}</b></div>
+                    <div class="slds-text-color_weak slds-text-body_small">
+                        Code postal prérempli depuis la fiche. Le modifier ici sert à la recherche seulement : la fiche n'est pas modifiée.
+                    </div>
+                </div>
+            </template>
+
+            <!-- recherche -->
+            <div class="search slds-grid slds-wrap slds-grid_vertical-align-end slds-gutters_small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_3-of-12">
+                    <lightning-input type="text" label="Code postal du client" value={cp} max-length="5"
+                        pattern="[0-9]*" inputmode="numeric" placeholder="28001" onchange={handleCp} class="cp-input">
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_7-of-12 prov">
+                    <template if:true={province}>
+                        <div class="prov-name">{province.n} <span class="slds-text-color_weak">· province {provinceCode}</span></div>
+                        <div class="slds-text-color_weak slds-text-body_small">Zones adjacentes :</div>
+                        <div class="adj">
+                            <template for:each={adjacents} for:item="a">
+                                <span key={a.code} class="zone adj">{a.n}</span>
+                            </template>
+                            <template if:false={hasAdjacents}><span class="zone">aucune</span></template>
+                        </div>
+                    </template>
+                    <template if:false={province}>
+                        <div class={hintClass}>{hint}</div>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-text-align_right">
+                    <template if:true={cpDifferent}>
+                        <lightning-button variant="base" label="CP de la fiche" onclick={reprendreCpFiche} class="slds-m-right_x-small"></lightning-button>
+                    </template>
+                    <lightning-button label="Effacer" onclick={clear}></lightning-button>
+                </div>
+            </div>
+
+            <template if:true={loading}>
+                <div class="slds-is-relative slds-m-vertical_large" style="height:3rem"><lightning-spinner alternative-text="Chargement" size="small"></lightning-spinner></div>
+            </template>
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-m-vertical_small">{error}</div>
+            </template>
+            <template if:true={aucuneProvince}>
+                <div class="slds-text-color_error slds-m-vertical_small">
+                    Aucune province n'est encore paramétrée : un administrateur doit les saisir via « Gérer les provinces ».
+                </div>
+            </template>
+
+            <!-- résultats -->
+            <template if:true={showResults}>
+                <div class="gh gh-new">
+                    <span>📍</span>
+                    <span class="txt"><b>Dans la zone du client</b><em>Prévisiteurs dont la zone couvre {province.n}</em></span>
+                    <span class="num">{inZone.length}</span>
+                </div>
+                <template if:true={inZone.length}>
+                    <div class="tbl-cadre">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th class="c-prev">Prévisiteur</th>
+                                    <th>Zones d'action</th>
+                                    <th class="c-dist">Distance</th>
+                                    <th class="c-contact">Volume</th>
+                                    <template if:true={modeFiche}><th class="c-action"></th></template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={inZone} for:item="p">
+                                    <tr key={p.key} class={p.carteClass}>
+                                        <td class="c-prev">
+                                            <div class="prev">
+                                                <div class="avatar" aria-hidden="true">{p.initiales}</div>
+                                                <div class="prev-txt">
+                                                    <div class="nom">{p.nom}</div>
+                                                    <div class="sous">
+                                                        <span class={p.pillClass}>{p.statut}</span>
+                                                        <template if:true={p.estActuel}><span class="pill actuel">Actuel</span></template>
+                                                        <button class={p.copyClass} data-name={p.nom} onclick={copyName} title="Copier le nom">{p.copyLabel}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="c-zones">
+                                            <div class="zones">
+                                                <template for:each={p.zonesView} for:item="z"><span key={z.code} class={z.cls}>{z.n}</span></template>
+                                            </div>
+                                        </td>
+                                        <td class="c-dist"><span class={p.distClass}>{p.distTxt}</span></td>
+                                        <td class="c-contact">
+                                            <template if:true={p.dispo}><div class="item faible"><lightning-icon icon-name="utility:event" size="xx-small" class="ic"></lightning-icon>{p.dispo}</div></template>
+                                        </td>
+                                        <template if:true={modeFiche}>
+                                            <td class="c-action">
+                                                <lightning-button label={p.attribuerLabel} variant={p.attribuerVariant} icon-name="utility:user" data-compte={p.compteId} data-nom={p.nom} title={p.attribuerTitre} disabled={p.attribuerDisabled} onclick={attribuer}></lightning-button>
+                                                <template if:true={p.sansCompte}><div class="sans-compte">Pas de compte prévisiteur</div></template>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template if:false={inZone.length}><div class="empty">Aucun prévisiteur ne couvre cette province.</div></template>
+
+                <div class="gh gh-rest">
+                    <span>🗺️</span>
+                    <span class="txt"><b>Zones adjacentes</b><em>Prévisiteurs des provinces voisines de {province.n}, du plus proche au plus loin</em></span>
+                    <span class="num">{adjacent.length}</span>
+                </div>
+                <template if:true={adjacent.length}>
+                    <div class="tbl-cadre">
+                        <table class="tbl">
+                            <thead>
+                                <tr>
+                                    <th class="c-prev">Prévisiteur</th>
+                                    <th>Zones d'action</th>
+                                    <th class="c-dist">Distance</th>
+                                    <th class="c-contact">Volume</th>
+                                    <template if:true={modeFiche}><th class="c-action"></th></template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={adjacent} for:item="p">
+                                    <tr key={p.key} class={p.carteClass}>
+                                        <td class="c-prev">
+                                            <div class="prev">
+                                                <div class="avatar" aria-hidden="true">{p.initiales}</div>
+                                                <div class="prev-txt">
+                                                    <div class="nom">{p.nom}</div>
+                                                    <div class="sous">
+                                                        <span class={p.pillClass}>{p.statut}</span>
+                                                        <template if:true={p.estActuel}><span class="pill actuel">Actuel</span></template>
+                                                        <button class={p.copyClass} data-name={p.nom} onclick={copyName} title="Copier le nom">{p.copyLabel}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="c-zones">
+                                            <div class="zones">
+                                                <template for:each={p.zonesView} for:item="z"><span key={z.code} class={z.cls}>{z.n}</span></template>
+                                            </div>
+                                        </td>
+                                        <td class="c-dist"><span class={p.distClass}>{p.distTxt}</span></td>
+                                        <td class="c-contact">
+                                            <template if:true={p.dispo}><div class="item faible"><lightning-icon icon-name="utility:event" size="xx-small" class="ic"></lightning-icon>{p.dispo}</div></template>
+                                        </td>
+                                        <template if:true={modeFiche}>
+                                            <td class="c-action">
+                                                <lightning-button label={p.attribuerLabel} variant={p.attribuerVariant} icon-name="utility:user" data-compte={p.compteId} data-nom={p.nom} title={p.attribuerTitre} disabled={p.attribuerDisabled} onclick={attribuer}></lightning-button>
+                                                <template if:true={p.sansCompte}><div class="sans-compte">Pas de compte prévisiteur</div></template>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template if:false={adjacent.length}><div class="empty">Aucun prévisiteur dans les provinces voisines.</div></template>
+
+                <p class="slds-text-color_weak slds-text-body_small slds-m-top_small">
+                    Distance estimée entre chefs-lieux de province. « Copier » met le nom du prévisiteur dans le presse-papiers.
+                </p>
+            </template>
+        </div>
+
+        <!-- ================= modale : administration des provinces (admins) ================= -->
+        <template if:true={modaleOuverte}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="titre-provinces" class="slds-modal slds-fade-in-open slds-modal_large">
+                <div class="slds-modal__container">
+                    <button class="slds-button slds-button_icon slds-modal__close" title="Fermer" onclick={fermerModale}>
+                        <lightning-icon icon-name="utility:close" size="small" variant="inverse" alternative-text="Fermer"></lightning-icon>
+                    </button>
+                    <div class="slds-modal__header">
+                        <h1 id="titre-provinces" class="slds-modal__title slds-hyphenate">Provinces ({nbLignes})</h1>
+                        <p class="slds-m-top_x-small slds-text-color_weak slds-text-body_small">
+                            Code = 2 premiers chiffres du code postal. Adjacentes = codes séparés par « ; ».
+                            Alias = autres orthographes reconnues dans les provinces des prévisiteurs, séparées par « ; ».
+                        </p>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <div class="slds-grid slds-grid_vertical-align-end slds-gutters_small slds-m-bottom_small">
+                            <div class="slds-col">
+                                <lightning-input type="search" label="Filtrer" variant="label-hidden" placeholder="Filtrer par code, nom ou alias" onchange={handleFiltre}></lightning-input>
+                            </div>
+                            <div class="slds-col slds-grow-none">
+                                <lightning-button label="Ajouter une province" icon-name="utility:add" onclick={ajouterLigne}></lightning-button>
+                            </div>
+                        </div>
+                        <template if:true={erreurModale}>
+                            <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_small err-modale" role="alert">{erreurModale}</div>
+                        </template>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered adm">
+                            <thead>
+                                <tr><th class="c-code">Code</th><th>Nom</th><th class="c-num">Latitude</th><th class="c-num">Longitude</th><th>Adjacentes</th><th>Alias</th><th class="c-act"></th></tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={lignesVisibles} for:item="l">
+                                    <tr key={l.key}>
+                                        <td><lightning-input variant="label-hidden" label="Code" value={l.code} max-length="2" data-key={l.key} data-champ="code" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-input variant="label-hidden" label="Nom" value={l.nom} data-key={l.key} data-champ="nom" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-input variant="label-hidden" label="Latitude" value={l.lat} data-key={l.key} data-champ="lat" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-input variant="label-hidden" label="Longitude" value={l.lon} data-key={l.key} data-champ="lon" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-input variant="label-hidden" label="Adjacentes" value={l.adjacentes} data-key={l.key} data-champ="adjacentes" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-input variant="label-hidden" label="Alias" value={l.alias} data-key={l.key} data-champ="alias" onchange={handleCellule}></lightning-input></td>
+                                        <td><lightning-button-icon icon-name="utility:delete" variant="border-filled" alternative-text="Supprimer" title="Supprimer" data-key={l.key} onclick={supprimerLigne}></lightning-button-icon></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <lightning-button label="Annuler" onclick={fermerModale} disabled={enregistrement}></lightning-button>
+                        <lightning-button class="slds-m-left_x-small" variant="brand" label="Enregistrer" onclick={enregistrer} disabled={enregistrement}></lightning-button>
+                    </div>
+                    <template if:true={enregistrement}><lightning-spinner alternative-text="Enregistrement" size="medium"></lightning-spinner></template>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+    </lightning-card>
+</template>

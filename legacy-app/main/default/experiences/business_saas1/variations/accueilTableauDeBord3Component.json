@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "99ef7d2b-f8bc-4c37-ae2c-111304ccd7fd",
+    "propertyOverrides" : {
+      "isVisible" : true
+    },
+    "targetId" : "41ba9555-5351-4aec-a61d-11d30be34825",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Accueil_Tableau_de_bord_3_Component",
+  "id" : "a7155bff-6f6b-43ec-adf1-e7cb07660a13",
+  "type" : "experienceVariation"
+}

@@ -1,0 +1,100 @@
+<template>
+    <div class="tab-pane">
+        <div class="pane-head">
+            <div class="pane-head-left">
+                <p class="pane-title">{txt.titrePartenaire}</p>
+                <span class="pane-hint">{txt.sousTitrePartenaire}</span>
+            </div>
+            <button class="btn-refresh" onclick={handleRefresh}>{txt.actualiser}</button>
+        </div>
+
+        <template lwc:if={showSpinnerInitial}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text={txt.chargement} size="medium"></lightning-spinner>
+                <p class="loading-text">{txt.chargementPartenaire}</p>
+            </div>
+        </template>
+
+        <template lwc:if={erreurBloquante}>
+            <div class="error-container">
+                <p class="error-message">{erreurBloquante}</p>
+            </div>
+        </template>
+
+        <!-- ═══════════ Marche à suivre pour être payé ═══════════
+             Affiché AVANT le tableau, et seulement une fois l'historique des
+             paiements connu : le contenu diffère selon qu'un règlement a déjà eu
+             lieu ou non. -->
+        <template lwc:if={afficheInfo}>
+            <div class="info-card">
+                <div class="info-head">
+                    <span class="info-icone" aria-hidden="true">📄</span>
+                    <p class="info-titre">{titreInfo}</p>
+                </div>
+
+                <p class="info-intro">
+                    {txt.infoIntro}
+                    &nbsp;<a href={lienEmail} class="info-mail">{emailFacturation}</a> :
+                </p>
+
+                <ul class="info-liste">
+                    <template for:each={piecesInfo} for:item="piece">
+                        <li class="info-item" key={piece.key}>
+                            <span class="info-puce" aria-hidden="true">✅</span>
+                            <span class="info-texte">
+                                {piece.avant}
+                                <template lwc:if={piece.aLien}>
+                                    <a href={piece.lienUrl} class="info-lien"
+                                        target="_blank" rel="noopener noreferrer">{piece.lienTexte}</a>
+                                </template>
+                                <template lwc:else>{piece.lienTexte}</template>
+                                {piece.apres}
+                            </span>
+                        </li>
+                    </template>
+                </ul>
+
+                <p class="info-suite">
+                    {txt.infoSuite}
+                </p>
+                <p class="info-delai">
+                    {txt.infoDelaiAvant}
+                    &nbsp;<strong>{txt.infoDelaiValeur}</strong> {txt.infoDelaiApres}
+                </p>
+            </div>
+        </template>
+
+        <!-- La table reste MONTÉE pendant les rechargements : la démonter viderait
+             son tri, sa page et sa taille de page. -->
+        <template lwc:if={showTable}>
+            <div class="table-zone">
+                <template lwc:if={showOverlay}>
+                    <div class="loading-overlay">
+                        <lightning-spinner alternative-text={txt.actualisation}
+                            size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <!-- Une ou deux sources en échec : la table reste utile, amputée. -->
+                <template lwc:if={erreurPartielle}>
+                    <div class="warn-container">
+                        <span class="warn-icon">⚠️</span>
+                        <span class="warn-text">{erreurPartielle}</span>
+                    </div>
+                </template>
+
+                <!-- Aucune colonne n'est déclarée filtrable dans COLONNES_PARTENAIRE :
+                     la table n'affiche donc aucun bloc de filtres, et l'emplacement
+                     « kpi » reste vide. -->
+                <c-lwc020_-facturation-table
+                    rows={rows}
+                    colonnes={colonnes}
+                    tronque={tronque}
+                    message-troncature={messageTroncature}
+                    message-vide={txt.messageVidePartenaire}
+                    unite={txt.uniteLigne}>
+                </c-lwc020_-facturation-table>
+            </div>
+        </template>
+    </div>
+</template>

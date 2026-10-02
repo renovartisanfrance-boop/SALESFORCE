@@ -1,0 +1,229 @@
+/* Les tokens --c-* proviennent de rdvFicheStandard : les custom properties CSS
+   traversent le shadow DOM, le composant s'harmonise donc avec son hôte. Les
+   replis permettent de le réutiliser ailleurs sans dépendance. */
+:host {
+    display: block;
+    width: 100%;
+}
+
+.aa {
+    position: relative;
+    width: 100%;
+}
+
+/* ==========================================================================
+   COMMUN AUX TROIS VARIANTES — saisie, liste, états
+   ========================================================================== */
+
+.aa-field {
+    position: relative;
+}
+
+.aa-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--c-border, #d8dde6);
+    border-radius: 0.25rem;
+    padding: 0 2.25rem 0 0.75rem;
+    height: 2rem;
+    font-size: 0.8125rem;
+    color: var(--c-text-primary, #181818);
+    background: #fff;
+    outline: none;
+}
+.aa-input:focus {
+    border-color: var(--c-blue, #0176d3);
+    box-shadow: 0 0 0 2px rgba(1, 118, 211, 0.2);
+}
+.aa-input:disabled {
+    background: var(--c-surface, #f3f3f3);
+    color: var(--c-text-muted, #a1a1aa);
+}
+/* Saisie précédée d'une loupe : on décale le texte pour ne pas passer dessous. */
+.aa-input--icone {
+    padding-left: 2rem;
+}
+
+.aa-icon {
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    --sds-c-icon-color-foreground-default: var(--c-text-muted, #a1a1aa);
+}
+
+.aa-spinner {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+}
+
+/* La liste déborde volontairement de la cellule du formulaire : le parent garantit
+   overflow:visible sur ses conteneurs et un z-index supérieur à sa barre sticky. */
+.aa-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    min-width: 100%;
+    width: max-content;
+    max-width: 30rem;
+    z-index: 9000;
+    background: #fff;
+    border: 1px solid var(--c-border, #d8dde6);
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.14);
+    max-height: 18rem;
+    overflow-y: auto;
+}
+.aa-open {
+    display: block;
+}
+
+.aa-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0;
+}
+
+.aa-option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+.aa-option:hover,
+.aa-option--active {
+    background: var(--c-hover, #f0f8ff);
+}
+
+.aa-option-label {
+    font-size: 0.8125rem;
+    color: var(--c-text-primary, #181818);
+}
+.aa-option-sub {
+    font-size: 0.6875rem;
+    color: var(--c-text-muted, #a1a1aa);
+}
+
+.aa-empty {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--c-text-muted, #a1a1aa);
+    font-style: italic;
+}
+
+.aa-error {
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    color: #ba0517;
+}
+
+/* ==========================================================================
+   VARIANTE « aligne » — calquée sur la densité Compact du formulaire :
+   libellé dans la colonne de gauche (33 %), saisie dans celle de droite.
+   ========================================================================== */
+.aa--aligne {
+    display: grid;
+    grid-template-columns: 33% 1fr;
+    align-items: center;
+    column-gap: 0;
+    min-height: 2.25rem;
+}
+
+.aa-label-inline {
+    font-size: 0.8125rem;
+    color: var(--c-text-sub, #52525b);
+    padding-right: 0.75rem;
+}
+
+/* ==========================================================================
+   VARIANTE « bandeau » — barre pleine largeur, visuellement détachée des
+   champs de données : c'est un outil de saisie, rien n'y est enregistré.
+   ========================================================================== */
+.aa--bandeau {
+    background: var(--c-blue-pale, #eaf4ff);
+    border: 1px solid #b3d4f5;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.aa-input--bandeau {
+    height: 2.25rem;
+    padding-left: 2.25rem;
+    border-color: #b3d4f5;
+    font-size: 0.875rem;
+}
+.aa-input--bandeau::placeholder {
+    color: var(--c-blue, #0176d3);
+    opacity: 0.65;
+}
+
+.aa-icon--bandeau {
+    left: 0.7rem;
+    --sds-c-icon-color-foreground-default: var(--c-blue, #0176d3);
+}
+
+/* ==========================================================================
+   VARIANTE « loupe » — encombrement nul : un bouton discret aligné sur la
+   colonne des libellés, qui ouvre la recherche en surimpression.
+   ========================================================================== */
+.aa--loupe {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.aa-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.15rem 0.4rem;
+    border: none;
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--c-blue, #0176d3);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+.aa-trigger:hover:not(:disabled) {
+    background: var(--c-hover, #f0f8ff);
+    text-decoration: underline;
+}
+.aa-trigger:disabled {
+    color: var(--c-text-muted, #a1a1aa);
+    cursor: default;
+}
+/* La loupe du déclencheur est dans le flux, contrairement aux autres variantes. */
+.aa-trigger .aa-icon {
+    position: static;
+    transform: none;
+    --sds-c-icon-color-foreground-default: var(--c-blue, #0176d3);
+}
+
+.aa-popover {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 9001;
+    width: 26rem;
+    max-width: 90vw;
+    padding: 10px 12px 12px;
+    background: #fff;
+    border: 1px solid var(--c-border, #d8dde6);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.18);
+}
+
+.aa-popover-titre {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--c-text-sub, #52525b);
+    margin-bottom: 0.35rem;
+}

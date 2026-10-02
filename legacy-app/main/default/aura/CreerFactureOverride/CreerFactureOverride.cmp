@@ -1,0 +1,6 @@
+<aura:component implements="lightning:actionOverride,force:hasRecordId,force:appHostable,lightning:isUrlAddressable" access="global">
+    <aura:attribute name="recordTypeId" type="String" default=""/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.doInit}"/>
+    <c:creerFactureWizard recordTypeId="{!v.recordTypeId}"/>
+</aura:component>

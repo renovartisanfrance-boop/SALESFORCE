@@ -1,0 +1,62 @@
+<template>
+    <div class="tab-pane">
+        <div class="pane-head">
+            <div class="pane-head-left">
+                <p class="pane-title">{txt.titrePayees}</p>
+                <span class="pane-hint">{txt.sousTitrePayees}</span>
+            </div>
+            <button class="btn-refresh" onclick={handleRefresh}>{txt.actualiser}</button>
+        </div>
+
+        <template lwc:if={showSpinnerInitial}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+                <p class="loading-text">{txt.chargementPayees}</p>
+            </div>
+        </template>
+
+        <template lwc:if={error}>
+            <div class="error-container">
+                <p class="error-message">{error}</p>
+            </div>
+        </template>
+
+        <!-- La table reste MONTÉE pendant les rechargements : la démonter viderait
+             ses filtres, son tri, sa page et sa taille de page. -->
+        <template lwc:if={showTable}>
+            <div class="table-zone">
+                <template lwc:if={showOverlay}>
+                    <div class="loading-overlay">
+                        <lightning-spinner alternative-text="Actualisation..."
+                            size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <!-- L'ordre — filtres, tuile, tableau — est porté par la table.
+                     La tuile est déclarée ici et passée dans l'emplacement « kpi ». -->
+                <c-lwc020_-facturation-table langue={langue}
+                    rows={rows}
+                    colonnes={colonnes}
+                    tronque={tronque}
+                    message-troncature={messageTroncature}
+                    message-vide="Aucune facture payée pour le moment."
+                    unite={txt.uniteFacture}
+                    ontotaux={handleTotaux}>
+
+                    <!-- Le rappel du total du compte n'apparaît que sous filtre : sans
+                         filtre, le grand chiffre EST déjà ce total. -->
+                    <div slot="kpi" class="kpi-row">
+                        <div class="kpi-card kpi-paye">
+                            <span class="kpi-label">{txt.paye}</span>
+                            <span class="kpi-value">{totalPaye}</span>
+                            <span class="kpi-sub">{sousTitrePaye}</span>
+                            <template lwc:if={afficherRappelCompte}>
+                                <span class="kpi-ref">{comptePaye}</span>
+                            </template>
+                        </div>
+                    </div>
+                </c-lwc020_-facturation-table>
+            </div>
+        </template>
+    </div>
+</template>

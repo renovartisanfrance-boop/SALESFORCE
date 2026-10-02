@@ -1,0 +1,11 @@
+.my-container{
+    width: 50vw !important;
+}
+
+.separator{
+    margin: 5px 0;
+}
+
+lightning-combobox[name='combobox_2'] input{
+    direction: rtl;
+}

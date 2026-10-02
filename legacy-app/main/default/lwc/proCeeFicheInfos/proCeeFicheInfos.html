@@ -1,0 +1,75 @@
+<template>
+    <!-- Étape 1 : avertissement si plusieurs champs actifs sur ce dossier -->
+    <!-- <template if:true={hasMultipleActifs}>
+        <div class="fi-alert">
+            <lightning-icon icon-name="utility:warning" size="small" class="fi-icon-warning"></lightning-icon>
+            <div class="fi-alert-content">
+                <span class="fi-alert-title">Dossiers détectés</span>
+                <span class="fi-alert-text">{messageErreur}</span>
+            </div>
+        </div>
+    </template> -->
+
+    <!-- Étape 3 : dossier frère correspondant détecté via fichesToCheck -->
+    <!--<template if:true={hasFicheMatch}>
+        <div class="fi-alert fi-alert--info">
+             <lightning-icon icon-name="utility:info" size="small" class="fi-icon-info"></lightning-icon>
+            <div class="fi-alert-content">
+                <span class="fi-alert-title">Dossier frère détecté</span>
+                <span class="fi-alert-text">{messageFicheMatch}</span>
+                <span class="fi-alert-text">{fieldsDemanesAnnulation}</span>
+            </div> 
+        </div>
+    </template>-->
+
+    <!-- Add collapse here : Infos autres dossiers -->
+    <template if:true={hasSiblingDossiers}>
+        <div class="fi-collapse">
+            <button class="fi-collapse-toggle" onclick={toggleOtherDossiers}>
+                <lightning-icon icon-name={otherDossiersIcon} size="x-small" class="fi-collapse-icon"></lightning-icon>
+                Infos autres dossiers
+            </button>
+            <template if:true={isOtherDossiersOpen}>
+                <div class="fi-collapse-content">
+                    <template for:each={siblingDossiersSummary} for:item="dossier">
+                        <div key={dossier.id} class="fi-dossier-recap">
+                            <div class="fi-dossier-header">
+                                <span class="fi-dossier-fiche">{dossier.fiche}</span>
+                                <lightning-button
+                                    icon-name="utility:new_window"
+                                    icon-position="left"
+                                    variant="base"
+                                    label="Lien vers dossier"
+                                    data-id={dossier.id}
+                                    onclick={navigateToDossier}
+                                    class="fi-nav-btn"
+                                ></lightning-button>
+                            </div>
+                            <template for:each={dossier.fields} for:item="field">
+                                <div key={field.label} class="fi-dossier-field">
+                                    <span class="fi-field-label">{field.label} :</span>
+                                    <span class="fi-field-value">{field.value}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- Étape 2 : liste des dossiers frères sur la même opportunité -->
+    <!-- <template if:true={hasDossiers}>
+        <div class="fi-dossiers">
+            <ul class="fi-dossier-list">
+                <template for:each={dossiers} for:item="d">
+                    <li key={d.id} class="fi-dossier-item">
+                        <span class="fi-fiche">{d.fiche}</span>
+                        <span class="fi-sep">·</span>
+                        <span class="fi-statut">{d.statut}</span>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </template> -->
+</template>

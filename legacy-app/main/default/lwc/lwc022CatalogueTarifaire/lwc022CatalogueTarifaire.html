@@ -1,0 +1,35 @@
+<template>
+    <div class="pf-wrapper">
+        <!-- <div class="pf-header">
+            <p class="pf-title">Catalogue Tarifaire</p>
+            <p class="pf-subtitle">Paramétrez les règles de tarification par fiche, intervenant et variables du dossier</p>
+        </div> -->
+
+        <div class="pf-tabs" role="tablist">
+            <button type="button" class={listeTabClass} role="tab" data-tab="liste" onclick={handleTabClick}>
+                Lignes du catalogue
+            </button>
+            <button type="button" class={formTabClass} role="tab" data-tab="form" onclick={handleTabClick}>
+                {formTabLabel}
+            </button>
+        </div>
+
+        <div class="pf-tab-content">
+            <template lwc:if={isListe}>
+                <c-lwc022-catalogue-liste
+                    onnew={handleNew}
+                    onedit={handleEdit}
+                    onclone={handleClone}>
+                </c-lwc022-catalogue-liste>
+            </template>
+            <template lwc:if={isForm}>
+                <c-lwc022-catalogue-form
+                    record-id={editRecordId}
+                    clone-id={cloneRecordId}
+                    onsaved={handleSaved}
+                    oncancelform={handleCancel}>
+                </c-lwc022-catalogue-form>
+            </template>
+        </div>
+    </div>
+</template>

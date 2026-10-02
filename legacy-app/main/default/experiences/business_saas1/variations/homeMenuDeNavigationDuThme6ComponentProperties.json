@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "d3766023-3a10-4a7e-97c6-a1b4f6e0de74",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Secretariat_PRO"
+      }
+    },
+    "targetId" : "44cf7732-3464-41d1-8e11-56e37c0ebdf1",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Home_Menu_de_navigation_du_thme_6_Component_Properties",
+  "id" : "95f37075-b48f-425d-97a2-79403c8a5e14",
+  "type" : "experienceVariation"
+}

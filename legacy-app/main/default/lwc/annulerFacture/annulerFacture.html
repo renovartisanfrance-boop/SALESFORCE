@@ -1,0 +1,111 @@
+<template>
+    <div class={containerClass}>
+
+        <!-- Spinner pendant le chargement initial -->
+        <template if:true={initializing}>
+            <lightning-spinner alternative-text="Chargement…" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Spinner en overlay (annulation en cours) -->
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Annulation en cours" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Message d'attente pendant la vérification du statut -->
+        <template if:true={showInitMessage}>
+            <div class="slds-p-vertical_large slds-text-align_center slds-text-color_weak">
+                Vérification du statut de la facture…
+            </div>
+        </template>
+
+        <!-- État bloquant : facture déjà annulée ou validée -->
+        <template if:true={showBlockedSection}>
+            <div class="af-result slds-p-vertical_medium slds-text-align_center">
+                <lightning-icon icon-name={blockedIcon} size="large"></lightning-icon>
+                <h2 class="slds-text-heading_small slds-m-top_small">{blockedTitle}</h2>
+                <p class="slds-text-color_weak slds-m-top_xx-small">{blockedMessage}</p>
+            </div>
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-top_small">
+                    <lightning-icon icon-name="utility:error" variant="inverse" size="small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    <span>{error}</span>
+                </div>
+            </template>
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Fermer" variant="brand" onclick={handleClose}></lightning-button>
+            </div>
+        </template>
+
+        <!-- Écran de confirmation de succès -->
+        <template if:true={showDoneSection}>
+            <div class="af-result slds-p-vertical_medium">
+                <lightning-icon icon-name="action:approval" size="large"></lightning-icon>
+                <h2 class="slds-text-heading_small slds-m-top_small">Facture annulée</h2>
+                <p class="slds-text-color_weak slds-m-top_xx-small">{resultMessage}</p>
+            </div>
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Fermer" variant="brand" onclick={handleClose}></lightning-button>
+            </div>
+        </template>
+
+        <!-- Formulaire d'annulation -->
+        <template if:true={showFormSection}>
+
+            <div class="slds-box slds-theme_warning af-warn slds-m-bottom_medium">
+                <lightning-icon icon-name="utility:warning" size="small"
+                    class="slds-m-right_x-small"></lightning-icon>
+                <span>Vous êtes sur le point d'annuler cette facture. Son statut passera à « Annulé ».</span>
+            </div>
+
+            <template if:true={error}>
+                <div class="slds-box slds-theme_error slds-m-bottom_small">
+                    <lightning-icon icon-name="utility:error" variant="inverse" size="small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    <span>{error}</span>
+                </div>
+            </template>
+
+            <lightning-radio-group
+                name="optionAnnulation"
+                label="Traitement des lignes de paiement"
+                options={options}
+                value={option}
+                onchange={handleOptionChange}
+                required>
+            </lightning-radio-group>
+
+            <p class="slds-text-body_small slds-text-color_weak slds-m-vertical_x-small af-hint">
+                {optionHint}
+            </p>
+
+            <lightning-textarea
+                name="motif"
+                label="Motif d'annulation"
+                value={motif}
+                onchange={handleMotifChange}
+                required
+                class="slds-m-top_small"
+                placeholder="Saisissez le motif de l'annulation…">
+            </lightning-textarea>
+
+            <div class="slds-form-element slds-m-top_small">
+                <span class="slds-form-element__label">Date d'annulation</span>
+                <div class="slds-form-element__control">
+                    <span class="slds-form-element__static">
+                        {dateAnnulation} — date de l'opération
+                    </span>
+                </div>
+            </div>
+
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Retour" onclick={handleClose}
+                    class="slds-m-right_x-small" disabled={loading}></lightning-button>
+                <lightning-button label="Confirmer l'annulation" variant="destructive"
+                    onclick={handleConfirm} disabled={confirmDisabled}></lightning-button>
+            </div>
+
+        </template>
+
+    </div>
+</template>

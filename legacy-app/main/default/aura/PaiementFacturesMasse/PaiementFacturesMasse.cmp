@@ -1,0 +1,9 @@
+<aura:component implements="lightning:isUrlAddressable,force:appHostable" access="global">
+    <!-- actif pilote le montage du LWC : passer à false puis true le recrée
+         entièrement (aucun état/cache Aura conservé entre deux navigations). -->
+    <aura:attribute name="actif" type="Boolean" default="true"/>
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.handlePageReferenceChange}"/>
+    <aura:if isTrue="{!v.actif}">
+        <c:lwc022PaiementFacturesMasse/>
+    </aura:if>
+</aura:component>

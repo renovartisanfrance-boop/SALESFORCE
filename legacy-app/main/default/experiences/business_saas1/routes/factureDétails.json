@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "b17979ef-843a-43e5-87b4-06f9689ba5d5",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "detail_a0J__c",
+  "id" : "bcc10f7c-588f-4742-b468-56ee0011505e",
+  "label" : "Facture Détails",
+  "objectApiName" : "Facture__c",
+  "routeType" : "detail-a0J",
+  "type" : "route",
+  "urlPrefix" : "facture"
+}

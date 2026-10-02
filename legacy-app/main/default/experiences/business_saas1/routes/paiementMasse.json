@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "d7adfcea-b885-43ee-bedd-3587fce37023",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Paiement_masse__c",
+  "id" : "3c989fdd-bf68-4234-ba9c-0bac376676eb",
+  "label" : "Paiement masse",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-paiement-masse",
+  "type" : "route",
+  "urlPrefix" : "paiement-masse"
+}

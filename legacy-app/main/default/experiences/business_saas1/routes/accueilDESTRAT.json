@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "1c16c053-3376-4eb0-8896-be9f64d3fe50",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "accueil_destrat__c",
+  "id" : "4f5cd94e-edfc-4889-aecf-ddf1d1a8d82e",
+  "label" : "Accueil - DESTRAT",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accueil-destrat",
+  "type" : "route",
+  "urlPrefix" : "accueil-destrat"
+}

@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "309e8775-f2d6-4ce8-b4f4-ef58f0135ec9",
+    "propertyOverrides" : {
+      "isVisible" : true
+    },
+    "targetId" : "3984dfdb-2d4c-4d92-b23a-b4cbe7c86fd4",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Accueil_LWC_Notification_Actualisation_Component",
+  "id" : "19dd1bce-3514-4cff-8d5a-cf1b1902cb88",
+  "type" : "experienceVariation"
+}

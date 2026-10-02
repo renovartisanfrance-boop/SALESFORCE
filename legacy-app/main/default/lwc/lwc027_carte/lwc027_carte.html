@@ -1,0 +1,52 @@
+<template>
+    <div class="carte-bloc">
+
+        <!-- Bandeau d'etat : chargement, localisation des adresses, position -->
+        <template lwc:if={chargement}>
+            <p class="etat">{txt.chargement}</p>
+        </template>
+        <template lwc:if={erreur}>
+            <p class="etat etat-erreur">{txt.erreurCarte}</p>
+        </template>
+        <template lwc:if={progression}>
+            <p class="etat">{progression}</p>
+        </template>
+        <template lwc:if={messagePosition}>
+            <p class="etat etat-info">{messagePosition}</p>
+        </template>
+
+        <!-- Itineraire en cours -->
+        <template lwc:if={messageTrajet}>
+            <p class="etat etat-info">{messageTrajet}</p>
+        </template>
+        <template lwc:if={trajet}>
+            <div class="trajet">
+                <div class="trajet-infos">
+                    <span class="trajet-titre">{trajet.titre}</span>
+                    <span class="trajet-chiffres">{trajet.distance} · {trajet.duree}</span>
+                </div>
+                <div class="trajet-actions">
+                    <a class="btn-carte" href={trajet.lien} target="_blank" rel="noopener noreferrer">{txt.boutonGps}</a>
+                    <button class="btn-carte" onclick={handleEffacerTrajet}>{txt.effacer}</button>
+                </div>
+            </div>
+        </template>
+
+        <div class="carte-cadre">
+            <!-- Conteneur gere par Leaflet : LWC ne doit pas y toucher -->
+            <div class="carte" style={styleCarte} lwc:dom="manual"></div>
+            <button class="btn-carte btn-recentrer" onclick={handleRecentrer}>{txt.recentrer}</button>
+        </div>
+
+        <template lwc:if={aDesNonLocalises}>
+            <div class="non-localises">
+                <p>{txt.nonLocalises}</p>
+                <ul>
+                    <template for:each={nonLocalises} for:item="p">
+                        <li key={p.id}><b>{p.titre}</b> — {p.adresse}</li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+    </div>
+</template>

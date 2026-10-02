@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "289046ab-0f7f-428d-a0ce-33a9cfacdcf2",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "detail_00Q__c",
+  "id" : "bbcf3aa7-42be-4da1-ad13-f4b2f4ba5fa9",
+  "label" : "Piste Détails",
+  "routeType" : "detail-00Q",
+  "type" : "route",
+  "urlPrefix" : "lead"
+}

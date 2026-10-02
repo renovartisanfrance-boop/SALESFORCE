@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "cebdc8ec-86eb-429b-99df-070ed8309238",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Sous_traitant"
+      }
+    },
+    "targetId" : "44cf7732-3464-41d1-8e11-56e37c0ebdf1",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Home_Menu_de_navigation_du_thme_3_Component_Properties",
+  "id" : "df88823e-692a-4226-9afb-1b82fc61a17a",
+  "type" : "experienceVariation"
+}

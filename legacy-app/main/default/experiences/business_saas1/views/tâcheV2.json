@@ -1,0 +1,69 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "81861c4f-5a96-4a63-bd18-8619895de8cc",
+  "label" : "Tâche V2",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:lwc001_banner",
+      "id" : "09e2c198-8366-4f84-9ea4-0cf2e4607338",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "436b7bc7-8a1e-41e6-af7f-d42c1b0ac354",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "STANDARDTRAITER",
+        "layout" : "FULL",
+        "pageSize" : 25,
+        "scope" : "Task",
+        "showActionBar" : true,
+        "showChartsPanel" : false,
+        "showDisplay" : "showall",
+        "showFilterPanel" : true,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : true,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "b9bd5f7a-598f-4c65-9bc2-3393a88bc427",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "e4fbe17d-f171-4a86-b9b8-fd2de840aaf4",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "96a1387d-a8d3-446c-b16d-98a04639a323",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Tâche V2"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "ab78631a-6f65-4179-948a-1a52345de393",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "7f553b4c-33f7-4c9a-9041-1f0c8c0f415d",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-tache-v2"
+}

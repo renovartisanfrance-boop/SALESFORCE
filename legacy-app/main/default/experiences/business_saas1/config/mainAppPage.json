@@ -1,0 +1,11 @@
+{
+  "cmsSettings" : { },
+  "currentThemeId" : "fa3b1620-5e34-48c2-b43f-a7ff65ca49eb",
+  "headMarkup" : "<style>\n.reportsReportBuilder {\n /* --lwc-sizeXLarge: 70rem;*/\n    --lwc-sizeXLarge: 90vh;\n}\n    .uiScroller.scroller-wrapper.scroll-bidirectional.native{\n        max-height: 75vh;\n    }\n    \n    .slds-grid.listDisplays.safari-workaround-anchor{\n        max-height: 75vh;\n        height: 75vh;\n    }\n</style>",
+  "id" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "isLockerServiceEnabled" : true,
+  "isRelaxedCSPLevel" : true,
+  "label" : "main",
+  "templateName" : "Starter Template",
+  "type" : "appPage"
+}

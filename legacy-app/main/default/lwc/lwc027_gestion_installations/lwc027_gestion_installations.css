@@ -1,0 +1,177 @@
+/* Accueil previsiteur — deux grandes entrees, lisibles au pouce sur mobile. */
+
+.previsite { padding: 1rem 1rem; max-width: 720px; margin: 0 auto; }
+
+.salutation { font-size: 1.35rem; font-weight: 700; color: #16325c; margin: 0 0 .35rem; }
+.intro { font-size: .95rem; color: #54698d; margin: 0 0 2rem; }
+
+.boutons { display: grid; gap: 1rem; }
+
+.tuile {
+    display: flex; flex-direction: column; align-items: flex-start; gap: .3rem;
+    font: inherit; text-align: left; cursor: pointer;
+    background: #fff; border: 1px solid #d8dde6; border-left-width: 5px;
+    border-radius: 12px; padding: 1.5rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+.tuile:hover  { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.10); }
+.tuile:active { transform: translateY(0); }
+
+/* La couleur distingue « ce qui reste a faire » de « ce qui est cale ». */
+.tuile-a-planifier { border-left-color: #dd7a01; }
+.tuile-planifies   { border-left-color: #2e844a; }
+
+.tuile-icone { font-size: 1.6rem; line-height: 1; margin-bottom: .35rem; }
+
+/* Regroupe titre et sous-titre : indispensable en tuile horizontale (mobile),
+   ou l'icone doit rester a gauche du bloc de texte et non au-dessus. */
+.tuile-texte {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    text-align: left;
+}
+.tuile-titre { font-size: 1.05rem; font-weight: 700; color: #16325c; }
+.tuile-sous  { font-size: .85rem; color: #54698d; }
+
+/* --- Contrat en attente : portail visible mais inerte --- */
+
+.attente {
+    background: #FFF9E8;
+    border: 1px solid #F5E3A8;
+    border-left: 4px solid #F5BC13;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 0 1.75rem;
+}
+.attente-titre {
+    margin: 0 0 .35rem;
+    font-size: .95rem; font-weight: 700; color: #1E3544;
+}
+.attente-message { margin: 0; font-size: .88rem; line-height: 1.5; color: #6E7A76; }
+
+/* Recap des informations envoyees, dans l'encadre jaune. Fond blanc : il se
+   detache du message et se lit comme un document, pas comme un avertissement. */
+.recap-titre {
+    margin: .9rem 0 .4rem;
+    font-size: .78rem; font-weight: 700; letter-spacing: .03em;
+    text-transform: uppercase; color: #8A6D0B;
+}
+.recap {
+    margin: 0;
+    background: #fff;
+    border: 1px solid #F5E3A8;
+    border-radius: 9px;
+    padding: 2px 12px;
+}
+.recap-ligne {
+    display: grid;
+    grid-template-columns: minmax(120px, 38%) 1fr;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #F6EFD6;
+    font-size: .84rem;
+}
+.recap-ligne:last-child { border-bottom: none; }
+.recap-ligne dt { margin: 0; color: #6E7A76; }
+.recap-ligne dd { margin: 0; color: #1E3544; font-weight: 600; overflow-wrap: anywhere; }
+
+.attente-actions {
+    margin-top: .9rem;
+    padding-top: .8rem;
+    border-top: 1px dashed #F0DC9A;
+}
+.attente-actions .recours-texte { margin: 0 0 .5rem; text-align: left; }
+.attente-boutons { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.attente-lien {
+    /* Rendu comme un bouton, mais c'est un <a> : la navigation native
+       echappe au blocage des popups et a la CSP appliquee aux fenetres
+       ouvertes par script. */
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    font: inherit; font-size: .85rem; font-weight: 600;
+    color: #217A47; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 9px;
+    padding: 9px 15px; cursor: pointer; min-height: 42px;
+}
+.attente-lien:hover:not(:disabled) { border-color: #2E9E5B; background: #F3F7F4; }
+.attente-lien:disabled { opacity: .45; cursor: not-allowed; }
+
+.attente-note { margin: .6rem 0 0; font-size: .8rem; color: #6E7A76; }
+
+/* Tuile inerte : opacite ET curseur, le grisage seul se voit mal en plein jour. */
+.tuile-bloquee {
+    opacity: .5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.tuile-bloquee:hover { transform: none; box-shadow: none; }
+
+.recours-texte { margin: 0 0 .75rem; font-size: .85rem; color: #6E7A76; }
+.recours-bouton {
+    font: inherit; font-size: .88rem; font-weight: 600;
+    color: #1E3544; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 9px;
+    padding: 9px 15px; cursor: pointer; min-height: 42px;
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.recours-bouton:hover { border-color: #2E9E5B; background: #F3F7F4; color: #217A47; }
+
+.vue { background: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.retour {
+    font: inherit; font-size: .88rem; color: #0070d2;
+    background: none; border: none; padding: 0 0 1rem; cursor: pointer;
+}
+.vue-titre { font-size: 1.1rem; font-weight: 700; color: #16325c; margin: 0 0 1rem; }
+.placeholder {
+    border: 1px dashed #d8dde6; border-radius: 8px;
+    padding: 2.5rem 1rem; text-align: center; color: #54698d; font-size: .9rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — accueil previsiteur
+
+   Deux tuiles, jamais plus : elles passent cote a cote des que la largeur le
+   permet, et restent empilees en dessous. Une tuile a moins de ~260px de large
+   voit son sous-titre passer sur trois lignes et perd sa lisibilite d'un
+   coup d'oeil, qui est tout son interet.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 620px) {
+    .boutons { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 619px) {
+    .previsite { padding: 1.5rem 0.9rem; }
+
+    /* Recap empile : libelle au-dessus de la valeur, sinon la colonne des
+       valeurs devient trop etroite pour une adresse ou des provinces. */
+    .recap-ligne { grid-template-columns: 1fr; gap: 1px; }
+    .attente-boutons > * { width: 100%; justify-content: center; }
+    .salutation { font-size: 1.2rem; }
+    .intro { font-size: .9rem; margin-bottom: 1.5rem; }
+
+    /* Tuiles plus basses et en ligne : empilees, la hauteur d'origine
+       obligeait a defiler pour voir la seconde. */
+    .tuile {
+        flex-direction: row;
+        align-items: center;
+        gap: .9rem;
+        padding: 1.1rem 1.1rem;
+        /* Cible tactile confortable sur toute la tuile. */
+        min-height: 76px;
+    }
+    .tuile-icone { font-size: 1.5rem; margin-bottom: 0; flex-shrink: 0; }
+    .tuile-texte { display: flex; flex-direction: column; }
+    .tuile-titre { font-size: .98rem; }
+    .tuile-sous  { font-size: .8rem; }
+}
+
+@media (max-width: 380px) {
+    .previsite { padding: 1.25rem 0.7rem; }
+    .salutation { font-size: 1.05rem; }
+    .tuile { padding: 1rem .9rem; }
+    .tuile-titre { font-size: .92rem; }
+}

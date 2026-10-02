@@ -1,0 +1,227 @@
+<template>
+    <div class="mod-shell">
+        <section class="hero">
+            <div class="hero-text">
+                <span class="eyebrow">Modification en masse</span>
+                <h1>Modifier un import</h1>
+                <p>Sélectionne un nom d'import, choisis les colonnes à modifier, puis édite en masse ou ligne par ligne.</p>
+            </div>
+        </section>
+
+        <section class="card-panel">
+            <div class="step">
+                <label class="step-label">1. Nom d'import</label>
+                <lightning-combobox
+                    placeholder="— Choisir un import —"
+                    value={selectedImport}
+                    options={importNameOptions}
+                    variant="label-hidden"
+                    label="Nom d'import"
+                    onchange={handleImportChange}>
+                </lightning-combobox>
+            </div>
+
+            <template if:true={canSelectFields}>
+                <div class="step">
+                    <div class="step-header">
+                        <div class="step-header-left">
+                            <label class="select-all-wrap" title="Tout sélectionner / désélectionner">
+                                <input
+                                    type="checkbox"
+                                    checked={allFieldsSelected}
+                                    onchange={handleSelectAllFields}>
+                            </label>
+                            <div class="step-header-toggle" onclick={handleToggleColumns}>
+                                <lightning-icon
+                                    icon-name={columnsToggleIcon}
+                                    size="x-small"
+                                    alternative-text={columnsToggleLabel}>
+                                </lightning-icon>
+                                <label class="step-label">2. Colonnes à modifier</label>
+                            </div>
+                        </div>
+                        <span class="step-summary">{selectedCountText}</span>
+                    </div>
+
+                    <template if:true={columnsExpanded}>
+                        <div class="fields-grid">
+                            <template for:each={fieldCheckboxes} for:item="f">
+                                <label key={f.value} class="field-checkbox">
+                                    <input
+                                        type="checkbox"
+                                        checked={f.selected}
+                                        data-value={f.value}
+                                        onchange={handleFieldCheckChange}>
+                                    <span>{f.label}</span>
+                                </label>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="action-row">
+                    <lightning-button
+                        variant="brand"
+                        label="Charger les lettres"
+                        icon-name="utility:download"
+                        icon-position="left"
+                        disabled={loadDisabled}
+                        onclick={handleLoad}>
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template if:true={loading}>
+                <div class="loading-zone">
+                    <lightning-spinner alternative-text="Chargement..." size="medium" variant="brand"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={errorMessage}>
+                <div class="message message-error">{errorMessage}</div>
+            </template>
+
+            <template if:true={hasLettres}>
+                <div class="table-toolbar">
+                    <span class="page-summary">{pageSummary}</span>
+                    <lightning-combobox
+                        class="page-size-select"
+                        label="Lignes par page"
+                        variant="label-hidden"
+                        value={tablePageSize}
+                        options={pageSizeOptions}
+                        onchange={handleTablePageSizeChange}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="grid-wrapper">
+                    <table class="edit-table">
+                        <thead>
+                            <tr>
+                                <th class="name-col">Nom</th>
+                                <template for:each={columnsForDisplay} for:item="col">
+                                    <th key={col.apiName}>{col.label}</th>
+                                </template>
+                            </tr>
+                            <tr class="bulk-row">
+                                <th class="bulk-label">Modifier toutes les lignes →</th>
+                                <template for:each={columnsForDisplay} for:item="col">
+                                    <th key={col.apiName} class="bulk-cell">
+                                        <template if:true={col.isPicklist}>
+                                            <lightning-combobox
+                                                label={col.label}
+                                                variant="label-hidden"
+                                                placeholder="—"
+                                                options={col.picklistOptions}
+                                                data-field={col.apiName}
+                                                onchange={handleBulkChange}>
+                                            </lightning-combobox>
+                                        </template>
+                                        <template if:true={col.isBoolean}>
+                                            <lightning-input
+                                                type="checkbox"
+                                                label={col.label}
+                                                variant="label-hidden"
+                                                data-field={col.apiName}
+                                                onchange={handleBulkChange}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:true={col.isStandardInput}>
+                                            <lightning-input
+                                                type={col.inputType}
+                                                label={col.label}
+                                                variant="label-hidden"
+                                                placeholder="—"
+                                                data-field={col.apiName}
+                                                onchange={handleBulkChange}>
+                                            </lightning-input>
+                                        </template>
+                                    </th>
+                                </template>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={displayRows} for:item="row">
+                                <tr key={row.Id}>
+                                    <td class="name-col">{row.Name}</td>
+                                    <template for:each={row.cells} for:item="cell">
+                                        <td key={cell.key}>
+                                            <template if:true={cell.isPicklist}>
+                                                <lightning-combobox
+                                                    label={cell.label}
+                                                    variant="label-hidden"
+                                                    value={cell.value}
+                                                    options={cell.picklistOptions}
+                                                    data-id={row.Id}
+                                                    data-field={cell.field}
+                                                    onchange={handleCellChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template if:true={cell.isBoolean}>
+                                                <lightning-input
+                                                    type="checkbox"
+                                                    label={cell.label}
+                                                    variant="label-hidden"
+                                                    checked={cell.value}
+                                                    data-id={row.Id}
+                                                    data-field={cell.field}
+                                                    onchange={handleCellChange}>
+                                                </lightning-input>
+                                            </template>
+                                            <template if:true={cell.isStandardInput}>
+                                                <lightning-input
+                                                    type={cell.inputType}
+                                                    label={cell.label}
+                                                    variant="label-hidden"
+                                                    value={cell.value}
+                                                    data-id={row.Id}
+                                                    data-field={cell.field}
+                                                    onchange={handleCellChange}>
+                                                </lightning-input>
+                                            </template>
+                                        </td>
+                                    </template>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <template if:false={isAllPagesMode}>
+                    <div class="pagination-bar">
+                        <span class="pagination-info">Page {tableCurrentPage} / {totalTablePages}</span>
+                        <div class="pagination-controls">
+                            <lightning-button
+                                label="Précédent"
+                                icon-name="utility:chevronleft"
+                                icon-position="left"
+                                onclick={handleTablePrev}
+                                disabled={isFirstTablePage}
+                                variant="neutral">
+                            </lightning-button>
+                            <lightning-button
+                                label="Suivant"
+                                icon-name="utility:chevronright"
+                                icon-position="right"
+                                onclick={handleTableNext}
+                                disabled={isLastTablePage}
+                                variant="neutral">
+                            </lightning-button>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="action-row">
+                    <lightning-button
+                        variant="brand"
+                        label="Valider la modification"
+                        icon-name="utility:check"
+                        icon-position="left"
+                        disabled={submitDisabled}
+                        onclick={handleSubmit}>
+                    </lightning-button>
+                </div>
+            </template>
+        </section>
+    </div>
+</template>

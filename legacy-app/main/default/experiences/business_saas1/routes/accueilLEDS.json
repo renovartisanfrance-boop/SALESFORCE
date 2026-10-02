@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "853dcb4d-1a06-43cf-9565-5557e5f754e0",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "accueil_leds__c",
+  "id" : "b29e3ec3-c16c-49d5-be9e-6c734479e187",
+  "label" : "Accueil - LEDS",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accueil-leds",
+  "type" : "route",
+  "urlPrefix" : "accueil-leds"
+}

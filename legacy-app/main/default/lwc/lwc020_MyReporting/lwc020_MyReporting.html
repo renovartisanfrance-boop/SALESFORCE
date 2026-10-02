@@ -1,0 +1,329 @@
+<template>
+    <div class="container">
+        <!-- Error State -->
+        <template if:true={hasError}>
+            <div class="error-container">
+                <div class="error-box">
+                    <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <h3 class="error-title">REGIE Introuvable</h3>
+                    <p class="error-message">{errorMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Inactive Campaign State -->
+        <template if:true={isCampaignInactive}>
+            <div class="error-container">
+                <div class="error-box">
+                    <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"/>
+                    </svg>
+                    <h3 class="error-title">REGIE Désactivée</h3>
+                    <p class="error-message">Cette REGIE est actuellement désactivée. Veuillez contacter le gestionnaire de REGIE pour l'activer.</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Valid Campaign Content -->
+        <template if:true={isValidCampaign}>
+            <!-- Header Section -->
+            <template if:false={isLoading}>
+                <div class="reporting-header">
+                    <h2>Repporting REGIE</h2>
+                    <!-- <p class="header-subtitle">Analyse des RDV créés</p> -->
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <!-- <div class="stat-card">
+                        <div class="stat-icon total">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <path d="M20 8v6m3-3h-6"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">{totalLeads}</div>
+                            <div class="stat-label">Total RDV</div>
+                        </div>
+                    </div> -->
+
+                    <!-- <div class="stat-card">
+                        <div class="stat-icon email">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">{leadsWithEmail}</div>
+                            <div class="stat-label">Avec Email</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon phone">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">{leadsWithPhone}</div>
+                            <div class="stat-label">Avec Téléphone</div>
+                        </div>
+                    </div> -->
+                </div>
+            </template>
+
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p>Chargement des données...</p>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:true={hasLeads}>
+                <template if:false={isLoading}>
+                    <!-- Leads List Section -->
+                    <div class="leads-section">
+                        <div class="section-header">
+                            <div class="header-left">
+                                <h3>RDV Créés</h3>
+                                <span class="badge-count">{totalLeads}</span>
+                            </div>
+                            <template if:false={isLoading}>
+                                <button class="refresh-btn" onclick={handleRefresh} title="Actualiser les données">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36M20.49 15a9 9 0 0 1-14.85 3.36"></path>
+                                    </svg>
+                                    <span>Actualiser</span>
+                                </button>
+                            </template>
+                            <template if:true={isLoading}>
+                                <button class="refresh-btn loading" disabled title="Chargement en cours...">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="23 4 23 10 17 10"></polyline>
+                                        <polyline points="1 20 1 14 7 14"></polyline>
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36M20.49 15a9 9 0 0 1-14.85 3.36"></path>
+                                    </svg>
+                                    <span>Actualiser</span>
+                                </button>
+                            </template>
+                        </div>
+
+                        <!-- Search and Controls Bar -->
+                        <div class="search-controls-bar">
+                            <div class="search-box">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                <input 
+                                    type="text"
+                                    class="search-input"
+                                    placeholder="Rechercher par nom, email ou téléphone..."
+                                    value={searchTerm}
+                                    onchange={handleSearchChange}
+                                    onkeyup={handleSearchChange}>
+                            </div>
+                            <!-- <div class="controls-right">
+                                <label class="page-size-label">
+                                    Afficher par page:
+                                    <select class="page-size-select" onchange={handlePageSizeChange}>
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </label>
+                            </div> -->
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table class="leads-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <!-- <th>Entreprise</th> -->
+                                        <!-- <th>Source</th> -->
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={paginatedLeads} for:item="lead">
+                                        <tr key={lead.Id} class="lead-row">
+                                            <td class="cell-name">
+                                                {lead.LastName} {lead.FirstName}
+                                            </td>
+                                            <td class="cell-email">
+                                                <template if:true={lead.Email}>
+                                                    <a href="mailto:{lead.Email}" class="email-link">{lead.Email}</a>
+                                                </template>
+                                                <template if:false={lead.Email}>
+                                                    <span class="empty-cell">-</span>
+                                                </template>
+                                            </td>
+                                            <td class="cell-phone">
+                                                <template if:true={lead.Phone}>
+                                                    <a href="tel:{lead.Phone}" class="phone-link">{lead.Phone}</a>
+                                                </template>
+                                                <template if:false={lead.Phone}>
+                                                    <span class="empty-cell">-</span>
+                                                </template>
+                                            </td>
+                                        <!-- <td class="cell-company">{lead.Company}</td> -->
+                                        <!-- <td class="cell-source">
+                                            <template if:true={lead.LeadSource}>
+                                                <span class="source-badge">{lead.LeadSource}</span>
+                                            </template>
+                                            <template if:false={lead.LeadSource}>
+                                                <span class="empty-cell">-</span>
+                                            </template>
+                                        </td> -->
+                                        <td class="cell-date">{lead.formattedDate}</td>
+                                        <td class="cell-actions">
+                                            <button 
+                                                class="action-btn view"
+                                                title="Voir les détails"
+                                                data-id={lead.Id}
+                                                onclick={handleViewDetails}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                                    <circle cx="12" cy="12" r="3"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination Controls -->
+                        <div class="pagination-controls">
+                            <div class="pagination-info">
+                                {paginationInfo}
+                            </div>
+                            <div class="pagination-buttons">
+                                <button 
+                                    class="pagination-btn prev"
+                                    onclick={handlePreviousPage}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                </button>
+                                <div class="page-selector">
+                                    <select onchange={handlePageChange} class="page-dropdown">
+                                        <template for:each={pageNumbers} for:item="page">
+                                            <option key={page} value={page}>{page}</option>
+                                        </template>
+                                    </select>
+                                    <span class="page-of"> / {totalPages}</span>
+                                </div>
+                                <button 
+                                    class="pagination-btn next"
+                                    onclick={handleNextPage}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+
+        <!-- No Leads State -->
+        <template if:false={hasLeads}>
+            <template if:false={isLoading}>
+                <div class="empty-state">
+                    <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="8.5" cy="7" r="4"/>
+                        <path d="M20 8v6m3-3h-6"/>
+                    </svg>
+                    <h3>Aucun RDV Créé</h3>
+                    <p>Les RDV créés apparaîtront ici</p>
+                </div>
+            </template>
+        </template>
+        </template>
+
+        <!-- Details Modal -->
+        <template if:true={showDetails}>
+            <div class="modal-overlay" onclick={handleCloseDetails}>
+                <div class="modal-dialog" onclick={stopPropagation}>
+                    <div class="modal-header">
+                        <h2 class="modal-title">Détails du RDV</h2>
+                        <button class="close-btn" onclick={handleCloseDetails}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <template if:true={selectedLead}>
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <span class="detail-label">Prénom</span>
+                                    <span class="detail-value">{selectedLead.FirstName}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Nom</span>
+                                    <span class="detail-value">{selectedLead.LastName}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Email</span>
+                                    <template if:true={selectedLead.Email}>
+                                        <a href="mailto:{selectedLead.Email}" class="detail-value email-link">{selectedLead.Email}</a>
+                                    </template>
+                                    <template if:false={selectedLead.Email}>
+                                        <span class="detail-value">-</span>
+                                    </template>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Téléphone</span>
+                                    <template if:true={selectedLead.Phone}>
+                                        <a href="tel:{selectedLead.Phone}" class="detail-value phone-link">{selectedLead.Phone}</a>
+                                    </template>
+                                    <template if:false={selectedLead.Phone}>
+                                        <span class="detail-value">-</span>
+                                    </template>
+                                </div>
+                                <!-- <div class="detail-item">
+                                    <span class="detail-label">Entreprise</span>
+                                    <span class="detail-value">{selectedLead.Company}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Source</span>
+                                    <span class="detail-value">{selectedLead.LeadSource}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Statut</span>
+                                    <span class="detail-value">{selectedLead.Status}</span>
+                                </div> -->
+                                <div class="detail-item">
+                                    <span class="detail-label">Date de Création</span>
+                                    <span class="detail-value">{selectedLead.formattedDate}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

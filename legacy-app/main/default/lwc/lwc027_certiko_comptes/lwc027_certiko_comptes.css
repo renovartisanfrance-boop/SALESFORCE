@@ -1,0 +1,244 @@
+/* Tableau de bord Certiko — ecran interne, largeur pleine. */
+.certiko-admin {
+    padding: 1rem 1.25rem;
+    color: #1E3544;
+    font-size: .92rem;
+}
+
+/* --- En-tete --- */
+.entete {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .8rem 1rem; flex-wrap: wrap; margin: 0 0 .9rem;
+}
+.sur-titre {
+    margin: 0; font-size: .7rem; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: #94A3B8;
+}
+.titre { margin: .05rem 0 0; font-size: 1.3rem; font-weight: 800; letter-spacing: -.01em; }
+.resume { margin: .1rem 0 0; font-size: .82rem; color: #6E7A76; }
+.entete-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.bascule {
+    display: flex; align-items: center; gap: .35rem; font-size: .84rem; color: #6E7A76;
+    padding: 0 .3rem; cursor: pointer; user-select: none;
+}
+.compteur {
+    display: inline-block; min-width: 1.3rem; margin-left: .3rem; padding: 0 .35rem;
+    border-radius: 999px; background: #E8F5EC; color: #217A47;
+    font-size: .75rem; font-weight: 700; text-align: center;
+}
+
+/* --- Messages --- */
+.message {
+    display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+    margin: 0 0 .8rem; padding: .55rem .85rem; border-radius: 8px;
+    font-size: .88rem; border: 1px solid transparent;
+}
+.message-error   { background: #FDF3F2; color: #B91C1C; border-color: #F3C9C6; }
+.message-success { background: #F3FAF5; color: #217A47; border-color: #C6E5D2; }
+.message-info    { background: #F3F7F4; color: #1E3544; }
+.message-fermer {
+    background: none; border: none; cursor: pointer; color: inherit;
+    font-size: 1.15rem; line-height: 1; padding: 0 .2rem; opacity: .7;
+}
+.message-fermer:hover { opacity: 1; }
+
+/* --- Indicateurs (cliquables) --- */
+.indicateurs {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .6rem; margin: 0 0 .8rem;
+}
+.tuile {
+    display: flex; align-items: baseline; gap: .55rem;
+    font: inherit; text-align: left; cursor: pointer;
+    background: #fff; border: 1px solid #E2E8E5; border-radius: 10px;
+    padding: .6rem .9rem; box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+    transition: border-color .15s, box-shadow .15s;
+}
+.tuile:hover { border-color: #2E9E5B; }
+.tuile-valeur { font-size: 1.35rem; font-weight: 800; color: #1E3544; line-height: 1; }
+.tuile-libelle { font-size: .82rem; color: #6E7A76; font-weight: 600; }
+.tuile-alerte .tuile-valeur { color: #B91C1C; }
+.tuile-attention .tuile-valeur { color: #B45309; }
+.tuile-active { border-color: #2E9E5B; box-shadow: 0 0 0 2px rgba(46, 158, 91, .18); }
+
+/* --- Bandeau « A ouvrir » (repliable) --- */
+.alerte-bloc {
+    margin: 0 0 .9rem; border: 1px solid #F5D0A9; border-radius: 10px;
+    background: #FFF8F0; overflow: hidden;
+}
+.alerte-entete {
+    display: flex; align-items: center; gap: .6rem; width: 100%;
+    font: inherit; font-size: .88rem; color: #7C3F06; text-align: left;
+    background: none; border: none; padding: .6rem .9rem; cursor: pointer;
+}
+.alerte-entete:hover { background: #FFF1E1; }
+.alerte-icone {
+    flex: none; width: 1.3rem; height: 1.3rem; border-radius: 50%;
+    background: #F59E0B; color: #fff; font-weight: 800; font-size: .8rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.alerte-texte { flex: 1; }
+.alerte-chevron { flex: none; font-size: .8rem; font-weight: 700; color: #B45309; }
+.liste-a-ouvrir { list-style: none; margin: 0; padding: 0; border-top: 1px solid #F5D0A9; background: #fff; }
+.liste-a-ouvrir li {
+    display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+    padding: .5rem .9rem; border-bottom: 1px solid #F1F5F4;
+}
+.liste-a-ouvrir li:last-child { border-bottom: none; }
+.a-ouvrir-infos { display: flex; align-items: baseline; gap: .3rem 1rem; flex-wrap: wrap; min-width: 0; }
+.erreur-texte {
+    color: #B91C1C; font-size: .8rem; max-width: 28rem;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ligne-erreur { background: #FDF3F2; }
+
+/* --- Blocs --- */
+.bloc { margin: 0; }
+.vide {
+    margin: 0; padding: 1.4rem 1rem; text-align: center;
+    color: #6E7A76; font-size: .88rem;
+    border: 1px dashed #D8DDE6; border-radius: 9px;
+}
+
+/* --- Barres de saisie --- */
+.barre { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: 0 0 .6rem; }
+.barre-serree { margin: 0; }
+.barre-compte { margin-left: auto; font-size: .8rem; color: #6E7A76; white-space: nowrap; }
+.champ {
+    font: inherit; font-size: .88rem; color: #1E3544; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 8px; padding: .45rem .65rem;
+    box-sizing: border-box; max-width: 100%;
+}
+.champ:focus { outline: none; border-color: #2E9E5B; box-shadow: 0 0 0 2px rgba(46, 158, 91, .15); }
+.champ-large { flex: 1; min-width: 14rem; }
+.champ-mini { padding: .25rem .45rem; font-size: .82rem; max-width: 12rem; }
+
+/* --- Tableaux : un tableau large defile dans son cadre, jamais la page --- */
+.tableau-cadre {
+    background: #fff; border: 1px solid #E2E8E5; border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04); overflow-x: auto;
+}
+.tableau { width: 100%; border-collapse: collapse; font-size: .87rem; }
+.tableau th {
+    text-align: left; font-size: .7rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: #6E7A76; background: #F8FAFC;
+    padding: .5rem .7rem; border-bottom: 1px solid #E2E8E5; white-space: nowrap;
+}
+.tableau th, .tableau td { width: 1%; }
+.tableau th.grow { width: auto; }
+.tableau td {
+    padding: .45rem .7rem; border-bottom: 1px solid #EEF2F0;
+    vertical-align: middle; white-space: nowrap;
+}
+.tableau tbody tr:last-child td { border-bottom: none; }
+.tableau tbody tr:hover { background: #F6FBF8; }
+.ligne-inactive td { opacity: .6; }
+.fort { font-weight: 700; color: #1E3544; }
+.dim { color: #6E7A76; }
+.petit { font-size: .8rem; }
+.alerte { color: #B45309; font-weight: 600; }
+.action { text-align: right; }
+.action .btn + .btn { margin-left: .35rem; }
+
+/* Compte : avatar + nom / email sur deux lignes */
+.compte { display: flex; align-items: center; gap: .6rem; }
+.compte-texte { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.avatar {
+    flex: none; width: 2rem; height: 2rem; border-radius: 50%;
+    background: #E8F5EC; color: #217A47; font-size: .75rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* --- Pastilles d'etat --- */
+.pastille {
+    display: inline-block; border-radius: 999px; padding: .1rem .55rem;
+    font-size: .72rem; font-weight: 700; border: 1px solid transparent;
+}
+.pastille-ok  { background: #ECFDF3; color: #14532D; border-color: #BBE8CB; }
+.pastille-off { background: #F1F5F9; color: #64748B; border-color: #E2E8F0; }
+
+/* --- Boutons --- */
+.btn {
+    font: inherit; font-size: .86rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+    background: #2E9E5B; color: #fff; border: 1px solid #2E9E5B;
+    border-radius: 8px; padding: .45rem .9rem;
+}
+.btn:hover:not(:disabled) { background: #217A47; border-color: #217A47; }
+.btn-sm { padding: .28rem .6rem; font-size: .8rem; }
+.btn-ghost { background: #fff; color: #1E3544; border-color: #E2E8E5; }
+.btn-ghost:hover:not(:disabled) { background: #F3F7F4; border-color: #2E9E5B; color: #217A47; }
+.btn-danger { color: #B91C1C; }
+.btn-danger:hover:not(:disabled) { background: #FDF3F2; border-color: #F3C9C6; color: #B91C1C; }
+.btn:disabled { background: #CBD5E1; border-color: #CBD5E1; color: #fff; cursor: not-allowed; }
+.btn-ghost:disabled { background: #F8FAFC; color: #94A3B8; border-color: #E2E8F0; }
+.btn-lien {
+    font: inherit; font-size: .84rem; background: none; border: none; padding: 0;
+    color: #217A47; cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+}
+.btn-lien:hover { color: #14532D; }
+
+/* --- Modales --- */
+.fond {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(15, 23, 42, .45);
+}
+.modale {
+    position: fixed; z-index: 9001; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(46rem, calc(100vw - 2rem)); max-height: calc(100vh - 4rem);
+    display: flex; flex-direction: column;
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, .25);
+    outline: none;
+}
+.modale-etroite { width: min(36rem, calc(100vw - 2rem)); }
+.modale-entete {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    padding: 1rem 1.2rem .8rem; border-bottom: 1px solid #EEF2F0;
+}
+.modale-entete h2 { margin: 0 0 .15rem; font-size: 1.1rem; font-weight: 800; }
+.modale-entete p { margin: 0; }
+.modale-fermer {
+    flex: none; background: none; border: none; cursor: pointer;
+    font-size: 1.5rem; line-height: 1; color: #94A3B8; padding: 0 .2rem;
+}
+.modale-fermer:hover { color: #1E3544; }
+.modale-corps { padding: 1rem 1.2rem; overflow-y: auto; }
+.modale-pied {
+    display: flex; justify-content: flex-end; gap: .5rem;
+    padding: .75rem 1.2rem; border-top: 1px solid #EEF2F0; background: #FBFCFD;
+    border-radius: 0 0 12px 12px;
+}
+.modale-outils {
+    display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+    margin: 0 0 .7rem;
+}
+.form-equipe {
+    margin: 0 0 .8rem; padding: .75rem .85rem;
+    background: #F6FBF8; border: 1px solid #C6E5D2; border-radius: 10px;
+}
+
+/* --- Formulaire « Nouveau compte » --- */
+.formulaire {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem .9rem;
+}
+.champ-groupe { display: flex; flex-direction: column; gap: .25rem; }
+.champ-groupe .champ { width: 100%; }
+.pleine-largeur { grid-column: 1 / -1; }
+.etiquette { display: block; font-size: .78rem; font-weight: 700; color: #475569; margin: 0 0 .25rem; }
+.champ-groupe .etiquette { margin: 0; }
+.etiquette abbr { color: #B91C1C; text-decoration: none; }
+.note {
+    margin: .9rem 0 0; padding: .55rem .75rem; font-size: .8rem; color: #6E7A76;
+    background: #F8FAFC; border-radius: 8px;
+}
+.note b { color: #1E3544; font-family: ui-monospace, Menlo, Consolas, monospace; }
+
+@media (max-width: 700px) {
+    .certiko-admin { padding: .9rem .75rem; }
+    .indicateurs { grid-template-columns: 1fr; }
+    .barre .champ, .barre .btn { width: 100%; }
+    .barre-compte { margin-left: 0; }
+    .formulaire { grid-template-columns: 1fr; }
+    .liste-a-ouvrir li { flex-direction: column; align-items: stretch; }
+}

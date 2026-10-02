@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "4268ca38-ed3d-4952-a781-e028ce83a731",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Comptabilit"
+      }
+    },
+    "targetId" : "4120647d-9c0d-4177-9543-2acde18292df",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Default_Menu_de_navigation_du_thme_11_Component_Properties",
+  "id" : "f4192a1a-e06e-428d-aa60-657d57382c37",
+  "type" : "experienceVariation"
+}

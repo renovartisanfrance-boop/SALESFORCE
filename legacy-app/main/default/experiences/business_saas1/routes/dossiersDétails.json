@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "4b6a52bf-7c9d-40ec-ae49-95c88edf17ce",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "detail_a09__c",
+  "id" : "482b9532-a67c-4813-aaac-2ce5af9766f7",
+  "label" : "Dossiers Détails",
+  "objectApiName" : "Pro__c",
+  "routeType" : "detail-a09",
+  "type" : "route",
+  "urlPrefix" : "pro"
+}

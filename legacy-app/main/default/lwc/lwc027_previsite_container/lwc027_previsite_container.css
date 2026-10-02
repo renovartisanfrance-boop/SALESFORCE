@@ -1,0 +1,352 @@
+/* Portail Gestion Previsites — charte ECONATURA.
+   Meme palette et meme typographie que lwc027_gestion_contrat : l'en-tete et le
+   formulaire se suivent a l'ecran, un habillage different les ferait lire comme
+   deux applications distinctes.
+
+   POLICE — Poppins ne peut PAS etre chargee depuis le CSS d'un composant LWC
+   (pas d'@import externe, CSP du site). Declaree en premier avec repli systeme :
+   elle s'applique si le theme du site la charge. */
+
+:host {
+    --navy: #1E3544;
+    --green: #2E9E5B;
+    --green-d: #217A47;
+    --mint: #74B03F;
+    --amber: #F5BC13;
+    --orange: #EC7322;
+    --red: #DA1624;
+    --line: #E2E8E5;
+    --muted: #6E7A76;
+    --paper: #F3F7F4;
+    --bg: #F7FAF8;
+}
+
+.previsite-app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    font-family: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+    color: var(--navy);
+    line-height: 1.5;
+}
+
+/* Bandeau degrade sous l'en-tete — signature visuelle ECONATURA. */
+.grad {
+    height: 4px;
+    background: linear-gradient(90deg,
+        var(--green), var(--mint) 28%, var(--amber) 58%, var(--orange) 80%, var(--red));
+}
+
+/* --- Etats centres (chargement + erreur) --- */
+
+.etat-centre {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.etat-texte {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--line);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: rotation 0.8s linear infinite;
+}
+
+@keyframes rotation {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Carte d'erreur --- */
+
+.carte-erreur {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+
+.logo-erreur {
+    height: 64px;
+    width: auto;
+    margin-bottom: 1.5rem;
+}
+
+.icone-erreur {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    background: #FDF3F2;
+    color: var(--red);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 56px;
+}
+
+.titre-erreur {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+}
+
+.message-erreur {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* --- Entete (acces accorde) --- */
+
+/* En-tete FIXE — sticky plutot que fixed : il reste dans le flux, donc le
+   contenu n'a pas a reserver sa hauteur (qui varie quand le menu mobile
+   s'ouvre). z-index au-dessus des cartes et des badges du formulaire. */
+.entete-fixe {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(30, 53, 68, .06);
+}
+
+.entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* row-wrap autorise : sur mobile le menu bascule en 2e ligne au lieu de
+       comprimer le logo et la bascule de langue jusqu'a l'illisible. */
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    padding: 0.3rem 1rem;
+    background: #ffffff;
+    border-bottom: 1px solid var(--line);
+}
+
+/* 70px sur ordinateur : ce logo est un bloc EMPILE (pictogramme, puis
+   « ECONATURA », puis la baseline), a 46px il n'etait plus lisible. L'en-tete
+   reste compact par ses marges reduites. La largeur suit le ratio 300x235. */
+.logo {
+    height: 70px;
+    width: auto;
+}
+
+/* --- Menu de l'en-tete ---
+   Souligne actif plutot que pastille de fond : l'en-tete porte deja le logo et
+   la bascule de langue, un troisieme bloc colore l'aurait surcharge. */
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    /* Pas de margin auto : .entete est en space-between, elle repartit deja
+       logo / menu / bloc de droite. Une marge auto collerait le menu au nom. */
+}
+
+.nav-lien {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+
+.nav-lien:hover { color: var(--navy); }
+
+/* Lien inerte : visible pour annoncer ce qui viendra, mais sans action.
+   Le retirer du DOM aurait fait disparaitre puis reapparaitre une entree de
+   menu, ce qui se remarque plus qu'un lien grise. */
+.nav-lien.bloque {
+    opacity: .45;
+    cursor: not-allowed;
+}
+.nav-lien.bloque:hover { color: var(--muted); }
+
+.nav-lien.actif {
+    color: var(--green-d);
+    border-bottom-color: var(--green);
+}
+
+.entete-droite {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.nom-previsiteur {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* --- Bascule de langue ---
+   Un seul bouton, qui affiche la langue vers laquelle il fait basculer : deux
+   drapeaux ou deux onglets auraient demande de deviner lequel est actif. */
+
+.bascule {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.bascule:hover {
+    background: #fff;
+    border-color: var(--green);
+    color: var(--green-d);
+}
+
+.bascule-globe { font-size: 0.9rem; }
+
+/* --- Bouton de menu ---
+   Masque sur grand ecran : les deux liens y tiennent sans repli. */
+.menu-bouton {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 44px;
+    height: 44px;
+    padding: 0 10px;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    cursor: pointer;
+}
+.menu-barre {
+    display: block;
+    height: 2px;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: transform .18s ease, opacity .18s ease;
+}
+/* Ouvert : les trois barres deviennent une croix, sans changer le DOM. */
+.menu-bouton.ouvert .menu-barre:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-bouton.ouvert .menu-barre:nth-child(2) { opacity: 0; }
+.menu-bouton.ouvert .menu-barre:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.bascule-erreur {
+    margin-top: 1.5rem;
+}
+
+/* --- Zone de contenu --- */
+
+.contenu {
+    flex: 1;
+    padding: .5rem 1rem;
+}
+
+.placeholder {
+    background: #ffffff;
+    border: 1px dashed #d8dde6;
+    border-radius: 10px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: #54698d;
+}
+
+.placeholder-sous {
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+
+   Le portail est consulte pour moitie sur mobile : les regles ci-dessous ne
+   sont pas un repli degrade mais un second dessin a part entiere.
+
+   Points de rupture :
+     • ≤ 900px  tablette — l'en-tete se resserre
+     • ≤ 640px  mobile   — le menu passe pleine largeur sous le logo
+     • ≤ 380px  petit mobile
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .entete { padding: 0.3rem 1rem; }
+    .logo { height: 40px; }
+    .nav { gap: 18px; }
+}
+
+@media (max-width: 640px) {
+    .entete {
+        /* Logo et bloc de droite sur la 1re ligne, menu sur la 2e : c'est le
+           seul agencement ou les trois restent lisibles sous 640px. */
+        row-gap: 0.3rem;
+    }
+
+    .logo { height: 36px; }
+
+    .menu-bouton { display: flex; width: 38px; height: 38px; padding: 0 9px; }
+
+    /* Le menu devient un PANNEAU DEROULANT : replie il ne coute rien, deplie il
+       se superpose au contenu au lieu de le pousser vers le bas. */
+    .nav {
+        display: none;
+        order: 3;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        border-top: 1px solid var(--line);
+        margin-top: 0.2rem;
+        padding-top: 0.1rem;
+    }
+    .nav-ouvert { display: flex; }
+
+    .nav-lien {
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0.25rem;
+        /* 40px de haut : cible tactile encore confortable, menu plus court. */
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid transparent;
+    }
+    .nav-lien.actif {
+        border-bottom-color: transparent;
+        border-left: 3px solid var(--green);
+        padding-left: 0.6rem;
+    }
+
+    /* Le nom du previsiteur passe a la trappe : il est deja rappele en
+       permanence dans l'encart contrat de la facturation, et c'est lui qui
+       ecrasait la bascule de langue sur les petits ecrans. */
+    .nom-previsiteur { display: none; }
+
+    .contenu { padding: .25rem .5rem; }
+    .carte-erreur { padding: 1.75rem 1.25rem; }
+    .logo-erreur { height: 52px; }
+}
+
+@media (max-width: 380px) {
+    .entete { padding: 0.25rem 0.75rem; }
+    .logo { height: 34px; }
+    .nav-lien { font-size: 12px; }
+    .titre-erreur { font-size: 1.1rem; }
+    .message-erreur { font-size: 0.9rem; }
+}

@@ -1,0 +1,58 @@
+{
+  "appPageId" : "b5cd4ed0-ec55-4737-8110-040664160920",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "2fe2040a-534d-430b-9cea-ebfb632a7c0e",
+  "label" : "Vérifier le mot de passe",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<div class=\"inverseTextColor\" style=\"text-align: center;\"><span style=\"font-size:22px\">NOW, CHECK YOUR EMAIL</span></div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "98e9bf7d-c279-4fc5-8302-d7753330a242",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "richTextValue" : "<div class=\"inverseTextColor\" style=\"text-align: center;\">Check the email account associated with your user name for instructions on resetting your password. Remember to look in your spam folder, where automated messages sometimes filter.   If you still can't log in, contact your administrator.</div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "2e6bb491-f4bf-4877-8efa-c950b739e043",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "richTextValue" : "<div style=\"text-align: center;\"><a class=\"inverseTextColor\" style=\"text-decoration: underline\" href=\"./\">Back to login</a></div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "3c7f0c20-cdba-4fb9-9ea8-4d35adfed3e6",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "be312d6f-6562-477e-b28f-325c0bc74c58",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Vérifier le mot de passe"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "00ee7e0e-1ff9-48c8-8972-7a660f40a510",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "3a5b3fc7-9517-47f8-971d-60c650425e67",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Login",
+  "type" : "view",
+  "viewType" : "check-password"
+}

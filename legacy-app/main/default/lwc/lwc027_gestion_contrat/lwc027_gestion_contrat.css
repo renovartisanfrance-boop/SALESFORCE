@@ -1,0 +1,366 @@
+/* Contrat previsiteur — charte ECONATURA.
+   Palette, typographie et composants repris de la maquette partenaire :
+   bandeau degrade, fil d'etapes, carte a bord clair, bouton vert.
+
+   POLICE — Poppins ne peut PAS etre chargee depuis le CSS d'un composant LWC
+   (pas d'@import externe, et la CSP du site bloquerait fonts.googleapis.com).
+   Elle est donc declaree en premier avec un repli systeme : elle s'appliquera si
+   le theme du site la charge, sinon l'ecran reste propre en police systeme. */
+
+:host {
+    --navy: #1E3544;
+    --green: #2E9E5B;
+    --green-d: #217A47;
+    --mint: #74B03F;
+    --amber: #F5BC13;
+    --orange: #EC7322;
+    --red: #DA1624;
+    --line: #E2E8E5;
+    --muted: #6E7A76;
+    --paper: #F3F7F4;
+    --bg: #F7FAF8;
+
+    display: block;
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+    /* Densite volontaire : moins d'interligne, marges et paddings resserres. */
+    line-height: 1.4;
+}
+
+.wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 14px 16px 32px;
+}
+
+/* --- Etat de chargement --- */
+
+.etat-centre { display: flex; justify-content: center; padding: 60px 0; }
+.spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--line); border-top-color: var(--green);
+    border-radius: 50%; animation: rotation .8s linear infinite;
+}
+@keyframes rotation { to { transform: rotate(360deg); } }
+
+/* --- Fil d'etapes ---
+   Les trois etapes sont exactement les trois valeurs de StatutContrat__c : le
+   previsiteur voit donc ou il en est dans le cycle reel, pas dans une
+   progression decorative. */
+
+.steps { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+.steps .s {
+    flex: 1; min-width: 90px;
+    font-size: 10.5px; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--muted); font-weight: 500;
+    border-top: 3px solid var(--line); padding-top: 4px;
+}
+.steps .s.on   { color: var(--green); border-color: var(--green); }
+.steps .s.done { color: var(--navy);  border-color: var(--mint); }
+
+/* --- Titres --- */
+
+h1 { font-size: 21px; font-weight: 700; margin: 0 0 2px; }
+.lead { color: var(--muted); margin: 0 0 12px; font-size: 13.5px; }
+
+/* --- Carte --- */
+
+.card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+
+/* Le domicile fiscal est la valeur la plus longue : toute la largeur. */
+.pleine-largeur { grid-column: 1 / -1; }
+
+/* --- Champs --- */
+
+label {
+    display: block;
+    font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
+    color: var(--navy);
+    margin: 0 0 3px;
+}
+
+.saisie {
+    width: 100%;
+    padding: 7px 10px;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    font: inherit;
+    color: var(--navy);
+    background: #fff;
+    box-sizing: border-box;
+}
+.saisie:focus { outline: none; border-color: var(--green); }
+ /* Champ verrouille — contrat signe ou traitement en cours.
+   Fond gris ET curseur « interdit » : le seul grisage passe inapercu sur un
+   ecran de chantier en plein soleil, ou les contrastes s'ecrasent. */
+.saisie:disabled {
+    background: var(--paper);
+    color: var(--muted);
+    cursor: not-allowed;
+    border-color: var(--line);
+}
+
+/* --- Bandeau d'attente de signature --- */
+
+.attente {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--amber);
+    border-radius: 10px;
+    padding: 9px 14px;
+    margin-bottom: 10px;
+}
+.attente h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: var(--navy); }
+.attente p  { font-size: 13px; color: var(--muted); margin: 0 0 2px; }
+.attente .sous { font-style: italic; }
+
+/* Pastille d'etape (« Signature », « Acces ») — classe DISTINCTE des badges de
+   provinces : partager .badge lui faisait heriter de leur style cliquable. */
+.pastille {
+    display: inline-block;
+    background: #fff; color: var(--green);
+    border: 1px solid var(--line); border-radius: 20px;
+    padding: 2px 10px; font-size: 10.5px; font-weight: 600;
+    margin-bottom: 4px;
+}
+
+/* --- Badges selectionnables (multipicklist : provinces) ---
+   27 valeurs : des badges COMPACTS en flux, qui se lisent comme un nuage de
+   mots et se touchent d'un doigt. Pas de grille a colonnes egales : les noms
+   vont de « Lugo » a « Araba/Álava », des colonnes egales gaspilleraient la
+   moitie de la largeur. */
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: #3F4B47;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s ease, border-color .15s ease,
+                color .15s ease, box-shadow .15s ease;
+}
+
+/* Case native MASQUEE mais presente et focalisable (clavier, lecteurs d'ecran). */
+.badge input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+/* Coche et (x) n'occupent AUCUNE place tant que le badge n'est pas retenu :
+   un badge non selectionne reste court, la liste reste dense. */
+.badge-coche,
+.badge-x {
+    display: none;
+    font-size: 11px;
+    line-height: 1;
+}
+
+.badge:hover {
+    border-color: var(--green);
+    color: var(--green-d);
+}
+
+/* ETAT SELECTIONNE — classe posee par le composant, pas par :has(). */
+.badge-on {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+    font-weight: 600;
+    padding-right: 6px;
+}
+.badge-on:hover { background: var(--green-d); border-color: var(--green-d); color: #fff; }
+.badge-on .badge-coche { display: inline; }
+.badge-on .badge-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    margin-left: 2px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .22);
+    font-size: 12px;
+}
+.badge-on:hover .badge-x { background: rgba(255, 255, 255, .38); }
+
+/* Anneau de focus clavier. */
+.badge:focus-within { box-shadow: 0 0 0 3px rgba(46, 158, 91, .28); }
+
+/* Verrouille (contrat parti ou signe) : lisible, mais visiblement inerte. */
+.badge:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: .6;
+}
+.badge:has(input:disabled):not(.badge-on):hover { border-color: var(--line); color: #3F4B47; }
+.badge-on:has(input:disabled) .badge-x { display: none; }
+
+.aide { margin: 5px 0 0; font-size: 11.5px; color: var(--muted); }
+.aide .compteur { margin-left: 6px; font-weight: 600; color: var(--green-d); }
+
+/* --- Relecture avant envoi --- */
+
+.recap { margin: 0; }
+.recap-ligne {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+}
+.recap-ligne:last-child { border-bottom: none; }
+.recap-ligne dt { margin: 0; color: var(--muted); }
+.recap-ligne dd { margin: 0; font-weight: 600; text-align: right; word-break: break-word; }
+
+@media (max-width: 640px) {
+    /* Libelle au-dessus de la valeur : cote a cote, un domicile fiscal long
+       repoussait son libelle hors de l'ecran. */
+    .recap-ligne { flex-direction: column; align-items: flex-start; gap: 1px; padding: 6px 0; }
+    .recap-ligne dt { font-size: 12px; }
+    .recap-ligne dd { text-align: left; font-size: 14px; }
+}
+
+/* --- Bandeau contrat signe --- */
+
+.signe {
+    background: #F3FAF5;
+    border: 1px solid #C6E5D2;
+    border-left: 4px solid var(--green);
+    border-radius: 10px;
+    padding: 9px 14px;
+    margin-bottom: 10px;
+}
+.signe p { margin: 0; font-size: 13px; color: var(--green-d); }
+
+.pastille-signe { color: var(--green-d); border-color: #C6E5D2; }
+
+/* --- Messages --- */
+
+.message {
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    margin-bottom: 10px;
+    border: 1px solid var(--line);
+    line-height: 1.45;
+}
+.message-error   { background: #FDF3F2; color: var(--red);     border-color: #F3C9C6; }
+.message-success { background: #F3FAF5; color: var(--green-d); border-color: #C6E5D2; }
+.message-info    { background: var(--paper); color: var(--navy); }
+
+/* --- Boutons --- */
+
+.row {
+    /* flex-end et non space-between : sur l'ecran de saisie il n'y a QU'UN
+       bouton, que space-between pousserait a gauche. C'est le secondaire qui
+       s'ecarte, via son propre margin-right auto. */
+    display: flex; gap: 10px; justify-content: flex-end;
+    margin-top: 12px; flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--green); color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 18px;
+    font: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: .15s;
+}
+.btn:hover:not(:disabled) { background: var(--green-d); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn.sec {
+    /* Rendu comme un bouton, mais c'est un <a> : la navigation native
+       echappe au blocage des popups et a la CSP appliquee aux fenetres
+       ouvertes par script. */
+    text-decoration: none;
+    margin-right: auto;
+    background: #fff;
+    color: var(--navy);
+    border: 1px solid var(--line);
+}
+.btn.sec:hover:not(:disabled) {
+    border-color: var(--green);
+    background: var(--paper);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — formulaire de contrat
+
+   Neuf champs a saisir, souvent au doigt sur un chantier : la lisibilite des
+   etiquettes et la taille des cibles priment sur la densite.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+    .wrap { padding: 12px 14px 28px; }
+    h1 { font-size: 20px; }
+}
+
+@media (max-width: 640px) {
+    .wrap { padding: 10px 12px 24px; }
+
+    /* Une seule colonne : deux champs cote a cote sous 640px donnaient des
+       zones de saisie ou le texte tape defilait avant la fin du mot. */
+    .grid2 { grid-template-columns: 1fr; gap: 9px; }
+
+    /* La regle pleine-largeur n'a plus d'objet quand tout est deja sur une
+       colonne — on la neutralise pour eviter un grid-column orphelin. */
+    .pleine-largeur { grid-column: auto; }
+
+    /* Badges un peu plus hauts au doigt, sans elargir la liste. */
+    .badge { padding: 5px 10px; font-size: 13px; }
+    .badge-on { padding-right: 7px; }
+
+    h1 { font-size: 19px; }
+    .lead { font-size: 13px; margin-bottom: 10px; }
+    .card { padding: 12px; border-radius: 10px; }
+
+    /* 16px minimum sur les champs : en dessous, iOS zoome automatiquement a la
+       prise de focus et casse la mise en page. */
+    .saisie { font-size: 16px; padding: 8px 10px; }
+
+    /* Le fil d'etapes garde ses trois colonnes mais se compacte : il sert de
+       reperage, pas de lecture. */
+    .steps { gap: 4px; margin-bottom: 10px; }
+    .steps .s { min-width: 0; font-size: 10px; letter-spacing: .02em; }
+
+    /* Boutons pleine largeur, primaire en premier sous le pouce. */
+    .row { flex-direction: column-reverse; gap: 8px; }
+    .btn { width: 100%; padding: 11px 16px; min-height: 44px; }
+    .btn.sec { margin-right: 0; }
+}
+
+@media (max-width: 380px) {
+    h1 { font-size: 18px; }
+    .steps .s { font-size: 9px; }
+    .attente { padding: 8px 12px; }
+}

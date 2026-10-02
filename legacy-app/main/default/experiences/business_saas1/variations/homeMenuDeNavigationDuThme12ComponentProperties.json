@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "c09d2e38-3f65-4e62-aef4-44ca5086ead5",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Confirmateurs_ES"
+      }
+    },
+    "targetId" : "44cf7732-3464-41d1-8e11-56e37c0ebdf1",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Home_Menu_de_navigation_du_thme_12_Component_Properties",
+  "id" : "aac2a737-da7b-4bf8-b065-78049d53a7cd",
+  "type" : "experienceVariation"
+}

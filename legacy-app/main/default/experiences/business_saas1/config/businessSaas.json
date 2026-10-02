@@ -1,0 +1,24 @@
+{
+  "forgotPasswordRouteId" : "8ddbde95-8b57-4559-be7c-53cb3f026c72",
+  "isAvailableToGuests" : false,
+  "isFilteredComponentsView" : false,
+  "isProgressiveRenderingEnabled" : false,
+  "loginAppPageId" : "b5cd4ed0-ec55-4737-8110-040664160920",
+  "mainAppPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "preferredDomain" : "none",
+  "selfRegistrationRouteId" : "488f5105-0597-440e-83c6-4ad581a05a17",
+  "trustedSitesForScript" : [ {
+    "id" : "bdc344f0-73e3-4179-a6ca-6421ece07b72",
+    "isActive" : true,
+    "trustedSiteName" : "AirCall",
+    "trustedSiteUrl" : "https://phone.aircall.io",
+    "type" : "trustedSitesForScripts"
+  }, {
+    "id" : "9bb97e33-056d-4cdd-80f8-1a9c895e5450",
+    "isActive" : true,
+    "trustedSiteName" : "workspace aircall",
+    "trustedSiteUrl" : "https://workspace.aircall.io",
+    "type" : "trustedSitesForScripts"
+  } ],
+  "type" : "site"
+}

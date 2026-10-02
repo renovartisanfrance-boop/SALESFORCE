@@ -1,0 +1,934 @@
+<template>
+    <div class={classeRacine}>
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-left">
+                <span class="header-icon-wrapper">
+                    <lightning-icon icon-name="utility:company" size="small"></lightning-icon>
+                </span>
+                <div class="header-content">
+                    <h1 class="page-title">{txt.titrePage}</h1>
+                        <p class="page-subtitle">{txt.sousTitrePage}</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button if:false={cantCreateRegie} class="btn-new-campaign" onclick={handleNewCampaign}>
+                    <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                    {txt.nouvelUtilisateur}
+                </button>
+                <!-- <template if:true={campaigns.length}>
+                    <button class="btn-info" onclick={handleOpenInfoModal} title="Informations sur la création d'utilisateurs">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="3"/>
+                            <polyline points="11 12 12 12 12 16"/>
+                        </svg>
+                    </button>
+                </template> -->
+            </div>
+        </div>
+
+        <!-- Campaigns List -->
+        <div class="campaigns-list-section">
+            <template if:true={hasNoCampaigns}>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <lightning-icon icon-name="utility:company" size="large"></lightning-icon>
+                    </div>
+                    <h2 class="empty-state-title">{txt.aucunUtilisateur}</h2>
+                    <p class="empty-state-text">{txt.aucunUtilisateurAide}</p>
+
+                    <!-- <div class="info-hint-card">
+                        <div class="info-hint-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="info-hint-icon">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="3"/>
+                                <polyline points="11 12 12 12 12 16"/>
+                            </svg>
+                            <span>Bon à savoir concernant la création d'utilisateurs</span>
+                        </div>
+                        <ul class="info-hint-list">
+                            <li>{txt.infoAccesAvant} <strong>{txt.infoInternes}</strong> {txt.infoAccesMilieu} <strong>{txt.infoExternes}</strong> {txt.infoAccesApres}</li>
+                            <li>{txt.infoFactuAvant} <strong>{txt.infoFactuGras}</strong>.</li>
+                            <li>{txt.infoCdcAvant} <strong>{txt.infoCdcGras}</strong> {txt.infoCdcApres}</li>
+                        </ul>
+                    </div> -->
+
+                    <button if:false={cantCreateRegie} class="btn-new-campaign empty-state-btn"
+                        onclick={handleNewCampaign}>
+                        <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                        {txt.creerUtilisateur}
+                    </button>
+                </div>
+            </template>
+
+            <template if:true={campaigns.length}>
+                <div class="table-wrapper">
+                    <table class="campaigns-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-field="displayName" onclick={handleSort}>
+                                    <span class="th-content">{txt.colNom}
+                                        <template if:true={isSortDisplayName}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th>
+                                <th class="sortable" data-field="CreatedDate" onclick={handleSort}>
+                                    <span class="th-content">{txt.colCreation}
+                                        <template if:true={isSortCreatedDate}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th>
+                                <th class="sortable" data-field="DateDerniereConnexion__c" onclick={handleSort}>
+                                    <span class="th-content">{txt.colDerniereConnexion}
+                                        <template if:true={isSortDateDerniere}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th>
+                                <th class="sortable col-email" data-field="Email__c" onclick={handleSort}>
+                                    <span class="th-content">{txt.colEmail}
+                                        <template if:true={isSortEmail}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th>
+                                <th class="sortable col-commentaire" data-field="commentaire" onclick={handleSort}>
+                                    <span class="th-content">{txt.colCommentaire}
+                                        <template if:true={isSortCommentaire}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th>
+                                <!-- <th class="sortable" data-field="PeutCreerREGIE__c" onclick={handleSort} if:false={isGuestUser}>
+                                    <span class="th-content">Création Utilisateur
+                                        <template if:true={isSortPeutCreerRegie}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th> -->
+                                <!-- <th class="sortable" data-field="isActiveStatus" onclick={handleSort}>
+                                    <span class="th-content">Statut
+                                        <template if:true={isSortIsActiveStatus}>
+                                            <span class="sort-indicator">{sortIndicator}</span>
+                                        </template>
+                                    </span>
+                                </th> -->
+                                <th class="th-actions">{txt.colActions}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={campaigns} for:item="campaign">
+                                <tr key={campaign.Id} class="campaign-row" data-readonly={campaign.isReadOnly}>
+                                    <td class="cell-name">
+                                        <div class="name-wrapper">
+                                            <span class="campaign-name">{campaign.displayName}</span>
+                                            <template if:true={campaign.hasChildName}>
+                                                <span class="campaign-child-separator">-</span>
+                                                <span class="campaign-child-name">{campaign.childDisplayName}</span>
+                                            </template>
+                                            <template if:true={campaign.isReadOnly}>
+                                                <span class="readonly-badge" title={txt.lectureSeule}>
+                                                    <lightning-icon icon-name="utility:lock" size="xx-small"
+                                                        alternative-text={txt.lectureSeule}></lightning-icon>
+                                                </span>
+                                            </template>
+                                        </div>
+                                    </td>
+                                    <td class="cell-date">{campaign.displayCreatedDate}</td>
+                                    <td class="cell-date">{campaign.displayDate}</td>
+                                    <td class="cell-comment col-email">{campaign.email}</td>
+                                    <td class="cell-comment col-commentaire">{campaign.commentaire}</td>
+                                    <!-- <td class="cell-checkbox" if:false={isGuestUser}>
+                                        <template if:true={campaign.PeutCreerREGIE__c}>
+                                            <span class="perm-badge perm-badge--yes">
+                                                <lightning-icon icon-name="utility:check" size="xx-small"></lightning-icon>
+                                                {txt.oui}
+                                            </span>
+                                        </template>
+                                        <template if:false={campaign.PeutCreerREGIE__c}>
+                                            <span class="perm-badge perm-badge--no">
+                                                <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                                {txt.non}
+                                            </span>
+                                        </template>
+                                    </td> -->
+                                    <!-- <td class="cell-active">
+                                        <span class="status-badge"
+                                            data-status={campaign.statusClass}>{campaign.isActiveStatus}</span>
+                                    </td> -->
+                                    <td class="cell-actions">
+                                        <div class="actions-group">
+                                            <button class="action-btn action-btn--edit" title={txt.modifier}
+                                                data-id={campaign.Id} onclick={handleEditCampaign}
+                                                disabled={campaign.isReadOnly}>
+                                                <lightning-icon icon-name="utility:edit" size="xx-small">
+                                                </lightning-icon>
+                                            </button>
+                                            <!-- Lien de connexion (Campaign.LienConnexion__c) : copie
+                                                 directe, sans passer par la modale de detail. Reserve
+                                                 aux Apporteurs d'Affaires internes, qui sont les seuls
+                                                 a diffuser ce lien. Le bouton disparait si la formule
+                                                 est vide (campagne sans token). -->
+                                            <template if:true={isApporteurAffaires}>
+                                                <template if:true={campaign.LienConnexion__c}>
+                                                    <button class="action-btn action-btn--lien"
+                                                        title={txt.copierLienConnexion} data-id={campaign.Id}
+                                                        onclick={handleCopyLienConnexion}>
+                                                        <lightning-icon icon-name="utility:link" size="xx-small">
+                                                        </lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </template>
+                                            <!-- <template if:false={masqueLienConnexion}>
+                                                <button class="action-btn action-btn--share" title={txt.partagerLien}
+                                                    data-id={campaign.Id} disabled={campaign.isInactive}
+                                                    onclick={handleShowDetails}>
+                                                    <lightning-icon icon-name="utility:share" size="xx-small">
+                                                    </lightning-icon>
+                                                    {txt.seConnecter}
+                                                </button>
+                                            </template> -->
+                                            <template if:false={campaign.isReadOnly}>
+                                                <div class="toggle-wrapper">
+                                                    <label class="table-toggle-label">
+                                                        <input type="checkbox" class="toggle-checkbox"
+                                                            checked={campaign.IsActive} data-id={campaign.Id}
+                                                            onchange={handleToggleCampaignStatus}>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                </div>
+                                            </template>
+                                            <template if:true={campaign.isReadOnly}>
+                                                <span class="readonly-status">{campaign.isActiveStatus}</span>
+                                            </template>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+        </div>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="loading-overlay">
+                <div class="loading-card">
+                    <lightning-spinner alternative-text={txt.chargement} size="medium"></lightning-spinner>
+                </div>
+            </div>
+        </template>
+
+        <!-- Info Modal -->
+        <template if:true={showInfoModal}>
+            <div class="modal-overlay" onclick={handleCloseInfoModal}>
+                <div class="modal-dialog modal-info-dialog" onclick={stopPropagation}>
+                    <div class="modal-header modal-header--info">
+                        <div class="modal-header-left">
+                            <span class="modal-icon-wrapper modal-icon--info">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="modal-info-svg">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="3" />
+                                    <polyline points="11 12 12 12 12 16" />
+                                </svg>
+                            </span>
+                            <div>
+                                <h2 class="modal-title">{txt.infoTitre}</h2>
+                                <p class="modal-subtitle">{txt.infoSousTitre}</p>
+                            </div>
+                        </div>
+                        <button class="close-btn" onclick={handleCloseInfoModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class="modal-info-list">
+                            <li class="modal-info-item">
+                                <span class="modal-info-bullet">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </span>
+                                <span>{txt.infoAccesAvant} <strong>{txt.infoInternes}</strong> {txt.infoAccesMilieu}
+                                    <strong>{txt.infoExternes}</strong> {txt.infoAccesApres}</span>
+                            </li>
+                            <li class="modal-info-item">
+                                <span class="modal-info-bullet modal-info-bullet--warning">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="2" y="5" width="20" height="14" rx="3" />
+                                        <path d="M2 10h20" />
+                                        <path d="M7 15h2" />
+                                        <path d="M12 15h5" />
+                                    </svg>
+                                </span>
+                                <span>{txt.infoFactuAvant} <strong>{txt.infoFactuGras}</strong>.</span>
+                            </li>
+                            <li class="modal-info-item">
+                                <span class="modal-info-bullet modal-info-bullet--purple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10 9 9 9 8 9" />
+                                    </svg>
+                                </span>
+                                <span>{txt.infoCdcAvant} <strong>{txt.infoCdcGras}</strong> {txt.infoCdcApres}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseInfoModal}>{txt.fermer}</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Create Campaign Modal -->
+        <template if:true={showCreateModal}>
+            <div class="modal-overlay" onclick={handleCloseModal}>
+                <div class="modal-dialog" onclick={stopPropagation}>
+                    <div class="modal-header modal-header--create">
+                        <div class="modal-header-left">
+                            <span class="modal-icon-wrapper modal-icon--create">
+                                <lightning-icon icon-name="utility:add" size="small"></lightning-icon>
+                            </span>
+                            <div>
+                                <h2 class="modal-title">{txt.creerTitre}</h2>
+                                <p class="modal-subtitle">{txt.creerSousTitre}</p>
+                            </div>
+                        </div>
+                        <button class="close-btn" onclick={handleCloseModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="campaign-form">
+                            <!-- Section: Informations -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <lightning-icon icon-name="utility:identity" size="xx-small"></lightning-icon>
+                                    <span>{txt.sectionInformations}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="form-label">{txt.champNom} <span
+                                            class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:company" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="name" type="text" class={nameInputClass}
+                                            placeholder={txt.champNomPh} data-field="name" value={formData.name}
+                                            onchange={handleInputChange} maxlength="20">
+                                    </div>
+                                    <template if:true={hasNameError}>
+                                        <p class="field-error">{fieldErrors.name}</p>
+                                    </template>
+                                </div>
+                                <template lwc:if={showNomSociete}>
+                                    <div class="form-group">
+                                        <label for="nomSociete" class="form-label">{txt.champSociete} <span
+                                                class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:company" size="xx-small"
+                                                class="input-icon"></lightning-icon>
+                                            <input id="nomSociete" type="text" class={nomSocieteInputClass}
+                                                placeholder={txt.champSocietePh} data-field="nomSociete"
+                                                value={formData.nomSociete} onchange={handleInputChange} maxlength="250">
+                                        </div>
+                                        <template if:true={hasNomSocieteError}>
+                                            <p class="field-error">{fieldErrors.nomSociete}</p>
+                                        </template>
+                                    </div>
+                                </template>
+                                <div class="form-group">
+                                    <label for="email" class="form-label">{txt.champEmail} <span class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:email" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="email" type="email" class={emailInputClass}
+                                            placeholder={txt.champEmailPh} data-field="email" value={formData.email}
+                                            onchange={handleInputChange}>
+                                    </div>
+                                    <template if:true={hasEmailError}>
+                                        <p class="field-error">{fieldErrors.email}</p>
+                                    </template>
+                                </div>
+                                <div class="form-group">
+                                    <label for="telephone" class="form-label">{txt.champTelephone}<template
+                                            if:true={isApporteurAffaires}> <span class="required">*</span></template></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:call" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="telephone" type="tel" class={telephoneInputClass}
+                                            placeholder={txt.champTelephonePh} maxlength="10" data-field="telephone"
+                                            value={formData.telephone} oninput={handleInputChange}>
+                                    </div>
+                                    <template if:true={hasTelephoneError}>
+                                        <p class="field-error">{fieldErrors.telephone}</p>
+                                    </template>
+                                </div>
+                                <template if:true={isApporteurInterne}>
+                                    <div class="form-group">
+                                        <label class="form-label">{txt.typeAccesCee}</label>
+                                        <div class="send-options-row">
+                                            <label class="send-card">
+                                                <input type="radio" class="send-card-checkbox" name="ceeAcces"
+                                                    value="true" checked={isCeeLoginChecked}
+                                                    onchange={handleCeeAccesChange}>
+                                                <div class="send-card-content">
+                                                    <span class="send-card-icon send-card-icon--email">
+                                                        <lightning-icon icon-name="utility:identity" size="xx-small">
+                                                        </lightning-icon>
+                                                    </span>
+                                                    <span class="send-card-text">{txt.accesCeeLogin}</span>
+                                                </div>
+                                            </label>
+                                            <label class="send-card">
+                                                <input type="radio" class="send-card-checkbox" name="ceeAcces"
+                                                    value="false" checked={isCeeLienChecked}
+                                                    onchange={handleCeeAccesChange}>
+                                                <div class="send-card-content">
+                                                    <span class="send-card-icon send-card-icon--sms">
+                                                        <lightning-icon icon-name="utility:link" size="xx-small">
+                                                        </lightning-icon>
+                                                    </span>
+                                                    <span class="send-card-text">{txt.accesLien}</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="form-group">
+                                    <label for="commentaire" class="form-label">{txt.colCommentaire}</label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:comments" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="commentaire" type="text" class="form-input has-icon"
+                                            placeholder={txt.champCommentairePh} data-field="commentaire"
+                                            value={formData.commentaire} onchange={handleInputChange}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Contact -->
+                            <!-- <div class="form-section">
+                                <div class="form-section-title">
+                                    <lightning-icon icon-name="utility:call" size="xx-small"></lightning-icon>
+                                    <span>Contact</span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">{txt.champEmail} <span
+                                                class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:email" size="xx-small"
+                                                class="input-icon"></lightning-icon>
+                                            <input id="email" type="email" class={emailInputClass}
+                                                placeholder={txt.champEmailPh} data-field="email" value={formData.email}
+                                                onchange={handleInputChange}>
+                                        </div>
+                                        <template if:true={hasEmailError}>
+                                            <p class="field-error">{fieldErrors.email}</p>
+                                        </template>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="telephone" class="form-label">{txt.champTelephone}<template
+                                                if:true={isApporteurAffaires}> <span class="required">*</span></template></label>
+                                        <div class="input-wrapper">
+                                            <input id="telephone" type="tel" class={telephoneInputClass}
+                                                placeholder={txt.champTelephonePh} maxlength="10" data-field="telephone"
+                                                value={formData.telephone} oninput={handleInputChange}>
+                                        </div>
+                                        <template if:true={hasTelephoneError}>
+                                            <p class="field-error">{fieldErrors.telephone}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!-- Section: Produits (visible pour les profils "autres" — non guest, non Apporteur d'Affaires) -->
+                            <template lwc:if={showProduitsSection}>
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <lightning-icon icon-name="utility:product_required" size="xx-small">
+                                        </lightning-icon>
+                                        <span>{txt.produitsDisponibles} <span class="required">*</span></span>
+                                    </div>
+                                    <div class="produits-list produits-list--full">
+                                        <template for:each={produitsAffichage} for:item="p">
+                                            <label class={p.itemClass} key={p.value}>
+                                                <input type="checkbox" class="produit-checkbox" value={p.value}
+                                                    checked={p.checked} onchange={handleProduitCheckboxChange}>
+                                                <span class="produit-checkmark"></span>
+                                                <span class="produit-label">{p.label}</span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Simulateurs (mode guest — Regie 1 décide pour Regie 2) -->
+                            <template lwc:if={showSimulateursSection}>
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <lightning-icon icon-name="utility:apex_plugin" size="xx-small">
+                                        </lightning-icon>
+                                        <span>{txt.simulateurs} <span class="required">*</span></span>
+                                    </div>
+                                    <div class="simulateurs-list">
+                                        <template lwc:if={showSimulateurTH179}>
+                                            <div class={simTH179CardClass}>
+                                                <div class="simulateur-question">
+                                                    <span>{txt.simulateurQuestion}</span>
+                                                    <span class="simulateur-product-tag">TH179- PAC</span>
+                                                </div>
+                                                <div class="simulateur-options">
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH179Create" value="OUI"
+                                                            checked={isSimTH179Oui}
+                                                            onchange={handleSimTH179Change}>
+                                                        <span class="sim-option-label sim-option-label--yes">{txt.oui}</span>
+                                                    </label>
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH179Create" value="NON"
+                                                            checked={isSimTH179Non}
+                                                            onchange={handleSimTH179Change}>
+                                                        <span class="sim-option-label sim-option-label--no">{txt.non}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template lwc:if={showSimulateurTH163}>
+                                            <div class={simTH163CardClass}>
+                                                <div class="simulateur-question">
+                                                    <span>{txt.simulateurQuestion}</span>
+                                                    <span class="simulateur-product-tag">TH163- PAC</span>
+                                                </div>
+                                                <div class="simulateur-options">
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH163Create" value="OUI"
+                                                            checked={isSimTH163Oui}
+                                                            onchange={handleSimTH163Change}>
+                                                        <span class="sim-option-label sim-option-label--yes">{txt.oui}</span>
+                                                    </label>
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH163Create" value="NON"
+                                                            checked={isSimTH163Non}
+                                                            onchange={handleSimTH163Change}>
+                                                        <span class="sim-option-label sim-option-label--no">{txt.non}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <template if:true={hasSimulateursError}>
+                                        <div class="simulateurs-error" role="alert">
+                                            <lightning-icon icon-name="utility:warning" size="xx-small"
+                                                alternative-text={txt.erreur}></lightning-icon>
+                                            <span>{simulateursErrorMessage}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Accès sécurisé activé automatiquement (sans interaction utilisateur) -->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseModal}>
+                            {txt.annuler}
+                        </button>
+                        <button class="btn-save btn-save--create" onclick={handleCreateSave}>
+                            <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                            {txt.btnCreer}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Edit Campaign Modal -->
+        <template if:true={showEditModal}>
+            <div class="modal-overlay" onclick={handleCloseModal}>
+                <div class="modal-dialog" onclick={stopPropagation}>
+                    <div class="modal-header modal-header--edit">
+                        <div class="modal-header-left">
+                            <span class="modal-icon-wrapper modal-icon--edit">
+                                <lightning-icon icon-name="utility:edit" size="small"></lightning-icon>
+                            </span>
+                            <div>
+                                <h2 class="modal-title">{txt.modifierTitre}</h2>
+                                <p class="modal-subtitle">{txt.modifierSousTitre}</p>
+                            </div>
+                        </div>
+                        <button class="close-btn" onclick={handleCloseModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="campaign-form">
+                            <!-- Section: Informations -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <lightning-icon icon-name="utility:identity" size="xx-small"></lightning-icon>
+                                    <span>{txt.sectionInformations}</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-name" class="form-label">{txt.champNom} <span
+                                            class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:company" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="edit-name" type="text" class={nameInputClass}
+                                            placeholder={txt.champNomPh} data-field="name" value={formData.name}
+                                            onchange={handleInputChange} disabled>
+                                    </div>
+                                    <template if:true={hasNameError}>
+                                        <p class="field-error">{fieldErrors.name}</p>
+                                    </template>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-email" class="form-label">{txt.champEmail} <span
+                                            class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:email" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="edit-email" type="email" class={emailInputClass}
+                                            placeholder={txt.champEmailPh} data-field="email" value={formData.email}
+                                            onchange={handleInputChange}>
+                                    </div>
+                                    <template if:true={hasEmailError}>
+                                        <p class="field-error">{fieldErrors.email}</p>
+                                    </template>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-telephone" class="form-label">{txt.champTelephone}<template
+                                            if:true={isApporteurAffaires}> <span class="required">*</span></template></label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:call" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="edit-telephone" type="tel" class={telephoneInputClass}
+                                            placeholder={txt.champTelephonePh} maxlength="10" data-field="telephone"
+                                            value={formData.telephone} oninput={handleInputChange}>
+                                    </div>
+                                    <template if:true={hasTelephoneError}>
+                                        <p class="field-error">{fieldErrors.telephone}</p>
+                                    </template>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit-commentaire" class="form-label">{txt.colCommentaire}</label>
+                                    <div class="input-wrapper">
+                                        <lightning-icon icon-name="utility:comments" size="xx-small" class="input-icon">
+                                        </lightning-icon>
+                                        <input id="edit-commentaire" type="text" class="form-input has-icon"
+                                            placeholder={txt.champCommentairePh} data-field="commentaire"
+                                            value={formData.commentaire} onchange={handleInputChange}>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Contact -->
+                            <!-- <div class="form-section">
+                                <div class="form-section-title">
+                                    <lightning-icon icon-name="utility:call" size="xx-small"></lightning-icon>
+                                    <span>Contact</span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="edit-email" class="form-label">{txt.champEmail} <span
+                                                class="required">*</span></label>
+                                        <div class="input-wrapper">
+                                            <lightning-icon icon-name="utility:email" size="xx-small"
+                                                class="input-icon"></lightning-icon>
+                                            <input id="edit-email" type="email" class={emailInputClass}
+                                                placeholder={txt.champEmailPh} data-field="email" value={formData.email}
+                                                onchange={handleInputChange}>
+                                        </div>
+                                        <template if:true={hasEmailError}>
+                                            <p class="field-error">{fieldErrors.email}</p>
+                                        </template>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-telephone" class="form-label">{txt.champTelephone}<template
+                                                if:true={isApporteurAffaires}> <span class="required">*</span></template></label>
+                                        <div class="input-wrapper">
+                                            <input id="edit-telephone" type="tel" class={telephoneInputClass}
+                                                placeholder={txt.champTelephonePh} maxlength="10" data-field="telephone"
+                                                value={formData.telephone} oninput={handleInputChange}>
+                                        </div>
+                                        <template if:true={hasTelephoneError}>
+                                            <p class="field-error">{fieldErrors.telephone}</p>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!-- Section: Produits (visible pour les profils "autres") -->
+                            <template lwc:if={showProduitsSection}>
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <lightning-icon icon-name="utility:product_required" size="xx-small">
+                                        </lightning-icon>
+                                        <span>{txt.produitsDisponibles}</span>
+                                    </div>
+                                    <div class="produits-list produits-list--full">
+                                        <template for:each={produitsAffichage} for:item="p">
+                                            <label class={p.itemClass} key={p.value}>
+                                                <input type="checkbox" class="produit-checkbox" value={p.value}
+                                                    checked={p.checked} onchange={handleProduitCheckboxChange}>
+                                                <span class="produit-checkmark"></span>
+                                                <span class="produit-label">{p.label}</span>
+                                            </label>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Simulateurs (mode guest — Regie 1 décide pour Regie 2) -->
+                            <template lwc:if={showSimulateursSection}>
+                                <div class="form-section">
+                                    <div class="form-section-title">
+                                        <lightning-icon icon-name="utility:apex_plugin" size="xx-small">
+                                        </lightning-icon>
+                                        <span>{txt.simulateurs} <span class="required">*</span></span>
+                                    </div>
+                                    <div class="simulateurs-list">
+                                        <template lwc:if={showSimulateurTH179}>
+                                            <div class={simTH179CardClass}>
+                                                <div class="simulateur-question">
+                                                    <span>{txt.simulateurQuestion}</span>
+                                                    <span class="simulateur-product-tag">TH179- PAC</span>
+                                                </div>
+                                                <div class="simulateur-options">
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH179Edit" value="OUI"
+                                                            checked={isSimTH179Oui}
+                                                            onchange={handleSimTH179Change}>
+                                                        <span class="sim-option-label sim-option-label--yes">{txt.oui}</span>
+                                                    </label>
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH179Edit" value="NON"
+                                                            checked={isSimTH179Non}
+                                                            onchange={handleSimTH179Change}>
+                                                        <span class="sim-option-label sim-option-label--no">{txt.non}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template lwc:if={showSimulateurTH163}>
+                                            <div class={simTH163CardClass}>
+                                                <div class="simulateur-question">
+                                                    <span>{txt.simulateurQuestion}</span>
+                                                    <span class="simulateur-product-tag">TH163- PAC</span>
+                                                </div>
+                                                <div class="simulateur-options">
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH163Edit" value="OUI"
+                                                            checked={isSimTH163Oui}
+                                                            onchange={handleSimTH163Change}>
+                                                        <span class="sim-option-label sim-option-label--yes">{txt.oui}</span>
+                                                    </label>
+                                                    <label class="sim-option">
+                                                        <input type="radio" name="simTH163Edit" value="NON"
+                                                            checked={isSimTH163Non}
+                                                            onchange={handleSimTH163Change}>
+                                                        <span class="sim-option-label sim-option-label--no">{txt.non}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <template if:true={hasSimulateursError}>
+                                        <div class="simulateurs-error" role="alert">
+                                            <lightning-icon icon-name="utility:warning" size="xx-small"
+                                                alternative-text={txt.erreur}></lightning-icon>
+                                            <span>{simulateursErrorMessage}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseModal}>
+                            {txt.annuler}
+                        </button>
+                        <button lwc:if={showResetPassword} class="btn-reset-password" onclick={handleResetPassword}
+                            disabled={isResettingPassword} title={txt.btnReinitMdpTitre}>
+                            <template if:false={isResettingPassword}>
+                                <lightning-icon icon-name="utility:refresh" size="xx-small"></lightning-icon>
+                                {txt.btnReinitMdp}
+                            </template>
+                            <template if:true={isResettingPassword}>
+                                <lightning-spinner alternative-text={txt.envoi} size="small"></lightning-spinner>
+                                {txt.envoiEnCours}
+                            </template>
+                        </button>
+                        <button class="btn-save btn-save--edit" onclick={handleEditSave}>
+                            <lightning-icon icon-name="utility:check" size="xx-small"></lightning-icon>
+                            {txt.enregistrer}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Details Modal -->
+        <template if:true={showDetailsModal}>
+            <div class="modal-overlay" onclick={handleCloseModal}>
+                <div class="modal-dialog modal-details" onclick={stopPropagation}>
+                    <div class="modal-header modal-header--details">
+                        <div class="modal-header-left">
+                            <span class="modal-icon-wrapper modal-icon--details">
+                                <lightning-icon icon-name="utility:share" size="small"></lightning-icon>
+                            </span>
+                            <div>
+                                <h2 class="modal-title">{txt.partageTitre}</h2>
+                                <p class="modal-subtitle">{txt.partageSousTitre}</p>
+                            </div>
+                        </div>
+                        <button class="close-btn" onclick={handleCloseModal}>
+                            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <template if:true={selectedCampaign}>
+                            <!-- Section: Informations REGIE -->
+                            <div class="details-section">
+                                <div class="details-section-title">
+                                    <lightning-icon icon-name="utility:identity" size="xx-small"></lightning-icon>
+                                    <span>{txt.labelUtilisateur}</span>
+                                </div>
+                                <div class="details-info-card">
+                                    <div class="details-info-icon">
+                                        <lightning-icon icon-name="utility:company" size="xx-small"></lightning-icon>
+                                    </div>
+                                    <div class="details-info-content">
+                                        <span class="details-info-label">{txt.champNom}</span>
+                                        <span class="details-info-value">{selectedCampaign.displayName}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Lien -->
+                            <div class="details-section">
+                                <div class="details-section-title">
+                                    <lightning-icon icon-name="utility:link" size="xx-small"></lightning-icon>
+                                    <span>{txt.lienAcces}</span>
+                                </div>
+                                <span class="details-section-subtitle">{txt.partageExplication}</span>
+                                <div class="link-card">
+                                    <textarea rows="3" class="link-input" readonly>{selectedCampaignFullLink}</textarea>
+                                    <button class="btn-copy" onclick={handleCopyLink} data-id={selectedCampaign.Id}>
+                                        <lightning-icon icon-name="utility:copy" size="xx-small"></lightning-icon>
+                                        {txt.copierLien}
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- Section: Activation CEE (visible pour isApporteurInterne si CEE non activée) -->
+                            <template if:true={showActiverCEE}>
+                                <div class="details-section">
+                                    <div class="details-section-title">
+                                        <lightning-icon icon-name="utility:identity" size="xx-small"></lightning-icon>
+                                        <span>{txt.experienceCee}</span>
+                                    </div>
+                                    <div class="share-cards">
+                                        <button class="share-card share-card--email" onclick={handleActiverCEE}
+                                            disabled={isActivatingCEE}>
+                                            <template if:false={isActivatingCEE}>
+                                                <span class="share-card-icon share-card-icon--email">
+                                                    <lightning-icon icon-name="utility:identity" size="xx-small">
+                                                    </lightning-icon>
+                                                </span>
+                                                <span class="share-card-text">
+                                                    <span class="share-card-label">{txt.activerExperienceCee}</span>
+                                                    <span class="share-card-desc">{txt.accesLoginMdp}</span>
+                                                </span>
+                                            </template>
+                                            <template if:true={isActivatingCEE}>
+                                                <lightning-spinner alternative-text={txt.activation} size="small">
+                                                </lightning-spinner>
+                                                <span class="share-card-sending">{txt.activationEnCours}</span>
+                                            </template>
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Section: Partage -->
+                            <div class="details-section details-section--last slds-hide">
+                                <div class="details-section-title">
+                                    <lightning-icon icon-name="utility:send" size="xx-small"></lightning-icon>
+                                    <span>{txt.envoyerLien}</span>
+                                </div>
+                                <div class="share-cards">
+                                    <!-- disabled={isSendingSMS}> -->
+                                    <!-- <button class="share-card share-card--sms" onclick={handleSendSMS}
+                                        data-id={selectedCampaign.Id} disabled>
+                                        <template if:false={isSendingSMS}>
+                                            <span class="share-card-icon share-card-icon--sms">
+                                                <lightning-icon icon-name="utility:sms" size="xx-small">
+                                                </lightning-icon>
+                                            </span>
+                                            <span class="share-card-text">
+                                                <span class="share-card-label">Envoyer par SMS</span>
+                                                <span class="share-card-desc">Message texte</span>
+                                            </span>
+                                        </template>
+                                        <template if:true={isSendingSMS}>
+                                            <lightning-spinner alternative-text={txt.envoi} size="small">
+                                            </lightning-spinner>
+                                            <span class="share-card-sending">{txt.envoiEnCours}</span>
+                                        </template>
+                                    </button> -->
+                                    <button class="share-card share-card--email" onclick={handleSendEmail}
+                                        data-id={selectedCampaign.Id} disabled={isSendingEmail}>
+                                        <template if:false={isSendingEmail}>
+                                            <span class="share-card-icon share-card-icon--email">
+                                                <lightning-icon icon-name="utility:email" size="xx-small">
+                                                </lightning-icon>
+                                            </span>
+                                            <span class="share-card-text">
+                                                <span class="share-card-label">{txt.envoyerEmail}</span>
+                                                <span class="share-card-desc">{txt.courrierElectronique}</span>
+                                            </span>
+                                        </template>
+                                        <template if:true={isSendingEmail}>
+                                            <lightning-spinner alternative-text={txt.envoi} size="small">
+                                            </lightning-spinner>
+                                            <span class="share-card-sending">{txt.envoiEnCours}</span>
+                                        </template>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseModal}>
+                            {txt.fermer}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

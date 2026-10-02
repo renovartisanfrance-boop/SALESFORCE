@@ -1,0 +1,76 @@
+<template>
+    <template lwc:if={isReady}>
+        <div class="slds-path">
+            <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                    <div class="slds-path__scroller" role="application">
+                        <div class="slds-path__scroller_inner">
+                            <ul
+                                class="slds-path__nav"
+                                role="listbox"
+                                aria-orientation="horizontal"
+                                aria-label={cardTitle}
+                            >
+                                <template for:each={stages} for:item="stage">
+                                    <li key={stage.value} class={stage.itemClass} role="presentation">
+                                        <a
+                                            class="slds-path__link"
+                                            href="#"
+                                            role="option"
+                                            aria-selected={stage.ariaSelected}
+                                            tabindex={stage.tabindex}
+                                            data-value={stage.value}
+                                            onclick={handleSelect}
+                                        >
+                                            <span class="slds-path__stage">
+                                                <lightning-icon
+                                                    icon-name="utility:check"
+                                                    size="x-small"
+                                                    variant="inverse"
+                                                ></lightning-icon>
+                                            </span>
+                                            <span class="slds-path__title">{stage.label}</span>
+                                        </a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div lwc:if={showAction} class="slds-grid slds-path__action">
+                    <span class="slds-path__stage-name">{selectedLabel}</span>
+                    <button
+                        class="slds-button slds-button_brand slds-path__mark-complete"
+                        onclick={handleSave}
+                        disabled={buttonDisabled}
+                    >
+                        <template lwc:if={saving}>
+                            <div class="slds-spinner_container slds-is-relative slds-m-right_x-small">
+                                <lightning-spinner alternative-text="Enregistrement" size="x-small"></lightning-spinner>
+                            </div>
+                        </template>
+                        <lightning-icon
+                            icon-name="utility:check"
+                            size="x-small"
+                            variant="inverse"
+                            class="slds-button__icon slds-button__icon_left"
+                        ></lightning-icon>
+                        {computedButtonLabel}
+                    </button>
+                </div> -->
+            </div>
+        </div>
+
+        <template lwc:if={errorMessage}>
+            <div class="slds-text-color_error slds-p-around_small" role="alert">
+                {errorMessage}
+            </div>
+        </template>
+    </template>
+
+    <template lwc:else>
+        <div class="slds-p-around_small slds-text-color_weak">
+            Configurez le Record Id, l’objet et le champ pour afficher le statut.
+        </div>
+    </template>
+</template>

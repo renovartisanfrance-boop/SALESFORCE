@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Campagne Container - RDV Manager</masterLabel>
+    <description>Composant parent pour la gestion des RDV et rapports de campagne</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default,lightning__RecordPage">
+            <property name="isGuestUser" type="Boolean" default="false" label="Mode Guest User" description="Activer si le composant est utilisé sur une page accessible aux utilisateurs guest"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "2fe2040a-534d-430b-9cea-ebfb632a7c0e",
+  "appPageId" : "b5cd4ed0-ec55-4737-8110-040664160920",
+  "configurationTags" : [ ],
+  "devName" : "Check_Password",
+  "id" : "64502d52-0659-40e0-8a47-6133d3c5ef76",
+  "label" : "Vérifier le mot de passe",
+  "routeType" : "check-password",
+  "type" : "route",
+  "urlPrefix" : "CheckPasswordResetEmail"
+}

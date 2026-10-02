@@ -1,0 +1,40 @@
+/*
+ * Styles globaux du site Gestion Previsites.
+ *
+ * Ce fichier s'applique au CHROME DU SITE (thème, en-tête, pied de page), pas
+ * aux composants : ceux-ci vivent dans leur propre shadow DOM et leur CSS ne
+ * peut pas en sortir. C'est donc le seul endroit d'où corriger le gabarit.
+ */
+html,
+body {
+    height: 100%;
+}
+
+html {
+    background: white;
+}
+
+body {
+    margin: 0;
+}
+
+/*
+ * EN-TETE DU THEME — bande vide de 24 px supprimee.
+ *
+ * Le gabarit « Scoped Header and Footer » rend un <header> autour de sa zone
+ * d'en-tete. Cette zone est deja masquee (dxpStyle.isVisible = false dans
+ * sfdc_cms__themeLayout), mais le conteneur, lui, garde sa hauteur : il en
+ * resultait un liseré vide au-dessus du logo, particulierement visible sur
+ * mobile ou chaque pixel vertical compte.
+ *
+ * On cible la classe fonctionnelle, PAS le jeton de portee LWC
+ * (« lwc-6raprfhcujs ») visible dans l'inspecteur : celui-ci est regenere a
+ * chaque publication et une regle qui s'en sert cesserait de s'appliquer sans
+ * prevenir.
+ *
+ * Le portail porte son propre en-tete, avec le logo, la navigation et le nom du
+ * previsiteur. Celui du theme n'a donc aucun contenu a afficher.
+ */
+.community_byo-scoped-header-and-footer__header-content {
+    display: none !important;
+}

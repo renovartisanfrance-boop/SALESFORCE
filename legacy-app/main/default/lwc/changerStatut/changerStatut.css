@@ -1,0 +1,13 @@
+:host {
+    display: block;
+}
+
+/* L'icône de coche n'est visible que sur les étapes terminées / courantes,
+   comme le composant Chemin standard. */
+.slds-path__stage lightning-icon {
+    --slds-c-icon-color-foreground: currentColor;
+}
+
+.slds-path__mark-complete {
+    white-space: nowrap;
+}

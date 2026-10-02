@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "1c16c053-3376-4eb0-8896-be9f64d3fe50",
+  "label" : "Accueil - DESTRAT",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "ff8628a5-417a-4d72-9d4f-00f1153a2c35",
+          "columns" : [ {
+            "UUID" : "a373f217-f9ed-4e16-b4c2-69fbf0beb16b",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "ff8628a5-417a-4d72-9d4f-00f1153a2c35",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "typePage" : "DESTRAT"
+          },
+          "componentName" : "c:securityCheck",
+          "id" : "abddc0f1-df79-4d6f-a06d-70b2c849c55e",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "a373f217-f9ed-4e16-b4c2-69fbf0beb16b",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d46f1166-ec0b-420a-ae8f-6d7987083faa",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Accueil - DESTRAT"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "01371fad-1bb9-4b70-b869-c37d51e49f57",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f8f4e008-dffd-436f-881d-e8a58c7e51f6",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-accueil-destrat"
+}

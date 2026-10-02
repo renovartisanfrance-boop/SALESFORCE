@@ -1,0 +1,93 @@
+<aura:component
+  implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:hasSObjectName,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+  access="global">
+  <aura:attribute name="CurrentUser" type="Object" />
+  <force:recordData recordId="{!$SObjectType.CurrentUser.Id}" fields="Profile.Name" targetFields="{!v.CurrentUser}" />
+
+
+  <!--
+    <button class="open-button" onclick="{!c.openForm}">AirCall</button>
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }"/>
+    
+    <div class="chat-popup" id="myForm">
+        <form action="" class="form-container">
+          <h1>Chat</h1>
+      
+          <label for="msg"><b>Message</b></label>
+
+          <button type="submit" class="btn">Send</button>
+          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        </form>
+      </div>
+      -->
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'Administrateur système'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Télépro'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Commercial'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Responsable Telepro'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE - Confirmateur'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Closer'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Secretaire 174'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE - Gestion Planning'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Secretaire'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Télépro Data'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE - Confirmateur PRO LEDS'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE- Télépro Leads'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.CurrentUser.Profile.Name == 'PORTAIL INTERNE - Confirmateur'}">
+    <lightning:button variant="base" label="AirCall" title="Base action" onclick="{! c.openForm }" class="btnOpen" />
+  </aura:if>
+    
+  <div class="AirCall-bloc">
+    <div class="AirCall-bloc-head">
+      <lightning:button variant="destructive" label="x" title="Base action" onclick="{! c.closeForm }"
+        class="btnClose" />
+    </div>
+    <iframe allow="microphone; autoplay; clipboard-read; clipboard-write; hid"
+      src="https://workspace.aircall.io?integration=generic"
+      style="height:100%; width:376px; margin:0 auto;display: block;border: 0 !important;">
+    </iframe>
+
+
+
+
+
+  </div>
+
+</aura:component>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audience xmlns="http://soap.sforce.com/2006/04/metadata">
+    <audienceName>PORTAIL - Regie et Telepro Data</audienceName>
+    <container>business saas</container>
+    <criteria>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <profile>portail interne- regies</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>2</criteriaNumber>
+            <criterionValue>
+                <profile>portail interne- télépro data</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+    </criteria>
+    <formula>1 or 2</formula>
+    <formulaFilterType>CustomLogicMatches</formulaFilterType>
+    <isDefaultAudience>false</isDefaultAudience>
+    <targets>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$41ba9555-5351-4aec-a61d-11d30be34825</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Tableau_de_bord_3_Component</targetValue>
+        </target>
+        <target>
+            <groupName>f877d2b7-25bc-42e4-b460-4e401d63130f$#$44cf7732-3464-41d1-8e11-56e37c0ebdf1</groupName>
+            <priority>2</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Home_Menu_de_navigation_du_thme_Component_Properties</targetValue>
+        </target>
+        <target>
+            <groupName>b4b345c7-ce1d-4148-bad2-33980e5dd09d$#$4120647d-9c0d-4177-9543-2acde18292df</groupName>
+            <priority>2</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Default_Menu_de_navigation_du_thme_Component_Properties</targetValue>
+        </target>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$3984dfdb-2d4c-4d92-b23a-b4cbe7c86fd4</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_LWC_Notification_Actualisation_Component</targetValue>
+        </target>
+    </targets>
+</Audience>

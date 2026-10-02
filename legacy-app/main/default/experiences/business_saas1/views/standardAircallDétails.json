@@ -1,0 +1,66 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "b86e17d1-c7ea-4e38-b5fd-0ad562cb5098",
+  "label" : "Standard Aircall Détails",
+  "regions" : [ {
+    "id" : "b975ee80-cd32-43dd-9f52-50ff2069f5de",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "recordId" : "{!recordId}"
+      },
+      "componentName" : "forceCommunity:recordHeadline",
+      "id" : "66f7f3ba-c741-443e-b87f-0ed22ba7f9fd",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "detailsTabLabel" : "Details",
+        "discussionsTabLabel" : "Feed",
+        "recordId" : "{!recordId}",
+        "relatedTabLabel" : "Related",
+        "showLegacyActivityComposer" : false,
+        "tab1Type" : "details",
+        "tab2Type" : "related",
+        "tab3Type" : "chatter",
+        "tab4Type" : "none",
+        "timelineTabLabel" : "Activity"
+      },
+      "componentName" : "forceCommunity:recordHomeTabs",
+      "id" : "b89e4213-2bfa-4ba9-a135-41e20c45c75f",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "3320b340-0e28-4b52-82db-29ba92c64a51",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "78d11b25-8b63-45ce-9621-d99d3f8efd55",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "{!Record._Object}: {!Record._Title}"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "321e029b-0582-4f90-8a11-a184367fa2f2",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "5306b506-2628-458b-9e01-45c3b5854b92",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "detail-a08"
+}

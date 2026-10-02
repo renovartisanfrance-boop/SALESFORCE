@@ -1,0 +1,387 @@
+<template>
+    <div class="import-shell">
+
+        <template if:true={isConfigStep}>
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="eyebrow">Étape 1 / 2 — Configuration</span>
+                    <h1>Choisis les champs à importer</h1>
+                    <p>Coche les champs que tu veux remplir. Pour chaque champ, tu peux saisir une valeur par défaut (commune à toutes les lignes) ou la laisser vide pour la mapper depuis ton fichier Excel à l'étape suivante.</p>
+                </div>
+            </section>
+
+            <section class="card-panel">
+                <template if:false={hasRawFields}>
+                    <div class="message message-info">Chargement des champs Salesforce...</div>
+                </template>
+
+                <template if:true={hasRawFields}>
+                    <div class="select-all-bar">
+                        <label class="select-all">
+                            <input
+                                type="checkbox"
+                                checked={allConfigFieldsSelected}
+                                onchange={handleSelectAllConfigFields}>
+                            <span><strong>Tout sélectionner</strong></span>
+                        </label>
+                        <span class="select-all-count">{configFieldsCountText}</span>
+                    </div>
+                    <div class="view-toggle">
+                        <lightning-button-group>
+                            <lightning-button
+                                label="Liste"
+                                icon-name="utility:rows"
+                                variant={listVariant}
+                                onclick={handleViewList}>
+                            </lightning-button>
+                            <lightning-button
+                                label="Grille"
+                                icon-name="utility:layout_tile"
+                                variant={gridVariant}
+                                onclick={handleViewGrid}>
+                            </lightning-button>
+                        </lightning-button-group>
+                    </div>
+                    <div class={configListClass}>
+                        <template for:each={configurableFields} for:item="f">
+                            <div key={f.key} class="config-row">
+                                <lightning-input
+                                    type="checkbox"
+                                    label={f.label}
+                                    checked={f.selected}
+                                    data-api={f.apiName}
+                                    onchange={handleFieldSelectChange}>
+                                </lightning-input>
+
+                                <template if:true={f.selected}>
+                                    <div class="default-value-wrapper">
+                                        <template if:true={f.isPicklist}>
+                                            <lightning-combobox
+                                                label="Valeur par défaut"
+                                                variant="label-hidden"
+                                                placeholder="Valeur par défaut (facultatif)"
+                                                value={f.defaultValue}
+                                                options={f.picklistOptions}
+                                                data-api={f.apiName}
+                                                onchange={handleDefaultValueChange}>
+                                            </lightning-combobox>
+                                        </template>
+
+                                        <template if:true={f.isBoolean}>
+                                            <lightning-input
+                                                type="checkbox"
+                                                label="Valeur par défaut (cochée = vrai)"
+                                                checked={f.defaultValue}
+                                                data-api={f.apiName}
+                                                onchange={handleDefaultBooleanChange}>
+                                            </lightning-input>
+                                        </template>
+
+                                        <template if:true={f.isMultiPicklist}>
+                                            <lightning-input
+                                                type="text"
+                                                label="Valeur par défaut"
+                                                variant="label-hidden"
+                                                placeholder="Valeurs séparées par ;"
+                                                value={f.defaultValue}
+                                                data-api={f.apiName}
+                                                onchange={handleDefaultValueChange}>
+                                            </lightning-input>
+                                        </template>
+
+                                        <template if:true={f.isStandardInput}>
+                                            <lightning-input
+                                                type={f.inputType}
+                                                label="Valeur par défaut"
+                                                variant="label-hidden"
+                                                placeholder="Valeur par défaut (facultatif)"
+                                                value={f.defaultValue}
+                                                data-api={f.apiName}
+                                                onchange={handleDefaultValueChange}>
+                                            </lightning-input>
+                                        </template>
+
+                                        <template if:true={f.isTextarea}>
+                                            <lightning-textarea
+                                                label="Valeur par défaut"
+                                                variant="label-hidden"
+                                                placeholder="Valeur par défaut (facultatif)"
+                                                value={f.defaultValue}
+                                                data-api={f.apiName}
+                                                onchange={handleDefaultValueChange}>
+                                            </lightning-textarea>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="action-row">
+                        <lightning-button
+                            variant="brand"
+                            label="Continuer →"
+                            disabled={configContinueDisabled}
+                            onclick={handleContinueToImport}>
+                        </lightning-button>
+                    </div>
+                </template>
+            </section>
+        </template>
+
+        <template if:true={isImportStep}>
+        <template if:false={fileLoaded}>
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="eyebrow">Étape 2 / 2 — Import</span>
+                    <h1>Importer facilement vos lettres</h1>
+                    <p>Charge un fichier Excel et prévisualise son contenu avant de le stocker dans Salesforce.</p>
+                </div>
+            </section>
+        </template>
+
+        <section class="card-panel">
+            <div class={cardHeaderClass}>
+                <div>
+                    <h2>Configuration du chargement</h2>
+                    <template if:false={fileLoaded}>
+                        <p>Le nom d'import est facultatif. Choisis un fichier Excel (.xlsx, .xls).</p>
+                    </template>
+                </div>
+                <!-- <template if:false={fileLoaded}>
+                    <div class="status-chip">Visuel & intuitif</div>
+                </template> -->
+            </div>
+
+            <lightning-input
+                class="input-field"
+                label="Nom d'import"
+                placeholder="Ex. Import Mars"
+                value={importName}
+                onchange={handleNameChange}>
+            </lightning-input>
+
+            <template if:false={fileLoaded}>
+                <div class="back-bar">
+                    <lightning-button
+                        variant="base"
+                        label="← Modifier la configuration"
+                        onclick={handleBackToConfigure}>
+                    </lightning-button>
+                </div>
+                <div class="upload-zone" onclick={handleZoneClick} role="button" tabindex="0">
+                    <div class="upload-content">
+                        <span class="upload-icon">📤</span>
+                        <p class="upload-title">Dépose ton fichier Excel ici</p>
+                        <p class="upload-subtitle">Ou clique pour sélectionner un fichier</p>
+                        <p class="upload-hint">Formats pris en charge : .xlsx, .xls</p>
+                    </div>
+                    <input
+                        class="hidden-file"
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onchange={handleFileChange}
+                    />
+                </div>
+            </template>
+
+            <template if:true={fileLoaded}>
+                <div class="file-bar">
+                    <div class="file-bar-info">
+                        <span class="file-bar-icon">📄</span>
+                        <div class="file-bar-text">
+                            <span class="file-bar-name">{fileName}</span>
+                        </div>
+                    </div>
+                    <div class="file-bar-actions">
+                        <lightning-button
+                            variant="brand"
+                            label="Démarrer l'importation"
+                            icon-name="utility:upload"
+                            icon-position="left"
+                            disabled={importDisabled}
+                            onclick={handleStartImport}>
+                        </lightning-button>
+                        <lightning-button
+                            variant="neutral"
+                            label="Changer de fichier"
+                            onclick={handleChangeFile}>
+                        </lightning-button>
+                        <lightning-button
+                            variant="base"
+                            label="← Modifier la configuration"
+                            onclick={handleBackToConfigure}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={errorMessage}>
+                <div class="message message-error">{errorMessage}</div>
+            </template>
+
+            <template if:true={hasPreview}>
+                <div class="preview-panel">
+                    <div class="preview-header">
+                        <span>Aperçu du fichier</span>
+                        <span>{columns.length} colonnes · {rowSummary}</span>
+                    </div>
+
+                    <div class="preview-toolbar">
+                        <lightning-input
+                            class="search-input"
+                            type="search"
+                            label="Rechercher"
+                            variant="label-hidden"
+                            placeholder="Rechercher dans les lignes..."
+                            value={searchTerm}
+                            onchange={handleSearch}>
+                        </lightning-input>
+                        <lightning-combobox
+                            class="page-size-select"
+                            label="Lignes par page"
+                            variant="label-hidden"
+                            value={pageSize}
+                            options={pageSizeOptions}
+                            onchange={handlePageSizeChange}>
+                        </lightning-combobox>
+                    </div>
+
+                    <template if:true={fieldOptionsError}>
+                        <div class="message message-error">{fieldOptionsError}</div>
+                    </template>
+
+                    <template if:true={hasDuplicateMappings}>
+                        <div class="message message-error">{duplicateMappingMessage}</div>
+                    </template>
+
+                    <template if:true={hasInvalidRows}>
+                        <div class="message message-warning">
+                            <strong>{invalidRowCount}</strong> ligne(s) ne passeront pas les validations et seront ignorées à l'import. <strong>{validRowCount}</strong> ligne(s) prête(s).
+                        </div>
+                    </template>
+
+                    <div class="preview-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="status-col">Statut</th>
+                                    <template for:each={mappedColumns} for:item="col">
+                                        <th key={col.key} class={col.headerClass}>
+                                            <div class="column-title">{col.label}</div>
+                                            <lightning-combobox
+                                                class="mapping-select"
+                                                label="Champ Salesforce"
+                                                variant="label-hidden"
+                                                placeholder="— Mapper un champ —"
+                                                value={col.selectedField}
+                                                options={fieldOptions}
+                                                data-index={col.index}
+                                                onchange={handleMappingChange}>
+                                            </lightning-combobox>
+                                            <template if:true={col.needsFormat}>
+                                                <lightning-combobox
+                                                    class="format-select"
+                                                    label="Format de date"
+                                                    variant="label-hidden"
+                                                    placeholder="Format de date"
+                                                    value={col.selectedFormat}
+                                                    options={col.formatOptions}
+                                                    data-index={col.index}
+                                                    onchange={handleFormatChange}>
+                                                </lightning-combobox>
+                                            </template>
+                                            <template if:true={col.hasValidationOptions}>
+                                                <details class="validation-details">
+                                                    <summary class="validation-summary">{col.validationSummary}</summary>
+                                                    <div class="validation-body">
+                                                        <lightning-checkbox-group
+                                                            label="Validations"
+                                                            variant="label-hidden"
+                                                            options={col.validationOptions}
+                                                            value={col.selectedValidations}
+                                                            data-index={col.index}
+                                                            onchange={handleValidationChange}>
+                                                        </lightning-checkbox-group>
+                                                    </div>
+                                                </details>
+                                            </template>
+                                        </th>
+                                    </template>
+                                    <th class="action-col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={displayedRows} for:item="row">
+                                    <tr key={row.id} class={row.rowClass}>
+                                        <td class="status-cell" title={row.statusTitle}>
+                                            <lightning-icon
+                                                icon-name={row.statusIcon}
+                                                variant={row.statusVariant}
+                                                size="x-small"
+                                                alternative-text={row.statusTitle}>
+                                            </lightning-icon>
+                                        </td>
+                                        <template for:each={row.cells} for:item="cell">
+                                            <td key={cell.key}>{cell.value}</td>
+                                        </template>
+                                        <td class="action-cell">
+                                            <lightning-button-icon
+                                                icon-name="utility:delete"
+                                                variant="bare"
+                                                alternative-text="Supprimer"
+                                                title="Supprimer cette ligne"
+                                                data-id={row.id}
+                                                onclick={handleDelete}>
+                                            </lightning-button-icon>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        <template if:true={hasNoResults}>
+                            <div class="empty-results">Aucune ligne ne correspond à la recherche.</div>
+                        </template>
+                    </div>
+
+                    <template if:false={isAllMode}>
+                        <div class="pagination-bar">
+                            <span class="pagination-info">Page {currentPage} / {totalPages}</span>
+                            <div class="pagination-controls">
+                                <lightning-button
+                                    label="Précédent"
+                                    icon-name="utility:chevronleft"
+                                    icon-position="left"
+                                    onclick={handlePrev}
+                                    disabled={isFirstPage}
+                                    variant="neutral">
+                                </lightning-button>
+                                <lightning-button
+                                    label="Suivant"
+                                    icon-name="utility:chevronright"
+                                    icon-position="right"
+                                    onclick={handleNext}
+                                    disabled={isLastPage}
+                                    variant="neutral">
+                                </lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <div class="action-row">
+                <lightning-button
+                    variant="brand"
+                    label="Démarrer l'importation"
+                    icon-name="utility:upload"
+                    icon-position="left"
+                    disabled={importDisabled}
+                    onclick={handleStartImport}>
+                </lightning-button>
+            </div>
+        </section>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,83 @@
+<template>
+    <div class="tab-pane">
+        <div class="pane-head">
+            <div class="pane-head-left">
+                <p class="pane-title">{txt.titreEnCours}</p>
+                <!-- <span class="pane-hint">
+                    Dossiers dont l'échéance est atteinte et factures non réglées
+                </span> -->
+            </div>
+            <button class="btn-refresh" onclick={handleRefresh}>{txt.actualiser}</button>
+        </div>
+
+        <template lwc:if={showSpinnerInitial}>
+            <div class="loading-container">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+                <p class="loading-text">{txt.chargementEnCours}</p>
+            </div>
+        </template>
+
+        <template lwc:if={erreurBloquante}>
+            <div class="error-container">
+                <p class="error-message">{erreurBloquante}</p>
+            </div>
+        </template>
+
+        <!-- La table reste MONTÉE pendant les rechargements : la démonter viderait
+             ses filtres, son tri, sa page et sa taille de page, qui vivent dans ses
+             champs d'instance. Le chargement passe donc par une surimpression. -->
+        <template lwc:if={showTable}>
+            <div class="table-zone">
+                <template lwc:if={showOverlay}>
+                    <div class="loading-overlay">
+                        <lightning-spinner alternative-text="Actualisation..."
+                            size="small"></lightning-spinner>
+                    </div>
+                </template>
+
+                <!-- Une seule source en échec : la table reste affichée, amputée. -->
+                <template lwc:if={erreurPartielle}>
+                    <div class="warn-container">
+                        <span class="warn-icon">⚠️</span>
+                        <span class="warn-text">{erreurPartielle}</span>
+                    </div>
+                </template>
+
+                <!-- L'ordre est porté par la table : filtres, puis tuiles (emplacement
+                     « kpi »), puis tableau. Les tuiles restent définies ICI parce qu'elles
+                     sont propres à l'onglet, et suivent les totaux filtrés que la table
+                     remonte par l'événement `totaux`. -->
+                <c-lwc020_-facturation-table langue={langue}
+                    rows={rows}
+                    colonnes={colonnes}
+                    tronque={tronque}
+                    message-troncature={messageTroncature}
+                    message-vide="Aucun paiement en cours."
+                    unite={txt.uniteLigne}
+                    ontotaux={handleTotaux}>
+
+                    <!-- Le rappel du total du compte n'apparaît que sous filtre : sans
+                         filtre, le grand chiffre EST déjà ce total. -->
+                    <div slot="kpi" class="kpi-row">
+                        <div class="kpi-card kpi-afacturer">
+                            <span class="kpi-label">{txt.pretAFacturer}</span>
+                            <span class="kpi-value">{totalAFacturer}</span>
+                            <span class="kpi-sub">{sousTitreAFacturer}</span>
+                            <template lwc:if={afficherRappelCompte}>
+                                <span class="kpi-ref">{compteAFacturer}</span>
+                            </template>
+                        </div>
+                        <div class="kpi-card kpi-apayer">
+                            <span class="kpi-label">{txt.aPayer}</span>
+                            <span class="kpi-value">{totalAPayer}</span>
+                            <span class="kpi-sub">{sousTitreAPayer}</span>
+                            <template lwc:if={afficherRappelCompte}>
+                                <span class="kpi-ref">{compteAPayer}</span>
+                            </template>
+                        </div>
+                    </div>
+                </c-lwc020_-facturation-table>
+            </div>
+        </template>
+    </div>
+</template>

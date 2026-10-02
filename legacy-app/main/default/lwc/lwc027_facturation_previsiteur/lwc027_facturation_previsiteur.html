@@ -1,0 +1,45 @@
+<template>
+    <div class="wrap">
+
+        <h1>{txt.titre}</h1>
+
+        <!-- ENCART D'INFORMATION — TOUJOURS visible, quel que soit l'etat de la
+             facturation. C'est le rappel permanent de l'engagement contractuel :
+             qui est le previsiteur, depuis quand il est engage, et l'acces au
+             document lui-meme. -->
+        <div class="info-card">
+            <div class="info-head">
+                <span class="info-icone" aria-hidden="true">📄</span>
+                <p class="info-titre">{txt.infoTitre}</p>
+            </div>
+
+            <dl class="info-lignes">
+                <template for:each={lignes} for:item="l">
+                    <div class="info-ligne" key={l.cle}>
+                        <dt>{l.label}</dt>
+                        <dd>{l.valeur}</dd>
+                    </div>
+                </template>
+            </dl>
+
+            <template lwc:if={urlPdf}>
+                <a class="info-lien" href={urlPdf} target="_blank" rel="noopener noreferrer">
+                    <span aria-hidden="true">🔗</span> {txt.voirContrat}
+                </a>
+            </template>
+            <template lwc:else>
+                <p class="info-attente">{txt.nonSigne}</p>
+            </template>
+        </div>
+
+        <template lwc:if={messageEcran}>
+            <div class={classeMessage}>{messageEcran}</div>
+        </template>
+
+        <!-- Tableau des factures : colonnes et source a definir. -->
+        <div class="card">
+            <div class="placeholder">{txt.tableauBientot}</div>
+        </div>
+
+    </div>
+</template>

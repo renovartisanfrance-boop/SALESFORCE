@@ -1,0 +1,192 @@
+<template>
+    <!--
+      Modale « Documents » — autonome et responsive.
+      Le voile est le conteneur de scroll : la carte ne dépasse jamais la hauteur
+      de l'écran, seul son corps défile. Fermeture par le bouton X, par un clic
+      sur le voile ou par la touche Échap.
+    -->
+    <div class="doc-voile" onclick={handleVoileClick} onkeydown={handleKeyDown} tabindex="-1">
+        <section class="doc-modal" role="dialog" aria-modal="true" aria-label={titre}>
+
+            <!-- ══ En-tête ══════════════════════════════════════════════ -->
+            <header class="doc-entete">
+                <div class="doc-entete-texte">
+                    <h2 class="doc-titre">{titre}</h2>
+                    <template if:true={afficherContenu}>
+                        <p class="doc-soustitre">{sousTitre}</p>
+                    </template>
+                </div>
+                <button type="button" class="doc-fermer" onclick={handleClose} title={txt.fermer}
+                    aria-label={txt.fermer}>
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </header>
+
+            <!-- ══ Chargement ═══════════════════════════════════════════ -->
+            <template if:true={isLoading}>
+                <div class="doc-etat">
+                    <div class="doc-spinner"></div>
+                    <p>{txt.chargement}</p>
+                </div>
+            </template>
+
+            <!-- ══ Corps ════════════════════════════════════════════════ -->
+            <template if:true={afficherContenu}>
+                <div class="doc-corps">
+
+                    <!-- Messages d'action. L'erreur de chargement, elle, remplace
+                         tout le corps : voir plus bas. -->
+                    <template if:true={error}>
+                        <div class="doc-message doc-message--erreur">{error}</div>
+                    </template>
+                    <template if:true={messageSucces}>
+                        <div class="doc-message doc-message--ok">{messageSucces}</div>
+                    </template>
+
+                    <!-- Le navigateur a bloqué l'onglet : le document est prêt,
+                         il ne manque qu'un clic de l'utilisateur pour l'ouvrir. -->
+                    <template if:true={lienSecours}>
+                        <div class="doc-message doc-message--info doc-secours">
+                            <span>{txt.ongletBloque}</span>
+                            <a class="doc-secours-lien" href={lienSecours.url} target="_blank"
+                                rel="noopener noreferrer"
+                                onclick={handleFermerSecours}>{lienSecours.titre}</a>
+                        </div>
+                    </template>
+
+                    <!-- ── Consultation seule (Dossier) ─────────────────── -->
+                    <template if:true={lectureSeule}>
+                        <div class="doc-message doc-message--info">{txt.lectureSeule}</div>
+                    </template>
+
+                    <!-- ── Confirmation de suppression ──────────────────── -->
+                    <!-- Rendue DANS la modale : window.confirm n'est pas garanti
+                         sous Lightning Web Security, et sur mobile il s'affiche
+                         loin de la ligne concernée. -->
+                    <template if:true={aSupprimer}>
+                        <div class="doc-confirm">
+                            <span class="doc-confirm-texte">{messageConfirmation}</span>
+                            <div class="doc-confirm-actions">
+                                <button type="button" class="doc-btn-neutre"
+                                    onclick={handleAnnulerSuppression}>{txt.annuler}</button>
+                                <button type="button" class="doc-btn-danger" onclick={handleConfirmerSuppression}
+                                    disabled={enEnvoi}>{txt.supprimerConfirmer}</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- ── Liste des pièces jointes ─────────────────────── -->
+                    <h3 class="doc-section-titre">{txt.listeTitre}</h3>
+
+                    <template if:false={aDocuments}>
+                        <p class="doc-vide">{txt.aucunDocument}</p>
+                    </template>
+
+                    <template if:true={aDocuments}>
+                        <ul class="doc-liste">
+                            <template for:each={documents} for:item="doc">
+                                <li key={doc.contentDocumentId} class="doc-ligne">
+                                    <span class="doc-ext">{doc.extensionCourte}</span>
+                                    <!-- Un bouton, pas un lien : le fichier n'a pas
+                                         d'URL servable ici, ses octets remontent par
+                                         l'Apex (voir handleOuvrir). -->
+                                    <button type="button" class={doc.nomClass}
+                                        data-docid={doc.contentDocumentId}
+                                        data-consultable={doc.consultable} onclick={handleOuvrir}
+                                        title={doc.titreInfobulle}>{doc.titre}</button>
+                                    <template if:true={doc.enCours}>
+                                        <span class="doc-spinner-ligne"></span>
+                                    </template>
+                                    <span class="doc-meta">{doc.tailleLisible}</span>
+                                    <span class="doc-meta doc-meta--date">{doc.dateModif}</span>
+                                    <!-- La croix n'existe que sur une Piste : sur un
+                                         Dossier il n'y a rien à supprimer ici. -->
+                                    <template if:true={peutModifier}>
+                                        <button type="button" class="doc-supprimer" data-docid={doc.contentDocumentId}
+                                            data-nom={doc.titre} onclick={handleDemanderSuppression} title={txt.supprimer}
+                                            aria-label={txt.supprimer} disabled={enEnvoi}>
+                                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                                <polyline points="3 6 5 6 21 6" />
+                                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                                <path d="M10 11v6M14 11v6" />
+                                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                                            </svg>
+                                        </button>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+
+                    <!-- ── Accordéon d'ajout — PISTE uniquement, fermé par défaut ── -->
+                    <template if:true={peutModifier}>
+                        <div class={accordeonClass}>
+                            <button type="button" class="doc-accordeon-entete" onclick={handleToggleAccordeon}
+                                aria-expanded={accordeonOuvert}>
+                                <svg class="doc-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                                <span class="doc-accordeon-titre">{txt.ajouterTitre}</span>
+                                <span class="doc-accordeon-soustitre">{txt.ajouterSousTitre}</span>
+                            </button>
+
+                            <template if:true={accordeonOuvert}>
+                                <div class="doc-accordeon-corps">
+                                    <!-- Une zone par type de photo sur la fiche RES060,
+                                         une seule zone générique partout ailleurs. -->
+                                    <div class="doc-zones">
+                                        <template for:each={sections} for:item="section">
+                                            <c-custom-file-upload key={section.cle} data-section={section.cle}
+                                                label={section.label} compact="true" multiple="true"
+                                                accepted-formats=".jpg,.jpeg,.png,.heic,.webp,.pdf"
+                                                max-file-size={tailleMaxFichier} compresser-images="true"
+                                                langue={langue} disabled={enEnvoi}
+                                                onfileschange={handleFichiersChange}>
+                                            </c-custom-file-upload>
+                                        </template>
+                                    </div>
+
+                                    <p class="doc-consigne">{consigneNommage}</p>
+
+                                    <div class="doc-actions">
+                                        <template if:true={enEnvoi}>
+                                            <span class="doc-progression">{messageEnvoi}</span>
+                                        </template>
+                                        <button type="button" class="doc-btn-envoyer" onclick={handleEnvoyer}
+                                            disabled={envoiImpossible}>
+                                            <template if:false={enEnvoi}>
+                                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+                                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                                    stroke-linejoin="round" aria-hidden="true">
+                                                    <path d="M12 19V5M5 12l7-7 7 7" />
+                                                </svg>
+                                            </template>
+                                            <template if:true={enEnvoi}>
+                                                <span class="doc-spinner-mini"></span>
+                                            </template>
+                                            {libelleEnvoyer}
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ══ Erreur bloquante (chargement impossible) ═════════════ -->
+            <template if:true={erreurChargement}>
+                <div class="doc-etat doc-etat--erreur">
+                    <p>{erreurChargement}</p>
+                </div>
+            </template>
+        </section>
+    </div>
+</template>

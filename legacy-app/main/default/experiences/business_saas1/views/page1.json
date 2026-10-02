@@ -1,0 +1,69 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "1646cd07-921f-4eb4-8142-fbc295c451c2",
+  "label" : "page 1",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:lwc001_banner",
+      "id" : "7b671b7a-f125-4200-ae3c-231f7a883639",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f4cbfbc8-a3cd-4a37-bbb5-4a10f3194644",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "Toutes_les_pistes",
+        "layout" : "FULL",
+        "pageSize" : 100,
+        "scope" : "Lead",
+        "showActionBar" : true,
+        "showChartsPanel" : false,
+        "showDisplay" : "grid",
+        "showFilterPanel" : false,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : false,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "812b3013-3c5a-4a8d-bae3-f60d80cf1e76",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "7ca6f794-dc10-410b-967d-cf7c8bcbb461",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "bcc94658-6395-4fd1-a512-18eb3442a023",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Pistes"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "7f1f911c-978f-4fad-ba0f-c8b7757d201f",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "402388b2-cfa5-41b2-a191-56164de90558",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-page-1"
+}

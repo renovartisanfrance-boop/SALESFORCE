@@ -1,0 +1,68 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "d7adfcea-b885-43ee-bedd-3587fce37023",
+  "label" : "Paiement masse",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "4a46bceb-81b9-4ba0-8e7e-d19906ce2e43",
+          "columns" : [ {
+            "UUID" : "e377de6c-fd59-4aa5-ba41-9aaf9e63873f",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "4a46bceb-81b9-4ba0-8e7e-d19906ce2e43",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:lwc022PaiementFacturesMasse",
+          "id" : "c8fb982f-ae75-43ef-8b94-2676a9f8d911",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "e377de6c-fd59-4aa5-ba41-9aaf9e63873f",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "7b2d40a5-1488-4b01-8c3b-0948f78c8e48",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Paiement masse"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "2034fde7-2af9-4f49-8baa-bce09fe424e7",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "a4d82574-74ca-4e45-b77c-a1d324078445",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-paiement-masse"
+}

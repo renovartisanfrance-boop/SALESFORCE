@@ -1,0 +1,181 @@
+<template>
+    <template lwc:if={isLoading}>
+        <div class="etat-centre"><div class="spinner"></div></div>
+    </template>
+
+    <template lwc:else>
+        <div class="wrap">
+
+            <!-- Fil d'etapes : les trois valeurs reelles de StatutContrat__c -->
+            <div class="steps">
+                <template for:each={etapes} for:item="e">
+                    <div key={e.cle} class={e.classe}>{e.label}</div>
+                </template>
+            </div>
+
+            <!-- ECRAN 3 — contrat signe : tout est verrouille, aucune action -->
+            <template lwc:if={ecranSigne}>
+                <span class="pastille pastille-signe">{txt.etape3}</span>
+                <h1>{txt.signeTitre}</h1>
+                <p class="lead">{txt.signeTexte}</p>
+                <div class="signe">
+                    <p>{txt.signeContact}</p>
+                </div>
+            </template>
+
+            <!-- ECRAN 2 — contrat parti chez Yousign, informations corrigeables -->
+            <template lwc:if={ecranAttente}>
+                <span class="pastille">{txt.etape2}</span>
+                <h1>{txt.attenteTitre}</h1>
+                <p class="lead">{txt.attenteTexte}</p>
+
+                <div class="attente">
+                    <p class="sous">{txt.attenteSous}</p>
+                </div>
+            </template>
+
+            <!-- ECRAN 1 bis — RELECTURE avant envoi -->
+            <template lwc:if={ecranRecap}>
+                <h1>{txt.recapTitre}</h1>
+                <p class="lead">{txt.recapTexte}</p>
+
+                <!-- Role sans contrat livre (installateur) : la saisie est gardee,
+                     l'envoi est retenu. On le DIT, au lieu d'offrir un bouton
+                     qui echouerait cote serveur. -->
+                <template lwc:if={envoiRetenu}>
+                    <div class="message message-info">{txt.contratIndisponible}</div>
+                </template>
+
+                <div class="card">
+                    <dl class="recap">
+                        <template for:each={recapLignes} for:item="l">
+                            <div class="recap-ligne" key={l.champ}>
+                                <dt>{l.label}</dt>
+                                <dd>{l.valeur}</dd>
+                            </div>
+                        </template>
+                    </dl>
+                </div>
+            </template>
+
+            <!-- ECRAN 1 — saisie -->
+            <template lwc:if={ecranSaisie}>
+                <h1>{txt.titre}</h1>
+                <p class="lead">{txt.sousTitre}</p>
+            </template>
+
+            <!-- Erreur technique remontee par le retour de signature -->
+            <template lwc:if={messageErreur}>
+                <div class="message message-error">{messageErreur}</div>
+            </template>
+
+            <template lwc:if={messageEcran}>
+                <div class={classeMessage}>{messageEcran}</div>
+            </template>
+
+            <div class="card" if:false={ecranRecap}>
+                <div class="grid2">
+                    <template for:each={champs} for:item="c">
+                        <div key={c.champ} class={c.classeCase}>
+                            <label for={c.champ}>{c.label}</label>
+
+                            <template lwc:if={c.estPicklist}>
+                                <select
+                                    id={c.champ}
+                                    class="saisie"
+                                    data-champ={c.champ}
+                                    onchange={handleChange}
+                                    disabled={c.desactive}>
+                                    <option value="">{txt.vide}</option>
+                                    <template for:each={c.options} for:item="o">
+                                        <option key={o.valeur} value={o.valeur} selected={o.selectionne}>
+                                            {o.label}
+                                        </option>
+                                    </template>
+                                </select>
+                            </template>
+
+                            <!-- Multipicklist : badges selectionnables. Chaque badge
+                                 est un <label> autour d'une case native masquee :
+                                 clavier et lecteurs d'ecran restent fonctionnels.
+                                 Selectionne : coche a gauche, (x) a droite pour
+                                 indiquer qu'un tap le retire. -->
+                            <template lwc:if={c.estBadges}>
+                                <div class="badges" role="group" aria-label={c.label}>
+                                    <template for:each={c.options} for:item="o">
+                                        <label class={o.classe} key={o.cle}>
+                                            <input
+                                                type="checkbox"
+                                                data-champ={c.champ}
+                                                data-valeur={o.valeur}
+                                                checked={o.selectionne}
+                                                onchange={handleBadge}
+                                                disabled={c.desactive} />
+                                            <span class="badge-coche" aria-hidden="true">✓</span>
+                                            <span class="badge-texte">{o.label}</span>
+                                            <span class="badge-x" aria-hidden="true">×</span>
+                                        </label>
+                                    </template>
+                                </div>
+                                <p class="aide">
+                                    <span>{txt.aideBadges}</span>
+                                    <span class="compteur">{c.compteur}</span>
+                                </p>
+                            </template>
+
+                            <template lwc:if={c.estTexte}>
+                                <input
+                                    id={c.champ}
+                                    class="saisie"
+                                    type={c.type}
+                                    data-champ={c.champ}
+                                    value={c.valeur}
+                                    onchange={handleChange}
+                                    disabled={c.desactive} />
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Consultation possible des que le contrat est archive : sur
+                     l'ecran d'attente pour relire ce qui vient d'etre envoye,
+                     et sur l'ecran signe pour relire le document signe. -->
+                <!-- VRAI LIEN, pas un bouton : l'URL blob: est deja chargee, le
+                     clic est une navigation native. Une fenetre ouverte par
+                     script serait bloquee par la CSP du site. -->
+                <template lwc:if={urlPdf}>
+                    <a class="btn sec" href={urlPdf} target="_blank" rel="noopener noreferrer">
+                        {txt.boutonVoir}
+                    </a>
+                </template>
+                <!-- Contrat parti chez Yousign : la saisie est verrouillee, et
+                     ce bouton est le SEUL moyen de la rouvrir. Corriger un champ
+                     ne changerait rien au document deja envoye — il faut le
+                     regenerer, d'ou un geste volontaire. -->
+                <template lwc:if={afficherBoutonModifier}>
+                    <button class="btn" onclick={handleDemanderModification} disabled={enCours}>
+                        {txt.boutonModifier}
+                    </button>
+                </template>
+
+                <!-- Action principale : saisie initiale, ou renvoi apres deverrouillage.
+                     Absente sur un contrat signe. -->
+                <template lwc:if={ecranRecap}>
+                    <button class="btn sec" onclick={handleRetourSaisie} disabled={enCours}>
+                        {txt.boutonRetour}
+                    </button>
+                </template>
+
+                <template lwc:if={afficherAction}>
+                    <button class="btn" onclick={handleActionPrincipale} disabled={enCours}>
+                        <template lwc:if={enCours}>{txt.enCours}</template>
+                        <template lwc:else>{libelleBouton}</template>
+                    </button>
+                </template>
+            </div>
+
+        </div>
+    </template>
+</template>

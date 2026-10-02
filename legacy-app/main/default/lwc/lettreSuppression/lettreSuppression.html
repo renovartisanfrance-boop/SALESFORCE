@@ -1,0 +1,72 @@
+<template>
+    <div class="delete-shell">
+        <section class="hero">
+            <div class="hero-text">
+                <span class="eyebrow">Suppression en masse</span>
+                <h1>Supprimer un import</h1>
+                <p>Sélectionne le nom d'import pour supprimer toutes les lettres associées. L'action est irréversible.</p>
+            </div>
+        </section>
+
+        <section class="card-panel">
+            <template if:true={errorMessage}>
+                <div class="message message-error">{errorMessage}</div>
+            </template>
+
+            <template if:true={hasImportNames}>
+                <div class="delete-body">
+                    <div class="select-row">
+                        <lightning-combobox
+                            class="delete-select"
+                            label="Nom d'import à supprimer"
+                            placeholder="— Choisir un import —"
+                            value={selectedImportToDelete}
+                            options={importNameOptions}
+                            onchange={handleImportToDeleteChange}>
+                        </lightning-combobox>
+                        <lightning-button-icon
+                            class="refresh-btn"
+                            icon-name="utility:refresh"
+                            variant="bare"
+                            alternative-text="Actualiser la liste"
+                            title="Actualiser la liste"
+                            onclick={handleManualRefresh}>
+                        </lightning-button-icon>
+                    </div>
+
+                    <template if:true={hasSelectedImport}>
+                        <div class="details-card">
+                            <h4>Détails de l'import</h4>
+                            <lightning-radio-group
+                                label="Périmètre de suppression"
+                                name="scope"
+                                options={scopeOptions}
+                                value={selectedScope}
+                                type="radio"
+                                onchange={handleScopeChange}>
+                            </lightning-radio-group>
+                            <div class="delete-summary">
+                                <strong>{currentDeleteCount}</strong> lettre(s) {currentScopeLabel} seront supprimées.
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="action-row">
+                        <lightning-button
+                            variant="destructive"
+                            label="Supprimer les lettres"
+                            icon-name="utility:delete"
+                            icon-position="left"
+                            disabled={deleteDisabled}
+                            onclick={handleStartDelete}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={hasImportNames}>
+                <div class="message message-info">Aucun import existant à supprimer.</div>
+            </template>
+        </section>
+    </div>
+</template>

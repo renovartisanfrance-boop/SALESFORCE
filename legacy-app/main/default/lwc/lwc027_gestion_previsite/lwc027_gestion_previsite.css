@@ -1,0 +1,582 @@
+/* Accueil previsiteur — deux grandes entrees, lisibles au pouce sur mobile. */
+
+/* 900px : les listes portent des boutons d'action a droite de chaque ligne. */
+.previsite { padding: 1rem 1rem; max-width: 900px; margin: 0 auto; color: #1E3544; }
+/* Les vues liste reclament de la largeur : a 900 px, huit colonnes debordent
+   et les boutons d'action finissent caches sous le defilement horizontal. */
+.previsite-liste { max-width: 1240px; }
+
+.salutation { font-size: 1.35rem; font-weight: 700; color: #16325c; margin: 0 0 .35rem; }
+.intro { font-size: .95rem; color: #54698d; margin: 0 0 2rem; }
+
+.boutons { display: grid; gap: 1rem; }
+
+.tuile {
+    display: flex; flex-direction: column; align-items: flex-start; gap: .3rem;
+    font: inherit; text-align: left; cursor: pointer;
+    background: #fff; border: 1px solid #d8dde6; border-left-width: 5px;
+    border-radius: 12px; padding: 1.5rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+.tuile:hover  { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.10); }
+.tuile:active { transform: translateY(0); }
+
+/* La couleur distingue « ce qui reste a faire » de « ce qui est cale ». */
+.tuile-a-planifier { border-left-color: #dd7a01; }
+.tuile-planifies   { border-left-color: #2e844a; }
+
+.tuile-icone { font-size: 1.6rem; line-height: 1; margin-bottom: .35rem; }
+
+/* Regroupe titre et sous-titre : indispensable en tuile horizontale (mobile),
+   ou l'icone doit rester a gauche du bloc de texte et non au-dessus. */
+.tuile-texte {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    text-align: left;
+}
+.tuile-titre { font-size: 1.05rem; font-weight: 700; color: #16325c; }
+.tuile-sous  { font-size: .85rem; color: #54698d; }
+
+/* --- Contrat en attente : portail visible mais inerte --- */
+
+.attente {
+    background: #FFF9E8;
+    border: 1px solid #F5E3A8;
+    border-left: 4px solid #F5BC13;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 0 1.75rem;
+}
+.attente-titre {
+    margin: 0 0 .35rem;
+    font-size: .95rem; font-weight: 700; color: #1E3544;
+}
+.attente-message { margin: 0; font-size: .88rem; line-height: 1.5; color: #6E7A76; }
+
+/* Recap des informations envoyees, dans l'encadre jaune. Fond blanc : il se
+   detache du message et se lit comme un document, pas comme un avertissement. */
+.recap-titre {
+    margin: .9rem 0 .4rem;
+    font-size: .78rem; font-weight: 700; letter-spacing: .03em;
+    text-transform: uppercase; color: #8A6D0B;
+}
+.recap {
+    margin: 0;
+    background: #fff;
+    border: 1px solid #F5E3A8;
+    border-radius: 9px;
+    padding: 2px 12px;
+}
+.recap-ligne {
+    display: grid;
+    grid-template-columns: minmax(120px, 38%) 1fr;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #F6EFD6;
+    font-size: .84rem;
+}
+.recap-ligne:last-child { border-bottom: none; }
+.recap-ligne dt { margin: 0; color: #6E7A76; }
+.recap-ligne dd { margin: 0; color: #1E3544; font-weight: 600; overflow-wrap: anywhere; }
+
+.attente-actions {
+    margin-top: .9rem;
+    padding-top: .8rem;
+    border-top: 1px dashed #F0DC9A;
+}
+.attente-actions .recours-texte { margin: 0 0 .5rem; text-align: left; }
+.attente-boutons { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.attente-lien {
+    /* Rendu comme un bouton, mais c'est un <a> : la navigation native
+       echappe au blocage des popups et a la CSP appliquee aux fenetres
+       ouvertes par script. */
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    font: inherit; font-size: .85rem; font-weight: 600;
+    color: #217A47; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 9px;
+    padding: 9px 15px; cursor: pointer; min-height: 42px;
+}
+.attente-lien:hover:not(:disabled) { border-color: #2E9E5B; background: #F3F7F4; }
+.attente-lien:disabled { opacity: .45; cursor: not-allowed; }
+
+.attente-note { margin: .6rem 0 0; font-size: .8rem; color: #6E7A76; }
+
+/* Tuile inerte : opacite ET curseur, le grisage seul se voit mal en plein jour. */
+.tuile-bloquee {
+    opacity: .5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.tuile-bloquee:hover { transform: none; box-shadow: none; }
+
+.recours-texte { margin: 0 0 .75rem; font-size: .85rem; color: #6E7A76; }
+.recours-bouton {
+    font: inherit; font-size: .88rem; font-weight: 600;
+    color: #1E3544; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 9px;
+    padding: 9px 15px; cursor: pointer; min-height: 42px;
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.recours-bouton:hover { border-color: #2E9E5B; background: #F3F7F4; color: #217A47; }
+
+/* Compteur sous le titre d'une tuile d'accueil */
+.compteur {
+    align-self: flex-start;
+    margin-top: .45rem;
+    border-radius: 999px;
+    padding: .15rem .6rem;
+    font-size: .76rem; font-weight: 700;
+    background: #F1F5F3; color: #6E7A76; border: 1px solid #E2E8E5;
+}
+.compteur-warn { background: #FEF6E7; color: #B45309; border-color: #F5D9A8; }
+.compteur-info { background: #EFF4FF; color: #1D4ED8; border-color: #C7D7FE; }
+
+/* Bandeau de controle du sondage Certiko — mode test uniquement. */
+.sondage {
+    margin: 0 0 .6rem; padding: .35rem .7rem; border-radius: 7px;
+    font-size: .78rem; font-weight: 700; letter-spacing: .01em;
+    background: #F1F5F9; color: #64748B; border: 1px dashed #CBD5E1;
+}
+.sondage-actif { background: #EFF4FF; color: #1D4ED8; border-color: #C7D7FE; }
+.sondage-refus { background: #FDF3F2; color: #B91C1C; border-color: #F3C9C6; }
+
+/* --- Messages d'action --- */
+.message {
+    border-radius: 9px; padding: 8px 12px; margin: 0 0 12px;
+    font-size: .86rem; border: 1px solid #E2E8E5;
+}
+.message-error   { background: #FDF3F2; color: #B91C1C; border-color: #F3C9C6; }
+.message-success { background: #F3FAF5; color: #217A47; border-color: #C6E5D2; }
+.message-info    { background: #F3F7F4; color: #1E3544; }
+
+/* --- En-tete des ecrans --- */
+.retour {
+    font: inherit; font-size: .86rem; font-weight: 600; color: #6E7A76;
+    background: none; border: none; padding: 0; margin: 0 0 .6rem; cursor: pointer;
+}
+.retour:hover { color: #217A47; }
+.entete-vue { margin: 0 0 1rem; }
+.vue-titre { font-size: 1.25rem; font-weight: 800; color: #1E3544; margin: 0; letter-spacing: -.01em; }
+.vue-intro { margin: .2rem 0 0; font-size: .88rem; color: #6E7A76; }
+.certiko-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .6rem; }
+.certiko-actions .btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+.vide {
+    border: 1px dashed #D8DDE6; border-radius: 9px; padding: 1.5rem 1rem;
+    text-align: center; color: #6E7A76; font-size: .88rem; margin: 0;
+}
+
+/* --- Vue liste : en-tete, barre de filtres, tableau, pagination --- */
+.lv-entete {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: .8rem; flex-wrap: wrap; margin: 0 0 .9rem;
+}
+.lv-sur-titre {
+    margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: #94A3B8;
+}
+.lv-entete-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+.lv-barre {
+    display: flex; flex-wrap: wrap; gap: .45rem;
+    padding: .7rem .8rem; border-bottom: 1px solid #E2E8E5; background: #FBFCFD;
+}
+.lv-barre-seule {
+    border: 1px solid #E2E8E5; border-radius: 10px; margin: 0 0 1.1rem;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+.lv-barre input, .lv-barre select {
+    font: inherit; font-size: .85rem; color: #1E3544; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 8px; padding: .4rem .6rem;
+    box-sizing: border-box; max-width: 100%;
+}
+.lv-barre input:focus, .lv-barre select:focus { outline: none; border-color: #2E9E5B; }
+.lv-recherche { flex: 1; min-width: 12rem; }
+
+/* Un tableau large defile HORIZONTALEMENT dans son cadre, jamais la page. */
+.lv-defilement { overflow-x: auto; }
+.lvt { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.lvt th {
+    text-align: left; font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: #6E7A76; background: #F8FAFC;
+    padding: .55rem .55rem; border-bottom: 1px solid #E2E8E5; white-space: nowrap;
+}
+/* Toutes les colonnes se serrent sur leur contenu ; une seule absorbe la place
+   restante, pour que le tableau tienne dans le cadre sans defilement. */
+.lvt th, .lvt td { width: 1%; }
+.lvt th.lv-large, .lvt td.lv-adresse { width: auto; }
+/* Seule l'adresse se replie : c'est la colonne la plus longue, et la seule qui
+   supporte d'etre sur deux lignes. */
+.lvt td.lv-adresse { white-space: normal; color: #6E7A76; min-width: 11rem; }
+.lv-triable { cursor: pointer; user-select: none; }
+.lv-triable:hover { color: #217A47; }
+.lv-fleche { font-size: .65rem; color: #217A47; }
+.lvt td {
+    padding: .55rem .5rem; border-bottom: 1px solid #E2E8E5;
+    vertical-align: middle; white-space: nowrap;
+}
+.lvt td.lv-action { padding-left: .3rem; padding-right: .3rem; }
+.lvt td.lv-action:last-child { padding-right: .6rem; }
+.lvt tbody tr:hover { background: #F3FAF5; }
+.lvt tbody tr:last-child td { border-bottom: none; }
+.lv-client { font-weight: 700; color: #1E3544; text-transform: capitalize; }
+.lv-gris { color: #6E7A76; }
+.lv-action { text-align: right; }
+
+/* Colonne « Tentatives d'appels » : badge + enregistrement de l'appel suivant */
+.lv-appels { white-space: nowrap; }
+.nrp-badge {
+    display: inline-block; font-size: .72rem; font-weight: 800;
+    border-radius: 999px; padding: .08rem .45rem;
+    background: #FEF2F2; color: #B91C1C; border: 1px solid #FBCFCF;
+}
+.nrp-badge-plein { background: #B91C1C; color: #fff; border-color: #B91C1C; }
+.nrp-badge-zero { background: transparent; color: #94A3B8; border-color: transparent; font-weight: 600; }
+.lv-plus1 {
+    font: inherit; margin-left: .35rem; border: 1px solid #E2E8E5; background: #fff;
+    color: #6E7A76; border-radius: 6px; padding: .08rem .38rem;
+    font-size: .74rem; font-weight: 800; cursor: pointer;
+}
+.lv-plus1:hover:not(:disabled) { border-color: #FBCFCF; color: #B91C1C; background: #FEF2F2; }
+.lv-plus1:disabled { color: #CBD5E1; cursor: not-allowed; }
+
+.lv-vide { padding: 1.8rem 1rem; text-align: center; color: #6E7A76; font-size: .88rem; margin: 0; }
+.lv-pied {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .8rem; flex-wrap: wrap; padding: .6rem .8rem;
+    border-top: 1px solid #E2E8E5; background: #FBFCFD;
+    font-size: .8rem; color: #6E7A76;
+}
+.lv-pagination { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.lv-taille { display: flex; align-items: center; gap: .3rem; }
+.lv-taille select {
+    font: inherit; font-size: .8rem; color: #1E3544; background: #fff;
+    border: 1px solid #E2E8E5; border-radius: 6px; padding: .15rem .35rem;
+}
+.lv-pgbtn {
+    font: inherit; border: 1px solid #E2E8E5; background: #fff; color: #1E3544;
+    border-radius: 6px; padding: .22rem .55rem; font-size: .8rem; font-weight: 600; cursor: pointer;
+}
+.lv-pgbtn:hover:not(:disabled) { border-color: #2E9E5B; color: #217A47; }
+.lv-pgbtn:disabled { color: #94A3B8; cursor: not-allowed; }
+.lv-pgnum { font-weight: 700; color: #1E3544; }
+
+/* Bandeaux de section des visites planifiees */
+.bandeau {
+    display: flex; align-items: center; gap: .7rem;
+    border: 1px solid; border-left-width: 5px; border-radius: 10px;
+    padding: .55rem .85rem; margin: 0 0 .8rem;
+}
+.bandeau-icone { font-size: 1.1rem; line-height: 1; }
+.bandeau-texte { display: grid; gap: .05rem; flex: 1; }
+.bandeau-texte b { font-size: .95rem; font-weight: 800; }
+.bandeau-texte em { font-style: normal; font-size: .8rem; }
+.bandeau-nombre {
+    font-size: .8rem; font-weight: 800; border-radius: 999px;
+    padding: .12rem .55rem; background: #fff; border: 1px solid;
+}
+.bandeau-jour { background: #ECFDF3; border-color: #BBE8CB; border-left-color: #2E9E5B; }
+.bandeau-jour .bandeau-texte b { color: #14532D; }
+.bandeau-jour .bandeau-texte em { color: #3F7D57; }
+.bandeau-jour .bandeau-nombre { color: #14532D; border-color: #BBE8CB; }
+.bandeau-reste { background: #EFF4FF; border-color: #C7D7FE; border-left-color: #1D4ED8; }
+.bandeau-reste .bandeau-texte b { color: #1D4ED8; }
+.bandeau-reste .bandeau-texte em { color: #4B6BB8; }
+.bandeau-reste .bandeau-nombre { color: #1D4ED8; border-color: #C7D7FE; }
+.panneau-espace { margin-bottom: 1.6rem; }
+
+.pill {
+    display: inline-block; border-radius: 999px; padding: .1rem .55rem;
+    font-size: .72rem; font-weight: 700; border: 1px solid transparent;
+}
+.pill-ok   { background: #ECFDF3; color: #14532D; border-color: #BBE8CB; }
+.pill-stop { background: #FEF2F2; color: #B91C1C; border-color: #FBCFCF; }
+.pill-new  { background: #FEF6E7; color: #B45309; border-color: #F5D9A8; }
+.pill-gris { background: #F1F5F9; color: #64748B; border-color: #E2E8F0; }
+
+.lien { color: #217A47; font-weight: 600; text-decoration: none; }
+.lien:hover { text-decoration: underline; }
+
+/* --- Boutons --- */
+.btn {
+    font: inherit; font-size: .88rem; font-weight: 600;
+    border: 1px solid #2E9E5B; border-radius: 8px;
+    background: #2E9E5B; color: #fff;
+    padding: .5rem .95rem; cursor: pointer;
+    transition: background .12s ease, border-color .12s ease;
+}
+.btn:hover:not(:disabled) { background: #217A47; border-color: #217A47; }
+.btn-sm { padding: .35rem .7rem; font-size: .82rem; }
+.btn-ghost { background: #fff; color: #1E3544; border-color: #E2E8E5; }
+.btn-ghost:hover:not(:disabled) { background: #F3F7F4; border-color: #2E9E5B; color: #217A47; }
+.btn-danger { background: #B91C1C; border-color: #B91C1C; }
+.btn-danger:hover:not(:disabled) { background: #991B1B; border-color: #991B1B; }
+.btn:disabled { background: #CBD5E1; border-color: #CBD5E1; color: #fff; cursor: not-allowed; }
+.btn-ghost:disabled { background: #F8FAFC; color: #94A3B8; border-color: #E2E8F0; }
+
+/* --- Ecran « fixer / replanifier » --- */
+.panneau {
+    background: #fff; border: 1px solid #E2E8E5; border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04); overflow: hidden;
+}
+.section { padding: .9rem 1.1rem; border-bottom: 1px solid #E2E8E5; }
+.section:last-child { border-bottom: none; }
+.section-titre { margin: 0 0 .6rem; font-size: 1rem; font-weight: 700; color: #1E3544; }
+.sous-texte { margin: .15rem 0 .55rem; font-size: .84rem; color: #6E7A76; }
+.aide { margin: .45rem 0 0; font-size: .82rem; color: #6E7A76; }
+
+.consignes {
+    font-size: .88rem; line-height: 1.5; color: #334155;
+    background: #ECFDF3; border: 1px solid #BBE8CB; border-radius: 8px;
+    padding: .65rem .85rem;
+}
+.consignes ul { margin: .35rem 0 0; padding-left: 1.1rem; }
+.consignes li { margin-bottom: .15rem; }
+.gras { font-weight: 700; color: #1E3544; }
+
+.kv {
+    display: grid; grid-template-columns: 9rem minmax(0, 1fr);
+    gap: .3rem .9rem; margin: 0; font-size: .9rem;
+}
+.kv dt { color: #6E7A76; }
+.kv dd { margin: 0; color: #1E3544; font-weight: 500; overflow-wrap: anywhere; }
+
+.champ { display: grid; gap: .25rem; }
+.champ label { font-size: .8rem; font-weight: 600; color: #6E7A76; }
+.champ select, .champ input, .champ textarea {
+    font: inherit; font-size: .9rem; color: #1E3544;
+    border: 1px solid #E2E8E5; border-radius: 8px; padding: .45rem .65rem;
+    background: #FBFCFD; box-sizing: border-box; width: 100%;
+}
+.champ select:focus, .champ input:focus, .champ textarea:focus {
+    outline: none; background: #fff; border-color: #2E9E5B;
+}
+.champ-libre { margin-top: .6rem; }
+.champ textarea { resize: vertical; }
+
+.grille2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .8rem; }
+.pied-rdv { margin-top: .85rem; display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.note { font-size: .82rem; color: #6E7A76; }
+
+/* --- Confirmation (modale) --- */
+.modale-fond {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(15, 23, 42, .45);
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+}
+.modale {
+    background: #fff; border-radius: 12px; max-width: 440px; width: 100%;
+    padding: 1.1rem 1.2rem; box-shadow: 0 12px 32px rgba(15, 23, 42, .25);
+}
+.modale h3 { margin: 0 0 .45rem; font-size: 1.02rem; color: #1E3544; }
+.modale p { margin: 0 0 .5rem; font-size: .88rem; color: #334155; }
+.modale-motif { font-style: italic; color: #6E7A76; }
+.modale-actions { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .9rem; flex-wrap: wrap; }
+
+/* Fenetre « rendre la visite » : entete, corps, actions */
+.modale-rendre { padding: 0; }
+.modale-rendre .modale-entete { padding: 1rem 1.2rem .8rem; border-bottom: 1px solid #E2E8E5; }
+.modale-rendre .modale-entete h3 { margin: 0; }
+.modale-sous { margin: .15rem 0 0; font-size: .85rem; color: #6E7A76; text-transform: capitalize; }
+.modale-rendre .modale-corps { padding: 1rem 1.2rem; }
+.modale-rendre .modale-actions {
+    margin: 0; padding: .8rem 1.2rem; border-top: 1px solid #E2E8E5; background: #FBFCFD;
+}
+
+/* --- Historique du dossier --- */
+.hist-bloc > summary {
+    list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: .45rem;
+    font-size: 1rem; font-weight: 700; color: #1E3544;
+}
+.hist-bloc > summary::-webkit-details-marker { display: none; }
+.hist-fleche { color: #94A3B8; font-size: .75rem; display: inline-block; }
+.hist-bloc[open] .hist-fleche { transform: rotate(90deg); color: #217A47; }
+.hist-nombre {
+    font-size: .74rem; font-weight: 700; color: #6E7A76;
+    background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px; padding: .06rem .5rem;
+}
+
+/* Une ligne par evenement : pastille, heure, etiquette, phrase, auteur.
+   Tout est en ligne tant que la place le permet, et se replie sinon. */
+.hist { list-style: none; margin: 1rem 0 .2rem; padding: 0 0 0 .1rem; display: grid; gap: 0; }
+.hist li {
+    font-size: .87rem; color: #334155; line-height: 1.45;
+    padding: .5rem 0 .5rem 1.15rem; position: relative;
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .5rem;
+    border-bottom: 1px solid #EEF2F1;
+}
+.hist li:last-child { border-bottom: none; }
+/* Le fil vertical relie les evenements ; la pastille marque chaque etape. */
+.hist li::after {
+    content: ""; position: absolute; left: 2.5px; top: 1.25em; bottom: -.35em;
+    width: 1px; background: #E2E8E5;
+}
+.hist li:last-child::after { display: none; }
+.hist li::before {
+    content: ""; position: absolute; left: 0; top: .95em; z-index: 1;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #fff; border: 2px solid #BBE8CB;
+}
+.hist li:last-child::before { border-color: #2E9E5B; }
+.hist-quand {
+    font-weight: 700; color: #1E3544; font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.hist-texte { flex: 1; min-width: 12rem; }
+.hist-par { color: #94A3B8; font-size: .8rem; white-space: nowrap; margin-left: auto; }
+.hist-tag {
+    display: inline-block; border-radius: 5px; padding: .04rem .4rem;
+    font-size: .7rem; font-weight: 700; border: 1px solid; white-space: nowrap;
+}
+.hist-tag-add { background: #F1F5F9; color: #64748B; border-color: #E2E8F0; }
+.hist-tag-nrp { background: #FEF2F2; color: #B91C1C; border-color: #FBCFCF; }
+.hist-tag-rdv { background: #ECFDF3; color: #14532D; border-color: #BBE8CB; }
+.hist-tag-rep { background: #FEF6E7; color: #B45309; border-color: #F5D9A8; }
+.hist-tag-pv  { background: #EFF4FF; color: #1D4ED8; border-color: #C7D7FE; }
+
+/* --- Acces Certiko : au pied du carre de la visite technique ---
+   Etait un bloc repliable en bas de page ; les identifiants se lisent
+   maintenant en clair, la ou on part sur Certiko. */
+.acces-note { margin: .7rem 0 0; font-size: .8rem; color: #6E7A76; line-height: 1.45; }
+
+/* Les identifiants ne sont plus une section : la suite du bouton. */
+.acces-texte-bloc { padding-top: 0; }
+.acces-intro { margin: 1rem 0 .5rem; font-size: .9rem; font-weight: 700; color: #1E3544; }
+.acces-ligne {
+    margin: .18rem 0; font-size: .9rem; color: #1E3544;
+    display: flex; align-items: center; gap: .45rem; flex-wrap: wrap;
+}
+/* Un bouton par identifiant : le pre-visiteur colle l'un, puis l'autre. */
+.acces-copier {
+    font: inherit; font-size: .76rem; font-weight: 600; line-height: 1;
+    color: #217A47; background: #fff; border: 1px solid #C6E5D2;
+    border-radius: 999px; padding: .28rem .6rem; cursor: pointer;
+}
+.acces-copier:hover { background: #F3FAF5; border-color: #2E9E5B; }
+.acces-copier-ok { background: #ECFDF3; border-color: #BBE8CB; }
+/* Chasse fixe : un identifiant se releve caractere par caractere. */
+.acces-mot {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-weight: 700; overflow-wrap: anywhere; user-select: all;
+}
+
+/* Le statut sur la meme ligne que son titre. */
+.section-titre-statut { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
+.statut-badge {
+    display: inline-block; font-size: .82rem; font-weight: 700;
+    color: #14532D; background: #ECFDF3; border: 1px solid #BBE8CB;
+    border-radius: 999px; padding: .12rem .65rem;
+}
+
+/* --- Ecran SMS --- */
+.banniere-ok {
+    background: #ECFDF3; border: 1px solid #BBE8CB; color: #14532D;
+    border-radius: 9px; padding: .65rem .9rem; font-size: .88rem; font-weight: 600;
+    margin: 0 0 .9rem;
+}
+.sms {
+    background: #F8FAFC; border: 1px solid #E2E8E5; border-radius: 9px;
+    padding: .8rem .95rem; font-size: .9rem; line-height: 1.5; color: #1E3544;
+    white-space: pre-line;
+}
+.zone-copie { position: absolute; left: -9999px; top: 0; }
+.pied {
+    padding: .8rem 1.1rem; border-top: 1px solid #E2E8E5; background: #FBFCFD;
+    display: flex; justify-content: space-between; align-items: center; gap: .8rem; flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — accueil previsiteur
+
+   Deux tuiles, jamais plus : elles passent cote a cote des que la largeur le
+   permet, et restent empilees en dessous. Une tuile a moins de ~260px de large
+   voit son sous-titre passer sur trois lignes et perd sa lisibilite d'un
+   coup d'oeil, qui est tout son interet.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 620px) {
+    .boutons { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 619px) {
+    .previsite { padding: 1.5rem 0.9rem; }
+
+    /* Recap empile : libelle au-dessus de la valeur, sinon la colonne des
+       valeurs devient trop etroite pour une adresse ou des provinces. */
+    .recap-ligne { grid-template-columns: 1fr; gap: 1px; }
+    .attente-boutons > * { width: 100%; justify-content: center; }
+    .salutation { font-size: 1.2rem; }
+    .intro { font-size: .9rem; margin-bottom: 1.5rem; }
+
+    /* Tuiles plus basses et en ligne : empilees, la hauteur d'origine
+       obligeait a defiler pour voir la seconde. */
+    .tuile {
+        flex-direction: row;
+        align-items: center;
+        gap: .9rem;
+        padding: 1.1rem 1.1rem;
+        /* Cible tactile confortable sur toute la tuile. */
+        min-height: 76px;
+    }
+    .tuile-icone { font-size: 1.5rem; margin-bottom: 0; flex-shrink: 0; }
+    .tuile-texte { display: flex; flex-direction: column; }
+    .tuile-titre { font-size: .98rem; }
+    .tuile-sous  { font-size: .8rem; }
+
+    /* Vue liste : la barre de filtres s'empile, le tableau defile. */
+    .lv-barre { flex-direction: column; }
+    .lv-barre input, .lv-barre select { width: 100%; }
+    .lv-entete-actions { width: 100%; }
+    .lv-entete-actions .btn { flex: 1; }
+    .lv-pied { justify-content: center; }
+    .kv { grid-template-columns: minmax(0, 1fr); }
+    .kv dt { margin-top: .35rem; }
+    /* 16px : en dessous, iOS zoome a la prise de focus. */
+    .champ select, .champ input, .champ textarea { font-size: 16px; }
+    .pied-rdv .btn, .pied .btn { width: 100%; }
+}
+
+@media (max-width: 380px) {
+    .previsite { padding: 1.25rem 0.7rem; }
+    .salutation { font-size: 1.05rem; }
+    .tuile { padding: 1rem .9rem; }
+    .tuile-titre { font-size: .92rem; }
+}
+
+/* Deux parties d'un MEME carre : le trait les separe sans les eloigner,
+   la ou deux panneaux distincts auraient suggere deux sujets. */
+.separateur {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 0 1.25rem;
+}
+
+/* Deux carres qui se suivent sont deux sujets : l'air entre eux le dit. */
+.panneau + .panneau { margin-top: 1.1rem; }
+
+/* --- Bouton d'etat d'une ligne de « Visites planifiees » ---
+   Le libelle dit OU EN EST la visite, la fleche dit qu'on entre dedans. La
+   couleur suit l'etat : on repere une ligne a traiter sans lire. */
+.btn-etat { display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+.btn-fleche { font-size: .95em; line-height: 1; }
+/* Visite du jour pas encore envoyee : l'action attendue, en plein. */
+.btn-etat-a-demarrer { }
+/* Deja chez Certiko : un rappel, pas une action neuve. */
+.btn-etat-en-cours {
+    background: #EFF4FF; color: #1D4ED8; border-color: #C7D7FE;
+}
+.btn-etat-en-cours:hover:not(:disabled) { background: #E0EAFF; }
+/* Date passee, releve non clos : c'est ce qui traine. */
+.btn-etat-a-finaliser {
+    background: #FEF6E7; color: #B45309; border-color: #F5D9A8;
+}
+.btn-etat-a-finaliser:hover:not(:disabled) { background: #FDEFD3; }
+/* Plus rien a faire : discret, mais on peut relire la fiche. */
+.btn-etat-terminee {
+    background: #F1F5F3; color: #6E7A76; border-color: #E2E8E5;
+}
+.btn-etat-terminee:hover:not(:disabled) { background: #E8EEEB; }

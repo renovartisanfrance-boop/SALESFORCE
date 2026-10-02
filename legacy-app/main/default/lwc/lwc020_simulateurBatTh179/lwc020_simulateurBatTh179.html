@@ -1,0 +1,597 @@
+<template>
+    <div class="simulator-container">
+
+        <!-- Header -->
+        <div class="simulator-header">
+            <div class="header-left">
+                <div class="header-icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21h18" />
+                        <path d="M5 21V7l8-4v18" />
+                        <path d="M19 21V11l-6-4" />
+                        <line x1="9" y1="9" x2="9" y2="9.01" />
+                        <line x1="9" y1="12" x2="9" y2="12.01" />
+                        <line x1="9" y1="15" x2="9" y2="15.01" />
+                        <line x1="9" y1="18" x2="9" y2="18.01" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="page-title">Simulateur de commission</h2>
+                    <p class="page-subtitle">BAR-TH-179 · PAC Collective Résidentiel</p>
+                </div>
+            </div>
+            <div class="header-badge">Régie partenaire</div>
+        </div>
+
+        <!-- Body -->
+        <div class="simulator-body">
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                    Paramètres du dossier
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label-row">
+                        <label class="form-label">
+                            <svg class={proprieteIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="4" y="2" width="16" height="20" rx="2" />
+                                <line x1="9" y1="7" x2="9.01" y2="7" />
+                                <line x1="15" y1="7" x2="15.01" y2="7" />
+                                <line x1="9" y1="11" x2="9.01" y2="11" />
+                                <line x1="15" y1="11" x2="15.01" y2="11" />
+                            </svg>
+                            <span>Type de propriété</span>
+                        </label>
+                        <button type="button" class={classInfoPropriete} data-id="propriete" onclick={handleInfoToggle}
+                            aria-label="Plus d'informations">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="16" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="pills-group" role="radiogroup">
+                        <template for:each={proprieteOptions} for:item="opt">
+                            <button key={opt.value} type="button" class={opt.class} data-value={opt.value}
+                                onclick={handleProprieteClick}>
+                                <template if:true={opt.iconCopro}>
+                                    <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="4" y="2" width="16" height="20" rx="2" />
+                                        <line x1="9" y1="7" x2="9.01" y2="7" />
+                                        <line x1="15" y1="7" x2="15.01" y2="7" />
+                                        <line x1="9" y1="11" x2="9.01" y2="11" />
+                                        <line x1="15" y1="11" x2="15.01" y2="11" />
+                                        <line x1="9" y1="15" x2="9.01" y2="15" />
+                                        <line x1="15" y1="15" x2="15.01" y2="15" />
+                                        <line x1="11" y1="19" x2="13" y2="19" />
+                                    </svg>
+                                </template>
+                                <span>{opt.label}</span>
+                            </button>
+                        </template>
+                    </div>
+                    <template if:true={isInfoPropriete}>
+                        <div class="info-bubble">
+                            <strong>Monopropriété uniquement</strong>
+                            <span>CEF accompagne uniquement les dossiers en <strong>monopropriété</strong> : un seul
+                                propriétaire pour tout l'immeuble (bailleur social, foncière, etc.).</span>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Zone climatique + Type de travaux (paire) -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label">
+                                <svg class={zoneIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4 4 0 1 0 5 0z" />
+                                </svg>
+                                <span>Zone climatique</span>
+                            </label>
+                            <button type="button" class={classInfoZone} data-id="zone" onclick={handleInfoToggle}
+                                aria-label="Plus d'informations">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="pills-group" role="radiogroup">
+                            <template for:each={zoneOptions} for:item="opt">
+                                <button key={opt.value} type="button" class={opt.class} data-value={opt.value}
+                                    onclick={handleZoneClick}>
+                                    <template if:true={opt.iconCold}>
+                                        <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="12" y1="2" x2="12" y2="22" />
+                                            <line x1="2" y1="12" x2="22" y2="12" />
+                                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                                            <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
+                                        </svg>
+                                    </template>
+                                    <template if:true={opt.iconWarm}>
+                                        <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="5" />
+                                            <line x1="12" y1="1" x2="12" y2="3" />
+                                            <line x1="12" y1="21" x2="12" y2="23" />
+                                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                            <line x1="1" y1="12" x2="3" y2="12" />
+                                            <line x1="21" y1="12" x2="23" y2="12" />
+                                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                        </svg>
+                                    </template>
+                                    <span>{opt.label}</span>
+                                </button>
+                            </template>
+                        </div>
+                        <template if:true={isInfoZone}>
+                            <div class="info-bubble">
+                                <strong>Comment choisir ?</strong>
+                                <span><strong>H1</strong> : Nord, Centre, Est — commission 10 %.
+                                    <strong>H2</strong> : Ouest, Sud-Ouest — commission 8 %. La zone dépend du
+                                    code postal du chantier.</span>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label">
+                                <svg class={travauxIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                                </svg>
+                                <span>Type de travaux</span>
+                            </label>
+                            <button type="button" class={classInfoTravaux} data-id="travaux" onclick={handleInfoToggle}
+                                aria-label="Plus d'informations">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="pills-group" role="radiogroup">
+                            <template for:each={travauxOptions} for:item="opt">
+                                <button key={opt.value} type="button" class={opt.class} data-value={opt.value}
+                                    onclick={handleTravauxClick}>
+                                    <template if:true={opt.iconFire}>
+                                        <svg class="pill-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                                        </svg>
+                                    </template>
+                                    <template if:true={opt.iconFireWater}>
+                                        <svg class="pill-icon pill-icon--duo" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 32 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path class="pi-fire"
+                                                d="M6.5 14.5A2.5 2.5 0 0 0 9 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                                            <path class="pi-water" d="M24 5c-2 3-4 5-4 8a4 4 0 0 0 8 0c0-3-2-5-4-8z" />
+                                        </svg>
+                                    </template>
+                                    <span>{opt.label}</span>
+                                </button>
+                            </template>
+                        </div>
+                        <template if:true={isInfoTravaux}>
+                            <div class="info-bubble">
+                                <strong>Que couvre l'installation ?</strong>
+                                <span><strong>Chauffage seul</strong> : la PAC ne produit que du chauffage.
+                                    <strong>Chauffage + ECS</strong> : Eau Chaude Sanitaire incluse — prime
+                                    majorée car cible plus complète.</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <template if:true={showStep2}>
+                <div class="step-anim">
+                    <!-- Surface chauffée + Nombre d'appartements (paire) -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="form-label-row">
+                                <label class="form-label" for="sim179-surf">
+                                    <svg class={surfIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="15 3 21 3 21 9" />
+                                        <polyline points="9 21 3 21 3 15" />
+                                        <line x1="21" y1="3" x2="14" y2="10" />
+                                        <line x1="3" y1="21" x2="10" y2="14" />
+                                    </svg>
+                                    <span>Surface chauffée</span>
+                                </label>
+                                <button type="button" class={classInfoSurf} data-id="surf" onclick={handleInfoToggle}
+                                    aria-label="Plus d'informations">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="input-suffix-wrapper">
+                                <input id="sim179-surf" type="number" class="form-input" data-key="surf" min="0"
+                                    step="10" placeholder="Ex. 450" inputmode="numeric" value={surf}
+                                    oninput={handleNumberInput}>
+                                <span class="input-suffix">m²</span>
+                            </div>
+                            <template if:true={isInfoSurf}>
+                                <div class="info-bubble">
+                                    <strong>Quelle surface saisir ?</strong>
+                                    <span>Surface <strong>totale chauffée</strong> du bâtiment, en m². Minimum
+                                        80 m², maximum 2 200 m² pour la prise en charge CEF.</span>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-label-row">
+                                <label class="form-label" for="sim179-nb">
+                                    <svg class={nbIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    <span>Nombre d'appartements</span>
+                                </label>
+                                <button type="button" class={classInfoNb} data-id="nb" onclick={handleInfoToggle}
+                                    aria-label="Plus d'informations">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <input id="sim179-nb" type="number" class="form-input" data-key="nb" min="1" max="500"
+                                placeholder="Ex. 12" inputmode="numeric" value={nb} oninput={handleNumberInput}>
+                            <template if:true={isInfoNb}>
+                                <div class="info-bubble">
+                                    <strong>Combien de logements ?</strong>
+                                    <span>Nombre total de logements raccordés au système de chauffage collectif.
+                                        Minimum <strong>2 appartements</strong> pour être éligible.</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Part grand précaire + Surface tertiaire -->
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label slider-label">
+                                <svg class={gpIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="19" y1="5" x2="5" y2="19" />
+                                    <circle cx="6.5" cy="6.5" r="2.5" />
+                                    <circle cx="17.5" cy="17.5" r="2.5" />
+                                </svg>
+                                <span>Part de logements grand précaire</span>
+                            </label>
+                            <div class="slider-label-right">
+                                <span class={sliderValueClass}>{gpDisplay}</span>
+                                <button type="button" class={classInfoGp} data-id="gp" onclick={handleInfoToggle}
+                                    aria-label="Plus d'informations">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="12" y1="16" x2="12" y2="12" />
+                                        <line x1="12" y1="8" x2="12.01" y2="8" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="range" class={sliderClass} min="0" max="100" step="5" value={gp}
+                            oninput={handleGpInput} aria-label="Pourcentage grand précaire">
+                        <template if:true={isInfoGp}>
+                            <div class="info-bubble">
+                                <strong>Qu'est-ce que la grande précarité ?</strong>
+                                <span>% des logements occupés par des ménages classés <strong>grand précaire</strong>
+                                    selon les barèmes ANAH. Ce taux majore la prime CEE mais nécessite les
+                                    <strong>avis d'imposition</strong> de chaque bénéficiaire pour validation.</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label-row">
+                            <label class="form-label" for="sim179-tert">
+                                <svg class={tertIconClass} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M3 9l1-6h16l1 6" />
+                                    <path d="M3 9v11h18V9" />
+                                    <path d="M9 22V12h6v10" />
+                                </svg>
+                                <span>Surface tertiaire</span>
+                                <span class="label-optional">(optionnel)</span>
+                            </label>
+                            <button type="button" class={classInfoTert} data-id="tert" onclick={handleInfoToggle}
+                                aria-label="Plus d'informations">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="16" x2="12" y2="12" />
+                                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="input-suffix-wrapper">
+                            <input id="sim179-tert" type="number" class="form-input" data-key="tert" min="0" step="10"
+                                placeholder="0 si pas de tertiaire" inputmode="numeric" value={tert}
+                                oninput={handleNumberInput}>
+                            <span class="input-suffix">m²</span>
+                        </div>
+                        <template if:true={isInfoTert}>
+                            <div class="info-bubble">
+                                <strong>Quand renseigner ?</strong>
+                                <span>Si le système alimente aussi des locaux <strong>commerces ou bureaux</strong>
+                                    en plus des logements (BAT-TH-163 cumulé). Laissez à 0 sinon — la prime
+                                    s'ajuste automatiquement.</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:false={showStep2}>
+                <div class="step-note step-anim">
+                    Choisissez le type de propriété, la zone climatique et le type de travaux pour afficher le reste du
+                    formulaire.
+                </div>
+            </template>
+
+            <!-- Result Section -->
+            <div class="result-section">
+
+                <template if:true={isCopro}>
+                    <div class="result-msg result-msg--error">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Dossier non pris en charge</div>
+                            <div class="result-msg-text">CEF accompagne uniquement les dossiers en
+                                <strong> monopropriété</strong>. Les copropriétés ne font pas partie de notre périmètre.
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isIncomplet}>
+                    <div class="result-msg result-msg--info">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="16" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Formulaire incomplet</div>
+                            <div class="result-msg-text">{incompletMessage}</div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isNonEligibleTaille}>
+                    <div class="result-msg result-msg--error">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Dossier non éligible</div>
+                            <div class="result-msg-text">
+                                <template if:true={raisonSurface}>
+                                    Les dossiers de moins de <strong>80 m²</strong> ne sont pas éligibles.
+                                </template>
+                                <template if:true={raisonAppart}>
+                                    Les dossiers de moins de <strong>2 appartements</strong> ne sont pas éligibles.
+                                </template>
+                                CEF accompagne uniquement les dossiers de taille collective.
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isHorsPerimetre}>
+                    <div class="result-msg result-msg--error">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="15" y1="9" x2="9" y2="15" />
+                                <line x1="9" y1="9" x2="15" y2="15" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Dossier non pris en charge</div>
+                            <div class="result-msg-text">CEF n'accompagne pas les dossiers au-delà de
+                                <strong>2 200 m²</strong>. Cette taille de bâtiment relève d'un acteur tertiaire
+                                spécialisé.
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isDevis}>
+                    <div class="result-msg result-msg--info">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Devis sur mesure</div>
+                            <div class="result-msg-text">Cette taille de dossier nécessite une étude personnalisée.
+                                Contactez CEF pour obtenir une estimation précise.</div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isNonEligible}>
+                    <div class="result-msg result-msg--error">
+                        <div class="result-msg-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="result-msg-title">Dossier non éligible</div>
+                            <div class="result-msg-text">La rentabilité de ce projet est insuffisante pour qu'il puisse
+                                être pris en charge dans la configuration actuelle. Ajustez les paramètres ou contactez
+                                CEF pour explorer les possibilités.</div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isEligible}>
+                    <div class="commission-card">
+                        <div class="commission-label">Votre commission estimée</div>
+                        <div class="commission-display">
+                            <span class="commission-num">{commissionStr}</span>
+                        </div>
+                        <div class="commission-foot">
+                            soit <strong>{tauxCommissionPct} %</strong> d'une prime CEE de
+                            <strong>{primeTotaleStr}</strong>
+                            <template if:true={hasPrime163}>
+                                · dont {prime163Str} pour la zone tertiaire
+                            </template>
+                        </div>
+                    </div>
+
+                    <template if:true={isSousCondition}>
+                        <div class="result-msg result-msg--audit">
+                            <div class="result-msg-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 9v4" />
+                                    <path d="M12 17h.01" />
+                                    <circle cx="12" cy="12" r="10" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="result-msg-title">Dossier éligible sous réserve</div>
+                                <div class="result-msg-text">L'éligibilité dépend du taux de précarité saisi. Le dossier
+                                    sera installé <strong>uniquement si les avis d'imposition de tous les bénéficiaires
+                                        sont récupérés</strong> et confirment ce taux. Sans ces justificatifs, le
+                                    dossier
+                                    ne pourra pas être pris en charge.</div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template if:false={isSousCondition}>
+                        <div class="result-msg result-msg--success">
+                            <div class="result-msg-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="result-msg-title">Dossier éligible</div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+
+                <template if:true={showPreco}>
+                    <div class="preco-section">
+                        <div class="form-section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                            Configuration technique préconisée
+                        </div>
+                        <div class="preco-range">{precoRange}</div>
+                        <div class="preco-config">{precoConfig}</div>
+                        <template if:true={hasPrecoAlt}>
+                            <div class="preco-alt">{precoAlt}</div>
+                        </template>
+                        <div class="preco-footnote">Puissance déterminée par CEF après étude de dimensionnement</div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="simulator-footer">
+            Estimation indicative basée sur les barèmes en vigueur. La commission définitive est confirmée à validation
+            du dossier complet par CEF.
+        </div>
+
+    </div>
+</template>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>57.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>proCeeFicheParent</masterLabel>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default,lightning__RecordPage">
+            <property name="isCommunityUser" type="Boolean" default="false" label="Mode Community User"/>
+            <property name="recordId" type="String" default="{!recordId}" label="Record ID"/>
+            <property name="largeur" type="String" default="" label="Largeur (ex: 8/12, 1/2, 100%)"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

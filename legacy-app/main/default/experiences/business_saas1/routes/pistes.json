@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "1646cd07-921f-4eb4-8142-fbc295c451c2",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "page1__c",
+  "id" : "3ed8002d-7d6f-4354-947c-df55a99430fe",
+  "label" : "Pistes",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-page-1",
+  "type" : "route",
+  "urlPrefix" : "pistes"
+}

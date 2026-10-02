@@ -1,0 +1,166 @@
+<template>
+    <lightning-card title="Utilisateurs du portail CEE Apporteurs" icon-name="standard:people">
+        <span slot="actions">
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                alternative-text="Actualiser"
+                title="Actualiser"
+                onclick={handleRefresh}
+                class="slds-m-right_x-small">
+            </lightning-button-icon>
+            <lightning-button
+                variant="brand"
+                label="Nouvel utilisateur"
+                icon-name="utility:add"
+                onclick={handleNewUser}>
+            </lightning-button>
+        </span>
+
+        <p slot="footer" class="slds-text-body_small slds-text-color_weak">{cardSubtitle}</p>
+
+        <div class="slds-p-horizontal_medium slds-is-relative">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Chargement" size="medium"></lightning-spinner>
+            </template>
+
+            <lightning-input
+                type="search"
+                label="Recherche"
+                variant="label-hidden"
+                placeholder="Rechercher par login ou email…"
+                onchange={handleSearchChange}
+                class="slds-m-bottom_small">
+            </lightning-input>
+
+            <template lwc:if={hasUsers}>
+                <lightning-datatable
+                    key-field="id"
+                    data={users}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}>
+                </lightning-datatable>
+
+                <div class="slds-grid slds-grid_align-spread slds-m-top_small slds-m-bottom_small">
+                    <lightning-button
+                        label="Précédent"
+                        icon-name="utility:chevronleft"
+                        disabled={disablePrevious}
+                        onclick={handlePrevious}>
+                    </lightning-button>
+                    <span class="slds-align-middle slds-text-body_small">{pageLabel}</span>
+                    <lightning-button
+                        label="Suivant"
+                        icon-name="utility:chevronright"
+                        icon-position="right"
+                        disabled={disableNext}
+                        onclick={handleNext}>
+                    </lightning-button>
+                </div>
+            </template>
+
+            <template lwc:if={showEmptyState}>
+                <div class="slds-illustration slds-p-around_medium slds-text-align_center">
+                    <p class="slds-text-heading_small slds-m-bottom_x-small">Aucun utilisateur trouvé</p>
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        Modifiez votre recherche ou créez un nouvel utilisateur.
+                    </p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Modal création / édition -->
+    <template lwc:if={showModal}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-modal="true"
+            aria-labelledby="modal-heading"
+            class="slds-modal slds-fade-in-open"
+            onkeydown={handleModalKeydown}>
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        alternative-text="Fermer"
+                        variant="bare-inverse"
+                        class="slds-modal__close"
+                        onclick={closeModal}>
+                    </lightning-button-icon>
+                    <h1 id="modal-heading" class="slds-modal__title slds-hyphenate">{modalTitle}</h1>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-input
+                        class="modal-field"
+                        data-field="login"
+                        label="Login"
+                        value={draft.login}
+                        required
+                        max-length="100"
+                        onchange={handleDraftChange}>
+                    </lightning-input>
+                    <lightning-input
+                        class="modal-field"
+                        data-field="email"
+                        type="email"
+                        label="Email"
+                        value={draft.email}
+                        required
+                        max-length="255"
+                        onchange={handleDraftChange}>
+                    </lightning-input>
+                    <lightning-input
+                        class="modal-field"
+                        data-field="password"
+                        type="password"
+                        label={passwordLabel}
+                        value={draft.password}
+                        required={isPasswordRequired}
+                        placeholder={passwordPlaceholder}
+                        max-length="255"
+                        onchange={handleDraftChange}>
+                    </lightning-input>
+                    <lightning-input
+                        class="modal-field"
+                        data-field="redirectUrl"
+                        label="URL de redirection"
+                        value={draft.redirectUrl}
+                        required
+                        max-length="500"
+                        field-level-help="URL vers laquelle l'utilisateur est redirigé après connexion."
+                        onchange={handleDraftChange}>
+                    </lightning-input>
+                    <template lwc:if={isEditMode}>
+                        <lightning-input
+                            data-field="firstLogin"
+                            type="toggle"
+                            label="Forcer le changement de mot de passe à la prochaine connexion"
+                            checked={draft.firstLogin}
+                            message-toggle-active="Oui"
+                            message-toggle-inactive="Non"
+                            class="slds-m-top_small"
+                            onchange={handleDraftChange}>
+                        </lightning-input>
+                    </template>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Annuler"
+                        onclick={closeModal}
+                        class="slds-m-right_x-small">
+                    </lightning-button>
+                    <lightning-button
+                        variant="brand"
+                        label={saveLabel}
+                        disabled={isSaving}
+                        onclick={handleSave}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>

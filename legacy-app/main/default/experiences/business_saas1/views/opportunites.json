@@ -1,0 +1,69 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "b721cb09-10cd-4b57-b56d-ff2c860b56f4",
+  "label" : "Opportunites",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:lwc001_banner",
+      "id" : "ed841de7-091c-4491-9aa9-cb8d4bb08266",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "392c03e2-5ac0-44dc-9ea3-dd782308c107",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "enableInlineEdit" : true,
+        "filterName" : "MyOpportunities",
+        "layout" : "FULL",
+        "pageSize" : 50,
+        "scope" : "Opportunity",
+        "showActionBar" : true,
+        "showChartsPanel" : false,
+        "showDisplay" : "grid",
+        "showFilterPanel" : true,
+        "showImageIcon" : true,
+        "showManualRefreshButton" : true,
+        "showObjectName" : false,
+        "showPinnedList" : true,
+        "showSearchBar" : true
+      },
+      "componentName" : "forceCommunity:objectHome",
+      "id" : "504ee677-38d6-4f31-aa4f-11ff4ca93e2c",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "d13f7ce3-0772-4bd0-91b2-864b3776764a",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "9bb3265a-1c74-4336-b7a4-b03899834038",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Opportunites"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "7a58d2b1-311d-4a12-be07-5ecbb0dfc71d",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "dd598f7f-5655-41e0-be43-3d5fae505252",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-opportunites"
+}

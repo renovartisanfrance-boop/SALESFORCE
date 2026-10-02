@@ -1,0 +1,144 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 10-07-2024
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+-->
+<template>
+    <template if:true={get_mounth_or_week}>
+     
+      <ul class="_ul menu_selected" >
+        <template for:each={get_prettyjson_week} for:item="item"  for:index="index">
+              <li class="_li" key={item} data-id={item} > {item}</li>
+         </template>
+        </ul>
+    <template if:false={spinner}>
+
+      <template for:each={get_planning} for:item="item"  for:index="index">
+      
+        <!-- <br key={item.Id} /> -->
+        <hr key={item.Id} class="_hr" > 
+        <!-- style={item.couleur_api_name_acteur} -->
+            <ul class="_ul_content"  key={item.Id}>
+              <li class="_li_content"> <div class="_item_tech" style={item.couleur_api_name_acteur} > 
+                <div style="display:flex; flex-wrap:wrap; margin-top: -7%;">
+                  <template if:true={is_admin}>
+                    <div style=""> <lightning-button-icon icon-name="utility:delete" data-id={item.Id} onclick={desactiver_thech}   variant="border-filled" alternative-text="Delete"   class="slds-m-left_xx-small" title="Delete"></lightning-button-icon> </div>
+                  </template>
+                  <!-- <template if:false={is_admin}> -->
+                  <div style=""> <lightning-button-icon icon-name="utility:resource_absence" data-id={item.Id} onclick={add_conges}   variant="border-filled" alternative-text="conges"   class="slds-m-left_xx-small" title="conges"></lightning-button-icon> </div>
+                  <!-- </template> -->
+                </div>
+                <h1 class="_h1"> {item.api_name_object_acteur} </h1>  
+              </div> </li>
+          <template for:each={item.crenaux_all} for:item="item_2"  for:index="index2">
+            <li class="_li_content" key={item_2.date}>
+                <template for:each={item_2.crenaux} for:item="item_3"  for:index="index3">
+                  <!-- <div class="_tile" key={item_3.crenreaux} data-id={item_3.crenreaux} data-label={item_2.date} > {item_3.crenreaux} </div> -->
+
+                  <template lwc:if={item.cas_exception}>
+                    
+                    <c-lwc004_tile_creneaux_planification key={item_3.crenreaux} option='option'  index_tile={index3}
+                    acteur_id ={item.Id}  date_crenaux={item_2.date} 
+                    value_crenaux={item_3.crenreaux} 
+                    api_name_date_planification={item.api_name_date_planification} 
+                    api_name_object_cible={item.api_name_object_cible} 
+                    api_name_relation_object_cible_to_acteur={item.api_name_relation_object_cible_to_acteur} 
+                    condition_object_cible={item.condition_object_cible} 
+                    api_champs_a_afficher={item.api_champs_a_afficher}
+                    condition_object_cible_couleur={item.condition_object_cible_couleur}
+                    list_event={item.list_event}
+                    crenaux_all={item.crenaux_all}
+                    search={item.search}
+                    cas_exception={item.cas_exception}
+                    position_creneaux={index3}
+                    api_champs_a_info_supl ={item.api_champs_a_info_supl}
+                    name_champs_a_info_supl ={item.name_champs_a_info_supl}
+                    api_champs_a_afficher_a_cote_date ={item.api_champs_a_afficher_a_cote_date}
+                    conges_champs_text_long_api_name={item.conges_champs_text_long_api_name}
+                    is_community ={is_community}
+                    days-off={daysOff}
+                    api_name_badge={item.api_name_badge}
+                    ></c-lwc004_tile_creneaux_planification>
+                  </template>
+                  <template lwc:else>
+                      <!-- <template lwc:if={index3}> -->
+                        <c-lwc004_tile_creneaux_planification key={item_3.crenreaux} option='option'  index_tile={index3}
+                        acteur_id ={item.Id}  date_crenaux={item_2.date} 
+                        value_crenaux={item_3.crenreaux} 
+                        api_name_date_planification={item.api_name_date_planification} 
+                        api_name_object_cible={item.api_name_object_cible} 
+                        api_name_relation_object_cible_to_acteur={item.api_name_relation_object_cible_to_acteur} 
+                        condition_object_cible={item.condition_object_cible} 
+                        api_champs_a_afficher={item.api_champs_a_afficher}
+                        condition_object_cible_couleur={item.condition_object_cible_couleur}
+                        list_event={item.list_event}
+                        crenaux_all={item.crenaux_all}
+                        search={item.search}
+                        cas_exception={item.cas_exception}
+                        position_creneaux={index3}
+                        duration_postaux ={durations}
+                        api_champs_a_info_supl ={item.api_champs_a_info_supl}
+                        name_champs_a_info_supl ={item.name_champs_a_info_supl}
+                        api_champs_a_afficher_a_cote_date ={item.api_champs_a_afficher_a_cote_date}
+                        conges_champs_text_long_api_name={item.conges_champs_text_long_api_name}
+                        is_community ={is_community}
+                        coodone_atitude_longitude ={item.coodone_atitude_longitude}
+                        days-off={daysOff}
+                        api_name_badge={item.api_name_badge}
+                        ></c-lwc004_tile_creneaux_planification>
+                      <!-- </template> -->
+                      <!-- <template lwc:else>
+                        <c-lwc004_tile_creneaux_planification key={item_3.crenreaux} option='global' 
+                        acteur_id ={item.Id}  date_crenaux={item_2.date} 
+                        value_crenaux={item_3.crenreaux} 
+                        api_name_date_planification={item.api_name_date_planification} 
+                        api_name_object_cible={item.api_name_object_cible} 
+                        api_name_relation_object_cible_to_acteur={item.api_name_relation_object_cible_to_acteur} 
+                        condition_object_cible={item.condition_object_cible} 
+                        api_champs_a_afficher={item.api_champs_a_afficher}
+                        condition_object_cible_couleur={item.condition_object_cible_couleur}
+                        list_event={item.list_event}
+                        crenaux_all={item.crenaux_all}
+                        search={item.search}
+                        cas_exception={item.cas_exception}
+                        position_creneaux={index3}
+                        duration_postaux ={durations}
+                        duration_postaux_deaily ={durations_deaily}
+                        api_champs_a_info_supl ={item.api_champs_a_info_supl}
+                        ></c-lwc004_tile_creneaux_planification>
+                      </template> -->
+                 </template>
+
+                </template>
+            </li>
+          </template>
+            </ul>
+      </template>
+    </template>
+  
+
+    <!-- <template if:true={spinner}>
+      <div class="demo-only" style="height:6rem;position:relative">
+        <div class="slds-spinner_container">
+          <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+            <span class="slds-assistive-text">Loading</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+          </div>
+        </div>
+      </div>
+    </template> -->
+
+    </template>
+    <!-- <template if:false={get_mounth_or_week}>
+      {prettyjson_month}    
+    </template> -->
+
+
+    <template if:true={add_conges_var}>
+       <c-lwc004_conges_planification id_acteur={_conges_acteur} menu_selected ={menu_selected}  onfermer={handleFermer} get_prettyjson_week={get_prettyjson_week}></c-lwc004_conges_planification>
+    </template>
+ 
+</template>

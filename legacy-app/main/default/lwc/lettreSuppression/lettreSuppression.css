@@ -1,0 +1,112 @@
+.delete-shell {
+    width: 100%;
+    color: #233142;
+    font-family: SalesforceSans, Arial, sans-serif;
+}
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #952826 0%, #c23934 100%);
+    border-radius: 18px;
+    padding: 15px 32px;
+    color: white;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    margin: 0 0 12px;
+    font-size: 2rem;
+    line-height: 1.1;
+}
+
+.hero p {
+    margin: 0;
+    max-width: 580px;
+    font-size: 1rem;
+    opacity: 0.92;
+}
+
+.eyebrow {
+    display: inline-block;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.card-panel {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 22px 24px;
+    box-shadow: 0 12px 30px rgba(194, 57, 52, 0.12);
+}
+
+.delete-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.delete-select {
+    flex: 1 1 auto;
+    max-width: 480px;
+}
+
+.select-row {
+    display: flex;
+    gap: 8px;
+    align-items: end;
+}
+
+.refresh-btn {
+    margin-bottom: 4px;
+}
+
+.delete-summary {
+    background: #fdecec;
+    color: #6b3030;
+    border-left: 4px solid #c23934;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-top: 12px;
+}
+
+.details-card {
+    background: #fafdf9;
+    border: 1px solid #e0eee5;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.details-card h4 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: #233142;
+}
+
+.action-row {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.message {
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+}
+
+.message-error {
+    background: #ffe6e6;
+    color: #952826;
+}
+
+.message-info {
+    background: #effaf3;
+    color: #1d5f3f;
+}

@@ -1,0 +1,637 @@
+<template>
+    <div class={containerClass}>
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <p>{txt.chargementProduits}</p>
+            </div>
+        </template>
+
+        <!-- Product List -->
+        <template if:true={infoProduits}>
+            <!-- Popup reconnexion — accès réduit, visible desktop + mobile, fermable (comme le reporting). -->
+            <template if:true={accesReduit}>
+                <template if:true={showReconnexionBanner}>
+                    <div class="reconnexion-banner">
+                        <!-- <span class="reconnexion-icon">✉️</span> -->
+                        <div class="reconnexion-body">
+                            <!-- <span class="reconnexion-title">Un e-mail vient de vous être envoyé.</span> -->
+                            <span class="reconnexion-text">{txt.reconnexionTexte}</span>
+                        </div>
+                        <button class="reconnexion-close" onclick={handleDismissReconnexion} title={txt.masquer}
+                            aria-label={txt.masquer}>✕</button>
+                    </div>
+                </template>
+            </template>
+
+            <!-- Produits (NON-partenaire) : grille produits classique. -->
+            <template if:false={accesReduit}>
+            <div class="campaign-info-section">
+                <!-- Titre « Produits disponibles » masqué pour les partenaires (accès réduit). -->
+                <template if:false={accesReduit}>
+                <div class="section-header section-header-with-action">
+                    <div class="section-title-wrap">
+                        <!-- Libellé d'interface lu sur `txt` (un getter), et non sur
+                             infoProduits.title qui le figeait au chargement : le titre
+                             restait dans l'ancienne langue après une bascule FR/ES. -->
+                        <h2>{txt.produitsDisponibles}</h2>
+                        <template if:true={infoProduits.subtitle}>
+                            <p class="section-subtitle">{infoProduits.subtitle}</p>
+                        </template>
+                    </div>
+                    <!-- <div class="section-action">
+                        <button class={collapseBtnClass} onclick={toggleProductsCollapse}
+                            aria-pressed={productsCollapsed} title={collapseButtonAriaLabel}
+                            aria-label={collapseButtonAriaLabel}>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="collapse-icon">
+                                <polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div> -->
+                </div>
+                </template>
+
+                <div class={productsWrapClass} aria-hidden={productsCollapsed}>
+                    <template for:each={produitsGroupes} for:item="groupe">
+                        <div key={groupe.typeEnregistrement} class="products-container">
+                            <div class="product-type-title" style={groupe.titreStyle}>{groupe.titre}</div>
+                            <div class="products-grid">
+                                <template for:each={groupe.products} for:item="product">
+                                    <div key={product.codeProduit} class={product.cardClass}
+                                        data-type={product.typeEnregistrement} onclick={handleProductClick}>
+                                        <div class="product-header">
+                                            <div class="product-name" style={product.couleurStyle}>
+                                                {product.nomProduit}</div>
+                                            <template if:true={product.isAvailable}>
+                                                <div class="product-badge">✓</div>
+                                            </template>
+                                            <template if:false={product.isAvailable}>
+                                                <div class="product-badge-unavailable">✕</div>
+                                            </template>
+                                        </div>
+                                        <div class="product-actions">
+                                            <template if:true={product.isAvailable}>
+                                                <template if:true={product.downloadLink}>
+                                                    <!-- Partenaire : encadré (couleur produit) = message + flèche à droite,
+                                                         bouton « Voir Cahier Des Charges » à l'intérieur. -->
+                                                    <template if:true={accesReduit}>
+                                                        <!-- 1) Infos partenaire (marques + rémunération) — accès réduit
+                                                                ET fiche TH171 uniquement. Affichées AVANT le CDC. -->
+                                                        <template if:true={product.isTh171}>
+                                                        <div class="partner-info">
+                                                            <div class="partner-info-item">
+                                                                <span
+                                                                    class="partner-info-icon partner-info-icon--brand">🔧</span>
+                                                                <div class="partner-info-body">
+                                                                    <span class="partner-info-label">Marques de pompes
+                                                                        à chaleur air/eau installées</span>
+                                                                    <div class="partner-brands">
+                                                                        <span class="partner-brand">Atlantic</span>
+                                                                        <span class="partner-brand">Ariston</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="partner-info-item">
+                                                                <span
+                                                                    class="partner-info-icon partner-info-icon--money">💶</span>
+                                                                <div class="partner-info-body">
+                                                                    <span class="partner-info-label">Rémunération de
+                                                                        l'apporteur d'affaires</span>
+                                                                    <span class="partner-info-value">
+                                                                        <span class="partner-info-amount">900€</span>
+                                                                        <span class="partner-info-sub">Par virement
+                                                                            bancaire ou en bons d'achat</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </template>
+                                                        <!-- 2) Encadré (couleur produit) = message + flèche à droite,
+                                                                bouton « Voir Cahier Des Charges » à l'intérieur. -->
+                                                        <div class="cdc-hint-box" style={product.cdcHintStyle}>
+                                                            <div class="cdc-hint-head">
+                                                                <span class="cdc-hint-text">Cliquez sur le lien
+                                                                    ci-dessous pour consulter le Cahier des
+                                                                    Charges.</span>
+                                                                <svg class="cdc-hint-arrow"
+                                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                    width="18" height="18" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M12 5v14M19 12l-7 7-7-7" />
+                                                                </svg>
+                                                            </div>
+                                                            <a href={product.downloadLink} target="_blank"
+                                                                class="action-link action-link--cdc"
+                                                                title={txt.voirCdcTitre}>
+                                                                <svg class="action-icon"
+                                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                    fill="none" stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                                    <circle cx="12" cy="12" r="3" />
+                                                                </svg>
+                                                                <span>{txt.voirCdc}</span>
+                                                            </a>
+                                                        </div>
+                                                    </template>
+                                                    <!-- Non-partenaire : bouton simple (inchangé). -->
+                                                    <template if:false={accesReduit}>
+                                                        <a href={product.downloadLink} target="_blank"
+                                                            class="action-link action-link--cdc"
+                                                            title={txt.voirCdcTitre}>
+                                                            <svg class="action-icon" xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                                <circle cx="12" cy="12" r="3" />
+                                                            </svg>
+                                                            <span>{txt.voirCdc}</span>
+                                                        </a>
+                                                    </template>
+                                                </template>
+                                                <template if:true={product.catalogueLink}>
+                                                    <a href={product.catalogueLink} target="_blank"
+                                                        class="action-link action-link--catalogue"
+                                                        title={txt.voirCatalogueTitre}>
+                                                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                                        </svg>
+                                                        <span>{txt.voirCatalogue}</span>
+                                                    </a>
+                                                </template>
+                                                <template if:true={product.simulateurCode}>
+                                                    <button type="button"
+                                                        class="action-link action-link--simulateur"
+                                                        data-sim={product.simulateurCode}
+                                                        onclick={handleOpenSimulator}
+                                                        title={txt.simulateurTitre}>
+                                                        <svg class="action-icon" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <rect x="4" y="2" width="16" height="20" rx="2" />
+                                                            <line x1="8" y1="6" x2="16" y2="6" />
+                                                            <line x1="8" y1="10" x2="16" y2="10" />
+                                                            <line x1="8" y1="14" x2="10" y2="14" />
+                                                            <line x1="13" y1="14" x2="16" y2="14" />
+                                                            <line x1="8" y1="18" x2="10" y2="18" />
+                                                            <line x1="13" y1="18" x2="16" y2="18" />
+                                                        </svg>
+                                                        <span>{txt.simulateur}</span>
+                                                    </button>
+                                                </template>
+                                            </template>
+                                            <template if:false={product.isAvailable}>
+                                                <span class="cdc-demande-text">{txt.demandezCdc}</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            </template>
+
+            <!-- PARTENAIRE (accès réduit) : fiche dédiée (design mockup v2). -->
+            <template if:true={accesReduit}>
+                <template if:true={th171Product}>
+                    <div class="campaign-info-section">
+                        <!-- <div class="partner-group-title">Résidentiel</div> -->
+                        <div class="pac-card">
+
+                            <!-- En-tête vert : accroche « Recommandez un client » -->
+                            <div class="pac-card-header">
+                                <div class="pac-card-title">Recommandez un client</div>
+                                <div class="pac-card-subtitle">en moins de 2 min</div>
+                                <div class="pac-card-remu">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" />
+                                        <line x1="1" y1="10" x2="23" y2="10" />
+                                    </svg>
+                                    <span>Rémunération par virement bancaire ou bons&nbsp;d'achat.</span>
+                                </div>
+                            </div>
+
+                            <!-- Deux offres : 2 par ligne (desktop) / empilées (mobile) -->
+                            <div class="pac-products-grid">
+
+                            <!-- ======================= PAC Air/Eau ======================= -->
+                            <div class="pac-product">
+                                <div class="pac-product-head">
+                                    <!-- Icône PAC Air/Eau : unité extérieure + ventilateur -->
+                                    <div class="product-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%"
+                                            height="100%">
+                                            <rect width="100" height="100" fill="#f1f8f6" />
+                                            <rect x="20" y="25" width="60" height="50" rx="8" fill="none"
+                                                stroke="#2c5e53" stroke-width="3" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <line x1="26" y1="25" x2="26" y2="75" stroke="#2c5e53" stroke-width="2"
+                                                stroke-dasharray="3 3" />
+                                            <circle cx="45" cy="50" r="16" fill="none" stroke="#2c5e53"
+                                                stroke-width="3" />
+                                            <circle cx="45" cy="50" r="3.5" fill="#2c5e53" />
+                                            <path d="M 45 46.5 C 41.5 40, 48.5 40, 45 46.5 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 45 53.5 C 41.5 60, 48.5 60, 45 53.5 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 41.5 50 C 35 46.5, 35 53.5, 41.5 50 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 48.5 50 C 55 46.5, 55 53.5, 48.5 50 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <line x1="68" y1="38" x2="74" y2="38" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="46" x2="74" y2="46" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="54" x2="74" y2="54" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="62" x2="74" y2="62" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                        </svg>
+                                    </div>
+                                    <div class="pac-product-name">
+                                        <span class="pac-product-desc">Remplacement Chaudière</span>
+                                        <span class="pac-product-title">PAC Air/Eau</span>
+                                    </div>
+                                    <div class="pac-price-chip">
+                                        <span class="pac-price-gain">Gagnez</span>
+                                        <span class="pac-price-amount">900€</span>
+                                        <span class="pac-price-label">par dossier finalisé</span>
+                                    </div>
+                                </div>
+
+                                <!-- 1) Éligibilité (en premier) — format tirets -->
+                                <div class="pac-line pac-line--cout">
+                                    <span class="pac-line-icon pac-line-icon--euro" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15"
+                                            height="15" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="16" />
+                                            <line x1="8" y1="12" x2="16" y2="12" />
+                                        </svg>
+                                    </span>
+                                    <div class="pac-line-body">
+                                        <span class="pac-line-label">Éligibilité :</span>
+                                        <ul class="pac-cout-list">
+                                            <li><strong>100% gratuit</strong>&nbsp;si revenus sous
+                                                le&nbsp;<span class="bareme-wrap">
+                                                    <button type="button" class="bareme-trigger"
+                                                        onclick={handleToggleBareme} aria-expanded={isBaremeOpen}
+                                                        aria-label="Afficher le barème de revenus">barème<svg
+                                                            class="bareme-info-icon" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24" width="13" height="13" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="10" />
+                                                            <line x1="12" y1="16" x2="12" y2="12" />
+                                                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                                                        </svg></button>
+                                                    <!-- Popup barème : survol (desktop) / clic (mobile). Pas un modal.
+                                                         stopPropagation : un clic DANS le popup ne doit pas le fermer. -->
+                                                    <div class={baremePopupClass} role="tooltip"
+                                                        onclick={handleBaremePopupClick}>
+                                                        <div class="bareme-popup-title">Ménages aux revenus très
+                                                            modestes — plafonds de revenus</div>
+                                                        <div class="bareme-tables">
+                                                            <div class="bareme-table-wrap">
+                                                                <div class="bareme-table-title">Île-de-France</div>
+                                                                <table class="bareme-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Personnes composant le ménage</th>
+                                                                            <th>Revenus très modestes</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <template for:each={baremeIdf} for:item="row">
+                                                                            <tr key={row.personnes}>
+                                                                                <td>{row.personnes}</td>
+                                                                                <td>{row.revenu}</td>
+                                                                            </tr>
+                                                                        </template>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="bareme-table-wrap">
+                                                                <div class="bareme-table-title">Hors Île-de-France</div>
+                                                                <table class="bareme-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Personnes composant le ménage</th>
+                                                                            <th>Revenus très modestes</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <template for:each={baremeHorsIdf}
+                                                                            for:item="row">
+                                                                            <tr key={row.personnes}>
+                                                                                <td>{row.personnes}</td>
+                                                                                <td>{row.revenu}</td>
+                                                                            </tr>
+                                                                        </template>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </span>
+                                            </li>
+                                            <li><strong>7 000€ TTC</strong>&nbsp;si revenus au-dessus du barème</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Actions : bandeau en bas de carte (aligné entre les 2 offres) -->
+                                <div class="pac-cta">
+                                    <!-- Recommander un contact — pré-sélectionne TypePompeChaleur__c = Air/Eau -->
+                                    <button type="button" class="pac-reco-btn" data-pac="air-eau"
+                                        onclick={handleCreateRdv}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                            height="18" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <line x1="19" y1="8" x2="19" y2="14" />
+                                            <line x1="22" y1="11" x2="16" y2="11" />
+                                        </svg>
+                                        <span>Recommander un contact</span>
+                                    </button>
+
+                                </div>
+
+                                <!-- Critères d'éligibilité : lien discret sous le bouton (ouvre le PDF du CDC) -->
+                                <a href={th171Product.downloadLink} target="_blank" class="pac-criteres-link"
+                                    title="Voir les critères d'éligibilité">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15"
+                                        height="15" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                    </svg>
+                                    <span>Voir les critères d'éligibilité</span>
+                                </a>
+                            </div>
+
+                            <!-- ======================= PAC Air/Air =======================
+                                 Offre masquée temporairement : pilotée par showAirAir (JS).
+                                 Pour la restaurer, remettre showAirAir = true dans le JS. -->
+                            <template if:true={showAirAir}>
+                            <div class="pac-product">
+                                <div class="pac-product-head">
+                                    <!-- Icône PAC Air/Air : unité intérieure murale (split) -->
+                                    <div class="product-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%"
+                                            height="100%">
+                                            <rect width="100" height="100" fill="#f1f9f6" />
+                                            <g fill="none" stroke="#2c5e4b" stroke-width="3" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <rect x="15" y="32" width="70" height="34" rx="6" ry="6" />
+                                                <path d="M 15 58 L 85 58" />
+                                                <path d="M 25 58 L 22 72 L 78 72 L 75 58" />
+                                                <path d="M 28 63 L 72 63" stroke-width="1.5" />
+                                                <path d="M 26 67 L 74 67" stroke-width="1.5" />
+                                                <path d="M 22 32 C 30 35, 70 35, 78 32" />
+                                                <rect x="44" y="36" width="12" height="6" rx="2" ry="2"
+                                                    stroke-width="2" />
+                                                <circle cx="50" cy="39" r="1" fill="#2c5e4b" stroke="none" />
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="pac-product-name">
+                                        <span class="pac-product-desc">Climatisation réversible</span>
+                                        <span class="pac-product-title">PAC Air/Air</span>
+                                    </div>
+                                    <div class="pac-price-chip">
+                                        <span class="pac-price-gain">Gagnez</span>
+                                        <span class="pac-price-amount">450€</span>
+                                        <span class="pac-price-label">par dossier finalisé</span>
+                                    </div>
+                                </div>
+
+                                <!-- 1) Éligibilité (en premier) -->
+                                <div class="pac-line">
+                                    <span class="pac-line-icon pac-line-icon--euro" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15"
+                                            height="15" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="16" />
+                                            <line x1="8" y1="12" x2="16" y2="12" />
+                                        </svg>
+                                    </span>
+                                    <div class="pac-line-body">
+                                        <span class="pac-line-label">Éligibilité :</span>
+                                        <ul class="pac-cout-list">
+                                            <li><strong>2 699€ TTC</strong> par climatiseur, pose&nbsp;incluse</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Actions : bandeau en bas de carte (aligné avec l'offre Air/Eau). -->
+                                <div class="pac-cta">
+                                    <!-- Recommander un contact — pré-sélectionne TypePompeChaleur__c = Air/Air -->
+                                    <button type="button" class="pac-reco-btn" data-pac="air-air"
+                                        onclick={handleCreateRdv}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                            height="18" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <line x1="19" y1="8" x2="19" y2="14" />
+                                            <line x1="22" y1="11" x2="16" y2="11" />
+                                        </svg>
+                                        <span>Recommander un contact</span>
+                                    </button>
+                                </div>
+                            </div>
+                            </template>
+                            <!-- /pac-products-grid -->
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- ═══════════════ RES060 — Espagne ═══════════════
+                     Pendant de la carte TH171 ci-dessus, pour les partenaires
+                     espagnols. Mêmes maquette, classes et comportements ; seuls
+                     changent l'intitulé du produit (« Bomba de calor ») et la
+                     ligne de coût, réduite au « 100% gratuito » : le dispositif
+                     espagnol ne conditionne pas la gratuité à un barème de
+                     revenus, il n'y a donc ni second tarif ni popup barème.
+
+                     Textes en dur EN ESPAGNOL, et non via c/lwc000_i18n, pour la
+                     même raison que la carte TH171 est en dur en français : la
+                     fiche RES060 est déclarée pays: ["Espagne"] et n'apparaît
+                     donc que sur une campagne espagnole, dont les partenaires
+                     sont verrouillés en espagnol (voir choixLangueOffert). Une
+                     variante française ne pourrait jamais s'afficher. -->
+                <template if:true={th060Product}>
+                    <div class="campaign-info-section">
+                        <div class="pac-card">
+
+                            <!-- En-tête vert : accroche « Recommandez un client » -->
+                            <div class="pac-card-header">
+                                <div class="pac-card-title">Recomiende a un cliente</div>
+                                <div class="pac-card-subtitle">en menos de 2 min</div>
+                                <div class="pac-card-remu">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" />
+                                        <line x1="1" y1="10" x2="23" y2="10" />
+                                    </svg>
+                                    <span>Remuneración por transferencia bancaria o en vales&nbsp;de compra.</span>
+                                </div>
+                            </div>
+
+                            <!-- Offre unique : le CSS (.pac-product:only-child) lui donne
+                                 toute la largeur, comme pour la TH171 sans l'Air/Air. -->
+                            <div class="pac-products-grid">
+
+                            <!-- ======================= Bomba de calor ======================= -->
+                            <div class="pac-product">
+                                <div class="pac-product-head">
+                                    <!-- Icône pompe à chaleur : unité extérieure + ventilateur -->
+                                    <div class="product-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%"
+                                            height="100%">
+                                            <rect width="100" height="100" fill="#f1f8f6" />
+                                            <rect x="20" y="25" width="60" height="50" rx="8" fill="none"
+                                                stroke="#2c5e53" stroke-width="3" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                            <line x1="26" y1="25" x2="26" y2="75" stroke="#2c5e53" stroke-width="2"
+                                                stroke-dasharray="3 3" />
+                                            <circle cx="45" cy="50" r="16" fill="none" stroke="#2c5e53"
+                                                stroke-width="3" />
+                                            <circle cx="45" cy="50" r="3.5" fill="#2c5e53" />
+                                            <path d="M 45 46.5 C 41.5 40, 48.5 40, 45 46.5 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 45 53.5 C 41.5 60, 48.5 60, 45 53.5 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 41.5 50 C 35 46.5, 35 53.5, 41.5 50 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <path d="M 48.5 50 C 55 46.5, 55 53.5, 48.5 50 Z" fill="none"
+                                                stroke="#2c5e53" stroke-width="2.5" stroke-linejoin="round" />
+                                            <line x1="68" y1="38" x2="74" y2="38" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="46" x2="74" y2="46" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="54" x2="74" y2="54" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                            <line x1="68" y1="62" x2="74" y2="62" stroke="#2c5e53" stroke-width="3"
+                                                stroke-linecap="round" />
+                                        </svg>
+                                    </div>
+                                    <div class="pac-product-name">
+                                        <span class="pac-product-desc">Sustitución de caldera</span>
+                                        <span class="pac-product-title">Bomba de calor</span>
+                                    </div>
+                                    <div class="pac-price-chip">
+                                        <span class="pac-price-gain">Gane</span>
+                                        <span class="pac-price-amount">900€</span>
+                                        <span class="pac-price-label">por expediente finalizado</span>
+                                    </div>
+                                </div>
+
+                                <!-- Coût : une seule mention, sans condition de revenus.
+                                     D'où « Coste » et non « Requisitos » : la ligne ne
+                                     porte plus que le prix, les critères restent dans le
+                                     document lié en bas de carte. -->
+                                <div class="pac-line pac-line--cout">
+                                    <span class="pac-line-icon pac-line-icon--euro" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15"
+                                            height="15" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" y1="8" x2="12" y2="16" />
+                                            <line x1="8" y1="12" x2="16" y2="12" />
+                                        </svg>
+                                    </span>
+                                    <div class="pac-line-body">
+                                        <span class="pac-line-label">Coste:</span>
+                                        <ul class="pac-cout-list">
+                                            <li><strong>100% gratuito</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Actions : bandeau en bas de carte -->
+                                <div class="pac-cta">
+                                    <!-- Pas de data-pac : TypePompeChaleur__c ne porte que
+                                         des valeurs françaises (Air/Eau, Air/Air) qui n'ont
+                                         pas cours ici. Le produit du Lead n'en dépend pas —
+                                         lwc020_NouveauRdv présélectionne RES060 dès lors
+                                         qu'il est le seul produit de la campagne. -->
+                                    <button type="button" class="pac-reco-btn" onclick={handleCreateRdv}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18"
+                                            height="18" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <line x1="19" y1="8" x2="19" y2="14" />
+                                            <line x1="22" y1="11" x2="16" y2="11" />
+                                        </svg>
+                                        <span>Recomendar un contacto</span>
+                                    </button>
+                                </div>
+
+                                <!-- Critères d'éligibilité : lien discret sous le bouton (ouvre le PDF du CDC) -->
+                                <a href={th060Product.downloadLink} target="_blank" class="pac-criteres-link"
+                                    title="Ver los requisitos de elegibilidad">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15"
+                                        height="15" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                    </svg>
+                                    <span>Ver los requisitos de elegibilidad</span>
+                                </a>
+                            </div>
+
+                            <!-- /pac-products-grid -->
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+
+        </template>
+
+        <!-- Simulator Modal -->
+        <template if:true={isSimulatorOpen}>
+            <div class="sim-modal-backdrop" onclick={handleSimulatorBackdropClick}>
+                <div class="sim-modal-wrapper">
+                    <button type="button" class="sim-modal-close" onclick={handleCloseSimulator}
+                        aria-label={txt.fermerSimulateur}>×</button>
+                    <div class="sim-modal-content" role="dialog" aria-modal="true">
+                        <div class="sim-modal-inner">
+                            <template if:true={isSim163Open}>
+                                <c-lwc020_simulateur-bat-th163></c-lwc020_simulateur-bat-th163>
+                            </template>
+                            <template if:true={isSim179Open}>
+                                <c-lwc020_simulateur-bat-th179></c-lwc020_simulateur-bat-th179>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "873c0fec-5a69-46db-9327-f5e9db6dc831",
+  "label" : "Accueil - SERRE AGRICOLE",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "54276d66-d934-4434-8af2-f927034e5e1a",
+          "columns" : [ {
+            "UUID" : "ea8da379-983c-4993-9530-46eaf0bf50d5",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "54276d66-d934-4434-8af2-f927034e5e1a",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "typePage" : "SERRE AGRICOLE"
+          },
+          "componentName" : "c:securityCheck",
+          "id" : "b0d7bb60-036b-4a15-9a6d-0bf3f69f0af0",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "ea8da379-983c-4993-9530-46eaf0bf50d5",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "1ff0f0da-2c5e-4afb-8582-12bb5cbff4ed",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Accueil - SERRE AGRICOLE"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "ff051f72-9ad0-4de8-8a12-fb73652a3cb0",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "983da1ff-5bc3-4173-ba43-3df6a7b9a946",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-accueil-serre-agricole"
+}

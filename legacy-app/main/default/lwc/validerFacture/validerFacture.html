@@ -1,0 +1,113 @@
+<template>
+    <div class={containerClass}>
+
+        <!-- Spinner en overlay (validation en cours) -->
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Validation en cours" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- Écran de confirmation avant lancement -->
+        <template if:true={showConfirmation}>
+            <div class="slds-box slds-theme_warning vf-warn slds-m-bottom_medium">
+                <lightning-icon icon-name="utility:warning" size="small"
+                    class="slds-m-right_x-small"></lightning-icon>
+                <span>
+                    Vous êtes sur le point de valider cette facture. Son statut passera à « Validé »
+                    si toutes les règles de validation sont respectées.
+                </span>
+            </div>
+
+            <p class="slds-text-body_regular slds-m-bottom_small">
+                Souhaitez-vous lancer la validation maintenant ?
+            </p>
+
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <lightning-button label="Retour" onclick={handleClose}
+                    class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="Confirmer la validation" variant="brand"
+                    onclick={handleConfirm}></lightning-button>
+            </div>
+        </template>
+
+        <!-- Résultats après lancement -->
+        <template if:true={showResultats}>
+
+            <div class="vf-content">
+
+                <!-- Aucun résultat encore (chargement initial après confirmation) -->
+                <template if:false={showContent}>
+                    <div class="vf-placeholder"></div>
+                </template>
+
+                <template if:true={showContent}>
+
+                    <!-- Erreur technique inattendue -->
+                    <template if:true={erreurInattendue}>
+                        <div class="slds-box slds-theme_error slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:error" variant="inverse" size="small"
+                                class="slds-m-right_x-small"></lightning-icon>
+                            <span>{erreurInattendue}</span>
+                        </div>
+                    </template>
+
+                    <template if:false={erreurInattendue}>
+
+                        <!-- Succès : facture validée (ou déjà validée) -->
+                        <template if:true={valide}>
+                            <div class="vf-result slds-p-vertical_medium">
+                                <lightning-icon icon-name="action:approval" size="large"></lightning-icon>
+                                <h2 class="slds-text-heading_small slds-m-top_small">
+                                    <template if:true={dejaValide}>Facture déjà validée</template>
+                                    <template if:false={dejaValide}>Facture validée</template>
+                                </h2>
+                                <p class="slds-text-color_weak slds-m-top_xx-small">
+                                    <template if:true={dejaValide}>
+                                        Cette facture est déjà au statut « Validé ».
+                                    </template>
+                                    <template if:false={dejaValide}>
+                                        Toutes les règles sont respectées. La facture est passée au statut « Validé ».
+                                    </template>
+                                </p>
+                            </div>
+                        </template>
+
+                        <!-- Échec : règles de validation non respectées -->
+                        <template if:false={valide}>
+                            <div class="vf-result slds-m-bottom_small">
+                                <lightning-icon icon-name="utility:warning" variant="warning" size="medium"></lightning-icon>
+                                <h2 class="slds-text-heading_small slds-m-top_small">Validation impossible</h2>
+                                <p class="slds-text-color_weak slds-m-top_xx-small">
+                                    {nbErreurs} point(s) à corriger avant de pouvoir valider la facture :
+                                </p>
+                            </div>
+                            <ul class="slds-has-dividers_bottom-space">
+                                <template for:each={erreursAffichees} for:item="e">
+                                    <li key={e.key} class="slds-item vf-erreur">
+                                        <lightning-icon icon-name="utility:close" variant="error" size="xx-small"
+                                            class="slds-m-right_x-small vf-erreur-icon"></lightning-icon>
+                                        <span>{e.msg}</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+
+                    </template>
+
+                </template>
+
+            </div>
+
+            <!-- Actions après résultat -->
+            <div class="slds-m-top_medium slds-grid slds-grid_align-center">
+                <template if:true={showRetry}>
+                    <lightning-button label="Revérifier" onclick={handleRetry}
+                        class="slds-m-right_x-small" disabled={loading}></lightning-button>
+                </template>
+                <lightning-button label="Fermer" variant="brand" onclick={handleClose}
+                    disabled={loading}></lightning-button>
+            </div>
+
+        </template>
+
+    </div>
+</template>

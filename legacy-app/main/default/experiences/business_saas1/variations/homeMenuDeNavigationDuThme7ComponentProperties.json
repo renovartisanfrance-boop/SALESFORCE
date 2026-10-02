@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "4bf86293-1353-4062-bea0-5edfff5c52ae",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Apporteur_Affaires"
+      }
+    },
+    "targetId" : "44cf7732-3464-41d1-8e11-56e37c0ebdf1",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Home_Menu_de_navigation_du_thme_7_Component_Properties",
+  "id" : "b89e3fff-c74a-4f26-8233-18a9d1a592a1",
+  "type" : "experienceVariation"
+}

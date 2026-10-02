@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "8df93112-9b30-444f-b062-7ab4d0e84480",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "accueil_reno_globale__c",
+  "id" : "a5ee1285-1af9-44bf-b808-9bbb45d59d10",
+  "label" : "Accueil - RENO GLOBALE",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accueil-reno-globale",
+  "type" : "route",
+  "urlPrefix" : "accueil-reno-globale"
+}

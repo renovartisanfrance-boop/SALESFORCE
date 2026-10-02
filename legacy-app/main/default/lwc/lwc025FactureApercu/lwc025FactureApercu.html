@@ -1,0 +1,53 @@
+<template>
+    <article class={wrapperClass}>
+        <template lwc:if={hasData}>
+            <!-- En-tête dégradé thématisé -->
+            <header class="pf-head">
+                <span class="pf-head-icon">
+                    <lightning-icon icon-name="utility:money" variant="inverse" size="small"></lightning-icon>
+                </span>
+                <span class="pf-head-title">{headTitle}</span>
+                <span class="pf-head-badge">{apercu.typeFacture}</span>
+            </header>
+
+            <div class="pf-body">
+                <!-- Contrepartie (Client / Fournisseur) -->
+                <div class="pf-party">
+                    <span class="pf-avatar">{contrepartieInitials}</span>
+                    <span class="pf-party-text">
+                        <span class="pf-party-label">{apercu.contrepartieLabel}</span>
+                        <span class="pf-party-name">{contrepartieDisplay}</span>
+                    </span>
+                </div>
+
+                <!-- Montants -->
+                <div class="pf-totals">
+                    <div class="pf-total-ht">
+                        <span class="pf-total-ht-label">Montant HT</span>
+                        <span class="pf-total-ht-value">
+                            <lightning-formatted-number value={apercu.montantHT}
+                                format-style="currency" currency-code="EUR">
+                            </lightning-formatted-number>
+                        </span>
+                    </div>
+                    <div class="pf-total-ttc">
+                        <span class="pf-total-ttc-cap">{flowLabel}</span>
+                        <span class="pf-total-ttc-value">
+                            <lightning-formatted-number value={apercu.montantTTC}
+                                format-style="currency" currency-code="EUR">
+                            </lightning-formatted-number>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={error}>
+            <div class="pf-apercu-error">{error}</div>
+        </template>
+
+        <template lwc:if={showEmpty}>
+            <div class="pf-apercu-empty">Aucune information à afficher.</div>
+        </template>
+    </article>
+</template>

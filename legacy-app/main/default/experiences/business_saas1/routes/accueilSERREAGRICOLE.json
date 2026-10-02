@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "873c0fec-5a69-46db-9327-f5e9db6dc831",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "accueil_serre_agricole__c",
+  "id" : "03e5aecc-f55b-4e4c-8f81-3aa1c99619b5",
+  "label" : "Accueil - SERRE AGRICOLE",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accueil-serre-agricole",
+  "type" : "route",
+  "urlPrefix" : "accueil-serre-agricole"
+}

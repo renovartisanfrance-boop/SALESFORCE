@@ -1,0 +1,32 @@
+.af-container {
+    position: relative;
+    min-width: 24rem;
+}
+
+.af-container.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.af-warn,
+.slds-theme_error {
+    display: flex;
+    align-items: flex-start;
+}
+
+.af-hint {
+    margin-left: 1.75rem;
+}
+
+.af-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.af-result h2,
+.af-result p {
+    margin: 0;
+    max-width: 28rem;
+}

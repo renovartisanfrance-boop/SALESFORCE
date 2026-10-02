@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "14c2989f-d410-4fcf-a257-465b9ef8bf0b",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Respo_Telepro"
+      }
+    },
+    "targetId" : "4120647d-9c0d-4177-9543-2acde18292df",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Default_Menu_de_navigation_du_thme_9_Component_Properties",
+  "id" : "1dd1d99d-befa-47f5-8eeb-248670e285c2",
+  "type" : "experienceVariation"
+}

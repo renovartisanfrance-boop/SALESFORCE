@@ -1,0 +1,224 @@
+<template>
+    <div class="pf-wrapper" style="position: relative;">
+
+        <template lwc:if={isEdition}>
+            <div class="pf-header">
+                <p class="pf-title">Liaison des lignes à la facture</p>
+                <template lwc:if={isReadOnly}>
+                    <p class="pf-subtitle">Facture {factureStatut} — consultation des lignes liées (lecture seule)</p>
+                </template>
+                <template lwc:else>
+                    <p class="pf-subtitle">Sélectionnez les lignes de facturation à rattacher à cette facture</p>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={loading}>
+            <div class="pf-spinner-overlay">
+                <lightning-spinner alternative-text="Chargement..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Lignes disponibles (masqué si la facture n'est plus en Brouillon) -->
+        <template lwc:if={canModify}>
+        <div class="pf-card">
+            <div class="pf-card-head">
+                <p class="pf-section-title">Lignes disponibles</p>
+                <span class="pf-hint-inline">{selectionSummary}</span>
+            </div>
+
+            <template lwc:if={hasDispos}>
+                <p class="pf-hint">Cochez les lignes à lier à cette facture</p>
+
+                <div class="pf-filters">
+                    <lightning-input
+                        type="search"
+                        class="pf-filter-item"
+                        label="Dossier"
+                        value={filterDossier}
+                        onchange={handleFilterDossier}>
+                    </lightning-input>
+                </div>
+
+                <template lwc:if={hasFilteredDispos}>
+                <table class="pf-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 3rem;">
+                                <input type="checkbox" class="pf-radio" checked={allSelected}
+                                    onclick={handleSelectAll} />
+                            </th>
+                            <th>N° Facture</th>
+                            <th>Dossier</th>
+                            <th>Intervenant</th>
+                            <th>Éch.</th>
+                            <th>Bénéficiaire</th>
+                            <th>Montant HT</th>
+                            <!-- <th>Statut</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={lignesDisponiblesDisplay} for:item="f">
+                            <tr key={f.id} data-id={f.id} class={f.rowClass} onclick={handleToggleRow}>
+                                <td>
+                                    <input type="checkbox" class="pf-radio" data-id={f.id} checked={f.selected}
+                                        onclick={handleCheckboxChange} />
+                                </td>
+                                <td>
+                                    <template lwc:if={f.factureNumExterne}>
+                                        <strong>{f.factureNumExterne}</strong>
+                                    </template>
+                                    <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                    <template lwc:if={f.factureStatut}>
+                                        <span class="slds-m-left_xx-small">
+                                            <span class={f.factureStatutBadgeClass}>{f.factureStatut}</span>
+                                        </span>
+                                    </template>
+                                </td>
+                                <td>{f.dossier}</td>
+                                <td>{f.intervenant}</td>
+                                <td>{f.echeance}</td>
+                                <td>{f.destinataire}</td>
+                                <td>
+                                    <template lwc:if={f.montant}>
+                                        <span class="pf-amount">
+                                            <lightning-formatted-number value={f.montant} format-style="currency"
+                                                currency-code="EUR">
+                                            </lightning-formatted-number>
+                                        </span>
+                                    </template>
+                                    <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                </td>
+                                <!-- <td><span class={f.statutBadgeClass}>{f.statut}</span></td> -->
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+
+                <div class="pf-totals">
+                    <div class="pf-total-row pf-total-row-dual">
+                        <span class="pf-total-item">
+                            <span class="pf-total-label">Total sélectionné</span>
+                            <span class="pf-amount pf-total-value">
+                                <lightning-formatted-number value={totalSelected} format-style="currency" currency-code="EUR">
+                                </lightning-formatted-number>
+                            </span>
+                        </span>
+
+                        <template lwc:if={hasFactureMontant}>
+                            <span class="pf-total-item">
+                                <span class="pf-total-label">Montant HT attendu (facture + acomptes)</span>
+                                <span class="pf-amount pf-total-value">
+                                    <lightning-formatted-number value={factureMontantHT} format-style="currency" currency-code="EUR">
+                                    </lightning-formatted-number>
+                                </span>
+                            </span>
+                        </template>
+                    </div>
+
+                    <template lwc:if={hasFactureMontant}>
+                        <div class={matchRowClass}>
+                            <span class="pf-match-text">{matchLabel}</span>
+                            <span class="pf-match-ecart">
+                                Écart&nbsp;:
+                                <lightning-formatted-number value={ecartFacture} format-style="currency" currency-code="EUR">
+                                </lightning-formatted-number>
+                            </span>
+                        </div>
+                    </template>
+                </div>
+                </template>
+
+                <template lwc:else>
+                    <div class="pf-empty">
+                        <span class="pf-empty-icon">🔍</span>
+                        Aucune ligne ne correspond aux filtres.
+                    </div>
+                </template>
+            </template>
+
+            <template lwc:else>
+                <div class="pf-empty">
+                    <span class="pf-empty-icon">✨</span>
+                    Aucune ligne disponible à lier.
+                </div>
+            </template>
+        </div>
+        </template>
+
+        <!-- Lignes déjà liées -->
+        <template lwc:if={showLiees}>
+            <div class="pf-card">
+                <p class="pf-section-title">Lignes déjà liées ({lignesLiees.length})</p>
+
+                <table class="pf-table">
+                    <thead>
+                        <tr>
+                            <th>N° Facture</th>
+                            <th>Dossier</th>
+                            <th>Intervenant</th>
+                            <th>Éch.</th>
+                            <th>Bénéficiaire</th>
+                            <th>Montant HT</th>
+                            <th>Statut</th>
+                            <template lwc:if={canModify}>
+                                <th style="width: 5rem;"></th>
+                            </template>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={lignesLieesDisplay} for:item="f">
+                            <tr key={f.id} class="slds-hint-parent">
+                                <td><strong>{f.numFournisseur}</strong></td>
+                                <td>{f.dossier}</td>
+                                <td>{f.intervenant}</td>
+                                <td>{f.echeance}</td>
+                                <td>{f.destinataire}</td>
+                                <td>
+                                    <template lwc:if={f.montant}>
+                                        <span class="pf-amount">
+                                            <lightning-formatted-number value={f.montant} format-style="currency"
+                                                currency-code="EUR">
+                                            </lightning-formatted-number>
+                                        </span>
+                                    </template>
+                                    <template lwc:else><span class="pf-amount-zero">—</span></template>
+                                </td>
+                                <td><span class={f.statutBadgeClass}>{f.statut}</span></td>
+                                <template lwc:if={canModify}>
+                                    <td>
+                                        <lightning-button-icon icon-name="utility:close" variant="bare"
+                                            alternative-text="Délier" title="Délier cette ligne" data-id={f.id}
+                                            onclick={handleUnlink}>
+                                        </lightning-button-icon>
+                                    </td>
+                                </template>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        <!-- Facture en lecture seule sans aucune ligne liée -->
+        <template lwc:if={showReadOnlyEmpty}>
+            <div class="pf-card">
+                <div class="pf-empty">
+                    <span class="pf-empty-icon">📄</span>
+                    Aucune ligne de facturation liée à cette facture.
+                </div>
+            </div>
+        </template>
+
+        <template lwc:if={isEdition}>
+            <div class="pf-footer">
+                <lightning-button label="Fermer" onclick={handleClose}></lightning-button>
+                <template lwc:if={canModify}>
+                    <lightning-button class="pf-next-btn" label={linkLabel} variant="brand" disabled={linkDisabled}
+                        onclick={handleLink}>
+                    </lightning-button>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

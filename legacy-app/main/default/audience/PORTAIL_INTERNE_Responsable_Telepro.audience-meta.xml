@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audience xmlns="http://soap.sforce.com/2006/04/metadata">
+    <audienceName>PORTAIL INTERNE - Responsable Telepro</audienceName>
+    <container>business saas</container>
+    <criteria>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <profile>portail interne- responsable telepro</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+    </criteria>
+    <formulaFilterType>AnyCriterionMatches</formulaFilterType>
+    <isDefaultAudience>false</isDefaultAudience>
+    <targets>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$f8923966-61d7-4273-a012-7e275dbf9f30</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Tableau_de_bord_Component</targetValue>
+        </target>
+        <target>
+            <groupName>b99b23c8-ee41-4894-aed0-2d460cdf3bea</groupName>
+            <priority>3</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Accueil_Respo_Telepro_Page</targetValue>
+        </target>
+        <target>
+            <groupName>b4b345c7-ce1d-4148-bad2-33980e5dd09d$#$4120647d-9c0d-4177-9543-2acde18292df</groupName>
+            <priority>13</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Default_Menu_de_navigation_du_thme_9_Component_Properties</targetValue>
+        </target>
+        <target>
+            <groupName>f877d2b7-25bc-42e4-b460-4e401d63130f$#$44cf7732-3464-41d1-8e11-56e37c0ebdf1</groupName>
+            <priority>13</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Home_Menu_de_navigation_du_thme_9_Component_Properties</targetValue>
+        </target>
+    </targets>
+</Audience>
