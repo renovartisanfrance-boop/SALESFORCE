@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "b0191328-6e16-44c9-b09c-88a9e8446b5e",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Reporting_Dossiers__c",
+  "id" : "a354c47d-0086-4a2d-803f-3d8f5edef41c",
+  "label" : "Reporting Dossiers",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-reporting-dossiers",
+  "type" : "route",
+  "urlPrefix" : "reporting-dossiers"
+}

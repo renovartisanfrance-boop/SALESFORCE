@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "b4a851a1-4e49-45e9-8bd1-82a113ca443f",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Dossiers_Liste__c",
+  "id" : "14478a8e-4297-4efd-9c68-a40087da4e34",
+  "label" : "Dossiers Liste",
+  "objectApiName" : "Pro__c",
+  "routeType" : "list-a09",
+  "type" : "route",
+  "urlPrefix" : "pro"
+}

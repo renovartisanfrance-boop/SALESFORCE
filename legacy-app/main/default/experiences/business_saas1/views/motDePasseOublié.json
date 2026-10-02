@@ -1,0 +1,69 @@
+{
+  "appPageId" : "b5cd4ed0-ec55-4737-8110-040664160920",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "34b3e950-c674-4f2d-9ad2-5f2c96e3e5d1",
+  "label" : "Mot de passe oublié",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "richTextValue" : "<div style=\"text-align: center;\"><span class=\"inverseTextColor\" style=\"font-size:22px\">PASSWORD RESET</span></div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "d183d6fd-d269-4c39-9220-1b1b78a1a499",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "richTextValue" : "<div class=\"inverseTextColor\" style=\"text-align: center;\">To reset your password, we'll need your username.<br/> We'll send password reset instructions to the email address associated with your account.</div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "cbd8d9ee-4d0b-4022-9256-18c80e9af46c",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "checkEmailUrl" : "./CheckPasswordResetEmail",
+        "submitButtonLabel" : "Reset Password",
+        "usernameLabel" : "Username"
+      },
+      "componentName" : "salesforceIdentity:forgotPassword2",
+      "id" : "1163d404-058e-4499-b150-54d8db9d69cc",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : {
+        "richTextValue" : "<div style=\"text-align: center;\"><a class=\"inverseTextColor\" href=\"./\">Cancel</a></div>"
+      },
+      "componentName" : "forceCommunity:richTextInline",
+      "id" : "fd38e654-6b1e-452c-8321-ccd7cd079fbc",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "78f30e66-6892-47e3-a3e0-61a1a11ee214",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Mot de passe oublié"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "85b5d171-b371-4229-bbcd-81514327d961",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "ee8c6ea1-62ad-4260-8295-6af7265d92b0",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Login",
+  "type" : "view",
+  "viewType" : "forgot-password"
+}

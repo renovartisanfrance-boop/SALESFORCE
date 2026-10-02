@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "1d2fd61b-47b7-4172-a5a3-68ddc00601af",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "relatedlist_a09__c",
+  "id" : "472ea952-e997-4617-9714-dac8688df55c",
+  "label" : "Dossiers Liste associée",
+  "objectApiName" : "Pro__c",
+  "routeType" : "relatedlist-a09",
+  "type" : "route",
+  "urlPrefix" : "pro"
+}

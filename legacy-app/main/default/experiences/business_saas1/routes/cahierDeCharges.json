@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "b14d2ade-3da7-436b-9f1d-835c637cb35a",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Cahier_de_Charges__c",
+  "id" : "1b4150bd-22ff-4493-a7eb-ec39524cca23",
+  "label" : "Cahier de Charges",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-cahier-de-charges",
+  "type" : "route",
+  "urlPrefix" : "cahier-de-charges"
+}

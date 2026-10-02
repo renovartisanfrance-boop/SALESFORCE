@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "8df93112-9b30-444f-b062-7ab4d0e84480",
+  "label" : "Accueil - RENO GLOBALE",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "9c5b3c6c-3c17-4a0a-ba64-ebbb5887728e",
+          "columns" : [ {
+            "UUID" : "f648fc40-6a9c-4ddc-9de3-14afd83d506a",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "9c5b3c6c-3c17-4a0a-ba64-ebbb5887728e",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "typePage" : "RENO GLOBALE"
+          },
+          "componentName" : "c:securityCheck",
+          "id" : "71e4a13b-b8e2-423a-aad6-17ba23a26cc9",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "f648fc40-6a9c-4ddc-9de3-14afd83d506a",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "66f4d0ad-8b21-4bf4-b663-bcf4ef4b4d8c",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Accueil - RENO GLOBALE"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "58c362a9-11fa-4090-96f6-afb67aa29bf2",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "bf7c664d-bfdc-4c5e-8b10-c047ef1c16c3",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-accueil-reno-globale"
+}

@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "c443a817-15ad-49a0-80ca-91035235c1c8",
+    "propertyOverrides" : {
+      "activeViewId" : "5d9f37b0-d393-45a0-bd63-268965c6e53b"
+    },
+    "targetId" : "b99b23c8-ee41-4894-aed0-2d460cdf3bea",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Accueil_Accueil_Respo_Telepro_1_Page",
+  "id" : "3dfffb2d-fee1-458a-a40d-bc13436017ef",
+  "type" : "experienceVariation"
+}

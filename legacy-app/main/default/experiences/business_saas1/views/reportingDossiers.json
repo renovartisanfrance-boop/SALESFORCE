@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "b0191328-6e16-44c9-b09c-88a9e8446b5e",
+  "label" : "Reporting Dossiers",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "442f538d-a396-421e-ab7e-b4dd3ac866ec",
+          "columns" : [ {
+            "UUID" : "5eb160e8-1efa-44a1-8b1f-3abea6a8d58d",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "442f538d-a396-421e-ab7e-b4dd3ac866ec",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "isCommunityUser" : true
+          },
+          "componentName" : "c:lwc020_reporting_v2",
+          "id" : "ea43c5c3-383b-4a1a-a4c0-b3165d0cc4cf",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "5eb160e8-1efa-44a1-8b1f-3abea6a8d58d",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "4157354f-22c5-4f8f-8153-8357c339c5b7",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Reporting Dossiers"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "c7064e30-a654-463d-9344-91ad0c38b9c3",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "e7d02a39-ecee-4dec-85b6-0867185b8730",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-reporting-dossiers"
+}

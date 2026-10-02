@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "17740da6-6b04-427f-8ef3-8026ca833320",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Piste_Liste__c",
+  "id" : "cb18d1cf-141c-4482-83bb-3141eb9fb101",
+  "label" : "Piste Liste",
+  "routeType" : "list-00Q",
+  "type" : "route",
+  "urlPrefix" : "lead"
+}

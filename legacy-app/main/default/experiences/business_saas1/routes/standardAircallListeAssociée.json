@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "6a868cc2-adf3-4573-a79c-8065540fa8b8",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "relatedlist_a08__c",
+  "id" : "ef159f7f-5f3c-4935-b9e7-ef7be5ec0c4b",
+  "label" : "Standard Aircall Liste associée",
+  "objectApiName" : "Aircall__c",
+  "routeType" : "relatedlist-a08",
+  "type" : "route",
+  "urlPrefix" : "aircall"
+}

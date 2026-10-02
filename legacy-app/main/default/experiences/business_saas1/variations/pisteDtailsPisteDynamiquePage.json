@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "88cb926b-9738-4ba2-b886-f911dd83a4dc",
+    "propertyOverrides" : {
+      "activeViewId" : "d38210f3-5949-4216-8105-e8efd1d19e7e"
+    },
+    "targetId" : "bbcf3aa7-42be-4da1-ad13-f4b2f4ba5fa9",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Piste_Dtails_PisteDynamique_Page",
+  "id" : "17312501-cc0c-4d8f-9a6d-493386f82257",
+  "type" : "experienceVariation"
+}

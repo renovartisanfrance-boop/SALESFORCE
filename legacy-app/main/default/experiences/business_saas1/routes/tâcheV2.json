@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "81861c4f-5a96-4a63-bd18-8619895de8cc",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "custom_tache_v2__c",
+  "id" : "113a0998-2d77-47bc-80d6-67eb389a602e",
+  "label" : "Tâche V2",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-tache-v2",
+  "type" : "route",
+  "urlPrefix" : "tache-v2"
+}

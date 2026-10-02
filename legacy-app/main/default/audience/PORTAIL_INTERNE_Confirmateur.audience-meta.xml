@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audience xmlns="http://soap.sforce.com/2006/04/metadata">
+    <audienceName>PORTAIL INTERNE - Confirmateur- FR</audienceName>
+    <container>business saas</container>
+    <criteria>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <profile>portail interne - confirmateur</profile>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>Profile</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>2</criteriaNumber>
+            <criterionValue>
+                <entityField>$User.Pays__c</entityField>
+                <entityType>User</entityType>
+                <fieldValue>Espagne</fieldValue>
+            </criterionValue>
+            <operator>NotEqual</operator>
+            <type>FieldBased</type>
+        </criterion>
+    </criteria>
+    <formulaFilterType>AllCriteriaMatch</formulaFilterType>
+    <isDefaultAudience>false</isDefaultAudience>
+    <targets>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$61f692cc-ff7c-4975-9603-3dfce6fe8ef5</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Tableau_de_bord_2_Component</targetValue>
+        </target>
+        <target>
+            <groupName>f877d2b7-25bc-42e4-b460-4e401d63130f$#$44cf7732-3464-41d1-8e11-56e37c0ebdf1</groupName>
+            <priority>3</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Home_Menu_de_navigation_du_thme_4_Component_Properties</targetValue>
+        </target>
+        <target>
+            <groupName>b4b345c7-ce1d-4148-bad2-33980e5dd09d$#$4120647d-9c0d-4177-9543-2acde18292df</groupName>
+            <priority>3</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Default_Menu_de_navigation_du_thme_4_Component_Properties</targetValue>
+        </target>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$2f9e33d9-b264-4bd2-85e0-b346dcf27334</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Tableau_de_bord_5_Component</targetValue>
+        </target>
+    </targets>
+</Audience>

@@ -1,0 +1,15 @@
+{
+  "componentVariants" : [ {
+    "id" : "6317d41a-c36d-45e8-aa15-1324c8a3745d",
+    "propertyOverrides" : {
+      "componentAttributes" : {
+        "navigationMenuEditorRefresh" : "Portail_Closer_leds"
+      }
+    },
+    "targetId" : "4120647d-9c0d-4177-9543-2acde18292df",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Default_Menu_de_navigation_du_thme_10_Component_Properties",
+  "id" : "0f0bdc7a-2564-464f-bc98-16a86a51ec69",
+  "type" : "experienceVariation"
+}

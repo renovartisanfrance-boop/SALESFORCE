@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "2a493518-8d33-494f-8f4b-85ba5fa6da01",
+    "propertyOverrides" : {
+      "activeViewId" : "4b0e7a8a-890d-41ab-b7e4-8e9f26cabc3f"
+    },
+    "targetId" : "482b9532-a67c-4813-aaac-2ce5af9766f7",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Dossiers_Dtails_Dossiers_dtails_Secrtaires_Page",
+  "id" : "9666f7c9-a73f-4e41-87ac-71ffc049484c",
+  "type" : "experienceVariation"
+}

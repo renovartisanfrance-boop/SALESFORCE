@@ -1,0 +1,39 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "6a868cc2-adf3-4573-a79c-8065540fa8b8",
+  "label" : "Standard Aircall Liste associée",
+  "regions" : [ {
+    "id" : "698e4d96-c5b6-4332-8c5d-043c59e2b26a",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customTitle" : "",
+        "parentRecordId" : "{!recordId}",
+        "relatedListName" : "{!relationshipApiName}",
+        "showBreadCrumbs" : true,
+        "showCustomTitle" : false,
+        "showManualRefreshButton" : true,
+        "showRowNumbers" : true
+      },
+      "componentName" : "forceCommunity:relatedList",
+      "id" : "d780b991-f281-4980-9a80-00d148bc139b",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c161d8a0-82ed-4204-8d44-50cbae73746d",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "2bf8ffd5-8a19-4b18-8441-dd48a1dd144b",
+    "regionName" : "footer",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "relatedlist-a08"
+}

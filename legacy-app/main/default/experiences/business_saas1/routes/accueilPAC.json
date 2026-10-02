@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "5d06163c-46ad-4d2f-b501-dfcd92ff48fc",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "accueil_pac__c",
+  "id" : "8451ec8f-edc7-438d-b7c6-5ecd6628ab85",
+  "label" : "Accueil - PAC",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accueil-pac",
+  "type" : "route",
+  "urlPrefix" : "accueil-pac"
+}

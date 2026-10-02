@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "a2bdc0ad-c8ac-45c7-bdfc-2a523432f2fb",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Gestion_REGIES__c",
+  "id" : "9ba0420c-5ba9-4c79-8284-797b659e8f63",
+  "label" : "Gestion REGIES",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-gestion-regies",
+  "type" : "route",
+  "urlPrefix" : "gestion-regies"
+}

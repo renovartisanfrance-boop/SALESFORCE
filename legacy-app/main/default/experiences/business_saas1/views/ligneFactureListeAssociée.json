@@ -1,0 +1,39 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "43e41c9b-22f5-4d74-829a-41396f99d3f6",
+  "label" : "Ligne Facture Liste associée",
+  "regions" : [ {
+    "id" : "76de3c29-9f77-4af8-a13b-156606aedff2",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customTitle" : "",
+        "parentRecordId" : "{!recordId}",
+        "relatedListName" : "{!relationshipApiName}",
+        "showBreadCrumbs" : true,
+        "showCustomTitle" : false,
+        "showManualRefreshButton" : true,
+        "showRowNumbers" : true
+      },
+      "componentName" : "forceCommunity:relatedList",
+      "id" : "c8747953-a5d6-4197-940b-6f42f4936eaf",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c6f1f859-0c9a-4f72-965d-bedbf9c8904c",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "fe4bbcd3-c4b6-40a6-9806-6ebc477543b4",
+    "regionName" : "footer",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "relatedlist-a0I"
+}

@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audience xmlns="http://soap.sforce.com/2006/04/metadata">
+    <audienceName>LEDS- REGIES</audienceName>
+    <container>business saas</container>
+    <criteria>
+        <criterion>
+            <criteriaNumber>1</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE NOAM</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>2</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE BENJISEM</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>3</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE GENESYS</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>4</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ADH SERVICES</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>5</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE MEA ENERGIE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>6</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE YOHAN TRANSITION</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>7</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE MEYER</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>8</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE AI2S</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>9</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE REVELCO</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>10</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE PRESTIGE CALL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>11</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ELIKIA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>12</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE JANO</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>13</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE PERFORMANCE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>14</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE LAURENT LEGER</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>15</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE GB CONSULTING CALL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>16</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE EXITECH</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>17</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ISRA/OREN LEDS</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>18</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE CELIA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>19</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE AMS CONSULTING</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>20</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ECOHABITAT</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>21</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE DBSOLUTIONS</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>22</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE MK COMPANY</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>23</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE JS CALL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>24</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE NJCONSEILS</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>25</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE KALIFA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>26</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE CALL IBA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>27</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ABS DELTA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>28</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE CALL SAMIA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>29</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE EH GROUPE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>30</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE BENNY</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>31</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE AMINE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>32</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ST CALL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>33</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE TIJ CONSULTING</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>34</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ATE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>35</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE MB TELECOM</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>36</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE GEMISOLATION</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>37</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ILIAS</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>38</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE IMEN</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>39</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE BENJAMIN</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>40</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE AHMED</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>41</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE CHRISTELLE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>42</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE OPH ENERGIE</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>43</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ELI NETWORK</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>44</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE IMEL CONSULTING</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>45</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE GES MEDIA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>46</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ZAIL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>47</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE HAJER</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>48</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE DONUCALL</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>49</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ANGELA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>50</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE ARLENA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>51</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE MARCIANO 2</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>52</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE CALL LBA</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>53</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE RUBEN</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+        <criterion>
+            <criteriaNumber>54</criteriaNumber>
+            <criterionValue>
+                <entityField>LastName</entityField>
+                <entityType>User</entityType>
+                <fieldValue>REGIE SEBBAG</fieldValue>
+            </criterionValue>
+            <operator>Equal</operator>
+            <type>FieldBased</type>
+        </criterion>
+    </criteria>
+    <formulaFilterType>AnyCriterionMatches</formulaFilterType>
+    <isDefaultAudience>false</isDefaultAudience>
+    <targets>
+        <target>
+            <groupName>7992bd27-f690-40c4-98a6-074d7c5747a5$#$981f19d0-d2b0-438c-b34f-849c16377334</groupName>
+            <priority>1</priority>
+            <targetType>ExperienceVariation</targetType>
+            <targetValue>Accueil_Tableau_de_bord_7_Component</targetValue>
+        </target>
+    </targets>
+</Audience>

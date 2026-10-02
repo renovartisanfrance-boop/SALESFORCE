@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "67054719-b02c-40b9-b7e2-62dce53b12ff",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "Ligne_Facture_Liste__c",
+  "id" : "66b1e02e-27eb-4b43-a6c1-0af1c0c3d12d",
+  "label" : "Ligne Facture Liste",
+  "objectApiName" : "LigneFacture__c",
+  "routeType" : "list-a0I",
+  "type" : "route",
+  "urlPrefix" : "lignefacture"
+}

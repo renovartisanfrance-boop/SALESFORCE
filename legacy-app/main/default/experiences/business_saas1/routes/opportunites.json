@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "b721cb09-10cd-4b57-b56d-ff2c860b56f4",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "custom_opportunites__c",
+  "id" : "4ed4f621-0db4-4ef6-b225-33d5571fc09c",
+  "label" : "Opportunites",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-opportunites",
+  "type" : "route",
+  "urlPrefix" : "opportunites"
+}

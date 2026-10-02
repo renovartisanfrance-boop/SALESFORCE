@@ -1,0 +1,70 @@
+{
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "b14d2ade-3da7-436b-9f1d-835c637cb35a",
+  "label" : "Cahier de Charges",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "0314c0b3-f7e6-46bc-9ebe-18437ec3274c",
+          "columns" : [ {
+            "UUID" : "d2163d02-d05f-4c0d-9c28-36a04a5be885",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "0314c0b3-f7e6-46bc-9ebe-18437ec3274c",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : {
+            "isCommunityUser" : true
+          },
+          "componentName" : "c:lwc020_CahierCharges",
+          "id" : "06e23314-1d2a-408c-9501-100abb433c4c",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "d2163d02-d05f-4c0d-9c28-36a04a5be885",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "a6217b71-5ae7-4f3f-aff1-bb237d1c5af9",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Cahier de Charges"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "d5379a7e-6cc9-4e0c-add7-940cd92ba280",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "851e5a76-4b05-4d09-b811-b1300c91e7e4",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-cahier-de-charges"
+}

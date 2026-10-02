@@ -1,0 +1,12 @@
+{
+  "activeViewId" : "5407dec8-2267-4b68-992c-230a9c9e0258",
+  "appPageId" : "a8869280-f32f-4294-9707-5ccece917f6b",
+  "configurationTags" : [ ],
+  "devName" : "relatedlist_a0J__c",
+  "id" : "9d742019-9fa6-4b1f-8024-44b50a35af16",
+  "label" : "Facture Liste associée",
+  "objectApiName" : "Facture__c",
+  "routeType" : "relatedlist-a0J",
+  "type" : "route",
+  "urlPrefix" : "facture"
+}

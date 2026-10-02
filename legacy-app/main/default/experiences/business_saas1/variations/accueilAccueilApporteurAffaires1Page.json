@@ -1,0 +1,13 @@
+{
+  "componentVariants" : [ {
+    "id" : "c1091e5b-7e5e-431f-a4c0-ae9c91d9c925",
+    "propertyOverrides" : {
+      "activeViewId" : "baf436c0-bd51-42ef-99f1-cb214a462d4b"
+    },
+    "targetId" : "b99b23c8-ee41-4894-aed0-2d460cdf3bea",
+    "type" : "componentVariant"
+  } ],
+  "developerName" : "Accueil_Accueil_Apporteur_Affaires_1_Page",
+  "id" : "269ab4c2-f006-4437-8a33-4859c58ed5a6",
+  "type" : "experienceVariation"
+}
