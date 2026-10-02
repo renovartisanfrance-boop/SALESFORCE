@@ -5,6 +5,8 @@ Projet Salesforce (format SFDX) travaillé avec Claude Code et la méthode BMAD.
 - `force-app/` — nouveau code (architecture propre)
 - `legacy-app/` — ancien code récupéré de l'org
 - `CLAUDE.md` — règles suivies par Claude
+- `CONTRIBUTING.md` — règles pour travailler à deux
+- `journal/` — journal de bord (un fichier par session)
 
 ## Travailler à distance
 
