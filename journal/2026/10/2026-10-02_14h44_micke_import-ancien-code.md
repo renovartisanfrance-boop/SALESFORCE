@@ -20,6 +20,9 @@ Travailler depuis l'ordinateur de Micke (application Claude, onglet Code) et imp
   - 149 classes Apex, 10 triggers
   - 77 composants LWC, 11 composants Aura
   - 24 pages Visualforce, 4 composants Visualforce
+- **Sandbox `modern` demandée** (type Developer, alias CLI `modern`, job `0GRJv0000001zPdOAI`), dédiée à la modernisation.
+  Suivi / connexion une fois prête : `sf org resume sandbox --job-id 0GRJv0000001zPdOAI -o renov.artisan.france@gmail.com`.
+  Sandboxes déjà présentes, non touchées : dev4, dev5, dev6 (Developer), PCP1 (Partial Copy, la seule licence).
 - Contrôle des secrets avant envoi sur GitHub : des clés étaient écrites en clair dans le code.
   Elles ont été remplacées par `SECRET_RETIRE_DU_DEPOT_VOIR_ORG` **dans la copie du dépôt uniquement** (l'org n'est pas modifiée).
 
@@ -31,6 +34,9 @@ Travailler depuis l'ordinateur de Micke (application Claude, onglet Code) et imp
 ## Décisions prises
 
 - Import limité au code (Apex, triggers, LWC, Aura, Visualforce). Objets, champs, flows, profils : import séparé plus tard.
+- **Objectif validé par Micke** : refaire l'application avec une architecture neuve et propre, en repartant de zéro
+  et en suivant le parcours métier depuis le début (« le démarrage »). Construction dans la sandbox `modern`,
+  puis bascule de l'ancienne version vers la nouvelle. L'ancien code (`legacy-app/`) sert de référence fonctionnelle.
 - Secrets retirés de la copie versionnée : un dépôt Git garde tout l'historique, une clé poussée une fois y reste pour toujours.
 
 ## Problèmes / points d'attention
@@ -44,7 +50,9 @@ Travailler depuis l'ordinateur de Micke (application Claude, onglet Code) et imp
 
 ## Prochaines étapes
 
-- [ ] Ouvrir la Pull Request `micke/import-ancien-code` → `main` et la fusionner.
+- [ ] Fusionner la Pull Request #1 (`micke/import-ancien-code` → `main`).
+- [ ] Vérifier que la sandbox `modern` est prête et la connecter (commande ci-dessus).
+- [ ] BMAD étape 1 (analyste) : décrire le parcours métier complet, du premier contact client jusqu'au SAV.
 - [ ] Déplacer les clés de `Planification_Controller` et `IonosUsersService` vers des Named Credentials (nouveau code dans `force-app/`), puis changer les clés chez les fournisseurs.
 - [ ] Importer les métadonnées (objets, champs, flows, permission sets) dans `legacy-app/`.
 - [ ] Faire un état des lieux de l'ancien code (BMAD, rôle analyste) avant toute nouvelle fonctionnalité.
