@@ -41,6 +41,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Protection** (déployée, `0AfJv0000037kIvKAI`, 65 tests) : une erreur dans le calcul ne bloque jamais
   l'enregistrement d'une Piste (statut « Erreur de calcul : … », ou rien n'est écrit si l'erreur survient avant).
   Limite : les dépassements de limites Salesforce (CPU, requêtes) ne peuvent pas être interceptés.
+- **Champ « Retour calculateur »** sur la Piste (formule, déployé `0AfJv0000037lQHKAY`) : indice ≥ seuil zone verte
+  (3,5) → « A confirmer- A Envoyer en visite », sinon « A confirmer- Sans envoi visite », vide si pas d'indice.
+- Feuilles 1 et 2 du Google Sheet « test calculateur » : colonne O = montants du calculateur version 3.
 
 ## Fichiers touchés
 

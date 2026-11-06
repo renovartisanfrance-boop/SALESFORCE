@@ -18,6 +18,11 @@
     </customMetadataTypeAccesses>
     <fieldPermissions>
     <editable>false</editable>
+    <field>Lead.RES060_Retour_Calculateur__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+    <fieldPermissions>
+    <editable>false</editable>
     <field>Lead.RES060_Zone__c</field>
     <readable>true</readable>
   </fieldPermissions>
