@@ -42,4 +42,10 @@
         <field>T7_2020__c</field>
         <value xsi:type="xsd:double">16.5</value>
     </values>
+    <values>
+        <field>Noms_Recherche__c</field>
+        <value
+      xsi:type="xsd:string"
+    >baleares,balears,illes balears,islas baleares,mallorca,menorca,ibiza,eivissa</value>
+    </values>
 </CustomMetadata>

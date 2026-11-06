@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pistes_Avec_Fiche__c</fullName>
+    <label>Types de piste avec fiche RES060</label>
+    <inlineHelpText
+  >Noms API des types d'enregistrement de Piste calculés seulement s'ils ont une fiche RES060, séparés par ;</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fiches_RES060__c</fullName>
+    <label>Valeurs de fiche RES060</label>
+    <inlineHelpText
+  >Valeurs de « Type de dossier » ou de « PREVISITE- Fiches Résidentiel » qui désignent RES060, séparées par ;</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

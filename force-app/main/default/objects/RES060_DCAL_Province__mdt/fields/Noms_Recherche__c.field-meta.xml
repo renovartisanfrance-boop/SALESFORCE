@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Noms_Recherche__c</fullName>
+    <label>Noms recherchés dans l'adresse</label>
+    <inlineHelpText
+  >Noms séparés par des virgules, en minuscules sans accents (ex. bizkaia,vizcaya).</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

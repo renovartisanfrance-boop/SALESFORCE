@@ -42,4 +42,8 @@
         <field>T7_2020__c</field>
         <value xsi:type="xsd:double">37.7</value>
     </values>
+    <values>
+        <field>Noms_Recherche__c</field>
+        <value xsi:type="xsd:string">bizkaia,vizcaya</value>
+    </values>
 </CustomMetadata>

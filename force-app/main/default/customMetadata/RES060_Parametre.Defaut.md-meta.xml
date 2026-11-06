@@ -38,4 +38,18 @@
         <field>Multiplicateur_Bono__c</field>
         <value xsi:type="xsd:double">1.5</value>
     </values>
+    <values>
+        <field>Pistes_Toujours__c</field>
+        <value xsi:type="xsd:string">RESIDENTIEL_LEADS</value>
+    </values>
+    <values>
+        <field>Pistes_Avec_Fiche__c</field>
+        <value xsi:type="xsd:string">RESIDENTIEL_REGIES</value>
+    </values>
+    <values>
+        <field>Fiches_RES060__c</field>
+        <value
+      xsi:type="xsd:string"
+    >RESIDENTIEL_REGIES_-_RES060;🟩RES-060 PAC</value>
+    </values>
 </CustomMetadata>

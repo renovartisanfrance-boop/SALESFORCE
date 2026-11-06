@@ -42,4 +42,8 @@
         <field>T7_2020__c</field>
         <value xsi:type="xsd:double">56.4</value>
     </values>
+    <values>
+        <field>Noms_Recherche__c</field>
+        <value xsi:type="xsd:string">guadalajara</value>
+    </values>
 </CustomMetadata>

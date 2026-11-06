@@ -17,6 +17,26 @@
         <name>RES060_Parametre__mdt</name>
     </customMetadataTypeAccesses>
     <fieldPermissions>
+    <editable>false</editable>
+    <field>Lead.RES060_Zone__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+    <fieldPermissions>
+    <editable>false</editable>
+    <field>Lead.RES060_Statut__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+    <fieldPermissions>
+    <editable>false</editable>
+    <field>Lead.RES060_Province__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+    <fieldPermissions>
+    <editable>false</editable>
+    <field>Lead.RES060_Indice__c</field>
+    <readable>true</readable>
+  </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Simulation_RES060__c.Province__c</field>
         <readable>true</readable>

@@ -34,7 +34,44 @@ public with sharing class SimulationRES060Service {
     public String nom;
     public String prefixeCodePostal;
     public List<Decimal> dcal;
+    /** Noms cherchés dans une adresse (minuscules, sans accents). */
+    public List<String> noms = new List<String>();
   }
+
+  private static final Pattern CODE_POSTAL_SEUL = Pattern.compile(
+    '(?<!\\d)(\\d{4,5})(?!\\d)'
+  );
+  private static final Pattern CODE_POSTAL_TEXTE = Pattern.compile(
+    '(?<!\\d)(\\d{5})(?!\\d)'
+  );
+  private static final Map<String, String> ACCENTS = new Map<String, String>{
+    'á' => 'a',
+    'à' => 'a',
+    'â' => 'a',
+    'ä' => 'a',
+    'ã' => 'a',
+    'é' => 'e',
+    'è' => 'e',
+    'ê' => 'e',
+    'ë' => 'e',
+    'í' => 'i',
+    'ì' => 'i',
+    'î' => 'i',
+    'ï' => 'i',
+    'ó' => 'o',
+    'ò' => 'o',
+    'ô' => 'o',
+    'ö' => 'o',
+    'õ' => 'o',
+    'ú' => 'u',
+    'ù' => 'u',
+    'û' => 'u',
+    'ü' => 'u',
+    'ñ' => 'n',
+    'ç' => 'c'
+  };
+  private Pattern nomsProvinces;
+  private final Map<String, Province> provincesParNomRecherche = new Map<String, Province>();
 
   private final Parametres params;
   private final Map<String, Province> provincesParNom = new Map<String, Province>();
@@ -59,7 +96,105 @@ public with sharing class SimulationRES060Service {
       if (String.isNotBlank(p.prefixeCodePostal)) {
         provincesParPrefixe.put(p.prefixeCodePostal, p);
       }
+      for (String nom : p.noms) {
+        String n = normaliser(nom);
+        if (String.isNotBlank(n)) {
+          provincesParNomRecherche.put(n, p);
+        }
+      }
     }
+    if (!provincesParNomRecherche.isEmpty()) {
+      // Noms les plus longs d'abord : « santa cruz de tenerife » avant « tenerife ».
+      List<String> noms = new List<String>(provincesParNomRecherche.keySet());
+      noms.sort(new ParLongueurDecroissante());
+      List<String> morceaux = new List<String>();
+      for (String n : noms) {
+        morceaux.add(Pattern.quote(n));
+      }
+      nomsProvinces = Pattern.compile(
+        '(?<![a-z])(' + String.join(morceaux, '|') + ')(?![a-z])'
+      );
+    }
+  }
+
+  private class ParLongueurDecroissante implements System.Comparator<String> {
+    public Integer compare(String a, String b) {
+      return b.length() - a.length();
+    }
+  }
+
+  /**
+   * Trouve la province d'un logement.
+   * 1) Les champs « code postal » (dans l'ordre) : 5 chiffres, ou 4 si le 0 de tête a été perdu.
+   * 2) Sinon les adresses en texte libre : un code postal dont la province est aussi écrite
+   *    dans l'adresse, sinon le premier code postal reconnu, sinon le dernier nom de province écrit.
+   * Retourne null si rien n'est trouvé.
+   */
+  public String trouverProvince(
+    List<String> codesPostaux,
+    List<String> adresses
+  ) {
+    for (String cp : codesPostaux == null ? new List<String>() : codesPostaux) {
+      if (String.isBlank(cp)) {
+        continue;
+      }
+      Matcher m = CODE_POSTAL_SEUL.matcher(cp);
+      while (m.find()) {
+        Province p = provincesParPrefixe.get(
+          m.group(1).leftPad(5, '0').left(2)
+        );
+        if (p != null) {
+          return p.nom;
+        }
+      }
+    }
+    List<String> morceaux = new List<String>();
+    for (String a : adresses == null ? new List<String>() : adresses) {
+      if (String.isNotBlank(a)) {
+        morceaux.add(a);
+      }
+    }
+    if (morceaux.isEmpty()) {
+      return null;
+    }
+    String texte = String.join(morceaux, ' | ');
+
+    List<String> parCode = new List<String>();
+    Matcher mc = CODE_POSTAL_TEXTE.matcher(texte);
+    while (mc.find()) {
+      Province p = provincesParPrefixe.get(mc.group(1).left(2));
+      if (p != null) {
+        parCode.add(p.nom);
+      }
+    }
+    List<String> parNom = new List<String>();
+    if (nomsProvinces != null) {
+      Matcher mn = nomsProvinces.matcher(normaliser(texte));
+      while (mn.find()) {
+        parNom.add(provincesParNomRecherche.get(mn.group(1)).nom);
+      }
+    }
+    for (String p : parCode) {
+      if (parNom.contains(p)) {
+        return p;
+      }
+    }
+    if (!parCode.isEmpty()) {
+      return parCode[0];
+    }
+    return parNom.isEmpty() ? null : parNom[parNom.size() - 1];
+  }
+
+  /** Minuscules, sans accents, et tout ce qui n'est ni lettre ni chiffre remplacé par un espace. */
+  public static String normaliser(String texte) {
+    if (texte == null) {
+      return '';
+    }
+    String t = texte.toLowerCase();
+    for (String a : ACCENTS.keySet()) {
+      t = t.replace(a, ACCENTS.get(a));
+    }
+    return t.replaceAll('[^a-z0-9]+', ' ').trim();
   }
 
   /** Calcule toutes les simulations (avant enregistrement : aucune DML ici). */
@@ -257,6 +392,9 @@ public with sharing class SimulationRES060Service {
       Province p = new Province();
       p.nom = m.Province__c;
       p.prefixeCodePostal = m.Prefixe_Code_Postal__c;
+      if (String.isNotBlank(m.Noms_Recherche__c)) {
+        p.noms = m.Noms_Recherche__c.split(',');
+      }
       p.dcal = new List<Decimal>{
         m.T1_1940__c,
         m.T2_1941_1960__c,

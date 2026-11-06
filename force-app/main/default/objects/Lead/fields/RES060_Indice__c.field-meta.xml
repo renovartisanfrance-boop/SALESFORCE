@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RES060_Indice__c</fullName>
+    <label>RES060- Indice calculateur</label>
+    <description
+  >Rempli automatiquement par le calculateur RES060 (SimulationRES060PisteService).</description>
+    <inlineHelpText
+  >Bénéfice estimé en milliers d'euros (simulateur RES060). Recalculé à chaque changement d'une info du calculateur.</inlineHelpText>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>1</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

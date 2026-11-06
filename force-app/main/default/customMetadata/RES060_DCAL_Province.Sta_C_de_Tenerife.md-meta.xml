@@ -42,4 +42,8 @@
         <field>T7_2020__c</field>
         <value xsi:type="xsd:double">0</value>
     </values>
+    <values>
+        <field>Noms_Recherche__c</field>
+        <value xsi:type="xsd:string">tenerife,santa cruz de tenerife</value>
+    </values>
 </CustomMetadata>

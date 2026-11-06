@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RES060_Province__c</fullName>
+    <label>RES060- Province calculateur</label>
+    <description
+  >Rempli automatiquement par le calculateur RES060 (SimulationRES060PisteService).</description>
+    <inlineHelpText
+  >Province trouvée par le calculateur dans le code postal ou l'adresse.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -42,4 +42,8 @@
         <field>T7_2020__c</field>
         <value xsi:type="xsd:double">71.8</value>
     </values>
+    <values>
+        <field>Noms_Recherche__c</field>
+        <value xsi:type="xsd:string">leon</value>
+    </values>
 </CustomMetadata>
