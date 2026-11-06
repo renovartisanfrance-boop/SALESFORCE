@@ -29,10 +29,21 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   Page « Simulateur RES060 » + onglet, et page d'une simulation enregistrée. Déployé en prod (`0AfJv0000037hg1KAA`,
   18 tests Apex + 6 tests Jest).
 
+- **Lien Piste → calculateur** (déployé en prod, `0AfJv0000037joHKAQ`, 63 tests dont DoublonService_Test,
+  LeadReferenceCadastrale_Test, TriggerHandlerTest) : 4 nouvelles cases sur la Piste (RES060- Indice / Zone /
+  Statut / Province calculateur), remplies par `SimulationRES060PisteService`, appelé par `LeadTriggerHandler`
+  (1 ligne ajoutée en before insert et before update). Seules ces 4 cases sont écrites ; aucune DML en plus.
+- Périmètre : pistes RES060 seulement (internes ou externes, fiche dans Type de dossier ou PREVISITE- Fiches
+  Résidentiel) : 6 484 pistes, dont 678 avec les infos. Recalcul seulement quand une info du calculateur change.
+- Province cherchée dans le code postal (même « CP 31580 » ou sans le 0), puis dans l'adresse régie, la rue, la
+  ville et la région (code postal ou nom de province, noms en Custom Metadata). Info manquante = pas d'indice.
+- Code des Pistes resynchronisé depuis la prod dans `legacy-app/` (modifié en prod le 19/10, absent du dépôt).
+
 ## Fichiers touchés
 
 - `force-app/main/default/` (classes, triggers, objects, customMetadata, layouts, tabs, permissionsets)
 - `docs/conception/simulateur-res060.md`
+- `legacy-app/main/default/classes/LeadTriggerHandler.cls` (+ classes Doublon / Cadastre resynchronisées)
 
 ## Décisions prises
 
@@ -51,6 +62,7 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 
 - [x] Écran vérifié et validé par l'utilisateur (« Ça me va »).
 - [ ] Faire valider le simulateur par l'utilisateur sur quelques cas réels.
-- [ ] Connecteur Piste (Lead) : remplir une simulation depuis Code postal, RES- Shab, RES- Type de Chauffage,
-      RES- Année de la Maison (liste : vérifier si année ou tranche), RES- Année Chaudière, RES- Bono Social,
-      puis renvoyer l'indice dans une nouvelle case de la Piste.
+- [x] Connecteur Piste : fait et déployé.
+- [ ] Ajouter les 4 cases RES060 sur la page de la Piste et donner l'accès en lecture aux télépros / confirmateurs
+      (pour l'instant seul renov.artisan.france les voit, via le jeu d'autorisations « Simulateur RES060 »).
+- [ ] Option : recalculer d'un coup les 678 pistes RES060 déjà remplies (vérifier avant les flows SMS/email).
