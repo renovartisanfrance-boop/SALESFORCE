@@ -188,7 +188,11 @@ public with sharing class SimulationRES060PisteService {
     p.RES060_Indice__c = s.Indice__c;
     p.RES060_Zone__c = s.Zone__c;
     String statut = s.Statut__c == null ? '' : s.Statut__c;
-    if (s.Indice__c != null && bono == null) {
+    if (
+      s.Indice__c != null &&
+      bono == null &&
+      statut.startsWith(SimulationRES060Service.STATUT_ELIGIBLE)
+    ) {
       statut += BONO_INCONNU;
     }
     p.RES060_Statut__c = statut.left(255);

@@ -5,6 +5,10 @@
 @IsTest
 private class SimulationRES060ServiceTest {
   private static SimulationRES060Service service() {
+    return service(220);
+  }
+
+  private static SimulationRES060Service service(Decimal surfaceMax) {
     SimulationRES060Service.Parametres p = new SimulationRES060Service.Parametres();
     p.scop = 4;
     p.facteurFc = 2;
@@ -14,6 +18,7 @@ private class SimulationRES060ServiceTest {
     p.seuilCascadeM2 = 220;
     p.seuilZoneVerte = 3500;
     p.multiplicateurBono = 1.5;
+    p.surfaceMaxM2 = surfaceMax;
 
     SimulationRES060Service.Province madrid = new SimulationRES060Service.Province();
     madrid.nom = 'Madrid';
@@ -80,11 +85,12 @@ private class SimulationRES060ServiceTest {
 
   @IsTest
   static void calculBonoCascadeZoneVerte() {
+    // Sans limite de surface, le calcul cascade 2 PAC reste celui du simulateur.
     Simulation_RES060__c s = simulation('Madrid', 250, 1930, 'Fioul');
     s.Annee_Chaudiere__c = 1980;
     s.Bono_Social__c = true;
 
-    service().calculer(s);
+    service(null).calculer(s);
 
     Assert.areEqual(27320.54, s.Prime__c, 'prime avec bono');
     Assert.areEqual(12500, s.Cout_Pack__c, 'cascade 2 PAC');
@@ -326,5 +332,30 @@ private class SimulationRES060ServiceTest {
       SimulationRES060Service.indexTranche(null),
       'vide = ≤1940'
     );
+  }
+
+  @IsTest
+  static void surfaceAuDelaDe220IndiceAZero() {
+    Simulation_RES060__c s = simulation('Madrid', 250, 1930, 'Fioul');
+    s.Annee_Chaudiere__c = 1980;
+    s.Bono_Social__c = true;
+    Simulation_RES060__c limite = simulation('Madrid', 220, 1970, 'Gaz');
+    limite.Annee_Chaudiere__c = 1990;
+
+    service().calculer(new List<Simulation_RES060__c>{ s, limite });
+
+    Assert.areEqual(0, s.Indice__c, 'indice à 0 au-delà de 220 m²');
+    Assert.areEqual(0, s.Prime__c, 'prime à 0');
+    Assert.areEqual(
+      SimulationRES060Service.ZONE_ROUGE,
+      s.Zone__c,
+      'zone rouge'
+    );
+    Assert.isTrue(
+      s.Statut__c.startsWith('Surface supérieure à 220'),
+      s.Statut__c
+    );
+    Assert.isNull(s.DCAL__c, 'pas de détail de calcul');
+    Assert.areNotEqual(0, limite.Indice__c, '220 m² pile : calcul normal');
   }
 }

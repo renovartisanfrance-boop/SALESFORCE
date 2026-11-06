@@ -16,6 +16,7 @@ public with sharing class SimulationRES060Service {
   public static final String STATUT_PROVINCE_INCONNUE = 'Donnée manquante : province inconnue';
   public static final String STATUT_SANS_DCAL = 'Donnée manquante : pas de D_CAL publié pour cette province (Canarias)';
   public static final String STATUT_SANS_REGLAGES = 'Donnée manquante : réglages RES060 introuvables';
+  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : indice mis à 0';
 
   /** Réglages fixes du calcul. */
   public class Parametres {
@@ -27,6 +28,8 @@ public with sharing class SimulationRES060Service {
     public Decimal seuilCascadeM2;
     public Decimal seuilZoneVerte;
     public Decimal multiplicateurBono;
+    /** Au-delà de cette surface, l'indice est mis à 0 (vide = pas de limite). */
+    public Decimal surfaceMaxM2;
   }
 
   /** Une ligne du tableau D_CAL : 7 tranches d'année de la maison. */
@@ -238,6 +241,17 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_ATTENTE;
       return;
     }
+    if (params.surfaceMaxM2 != null && s.Surface__c > params.surfaceMaxM2) {
+      s.Prime__c = 0;
+      s.Benefice__c = 0;
+      s.Indice__c = 0;
+      s.Zone__c = ZONE_ROUGE;
+      s.Statut__c = String.format(
+        STATUT_SURFACE_MAX,
+        new List<Object>{ params.surfaceMaxM2.format() }
+      );
+      return;
+    }
     Province province = provincesParNom.get(s.Province__c);
     if (province == null) {
       s.Statut__c = STATUT_PROVINCE_INCONNUE;
@@ -381,6 +395,7 @@ public with sharing class SimulationRES060Service {
     p.seuilCascadeM2 = m.Seuil_Cascade_m2__c;
     p.seuilZoneVerte = m.Seuil_Zone_Verte__c;
     p.multiplicateurBono = m.Multiplicateur_Bono__c;
+    p.surfaceMaxM2 = m.Surface_Max_m2__c;
     return p;
   }
 

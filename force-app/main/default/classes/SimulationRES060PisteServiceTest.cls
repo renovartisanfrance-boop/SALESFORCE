@@ -414,4 +414,20 @@ private class SimulationRES060PisteServiceTest {
     Assert.isTrue(r.isSuccess(), 'la piste est enregistrée malgré l\'erreur');
     Assert.isNull(relire(p.Id).RES060_Statut__c, 'rien n\'est écrit');
   }
+
+  @IsTest
+  static void pisteAuDelaDe220M2() {
+    Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    Lead p = pisteAsturias('Grande');
+    p.Surface_habitable__c = 250;
+
+    insert p;
+
+    Lead lu = relire(p.Id);
+    Assert.areEqual(0, lu.RES060_Indice__c, 'indice à 0');
+    Assert.isTrue(
+      lu.RES060_Statut__c.startsWith('Surface supérieure à 220'),
+      lu.RES060_Statut__c
+    );
+  }
 }

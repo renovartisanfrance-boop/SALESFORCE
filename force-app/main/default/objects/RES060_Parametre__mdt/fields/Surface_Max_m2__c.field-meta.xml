@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Surface_Max_m2__c</fullName>
+    <label>Surface maximale (m²)</label>
+    <inlineHelpText
+  >Au-delà de cette surface habitable, l'indice est mis à 0. Vide = pas de limite.</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

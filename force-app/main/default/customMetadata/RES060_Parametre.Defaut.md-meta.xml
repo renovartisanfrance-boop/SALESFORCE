@@ -54,4 +54,8 @@
       xsi:type="xsd:string"
     >RESIDENTIEL_REGIES_-_RES060;🟩RES-060 PAC</value>
     </values>
+    <values>
+        <field>Surface_Max_m2__c</field>
+        <value xsi:type="xsd:double">220</value>
+    </values>
 </CustomMetadata>

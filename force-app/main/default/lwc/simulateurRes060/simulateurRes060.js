@@ -303,7 +303,7 @@ export default class SimulateurRes060 extends NavigationMixin(
   }
 
   get pastilles() {
-    if (!this.calcule) {
+    if (!this.calcule || this.resultat.DCAL__c == null) {
       return [];
     }
     const r = this.resultat;
@@ -323,7 +323,7 @@ export default class SimulateurRes060 extends NavigationMixin(
   }
 
   get resume() {
-    if (!this.calcule) {
+    if (!this.calcule || this.resultat.DCAL__c == null) {
       return null;
     }
     const r = this.resultat;
@@ -335,7 +335,7 @@ export default class SimulateurRes060 extends NavigationMixin(
   }
 
   get etapes() {
-    if (!this.calcule) {
+    if (!this.calcule || this.resultat.DCAL__c == null) {
       return [];
     }
     const r = this.resultat;
