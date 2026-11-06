@@ -44,6 +44,10 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Champ « Retour calculateur »** sur la Piste (formule, déployé `0AfJv0000037lQHKAY`) : indice ≥ seuil zone verte
   (3,5) → « A confirmer- A Envoyer en visite », sinon « A confirmer- Sans envoi visite », vide si pas d'indice.
 - Feuilles 1 et 2 du Google Sheet « test calculateur » : colonne O = montants du calculateur version 3.
+- **Dossiers RES060** : champ « RES060- Indice calculateur » (créé par l'utilisateur sur Pro__c) rempli sur 199 des
+  200 dossiers BAR_RES060- PAC (calcul version 3). Essai à blanc avec annulation avant : aucun prix ni commission
+  modifié par le flow GererPrix ; seuls les compteurs/drapeaux « dernière modification » repartent à zéro (accepté).
+  1 échec : a09Jv00000RkFnlIAF (règle de validation visite) → indice attendu -0,5.
 
 ## Fichiers touchés
 
