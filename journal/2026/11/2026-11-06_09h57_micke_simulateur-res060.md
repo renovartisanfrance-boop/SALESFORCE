@@ -54,11 +54,14 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Règle 220 m²** (déployée `0AfJv0000037lmrKAA`, 67 tests) : surface > `Surface_Max_m2__c` (220) → indice 0, zone rouge,
   statut « Surface supérieure à 220 m² : indice mis à 0 ». Mis à jour : 83 Pistes (essai à blanc avant : aucun
   autre champ modifié, pas de SMS/rappel effacé), 12 Dossiers, 12 lignes de la feuille 3 (199/200 identiques).
+- **DR- Provenance** (Piste, formule existante, déployée `0AfJv0000037m7pKAA`) : si télépro et régie (lookups) sont
+  vides, renvoie « Nom REGIE » (NonREGIE_miniAppAff__c). 1 185 pistes concernées, plus aucune vide avec Nom REGIE.
 
 ## Fichiers touchés
 
 - `force-app/main/default/` (classes, triggers, objects, customMetadata, layouts, tabs, permissionsets)
 - `docs/conception/simulateur-res060.md`
+- `legacy-app/main/default/objects/Lead/fields/DR_Provenance__c.field-meta.xml`
 - `legacy-app/main/default/classes/LeadTriggerHandler.cls` (+ classes Doublon / Cadastre resynchronisées)
 
 ## Décisions prises
