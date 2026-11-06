@@ -379,4 +379,39 @@ private class SimulationRES060PisteServiceTest {
       'introuvable'
     );
   }
+
+  @IsTest
+  static void erreurPendantLeCalculNeBloquePasLaPiste() {
+    Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    SimulationRES060PisteService.simulerErreurPiste = true;
+    Lead p = pisteAsturias('Erreur');
+
+    Test.startTest();
+    Database.SaveResult r = Database.insert(p, false);
+    Test.stopTest();
+
+    Assert.isTrue(r.isSuccess(), 'la piste est enregistrée malgré l\'erreur');
+    Lead lu = relire(p.Id);
+    Assert.isTrue(
+      lu.RES060_Statut__c.startsWith(
+        SimulationRES060PisteService.ERREUR_CALCUL
+      ),
+      'statut erreur de calcul'
+    );
+    Assert.isNull(lu.RES060_Indice__c, 'pas d\'indice');
+  }
+
+  @IsTest
+  static void erreurAvantLeCalculNeBloquePasLaPiste() {
+    Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    SimulationRES060PisteService.simulerErreurGlobale = true;
+    Lead p = pisteAsturias('ErreurGlobale');
+
+    Test.startTest();
+    Database.SaveResult r = Database.insert(p, false);
+    Test.stopTest();
+
+    Assert.isTrue(r.isSuccess(), 'la piste est enregistrée malgré l\'erreur');
+    Assert.isNull(relire(p.Id).RES060_Statut__c, 'rien n\'est écrit');
+  }
 }

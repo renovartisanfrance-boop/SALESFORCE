@@ -38,6 +38,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - Province cherchée dans le code postal (même « CP 31580 » ou sans le 0), puis dans l'adresse régie, la rue, la
   ville et la région (code postal ou nom de province, noms en Custom Metadata). Info manquante = pas d'indice.
 - Code des Pistes resynchronisé depuis la prod dans `legacy-app/` (modifié en prod le 19/10, absent du dépôt).
+- **Protection** (déployée, `0AfJv0000037kIvKAI`, 65 tests) : une erreur dans le calcul ne bloque jamais
+  l'enregistrement d'une Piste (statut « Erreur de calcul : … », ou rien n'est écrit si l'erreur survient avant).
+  Limite : les dépassements de limites Salesforce (CPU, requêtes) ne peuvent pas être interceptés.
 
 ## Fichiers touchés
 

@@ -7,11 +7,23 @@
  *   calculés seulement avec une fiche RES060 (Type de dossier ou PREVISITE- Fiches Résidentiel).
  * - Recalcul uniquement à la création ou quand une info utilisée par le calculateur change.
  * - Une info manquante donne « Info manquante : … » et pas d'indice.
+ * - Protection : une erreur dans le calcul ne bloque jamais l'enregistrement de la Piste
+ *   (statut « Erreur de calcul », ou rien n'est écrit si l'erreur survient avant le calcul).
  */
 public with sharing class SimulationRES060PisteService {
   public static final String INFO_MANQUANTE = 'Info manquante : ';
   public static final String NON_ELIGIBLE_PAC = 'Non éligible : déjà équipé d\'une pompe à chaleur';
   public static final String BONO_INCONNU = ' · bono non renseigné (calculé à Non)';
+  public static final String ERREUR_CALCUL = 'Erreur de calcul : ';
+
+  /** Pour les tests : provoque une erreur avant le calcul ou pendant le calcul d'une piste. */
+  @TestVisible
+  private static Boolean simulerErreurGlobale = false;
+  @TestVisible
+  private static Boolean simulerErreurPiste = false;
+
+  private class ErreurSimuleeException extends Exception {
+  }
 
   /** Champs de la Piste lus par le calculateur : un changement relance le calcul. */
   private static final List<Schema.SObjectField> CHAMPS_SUIVIS = new List<Schema.SObjectField>{
@@ -48,7 +60,18 @@ public with sharing class SimulationRES060PisteService {
 
   /** Point d'entrée du trigger (before insert : anciennes = null). */
   public static void calculer(List<Lead> pistes, Map<Id, Lead> anciennes) {
-    new SimulationRES060PisteService().traiter(pistes, anciennes);
+    try {
+      new SimulationRES060PisteService().traiter(pistes, anciennes);
+    } catch (Exception e) {
+      // Le calculateur ne doit jamais empêcher d'enregistrer une Piste.
+      System.debug(
+        LoggingLevel.ERROR,
+        'Calculateur RES060 ignoré : ' +
+          e.getMessage() +
+          ' | ' +
+          e.getStackTraceString()
+      );
+    }
   }
 
   public void traiter(List<Lead> pistes, Map<Id, Lead> anciennes) {
@@ -61,6 +84,9 @@ public with sharing class SimulationRES060PisteService {
     }
     if (aTraiter.isEmpty()) {
       return;
+    }
+    if (simulerErreurGlobale) {
+      throw new ErreurSimuleeException('erreur simulée (test)');
     }
     RES060_Parametre__mdt params = selector.getParametres();
     if (params == null) {
@@ -80,7 +106,16 @@ public with sharing class SimulationRES060PisteService {
         toujours.contains(nomType) ||
         (avecFiche.contains(nomType) && aFicheRes060(p, fiches));
       if (dansPerimetre) {
-        calculerPiste(p);
+        try {
+          calculerPiste(p);
+        } catch (Exception e) {
+          vider(p);
+          p.RES060_Statut__c = (ERREUR_CALCUL + e.getMessage()).left(255);
+          System.debug(
+            LoggingLevel.ERROR,
+            'Calculateur RES060, piste ' + p.Id + ' : ' + e.getMessage()
+          );
+        }
       } else if (p.RES060_Statut__c != null || p.RES060_Indice__c != null) {
         vider(p);
       }
@@ -92,6 +127,9 @@ public with sharing class SimulationRES060PisteService {
       service = new SimulationRES060Service(selector);
     }
     vider(p);
+    if (simulerErreurPiste) {
+      throw new ErreurSimuleeException('erreur simulée (test)');
+    }
     String province = service.trouverProvince(
       new List<String>{ p.PostalCode },
       new List<String>{ p.REGIE_Adresse_Client__c, p.Street, p.City, p.State }
