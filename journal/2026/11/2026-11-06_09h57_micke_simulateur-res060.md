@@ -61,6 +61,8 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   (règle « année 4 chiffres »), toutes en info manquante. 651 pistes RES060 ont un indice : 205 visite, 446 sans.
 - Champ « RES060- Retour calculateur » modifié en prod par l'utilisateur (pastilles 🟩/🟫, libellé) : recopié dans
   le dépôt, ainsi que le champ Pro__c.RES060_Indice_calculateur__c créé par l'utilisateur.
+- Feuilles 1 et 2 (lignes retriées par l'utilisateur, montants restés sur leur ligne) : colonne O alignée sur le
+  calculateur Salesforce, règle 220 m² appliquée (75 lignes feuille 1, 4 lignes feuille 2).
 
 ## Fichiers touchés
 
