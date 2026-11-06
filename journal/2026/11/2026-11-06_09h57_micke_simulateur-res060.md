@@ -51,6 +51,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Bono social = « RES- Bono Social Final » uniquement** (décision utilisateur) pour les dossiers : 26 indices
   recalculés et mis à jour (vide ou « Je ne sais pas » = Non, 146 dossiers). Feuille 3 colonne C remplacée par
   les mêmes valeurs : 199/200 identiques au Salesforce (le 200e est le dossier bloqué par la règle de visite).
+- **Règle 220 m²** (déployée `0AfJv0000037lmrKAA`, 67 tests) : surface > `Surface_Max_m2__c` (220) → indice 0, zone rouge,
+  statut « Surface supérieure à 220 m² : indice mis à 0 ». Mis à jour : 83 Pistes (essai à blanc avant : aucun
+  autre champ modifié, pas de SMS/rappel effacé), 12 Dossiers, 12 lignes de la feuille 3 (199/200 identiques).
 
 ## Fichiers touchés
 
