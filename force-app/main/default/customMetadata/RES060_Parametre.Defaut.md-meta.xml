@@ -40,11 +40,13 @@
     </values>
     <values>
         <field>Pistes_Toujours__c</field>
-        <value xsi:type="xsd:string">RESIDENTIEL_LEADS</value>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>Pistes_Avec_Fiche__c</field>
-        <value xsi:type="xsd:string">RESIDENTIEL_REGIES</value>
+        <value
+      xsi:type="xsd:string"
+    >RESIDENTIEL_LEADS;RESIDENTIEL_REGIES</value>
     </values>
     <values>
         <field>Fiches_RES060__c</field>

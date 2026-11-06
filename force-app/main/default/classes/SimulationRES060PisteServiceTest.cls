@@ -26,10 +26,11 @@ private class SimulationRES060PisteServiceTest {
       .getRecordTypeId();
   }
 
-  /** Piste interne complète : Asturias trouvée dans l'adresse (pas de code postal saisi). */
+  /** Piste interne RES060 complète : Asturias trouvée dans l'adresse (pas de code postal saisi). */
   private static Lead pisteAsturias(String nom) {
     return new Lead(
       RecordTypeId = typePiste('RESIDENTIEL_LEADS'),
+      TypeDeDossier__c = Constants.FICHE_PISTE_060,
       LastName = nom,
       Company = 'Foyer ' + nom,
       Street = 'LG TEJERO 18[A] 33875 TINEO [ASTURIAS]',
@@ -145,16 +146,47 @@ private class SimulationRES060PisteServiceTest {
   @IsTest
   static void perimetre() {
     Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    Lead interneSansFiche = pisteAsturias('Interne1');
+    interneSansFiche.TypeDeDossier__c = null;
+    Lead interneFichePrevisite = pisteAsturias('Interne2');
+    interneFichePrevisite.TypeDeDossier__c = null;
+    interneFichePrevisite.PREVISITE_Fiche_Residentiel__c = '🟩RES-060 PAC';
+    Lead interneAutreFiche = pisteAsturias('Interne3');
+    interneAutreFiche.TypeDeDossier__c = null;
+    interneAutreFiche.PREVISITE_Fiche_Residentiel__c = '🟩BAR TH171- PAC Individuelle';
     Lead externeSansFiche = pisteAsturias('Externe1');
     externeSansFiche.RecordTypeId = typePiste('RESIDENTIEL_REGIES');
+    externeSansFiche.TypeDeDossier__c = null;
     Lead externeAvecFiche = pisteAsturias('Externe2');
     externeAvecFiche.RecordTypeId = typePiste('RESIDENTIEL_REGIES');
-    externeAvecFiche.TypeDeDossier__c = Constants.FICHE_PISTE_060;
 
     Test.startTest();
-    insert new List<Lead>{ externeSansFiche, externeAvecFiche };
+    insert new List<Lead>{
+      interneSansFiche,
+      externeSansFiche,
+      externeAvecFiche
+    };
+    // La fiche prévisite est soumise à des règles de validation : calcul testé sans enregistrer.
+    new SimulationRES060PisteService()
+      .traiter(
+        new List<Lead>{ interneFichePrevisite, interneAutreFiche },
+        null
+      );
     Test.stopTest();
 
+    Assert.isNull(
+      relire(interneSansFiche.Id).RES060_Statut__c,
+      'interne sans fiche RES060 : pas de calcul'
+    );
+    Assert.areEqual(
+      2.9,
+      interneFichePrevisite.RES060_Indice__c,
+      'fiche prévisite RES-060 : calcul'
+    );
+    Assert.isNull(
+      interneAutreFiche.RES060_Statut__c,
+      'autre fiche : pas de calcul'
+    );
     Assert.isNull(
       relire(externeSansFiche.Id).RES060_Statut__c,
       'externe sans fiche : pas de calcul'
@@ -164,6 +196,21 @@ private class SimulationRES060PisteServiceTest {
       relire(externeAvecFiche.Id).RES060_Indice__c,
       'externe avec fiche RES060 : calcul'
     );
+  }
+
+  @IsTest
+  static void ficheRetireeVideLesCases() {
+    Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    Lead p = pisteAsturias('Retrait');
+    insert p;
+
+    Test.startTest();
+    update new Lead(Id = p.Id, TypeDeDossier__c = null);
+    Test.stopTest();
+
+    Lead lu = relire(p.Id);
+    Assert.isNull(lu.RES060_Indice__c, 'indice effacé');
+    Assert.isNull(lu.RES060_Statut__c, 'statut effacé');
   }
 
   @IsTest
