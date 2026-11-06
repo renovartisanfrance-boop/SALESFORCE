@@ -49,7 +49,7 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 
 ## Prochaines étapes
 
-- [ ] Vérifier l'écran dans Salesforce (onglet « Simulateur RES060 ») — non vu par Claude (navigateur non connecté).
+- [x] Écran vérifié et validé par l'utilisateur (« Ça me va »).
 - [ ] Faire valider le simulateur par l'utilisateur sur quelques cas réels.
 - [ ] Connecteur Piste (Lead) : remplir une simulation depuis Code postal, RES- Shab, RES- Type de Chauffage,
       RES- Année de la Maison (liste : vérifier si année ou tranche), RES- Année Chaudière, RES- Bono Social,
