@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DR_Provenance__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+  AND(NOT(ISBLANK(ConfirmateurLookup__r.LastName)), NOT(ISBLANK(Regie__r.LastName))),
+  ConfirmateurLookup__r.LastName &amp; &quot;, &quot; &amp; Regie__r.LastName,
+  IF(
+    NOT(ISBLANK(ConfirmateurLookup__r.LastName)),
+    ConfirmateurLookup__r.LastName,
+    IF(
+      NOT(ISBLANK(Regie__r.LastName)),
+      Regie__r.LastName,
+      NonREGIE_miniAppAff__c
+    )
+  )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>DR- Provenance</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
