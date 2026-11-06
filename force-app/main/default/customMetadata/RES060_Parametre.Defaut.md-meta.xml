@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Défaut</label>
+    <protected>false</protected>
+    <values>
+        <field>SCOP__c</field>
+        <value xsi:type="xsd:double">4</value>
+    </values>
+    <values>
+        <field>Facteur_fC__c</field>
+        <value xsi:type="xsd:double">2</value>
+    </values>
+    <values>
+        <field>Prix_Valorisation_Defaut__c</field>
+        <value xsi:type="xsd:double">155</value>
+    </values>
+    <values>
+        <field>Cout_Pack_1_PAC__c</field>
+        <value xsi:type="xsd:double">6600</value>
+    </values>
+    <values>
+        <field>Cout_Pack_Cascade__c</field>
+        <value xsi:type="xsd:double">12500</value>
+    </values>
+    <values>
+        <field>Seuil_Cascade_m2__c</field>
+        <value xsi:type="xsd:double">220</value>
+    </values>
+    <values>
+        <field>Seuil_Zone_Verte__c</field>
+        <value xsi:type="xsd:double">3500</value>
+    </values>
+    <values>
+        <field>Multiplicateur_Bono__c</field>
+        <value xsi:type="xsd:double">1.5</value>
+    </values>
+</CustomMetadata>

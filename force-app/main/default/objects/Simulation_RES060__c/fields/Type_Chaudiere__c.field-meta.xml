@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_Chaudiere__c</fullName>
+    <label>Type de chaudière</label>
+    <inlineHelpText>Bois / pellets : non éligible.</inlineHelpText>
+    <type>Picklist</type>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Gaz</fullName>
+                <default>true</default>
+                <label>Gaz</label>
+            </value>
+            <value>
+                <fullName>Fioul</fullName>
+                <default>false</default>
+                <label>Gasóleo (fioul)</label>
+            </value>
+            <value>
+                <fullName>Charbon</fullName>
+                <default>false</default>
+                <label>Charbon</label>
+            </value>
+            <value>
+                <fullName>Electrique</fullName>
+                <default>false</default>
+                <label>Électrique</label>
+            </value>
+            <value>
+                <fullName>Bois</fullName>
+                <default>false</default>
+                <label>Bois / pellets (non éligible)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

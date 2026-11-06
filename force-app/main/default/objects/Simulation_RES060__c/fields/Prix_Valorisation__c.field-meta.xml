@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prix_Valorisation__c</fullName>
+    <label>Prix de valorisation (€/MWh)</label>
+    <inlineHelpText
+  >Prix auquel l'énergie économisée est payée. Vide = prix par défaut (155 €/MWh).</inlineHelpText>
+    <type>Number</type>
+    <precision>8</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

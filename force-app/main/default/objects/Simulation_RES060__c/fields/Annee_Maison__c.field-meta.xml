@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Annee_Maison__c</fullName>
+    <label>Année de la maison</label>
+    <inlineHelpText
+  >Année de construction. Vide = 1940 ou avant (valeur maximale).</inlineHelpText>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

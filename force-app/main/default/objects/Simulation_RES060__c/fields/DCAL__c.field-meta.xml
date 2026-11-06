@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DCAL__c</fullName>
+    <label>D_CAL (kWh/m²·an)</label>
+    <inlineHelpText
+  >Demande de chauffage selon la province et l'année de la maison.</inlineHelpText>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>1</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

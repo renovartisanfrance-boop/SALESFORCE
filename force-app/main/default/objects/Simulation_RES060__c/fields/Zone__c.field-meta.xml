@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zone__c</fullName>
+    <label>Zone</label>
+    <inlineHelpText>Verte si bénéfice ≥ 3 500 €, sinon rouge.</inlineHelpText>
+    <type>Text</type>
+    <length>60</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

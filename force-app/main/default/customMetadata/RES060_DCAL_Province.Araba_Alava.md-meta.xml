@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+  xmlns="http://soap.sforce.com/2006/04/metadata"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Araba/Álava</label>
+    <protected>false</protected>
+    <values>
+        <field>Province__c</field>
+        <value xsi:type="xsd:string">Araba/Álava</value>
+    </values>
+    <values>
+        <field>Prefixe_Code_Postal__c</field>
+        <value xsi:type="xsd:string">01</value>
+    </values>
+    <values>
+        <field>T1_1940__c</field>
+        <value xsi:type="xsd:double">240.3</value>
+    </values>
+    <values>
+        <field>T2_1941_1960__c</field>
+        <value xsi:type="xsd:double">223.9</value>
+    </values>
+    <values>
+        <field>T3_1961_1980__c</field>
+        <value xsi:type="xsd:double">217.4</value>
+    </values>
+    <values>
+        <field>T4_1981_2007__c</field>
+        <value xsi:type="xsd:double">138.1</value>
+    </values>
+    <values>
+        <field>T5_2008_2012__c</field>
+        <value xsi:type="xsd:double">94.4</value>
+    </values>
+    <values>
+        <field>T6_2013_2019__c</field>
+        <value xsi:type="xsd:double">75.5</value>
+    </values>
+    <values>
+        <field>T7_2020__c</field>
+        <value xsi:type="xsd:double">68</value>
+    </values>
+</CustomMetadata>
