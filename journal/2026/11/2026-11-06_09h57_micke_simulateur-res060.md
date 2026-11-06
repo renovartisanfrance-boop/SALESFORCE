@@ -48,6 +48,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   200 dossiers BAR_RES060- PAC (calcul version 3). Essai à blanc avec annulation avant : aucun prix ni commission
   modifié par le flow GererPrix ; seuls les compteurs/drapeaux « dernière modification » repartent à zéro (accepté).
   1 échec : a09Jv00000RkFnlIAF (règle de validation visite) → indice attendu -0,5.
+- **Bono social = « RES- Bono Social Final » uniquement** (décision utilisateur) pour les dossiers : 26 indices
+  recalculés et mis à jour (vide ou « Je ne sais pas » = Non, 146 dossiers). Feuille 3 colonne C remplacée par
+  les mêmes valeurs : 199/200 identiques au Salesforce (le 200e est le dossier bloqué par la règle de visite).
 
 ## Fichiers touchés
 
