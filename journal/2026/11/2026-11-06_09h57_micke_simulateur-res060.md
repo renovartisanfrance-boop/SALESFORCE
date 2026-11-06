@@ -56,6 +56,11 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   autre champ modifié, pas de SMS/rappel effacé), 12 Dossiers, 12 lignes de la feuille 3 (199/200 identiques).
 - **DR- Provenance** (Piste, formule existante, déployée `0AfJv0000037m7pKAA`) : si télépro et régie (lookups) sont
   vides, renvoie « Nom REGIE » (NonREGIE_miniAppAff__c). 1 185 pistes concernées, plus aucune vide avec Nom REGIE.
+- **Toutes les pistes RES060 calculées** (bulk, job 750Jv000019FQULIA4) : 6 282 pistes jamais calculées → 6 273 mises
+  à jour (seules les 4 cases RES060 ; essai à blanc avant : seul « DR modifs » repart à zéro, accepté). 9 refus
+  (règle « année 4 chiffres »), toutes en info manquante. 651 pistes RES060 ont un indice : 205 visite, 446 sans.
+- Champ « RES060- Retour calculateur » modifié en prod par l'utilisateur (pastilles 🟩/🟫, libellé) : recopié dans
+  le dépôt, ainsi que le champ Pro__c.RES060_Indice_calculateur__c créé par l'utilisateur.
 
 ## Fichiers touchés
 
