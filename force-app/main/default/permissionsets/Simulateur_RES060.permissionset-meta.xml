@@ -4,7 +4,11 @@
     <description
   >Accès au simulateur de marge RES060FC (objet Simulation RES060).</description>
     <hasActivationRequired>false</hasActivationRequired>
-    <customMetadataTypeAccesses>
+    <classAccesses>
+    <apexClass>SimulationRES060Controller</apexClass>
+    <enabled>true</enabled>
+  </classAccesses>
+  <customMetadataTypeAccesses>
         <enabled>true</enabled>
         <name>RES060_DCAL_Province__mdt</name>
     </customMetadataTypeAccesses>
@@ -115,4 +119,8 @@
         <tab>Simulation_RES060__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
+  <tabSettings>
+    <tab>Simulateur_RES060</tab>
+    <visibility>Visible</visibility>
+  </tabSettings>
 </PermissionSet>

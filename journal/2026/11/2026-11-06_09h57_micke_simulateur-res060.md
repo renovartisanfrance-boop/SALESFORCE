@@ -24,6 +24,11 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   tests limités aux 3 classes de test du simulateur). Jeu d'autorisations attribué à renov.artisan.france.
 - Essai en prod : SIM-00001 (Madrid, 120 m², 1970, gaz 1990) → indice 1,2, zone rouge, identique au HTML.
 
+- **Écran visuel** (composant LWC `simulateurRes060`, même style que le HTML) : calcul en direct pendant la saisie
+  (Apex `SimulationRES060Controller`, sans enregistrer), gros indice vert/rouge, détail du calcul, bouton Enregistrer.
+  Page « Simulateur RES060 » + onglet, et page d'une simulation enregistrée. Déployé en prod (`0AfJv0000037hg1KAA`,
+  18 tests Apex + 6 tests Jest).
+
 ## Fichiers touchés
 
 - `force-app/main/default/` (classes, triggers, objects, customMetadata, layouts, tabs, permissionsets)
@@ -44,6 +49,7 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 
 ## Prochaines étapes
 
+- [ ] Vérifier l'écran dans Salesforce (onglet « Simulateur RES060 ») — non vu par Claude (navigateur non connecté).
 - [ ] Faire valider le simulateur par l'utilisateur sur quelques cas réels.
 - [ ] Connecteur Piste (Lead) : remplir une simulation depuis Code postal, RES- Shab, RES- Type de Chauffage,
       RES- Année de la Maison (liste : vérifier si année ou tranche), RES- Année Chaudière, RES- Bono Social,

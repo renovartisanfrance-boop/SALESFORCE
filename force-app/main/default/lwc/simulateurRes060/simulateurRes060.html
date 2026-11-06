@@ -1,0 +1,207 @@
+<template>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <span class="k">ECONATURA</span>
+        <span class="s">Simulateur de marge — Pompe à chaleur</span>
+      </div>
+      <span class="pill-fiche">RES060FC · fC=2</span>
+    </header>
+
+    <div class="colonnes">
+      <div class="colonne">
+        <div class="card">
+          <h2 class="sec">1 · Logement</h2>
+          <div class="grid">
+            <lightning-combobox
+              label="Province"
+              data-champ="Province__c"
+              options={provinces}
+              value={saisie.Province__c}
+              placeholder="— choisir —"
+              onchange={handleChange}
+            ></lightning-combobox>
+            <lightning-input
+              type="number"
+              label="Surface habitable (m²)"
+              data-champ="Surface__c"
+              value={saisie.Surface__c}
+              min="1"
+              placeholder="Ex : 120"
+              onchange={handleChange}
+            ></lightning-input>
+            <lightning-input
+              type="number"
+              label="Année de la maison"
+              field-level-help="Vide = 1940 ou avant (valeur maximale)"
+              data-champ="Annee_Maison__c"
+              value={saisie.Annee_Maison__c}
+              placeholder="≤1940"
+              onchange={handleChange}
+            ></lightning-input>
+            <lightning-input
+              label="Code postal (facultatif)"
+              field-level-help="Sert à trouver la province si elle n'est pas choisie"
+              data-champ="Code_Postal__c"
+              value={saisie.Code_Postal__c}
+              placeholder="Ex : 28001"
+              onchange={handleChange}
+            ></lightning-input>
+          </div>
+          <template lwc:if={provinceDeduite}>
+            <p class="note">
+              Province trouvée avec le code postal : <b>{provinceDeduite}</b>
+            </p>
+          </template>
+        </div>
+
+        <div class="card">
+          <h2 class="sec">2 · Chaudière &amp; profil</h2>
+          <div class="grid">
+            <lightning-combobox
+              label="Type de chaudière"
+              data-champ="Type_Chaudiere__c"
+              options={typesChaudiere}
+              value={saisie.Type_Chaudiere__c}
+              onchange={handleChange}
+            ></lightning-combobox>
+            <lightning-input
+              type="number"
+              label="Année exacte de la chaudière"
+              data-champ="Annee_Chaudiere__c"
+              value={saisie.Annee_Chaudiere__c}
+              placeholder="Ex : 2005"
+              onchange={handleChange}
+            ></lightning-input>
+          </div>
+          <div class="field">
+            <span class="lbl-champ">Chaudière à condensation ?</span>
+            <div class="seg">
+              <button
+                data-champ="Condensation__c"
+                data-valeur="false"
+                aria-pressed={condNon}
+                onclick={handleSegment}
+              >
+                Non / inconnu
+              </button>
+              <button
+                data-champ="Condensation__c"
+                data-valeur="true"
+                aria-pressed={condOui}
+                onclick={handleSegment}
+              >
+                Oui, condensation
+              </button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl-champ"
+              >Consommateur vulnérable sévère (bono social severo) ?</span
+            >
+            <div class="seg">
+              <button
+                data-champ="Bono_Social__c"
+                data-valeur="false"
+                aria-pressed={bonoNon}
+                onclick={handleSegment}
+              >
+                Non
+              </button>
+              <button
+                data-champ="Bono_Social__c"
+                data-valeur="true"
+                aria-pressed={bonoOui}
+                onclick={handleSegment}
+              >
+                Oui (×1,5)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="sec">3 · Rémunération</h2>
+          <div class="grid">
+            <lightning-input
+              type="number"
+              step="0.01"
+              label="Prix de valorisation (€/MWh)"
+              field-level-help="Le prix auquel l'énergie économisée est payée. Vide = prix par défaut."
+              data-champ="Prix_Valorisation__c"
+              value={saisie.Prix_Valorisation__c}
+              placeholder={prixPlaceholder}
+              onchange={handleChange}
+            ></lightning-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="colonne">
+        <div class="card">
+          <h2 class="sec">4 · Indice</h2>
+          <div class={classeBarre} data-id="barre">
+            <span class="benefval" data-id="indice">{indiceTexte}</span>
+            <div class="rightcol">
+              <span class={classeStatut}>{statutTexte}</span>
+              <template lwc:if={calcule}>
+                <span class="zone" data-id="zone">{resultat.Zone__c}</span>
+              </template>
+            </div>
+          </div>
+
+          <template lwc:if={calcule}>
+            <div class="chips">
+              <template for:each={pastilles} for:item="p">
+                <span key={p.id} class="chip">{p.label}</span>
+              </template>
+            </div>
+          </template>
+
+          <template lwc:if={message}>
+            <div class={classeMessage} data-id="message">{message}</div>
+          </template>
+          <template lwc:if={erreur}>
+            <div class="badbox" data-id="erreur">{erreur}</div>
+          </template>
+
+          <template lwc:if={resume}>
+            <details class="det">
+              <summary>Voir le détail du calcul</summary>
+              <div class="dtlrow">
+                Prime : <b>{resume.prime}</b> · Coût pack :
+                <b>{resume.cout}</b> · Bénéfice :
+                <b>{resume.benefice}</b>
+              </div>
+              <div class="steps">
+                <template for:each={etapes} for:item="e">
+                  <div key={e.n} class="step">
+                    <span class="n">{e.n}</span>
+                    <div class="body">
+                      <div class="t">{e.titre}</div>
+                      <div class="calc">{e.calcul}</div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+              <div class="formula">
+                Zones : verte si bénéfice ≥ 3 500 € (prioritaire) · rouge en
+                dessous (à traiter en janvier)
+              </div>
+            </details>
+          </template>
+
+          <div class="actions">
+            <lightning-button
+              variant="brand"
+              label={libelleBouton}
+              onclick={handleEnregistrer}
+              disabled={enregistrement}
+              data-id="enregistrer"
+            ></lightning-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
