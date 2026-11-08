@@ -30,6 +30,8 @@ public with sharing class SimulationRES060Service {
     public Decimal multiplicateurBono;
     /** Au-delà de cette surface, l'indice est mis à 0 (vide = pas de limite). */
     public Decimal surfaceMaxM2;
+    /** fC utilisé pour l'indice « sans bonification » (vide = 1). */
+    public Decimal facteurFcSansBonification;
   }
 
   /** Une ligne du tableau D_CAL : 7 tranches d'année de la maison. */
@@ -207,6 +209,24 @@ public with sharing class SimulationRES060Service {
     }
   }
 
+  /** Vrai pendant le calcul « sans bonification » : fC sans bonification et pas de ×1,5 bono. */
+  private Boolean sansBonification = false;
+
+  /**
+   * Indice « sans bonification » : même calcul, mais fC sans bonification (1 par défaut)
+   * et sans multiplicateur bono social. La simulation reçue n'est pas modifiée.
+   */
+  public Decimal indiceSansBonification(Simulation_RES060__c entree) {
+    Simulation_RES060__c copie = entree.clone(false, true);
+    sansBonification = true;
+    try {
+      calculer(copie);
+    } finally {
+      sansBonification = false;
+    }
+    return copie.Indice__c;
+  }
+
   /** Calcule une simulation et remplit les champs de résultat. */
   public void calculer(Simulation_RES060__c s) {
     viderResultats(s);
@@ -269,14 +289,14 @@ public with sharing class SimulationRES060Service {
       (1 / eta.doubleValue() -
       1 / params.scop.doubleValue()) *
       surface;
-    Double multiplicateur = s.Bono_Social__c == true
+    Double multiplicateur = s.Bono_Social__c == true && !sansBonification
       ? params.multiplicateurBono.doubleValue()
       : Double.valueOf(1);
     Double prime =
       s.Prix_Valorisation__c.doubleValue() /
       1000 *
       aesKwh *
-      params.facteurFc.doubleValue() *
+      facteurFc() *
       multiplicateur;
     Boolean cascade = s.Surface__c > params.seuilCascadeM2;
     Decimal cout = cascade ? params.coutPackCascade : params.coutPack1Pac;
@@ -382,6 +402,15 @@ public with sharing class SimulationRES060Service {
     return Decimal.valueOf(valeur).setScale(decimales, RoundingMode.HALF_UP);
   }
 
+  private Double facteurFc() {
+    if (!sansBonification) {
+      return params.facteurFc.doubleValue();
+    }
+    return params.facteurFcSansBonification == null
+      ? Double.valueOf(1)
+      : params.facteurFcSansBonification.doubleValue();
+  }
+
   private static Parametres versParametres(RES060_Parametre__mdt m) {
     if (m == null) {
       return null;
@@ -396,6 +425,7 @@ public with sharing class SimulationRES060Service {
     p.seuilZoneVerte = m.Seuil_Zone_Verte__c;
     p.multiplicateurBono = m.Multiplicateur_Bono__c;
     p.surfaceMaxM2 = m.Surface_Max_m2__c;
+    p.facteurFcSansBonification = m.Facteur_fC_Sans_Bonification__c;
     return p;
   }
 

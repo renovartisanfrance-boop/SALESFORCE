@@ -358,4 +358,28 @@ private class SimulationRES060ServiceTest {
     Assert.isNull(s.DCAL__c, 'pas de détail de calcul');
     Assert.areNotEqual(0, limite.Indice__c, '220 m² pile : calcul normal');
   }
+
+  @IsTest
+  static void indiceSansBonification() {
+    SimulationRES060Service svc = service();
+    Simulation_RES060__c s = simulation('Madrid', 120, 1970, 'Gaz');
+    s.Annee_Chaudiere__c = 1990;
+    s.Bono_Social__c = true;
+    Simulation_RES060__c grande = simulation('Madrid', 250, 1970, 'Gaz');
+    grande.Annee_Chaudiere__c = 1990;
+
+    Decimal sansBonif = svc.indiceSansBonification(s);
+    Decimal sansBonifGrande = svc.indiceSansBonification(grande);
+    svc.calculer(s);
+
+    // Avec fC 2 et bono x1,5 : 7 846,27 x 1,5 - 6 600 = 5 169 € ; sans : 7 846,27 / 2 - 6 600 = -2 677 €.
+    Assert.areEqual(5.2, s.Indice__c, 'indice normal avec bono');
+    Assert.areEqual(-2.7, sansBonif, 'indice sans bonification');
+    Assert.areEqual(
+      0,
+      sansBonifGrande,
+      'règle des 220 m² aussi sans bonification'
+    );
+    Assert.isNull(grande.Indice__c, 'la simulation reçue n\'est pas modifiée');
+  }
 }

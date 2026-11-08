@@ -48,7 +48,8 @@ private class SimulationRES060PisteServiceTest {
         RES060_Indice__c,
         RES060_Zone__c,
         RES060_Statut__c,
-        RES060_Province__c
+        RES060_Province__c,
+        RES060_Indice_Sans_Bonification__c
       FROM Lead
       WHERE Id = :id
     ];
@@ -66,6 +67,11 @@ private class SimulationRES060PisteServiceTest {
     Lead lu = relire(p.Id);
     Assert.areEqual('Asturias', lu.RES060_Province__c, 'province trouvée');
     Assert.areEqual(2.9, lu.RES060_Indice__c, 'indice');
+    Assert.areEqual(
+      -1.8,
+      lu.RES060_Indice_Sans_Bonification__c,
+      'indice sans bonification (fC 1)'
+    );
     Assert.areEqual(
       SimulationRES060Service.ZONE_ROUGE,
       lu.RES060_Zone__c,

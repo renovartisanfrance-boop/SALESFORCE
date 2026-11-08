@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>Simulateur RES060</label>
-    <description
-  >Accès au simulateur de marge RES060FC (objet Simulation RES060).</description>
-    <hasActivationRequired>false</hasActivationRequired>
     <classAccesses>
-    <apexClass>SimulationRES060Controller</apexClass>
-    <enabled>true</enabled>
-  </classAccesses>
-  <customMetadataTypeAccesses>
+        <apexClass>SimulationRES060Controller</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <customMetadataTypeAccesses>
         <enabled>true</enabled>
         <name>RES060_DCAL_Province__mdt</name>
     </customMetadataTypeAccesses>
@@ -16,69 +12,56 @@
         <enabled>true</enabled>
         <name>RES060_Parametre__mdt</name>
     </customMetadataTypeAccesses>
+    <description
+  >Accès au simulateur de marge RES060FC (objet Simulation RES060).</description>
     <fieldPermissions>
-    <editable>false</editable>
-    <field>Pro__c.RES060_Indice_calculateur__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Pro__c.RES060_Tranche_Indice__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Tranche_Indice__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Retour_Calculateur__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Zone__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Statut__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Province__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-    <editable>false</editable>
-    <field>Lead.RES060_Indice__c</field>
-    <readable>true</readable>
-  </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Simulation_RES060__c.Province__c</field>
+        <editable>false</editable>
+        <field>Lead.RES060_Indice_Sans_Bonification__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Simulation_RES060__c.Code_Postal__c</field>
+        <editable>false</editable>
+        <field>Lead.RES060_Indice__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Simulation_RES060__c.Surface__c</field>
+        <editable>false</editable>
+        <field>Lead.RES060_Province__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Simulation_RES060__c.Annee_Maison__c</field>
+        <editable>false</editable>
+        <field>Lead.RES060_Retour_Calculateur__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Simulation_RES060__c.Type_Chaudiere__c</field>
+        <editable>false</editable>
+        <field>Lead.RES060_Statut__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Lead.RES060_Tranche_Indice__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Lead.RES060_Zone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Pro__c.RES060_Indice_calculateur__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Pro__c.RES060_Tranche_Indice__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Simulation_RES060__c.AES_MWh__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -88,7 +71,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Simulation_RES060__c.Condensation__c</field>
+        <field>Simulation_RES060__c.Annee_Maison__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Simulation_RES060__c.Benefice__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -98,32 +86,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Simulation_RES060__c.Prix_Valorisation__c</field>
+        <field>Simulation_RES060__c.Code_Postal__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Simulation_RES060__c.Statut__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Simulation_RES060__c.DCAL__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Simulation_RES060__c.Rendement__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Simulation_RES060__c.AES_MWh__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Simulation_RES060__c.Prime__c</field>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Condensation__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -133,7 +101,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Simulation_RES060__c.Benefice__c</field>
+        <field>Simulation_RES060__c.DCAL__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -143,9 +111,46 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Simulation_RES060__c.Prime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Prix_Valorisation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Province__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Simulation_RES060__c.Rendement__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Simulation_RES060__c.Statut__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Surface__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Type_Chaudiere__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Simulation_RES060__c.Zone__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Simulateur RES060</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>
         <allowDelete>true</allowDelete>
@@ -153,14 +158,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Simulation_RES060__c</object>
+        <viewAllFields>false</viewAllFields>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <tabSettings>
+        <tab>Simulateur_RES060</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
     <tabSettings>
         <tab>Simulation_RES060__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
-  <tabSettings>
-    <tab>Simulateur_RES060</tab>
-    <visibility>Visible</visibility>
-  </tabSettings>
 </PermissionSet>

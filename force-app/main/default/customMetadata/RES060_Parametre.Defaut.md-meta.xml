@@ -58,4 +58,8 @@
         <field>Surface_Max_m2__c</field>
         <value xsi:type="xsd:double">220</value>
     </values>
+    <values>
+        <field>Facteur_fC_Sans_Bonification__c</field>
+        <value xsi:type="xsd:double">1</value>
+    </values>
 </CustomMetadata>

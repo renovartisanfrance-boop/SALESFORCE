@@ -184,8 +184,10 @@ public with sharing class SimulationRES060PisteService {
       Condensation__c = false,
       Bono_Social__c = bono == true
     );
+    Decimal indiceSansBonification = service.indiceSansBonification(s);
     service.calculer(s);
     p.RES060_Indice__c = s.Indice__c;
+    p.RES060_Indice_Sans_Bonification__c = indiceSansBonification;
     p.RES060_Zone__c = s.Zone__c;
     String statut = s.Statut__c == null ? '' : s.Statut__c;
     if (
@@ -222,6 +224,7 @@ public with sharing class SimulationRES060PisteService {
   }
 
   private static void vider(Lead p) {
+    p.RES060_Indice_Sans_Bonification__c = null;
     p.RES060_Indice__c = null;
     p.RES060_Zone__c = null;
     p.RES060_Statut__c = null;

@@ -65,6 +65,11 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   calculateur Salesforce, règle 220 m² appliquée (75 lignes feuille 1, 4 lignes feuille 2).
 - **Champ « RES060- Tranche indice »** (formule, Piste et Dossier, déployé `0AfJv0000037mNxKAI`) : < 2,5 / 2,5-3,4 /
   3,5-4,9 / 5-6,9 / 7 et plus. Contrôlé : 655 pistes et 200 dossiers, 0 erreur de tranche.
+- **Indice sans bonification** (Piste, RES060_Indice_Sans_Bonification__c) : même calcul avec fC = 1 (réglage
+  Facteur_fC_Sans_Bonification__c) et sans bono ×1,5. Validé à blanc en prod (68 tests) ; installation bloquée par le
+  contrôle de sécurité de Claude Code, en attente de confirmation. Puis : calculer les 655 pistes déjà calculées.
+- « RES060- Retour calculateur » re-modifié en prod par l'utilisateur (✅ / 🟨) : resynchronisé, ainsi que le jeu
+  d'autorisations. Toujours comparer prod et dépôt avant de déployer.
 
 ## Fichiers touchés
 

@@ -9,8 +9,8 @@
   &quot;&quot;,
   IF(
     RES060_Indice__c &gt;= $CustomMetadata.RES060_Parametre__mdt.Defaut.Seuil_Zone_Verte__c / 1000,
-    &quot;🟩A confirmer- A Envoyer en visite&quot;,
-    &quot;🟫A confirmer- Sans envoi visite&quot;
+    &quot;✅A confirmer- A Envoyer en visite&quot;,
+    &quot;🟨A confirmer- Sans envoi visite&quot;
   )
 )</formula>
     <inlineHelpText
