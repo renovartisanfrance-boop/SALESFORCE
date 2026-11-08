@@ -72,6 +72,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   Sans bonification : 662 sous 2,5, 5 entre 2,5 et 3,4, 2 au-dessus de 3,5.
 - « RES060- Retour calculateur » re-modifié en prod par l'utilisateur (✅ / 🟨) : resynchronisé, ainsi que le jeu
   d'autorisations. Toujours comparer prod et dépôt avant de déployer.
+- **Dossiers RES060, indice sans bonification** (champ Pro__c.RES060_Indice_sans_bonification__c créé par
+  l'utilisateur, recopié dans le dépôt) : 200/200 remplis (bulk 750Jv000019KtAlIAK, 0 échec). Indices normaux
+  revérifiés : 200/200 identiques.
 
 ## Fichiers touchés
 
