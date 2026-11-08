@@ -66,8 +66,10 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Champ « RES060- Tranche indice »** (formule, Piste et Dossier, déployé `0AfJv0000037mNxKAI`) : < 2,5 / 2,5-3,4 /
   3,5-4,9 / 5-6,9 / 7 et plus. Contrôlé : 655 pistes et 200 dossiers, 0 erreur de tranche.
 - **Indice sans bonification** (Piste, RES060_Indice_Sans_Bonification__c) : même calcul avec fC = 1 (réglage
-  Facteur_fC_Sans_Bonification__c) et sans bono ×1,5. Validé à blanc en prod (68 tests) ; installation bloquée par le
-  contrôle de sécurité de Claude Code, en attente de confirmation. Puis : calculer les 655 pistes déjà calculées.
+  Facteur_fC_Sans_Bonification__c) et sans bono ×1,5. Installé (`0AfJv0000037wDdKAI`, 68 tests, sans toucher
+  « RES060- Retour calculateur » à la demande de l'utilisateur). 6 937 pistes « Type de dossier RES060 » recalculées
+  en mémoire (indices normaux identiques) ; 669 indices sans bonification écrits (bulk 750Jv000019Ku5CIAS, 0 échec).
+  Sans bonification : 662 sous 2,5, 5 entre 2,5 et 3,4, 2 au-dessus de 3,5.
 - « RES060- Retour calculateur » re-modifié en prod par l'utilisateur (✅ / 🟨) : resynchronisé, ainsi que le jeu
   d'autorisations. Toujours comparer prod et dépôt avant de déployer.
 
