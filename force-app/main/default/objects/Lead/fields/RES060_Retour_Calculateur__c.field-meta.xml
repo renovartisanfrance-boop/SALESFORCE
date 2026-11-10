@@ -8,13 +8,18 @@
   ISBLANK(RES060_Indice__c),
   &quot;&quot;,
   IF(
+    CONTAINS(RES060_Statut__c, &quot;maison après&quot;),
+    &quot;⚠️Maison après 97 · &quot;,
+    &quot;&quot;
+  ) &amp;
+  IF(
     RES060_Indice__c &gt;= $CustomMetadata.RES060_Parametre__mdt.Defaut.Seuil_Zone_Verte__c / 1000,
     &quot;✅A confirmer- A Envoyer en visite&quot;,
     &quot;🟨A confirmer- Sans envoi visite&quot;
   )
 )</formula>
     <inlineHelpText
-  >Indice ≥ 3,5 : à envoyer en visite. Indice &lt; 3,5 : sans envoi visite. Vide si l&apos;indice n&apos;est pas calculé (voir RES060- Statut calculateur).</inlineHelpText>
+  >Indice ≥ 3,5 : à envoyer en visite. Indice &lt; 3,5 : sans envoi visite. Précédé de « Maison après 97 » si la maison est construite après 1997 (indice calculé quand même). Vide si l&apos;indice n&apos;est pas calculé (voir RES060- Statut calculateur).</inlineHelpText>
     <label>RES060- Retour calculateur</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

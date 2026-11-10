@@ -10,8 +10,7 @@ import CODE_POSTAL from "@salesforce/schema/Simulation_RES060__c.Code_Postal__c"
 import SURFACE from "@salesforce/schema/Simulation_RES060__c.Surface__c";
 import ANNEE_MAISON from "@salesforce/schema/Simulation_RES060__c.Annee_Maison__c";
 import TYPE_CHAUDIERE from "@salesforce/schema/Simulation_RES060__c.Type_Chaudiere__c";
-import ANNEE_CHAUDIERE from "@salesforce/schema/Simulation_RES060__c.Annee_Chaudiere__c";
-import CONDENSATION from "@salesforce/schema/Simulation_RES060__c.Condensation__c";
+import MITOYENNETE from "@salesforce/schema/Simulation_RES060__c.Mitoyennete__c";
 import BONO from "@salesforce/schema/Simulation_RES060__c.Bono_Social__c";
 import PRIX from "@salesforce/schema/Simulation_RES060__c.Prix_Valorisation__c";
 
@@ -21,15 +20,13 @@ const CHAMPS = [
   SURFACE,
   ANNEE_MAISON,
   TYPE_CHAUDIERE,
-  ANNEE_CHAUDIERE,
-  CONDENSATION,
+  MITOYENNETE,
   BONO,
   PRIX
 ];
 const CHAMPS_NOMBRE = new Set([
   "Surface__c",
   "Annee_Maison__c",
-  "Annee_Chaudiere__c",
   "Prix_Valorisation__c"
 ]);
 const DELAI_CALCUL_MS = 300;
@@ -74,8 +71,7 @@ export default class SimulateurRes060 extends NavigationMixin(
     Surface__c: null,
     Annee_Maison__c: null,
     Type_Chaudiere__c: "Gaz",
-    Annee_Chaudiere__c: 2005,
-    Condensation__c: false,
+    Mitoyennete__c: null,
     Bono_Social__c: false,
     Prix_Valorisation__c: null
   };
@@ -84,6 +80,7 @@ export default class SimulateurRes060 extends NavigationMixin(
   enregistrement = false;
   provinces = [];
   typesChaudiere = [];
+  mitoyennetes = [];
   minuterie;
 
   @wire(getObjectInfo, { objectApiName: SIMULATION })
@@ -112,6 +109,19 @@ export default class SimulateurRes060 extends NavigationMixin(
         label: v.label,
         value: v.value
       }));
+    }
+  }
+
+  @wire(getPicklistValues, {
+    recordTypeId: "$objectInfo.data.defaultRecordTypeId",
+    fieldApiName: MITOYENNETE
+  })
+  wiredMitoyennetes({ data }) {
+    if (data) {
+      this.mitoyennetes = [
+        { label: "Non renseignée (−5 %)", value: "" },
+        ...data.values.map((v) => ({ label: v.label, value: v.value }))
+      ];
     }
   }
 
@@ -226,12 +236,6 @@ export default class SimulateurRes060 extends NavigationMixin(
       : "Enregistrer la simulation";
   }
 
-  get condNon() {
-    return String(!this.saisie.Condensation__c);
-  }
-  get condOui() {
-    return String(Boolean(this.saisie.Condensation__c));
-  }
   get bonoNon() {
     return String(!this.saisie.Bono_Social__c);
   }
@@ -287,13 +291,32 @@ export default class SimulateurRes060 extends NavigationMixin(
     return this.statutTexte === "En attente" ? "status" : "status ko";
   }
 
+  get maisonApres() {
+    return (this.resultat?.Statut__c || "").includes("maison après");
+  }
+
   get message() {
     const s = this.resultat?.Statut__c || "";
+    if (this.maisonApres && s.startsWith("Éligible")) {
+      return "Maison construite après 1997 : hors cible. Indice calculé à titre indicatif.";
+    }
     return s && !s.startsWith("Éligible") ? s : null;
   }
 
   get classeMessage() {
     return this.statutTexte === "Non éligible" ? "badbox" : "warnbox";
+  }
+
+  get mitoyenneteTexte() {
+    const v = this.saisie.Mitoyennete__c;
+    const choix = this.mitoyennetes.find((m) => m.value && m.value === v);
+    if (!choix) {
+      return "mitoyenneté non renseignée −5 %";
+    }
+    if (v.startsWith("Aislada")) {
+      return "maison isolée";
+    }
+    return v.includes("dos") ? "2 mitoyens −15 %" : "1 mitoyen −5 %";
   }
 
   get provinceDeduite() {
@@ -308,10 +331,12 @@ export default class SimulateurRes060 extends NavigationMixin(
     }
     const r = this.resultat;
     const liste = [
-      "D_CAL " + nombre(r.DCAL__c, 1) + " kWh/m²",
+      "D_CAL ×1,3 " + nombre(r.DCAL__c, 1) + " kWh/m²",
+      "+11 eau chaude",
       "η = " + nombre(r.Rendement__c, 2),
-      "fC ×2",
-      nombre(r.Prix_Valorisation__c) + " €/MWh"
+      "fM ×2",
+      nombre(r.Prix_Valorisation__c) + " €/MWh",
+      this.mitoyenneteTexte
     ];
     if (this.saisie.Bono_Social__c) {
       liste.push("vuln ×1,5");
@@ -351,7 +376,7 @@ export default class SimulateurRes060 extends NavigationMixin(
           r.Province__c +
           ", millésime " +
           tranche(s.Annee_Maison__c) +
-          " → " +
+          " → barème × 1,3 = " +
           nombre(r.DCAL__c, 1) +
           " kWh/m²·an"
       },
@@ -360,15 +385,13 @@ export default class SimulateurRes060 extends NavigationMixin(
         titre: "Rendement chaudière (η)",
         calcul:
           (s.Type_Chaudiere__c || "") +
-          (s.Annee_Chaudiere__c ? " " + s.Annee_Chaudiere__c : "") +
-          (s.Condensation__c ? " condensation" : "") +
-          " → η = " +
+          " → η fixe = " +
           nombre(r.Rendement__c, 2)
       },
       {
         n: "3",
         titre: "AES — épargne annuelle",
-        calcul: "D_CAL × S × (1/η − 1/SCOP) = " + aes + " MWh/an"
+        calcul: "(D_CAL + 11) × S × (1/η − 1/SCOP) = " + aes + " MWh/an"
       },
       {
         n: "4",
@@ -376,18 +399,20 @@ export default class SimulateurRes060 extends NavigationMixin(
         calcul:
           "AES " +
           aes +
-          " MWh × fC 2" +
+          " MWh × fM 2" +
           (s.Bono_Social__c ? " × 1,5" : "") +
           " × " +
           nombre(r.Prix_Valorisation__c) +
-          " €/MWh = " +
+          " €/MWh (" +
+          this.mitoyenneteTexte +
+          ") = " +
           euros(r.Prime__c)
       },
       {
         n: "5",
         titre: "Coût pack",
         calcul:
-          (cascade ? "Cascade 2 PAC (>220 m²)" : "1 PAC (≤220 m²)") +
+          (cascade ? "Cascade 2 PAC (>210 m²)" : "1 PAC (≤210 m²)") +
           " = " +
           euros(r.Cout_Pack__c)
       },

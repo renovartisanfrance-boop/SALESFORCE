@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DACS_kWh_m2__c</fullName>
+    <label>D_ACS eau chaude (kWh/m²·an)</label>
+    <inlineHelpText
+  >Ajouté au D_CAL majoré (eau chaude sanitaire). Vide = 0.</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>1</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

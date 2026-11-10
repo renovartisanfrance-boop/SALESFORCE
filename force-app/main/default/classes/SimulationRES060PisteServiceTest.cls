@@ -1,6 +1,7 @@
 /**
  * Tests du calculateur RES060 sur la Piste (via LeadTrigger / LeadTriggerHandler).
- * Valeurs attendues obtenues avec le simulateur HTML (version 3, 155 €/MWh).
+ * Valeurs attendues recalculées avec la formule RES060_FM (D_CAL × 1,3 + 11, η 0,70, fM 2, 160 €/MWh,
+ * mitoyenneté non renseignée = −5 %), à partir des réglages de l'org.
  */
 @IsTest
 private class SimulationRES060PisteServiceTest {
@@ -66,14 +67,14 @@ private class SimulationRES060PisteServiceTest {
 
     Lead lu = relire(p.Id);
     Assert.areEqual('Asturias', lu.RES060_Province__c, 'province trouvée');
-    Assert.areEqual(2.9, lu.RES060_Indice__c, 'indice');
+    Assert.areEqual(5.0, lu.RES060_Indice__c, 'indice');
     Assert.areEqual(
-      -1.8,
+      5.0,
       lu.RES060_Indice_Sans_Bonification__c,
-      'indice sans bonification (fC 1)'
+      'indice sans bonification (sans bono : identique)'
     );
     Assert.areEqual(
-      SimulationRES060Service.ZONE_ROUGE,
+      SimulationRES060Service.ZONE_VERTE,
       lu.RES060_Zone__c,
       'zone'
     );
@@ -120,7 +121,7 @@ private class SimulationRES060PisteServiceTest {
       apresBono.RES060_Province__c,
       'le code postal saisi est prioritaire'
     );
-    Assert.areEqual(6.0, apresBono.RES060_Indice__c, 'indice recalculé');
+    Assert.areEqual(10.5, apresBono.RES060_Indice__c, 'indice recalculé');
     Assert.areEqual(
       SimulationRES060Service.ZONE_VERTE,
       apresBono.RES060_Zone__c,
@@ -185,7 +186,7 @@ private class SimulationRES060PisteServiceTest {
       'interne sans fiche RES060 : pas de calcul'
     );
     Assert.areEqual(
-      2.9,
+      5.0,
       interneFichePrevisite.RES060_Indice__c,
       'fiche prévisite RES-060 : calcul'
     );
@@ -198,7 +199,7 @@ private class SimulationRES060PisteServiceTest {
       'externe sans fiche : pas de calcul'
     );
     Assert.areEqual(
-      2.9,
+      5.0,
       relire(externeAvecFiche.Id).RES060_Indice__c,
       'externe avec fiche RES060 : calcul'
     );
@@ -236,7 +237,7 @@ private class SimulationRES060PisteServiceTest {
       'PAC'
     );
     Lead lu = relire(bono.Id);
-    Assert.areEqual(2.9, lu.RES060_Indice__c, 'bono inconnu calculé à Non');
+    Assert.areEqual(5.0, lu.RES060_Indice__c, 'bono inconnu calculé à Non');
     Assert.isTrue(
       lu.RES060_Statut__c.endsWith(SimulationRES060PisteService.BONO_INCONNU),
       'avertissement bono'
@@ -256,7 +257,7 @@ private class SimulationRES060PisteServiceTest {
     Test.stopTest();
 
     for (Lead l : [SELECT RES060_Indice__c FROM Lead WHERE Id IN :lot]) {
-      Assert.areEqual(2.9, l.RES060_Indice__c, 'chaque piste est calculée');
+      Assert.areEqual(5.0, l.RES060_Indice__c, 'chaque piste est calculée');
     }
   }
 
@@ -422,18 +423,58 @@ private class SimulationRES060PisteServiceTest {
   }
 
   @IsTest
-  static void pisteAuDelaDe220M2() {
+  static void pisteAuDelaDe320M2() {
     Test.setMock(HttpCalloutMock.class, new BouchonCallout());
     Lead p = pisteAsturias('Grande');
-    p.Surface_habitable__c = 250;
+    p.Surface_habitable__c = 350;
 
     insert p;
 
     Lead lu = relire(p.Id);
     Assert.areEqual(0, lu.RES060_Indice__c, 'indice à 0');
     Assert.isTrue(
-      lu.RES060_Statut__c.startsWith('Surface supérieure à 220'),
+      lu.RES060_Statut__c.startsWith('Surface supérieure à 320'),
       lu.RES060_Statut__c
+    );
+  }
+
+  @IsTest
+  static void mitoyenneteEtMaisonApres97() {
+    Test.setMock(HttpCalloutMock.class, new BouchonCallout());
+    Lead p = pisteAsturias('Recente');
+    p.RES_Anne_maison__c = '2005';
+    p.RES060_Mitoyenn__c = SimulationRES060Service.MITOYENNETE_AUCUNE;
+    insert p;
+    Lead isolee = [
+      SELECT RES060_Indice__c, RES060_Statut__c, RES060_Retour_Calculateur__c
+      FROM Lead
+      WHERE Id = :p.Id
+    ];
+
+    Test.startTest();
+    update new Lead(
+      Id = p.Id,
+      RES060_Mitoyenn__c = SimulationRES060Service.MITOYENNETE_2_COTES
+    );
+    Test.stopTest();
+
+    Assert.areEqual(
+      0.3,
+      isolee.RES060_Indice__c,
+      'maison 2005 calculée quand même'
+    );
+    Assert.isTrue(
+      isolee.RES060_Statut__c.contains('maison après 1997'),
+      isolee.RES060_Statut__c
+    );
+    Assert.isTrue(
+      isolee.RES060_Retour_Calculateur__c.startsWith('⚠️Maison après 97'),
+      isolee.RES060_Retour_Calculateur__c
+    );
+    Assert.areEqual(
+      -0.7,
+      relire(p.Id).RES060_Indice__c,
+      'recalcul quand la mitoyenneté change (−15 %)'
     );
   }
 }

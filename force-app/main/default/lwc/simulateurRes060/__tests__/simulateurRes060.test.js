@@ -11,14 +11,14 @@ jest.mock(
 
 const RESULTAT_ROUGE = {
   Province__c: "Madrid",
-  Prix_Valorisation__c: 155,
-  DCAL__c: 163.7,
-  Rendement__c: 0.65,
-  AES_MWh__c: 25.31,
-  Prime__c: 7846.27,
+  Prix_Valorisation__c: 160,
+  DCAL__c: 212.8,
+  Rendement__c: 0.7,
+  AES_MWh__c: 31.65,
+  Prime__c: 9622.12,
   Cout_Pack__c: 6600,
-  Benefice__c: 1246.27,
-  Indice__c: 1.2,
+  Benefice__c: 3022.12,
+  Indice__c: 3.0,
   Zone__c: "Zone rouge · à traiter en janvier",
   Statut__c: "Éligible"
 };
@@ -54,7 +54,7 @@ describe("c-simulateur-res060", () => {
     expect(simuler).toHaveBeenCalledTimes(1);
     expect(simuler.mock.calls[0][0].simulation.Type_Chaudiere__c).toBe("Gaz");
     const indice = el.shadowRoot.querySelector('[data-id="indice"]');
-    expect(indice.textContent).toBe("1,2");
+    expect(indice.textContent).toBe("3,0");
     const barre = el.shadowRoot.querySelector('[data-id="barre"]');
     expect(barre.className).toContain("z-red");
     expect(
@@ -74,6 +74,48 @@ describe("c-simulateur-res060", () => {
       (c) => c.textContent
     );
     expect(pastilles).toContain("cascade 2 PAC");
+    expect(pastilles).toContain("fM ×2");
+    expect(pastilles).toContain("mitoyenneté non renseignée −5 %");
+  });
+
+  it("signale une maison construite après 1997", async () => {
+    simuler.mockResolvedValue({
+      ...RESULTAT_ROUGE,
+      Statut__c: "Éligible · maison après 1997"
+    });
+    const el = monter();
+    await flush();
+
+    expect(el.shadowRoot.querySelector('[data-id="indice"]').textContent).toBe(
+      "3,0"
+    );
+    expect(
+      el.shadowRoot.querySelector('[data-id="message"]').textContent
+    ).toContain("après 1997");
+  });
+
+  it("recalcule quand on choisit la mitoyenneté", async () => {
+    simuler.mockResolvedValue(RESULTAT_ROUGE);
+    const el = monter();
+    await flush();
+
+    const choix = el.shadowRoot.querySelector(
+      'lightning-combobox[data-champ="Mitoyennete__c"]'
+    );
+    choix.dispatchEvent(
+      new CustomEvent("change", {
+        detail: { value: "Entre medianeras/ Con dos medianeras" }
+      })
+    );
+    await new Promise((resolve) => {
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      setTimeout(resolve, 350);
+    });
+
+    expect(simuler).toHaveBeenCalledTimes(2);
+    expect(simuler.mock.calls[1][0].simulation.Mitoyennete__c).toBe(
+      "Entre medianeras/ Con dos medianeras"
+    );
   });
 
   it("affiche le message quand il manque des infos", async () => {

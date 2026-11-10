@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Coef_Mitoyennete_Defaut__c</fullName>
+    <label>Coef. mitoyenneté non renseignée</label>
+    <inlineHelpText
+  >Coefficient utilisé quand la mitoyenneté n'est pas renseignée (0,95 = −5 %).</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

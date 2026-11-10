@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Majoration_DCAL__c</fullName>
+    <label>Majoration D_CAL</label>
+    <inlineHelpText
+  >D_CAL officiel multiplié par ce coefficient (1,3 = +30 %), arrondi au dixième. Vide = 1.</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

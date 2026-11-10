@@ -36,7 +36,7 @@ private class SimulationRES060TriggerHandlerTest {
       WHERE Id = :s.Id
     ];
     Assert.areEqual(
-      1.2,
+      2.7,
       apresInsertion.Indice__c,
       'indice calculé à l\'insertion'
     );
@@ -51,7 +51,7 @@ private class SimulationRES060TriggerHandlerTest {
       'statut'
     );
     Assert.areEqual(
-      3.5,
+      5.4,
       apresModif.Indice__c,
       'indice recalculé avec le nouveau prix'
     );
@@ -100,7 +100,7 @@ private class SimulationRES060TriggerHandlerTest {
     ];
     Assert.areEqual(200, lus.size(), '200 simulations');
     for (Simulation_RES060__c s : lus) {
-      Assert.areEqual(1.2, s.Indice__c, 'chaque simulation est calculée');
+      Assert.areEqual(2.7, s.Indice__c, 'chaque simulation est calculée');
     }
   }
 

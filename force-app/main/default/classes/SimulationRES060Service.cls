@@ -1,9 +1,12 @@
 /**
- * Calcul du simulateur de marge RES060FC (pompe à chaleur, maison individuelle).
- * Reproduit la version 3 du simulateur HTML :
- *   AES (kWh/an) = D_CAL × S × (1/η − 1/SCOP)
- *   Prime        = AES ÷ 1000 × fC × (multiplicateur si bono) × prix (€/MWh)
- *   Bénéfice     = Prime − coût du pack ; zone verte si bénéfice ≥ seuil.
+ * Calcul du simulateur de marge RES060_FM (pompe à chaleur, maison individuelle).
+ * Reproduit le calculateur télépro « Éligibilité PAC RES060FM indice » (version 2) :
+ *   D_CAL majoré = D_CAL officiel × majoration (1,3), arrondi au dixième
+ *   AES (kWh/an) = (D_CAL majoré + D_ACS 11) × S × (1/η fixe 0,70 − 1/SCOP)
+ *   Prime        = AES ÷ 1000 × fM × (multiplicateur si bono) × prix (€/MWh) × coef. mitoyenneté
+ *   Bénéfice     = Prime − coût du pack (1 PAC jusqu'au seuil cascade, sinon cascade 2 PAC).
+ * Seuls le gaz et le fioul sont éligibles. Une maison construite après l'année cible est
+ * calculée quand même, mais signalée dans le statut (« maison après … »).
  * Les valeurs modifiables sont dans RES060_Parametre__mdt et RES060_DCAL_Province__mdt.
  */
 public with sharing class SimulationRES060Service {
@@ -11,12 +14,20 @@ public with sharing class SimulationRES060Service {
   public static final String ZONE_ROUGE = 'Zone rouge · à traiter en janvier';
   public static final String STATUT_ELIGIBLE = 'Éligible';
   public static final String STATUT_NON_ELIGIBLE = 'Non éligible : bois / pellets (combustible non fossile)';
+  public static final String STATUT_NON_ELIGIBLE_ELECTRIQUE = 'Non éligible : chauffage électrique ou charbon (seuls gaz et fioul)';
+  /** Ajouté au statut quand la maison est construite après l'année cible (texte lu par « RES060- Retour calculateur »). */
+  public static final String MAISON_APRES = ' · maison après {0}';
   public static final String STATUT_ATTENTE_CHAUDIERE = 'En attente : choisir le type de chaudière';
   public static final String STATUT_ATTENTE = 'En attente : renseigner la province et la surface';
   public static final String STATUT_PROVINCE_INCONNUE = 'Donnée manquante : province inconnue';
   public static final String STATUT_SANS_DCAL = 'Donnée manquante : pas de D_CAL publié pour cette province (Canarias)';
   public static final String STATUT_SANS_REGLAGES = 'Donnée manquante : réglages RES060 introuvables';
-  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : indice mis à 0';
+  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : hors limite (2 PAC max), indice mis à 0';
+
+  /** Valeurs du champ mitoyenneté (mêmes valeurs sur la Piste et la Simulation). */
+  public static final String MITOYENNETE_AUCUNE = 'Aislada/Independiente';
+  public static final String MITOYENNETE_1_COTE = 'Adosada por un lado/ Con una medianera';
+  public static final String MITOYENNETE_2_COTES = 'Entre medianeras/ Con dos medianeras';
 
   /** Réglages fixes du calcul. */
   public class Parametres {
@@ -30,8 +41,20 @@ public with sharing class SimulationRES060Service {
     public Decimal multiplicateurBono;
     /** Au-delà de cette surface, l'indice est mis à 0 (vide = pas de limite). */
     public Decimal surfaceMaxM2;
-    /** fC utilisé pour l'indice « sans bonification » (vide = 1). */
+    /** fM utilisé pour l'indice « sans bonification » (vide = 1). */
     public Decimal facteurFcSansBonification;
+    /** D_CAL officiel × majoration (vide = 1). */
+    public Decimal majorationDcal;
+    /** Besoin d'eau chaude ajouté au D_CAL majoré, kWh/m²·an (vide = 0). */
+    public Decimal dacs;
+    /** Rendement unique des chaudières gaz et fioul. */
+    public Decimal rendementFixe;
+    public Decimal coefMitoyenneteAucune;
+    public Decimal coefMitoyennete1Cote;
+    public Decimal coefMitoyennete2Cotes;
+    public Decimal coefMitoyenneteDefaut;
+    /** Après cette année de construction : calcul fait mais maison signalée (vide = pas de signal). */
+    public Decimal anneeMaisonCibleMax;
   }
 
   /** Une ligne du tableau D_CAL : 7 tranches d'année de la maison. */
@@ -244,13 +267,13 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_ATTENTE_CHAUDIERE;
       return;
     }
-    Decimal eta = rendement(
-      s.Type_Chaudiere__c,
-      s.Annee_Chaudiere__c,
-      s.Condensation__c == true
-    );
-    if (eta == null) {
+    if (s.Type_Chaudiere__c == 'Bois') {
       s.Statut__c = STATUT_NON_ELIGIBLE;
+      return;
+    }
+    Decimal eta = rendement(s.Type_Chaudiere__c);
+    if (eta == null) {
+      s.Statut__c = STATUT_NON_ELIGIBLE_ELECTRIQUE;
       return;
     }
     if (
@@ -261,15 +284,17 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_ATTENTE;
       return;
     }
+    String signalMaison = signalMaison(s.Annee_Maison__c);
     if (params.surfaceMaxM2 != null && s.Surface__c > params.surfaceMaxM2) {
       s.Prime__c = 0;
       s.Benefice__c = 0;
       s.Indice__c = 0;
       s.Zone__c = ZONE_ROUGE;
-      s.Statut__c = String.format(
-        STATUT_SURFACE_MAX,
-        new List<Object>{ params.surfaceMaxM2.format() }
-      );
+      s.Statut__c =
+        String.format(
+          STATUT_SURFACE_MAX,
+          new List<Object>{ params.surfaceMaxM2.format() }
+        ) + signalMaison;
       return;
     }
     Province province = provincesParNom.get(s.Province__c);
@@ -277,15 +302,17 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_PROVINCE_INCONNUE;
       return;
     }
-    Decimal dcal = province.dcal[indexTranche(s.Annee_Maison__c)];
-    if (dcal == null || dcal == 0) {
+    Decimal dcalOfficiel = province.dcal[indexTranche(s.Annee_Maison__c)];
+    if (dcalOfficiel == null || dcalOfficiel == 0) {
       s.Statut__c = STATUT_SANS_DCAL;
       return;
     }
+    Decimal dcal = (dcalOfficiel * valeur(params.majorationDcal, 1))
+      .setScale(1, RoundingMode.HALF_UP);
 
     Double surface = s.Surface__c.doubleValue();
     Double aesKwh =
-      dcal.doubleValue() *
+      (dcal + valeur(params.dacs, 0)).doubleValue() *
       (1 / eta.doubleValue() -
       1 / params.scop.doubleValue()) *
       surface;
@@ -297,7 +324,8 @@ public with sharing class SimulationRES060Service {
       1000 *
       aesKwh *
       facteurFc() *
-      multiplicateur;
+      multiplicateur *
+      coefMitoyennete(s.Mitoyennete__c).doubleValue();
     Boolean cascade = s.Surface__c > params.seuilCascadeM2;
     Decimal cout = cascade ? params.coutPackCascade : params.coutPack1Pac;
     Double benefice = prime - cout.doubleValue();
@@ -312,42 +340,51 @@ public with sharing class SimulationRES060Service {
     s.Zone__c = benefice >= params.seuilZoneVerte.doubleValue()
       ? ZONE_VERTE
       : ZONE_ROUGE;
-    s.Statut__c = STATUT_ELIGIBLE + (cascade ? ' · cascade 2 PAC' : '');
+    s.Statut__c =
+      STATUT_ELIGIBLE +
+      (cascade ? ' · cascade 2 PAC' : '') +
+      signalMaison;
   }
 
-  /**
-   * Rendement de la chaudière existante (η), comme le simulateur.
-   * Année vide = 2000. Retourne null si non éligible (bois) ou type inconnu.
-   */
-  public static Decimal rendement(
-    String typeChaudiere,
-    Decimal anneeChaudiere,
-    Boolean condensation
-  ) {
-    Integer annee = anneeChaudiere == null ? 2000 : anneeChaudiere.intValue();
-    switch on typeChaudiere {
-      when 'Electrique' {
-        return 1.00;
-      }
-      when 'Charbon' {
-        return 0.55;
-      }
-      when 'Gaz' {
-        if (condensation) {
-          return annee < 1998 ? 0.83 : 0.85;
-        }
-        return annee < 1979 ? 0.55 : (annee <= 1997 ? 0.65 : 0.73);
-      }
-      when 'Fioul' {
-        if (condensation) {
-          return 0.83;
-        }
-        return annee < 1985 ? 0.65 : (annee <= 1997 ? 0.70 : 0.79);
-      }
-      when else {
-        return null;
-      }
+  /** Rendement de la chaudière existante : fixe pour gaz et fioul, null sinon (non éligible). */
+  public Decimal rendement(String typeChaudiere) {
+    return typeChaudiere == 'Gaz' ||
+      typeChaudiere == 'Fioul'
+      ? params.rendementFixe
+      : null;
+  }
+
+  /** Coefficient appliqué à la prime selon la mitoyenneté (vide ou inconnue = valeur par défaut). */
+  public Decimal coefMitoyennete(String mitoyennete) {
+    if (mitoyennete == MITOYENNETE_AUCUNE) {
+      return valeur(params.coefMitoyenneteAucune, 1);
     }
+    if (mitoyennete == MITOYENNETE_1_COTE) {
+      return valeur(params.coefMitoyennete1Cote, 1);
+    }
+    if (mitoyennete == MITOYENNETE_2_COTES) {
+      return valeur(params.coefMitoyennete2Cotes, 1);
+    }
+    return valeur(params.coefMitoyenneteDefaut, 1);
+  }
+
+  /** « · maison après 1997 » si la maison est construite après l'année cible, sinon vide. */
+  private String signalMaison(Decimal anneeMaison) {
+    if (
+      anneeMaison == null ||
+      params.anneeMaisonCibleMax == null ||
+      anneeMaison <= params.anneeMaisonCibleMax
+    ) {
+      return '';
+    }
+    return String.format(
+      MAISON_APRES,
+      new List<Object>{ String.valueOf(params.anneeMaisonCibleMax.intValue()) }
+    );
+  }
+
+  private static Decimal valeur(Decimal v, Decimal parDefaut) {
+    return v == null ? parDefaut : v;
   }
 
   /** Tranche d'année de la maison : 0 = ≤1940 (aussi si vide) … 6 = après 2019. */
@@ -426,6 +463,14 @@ public with sharing class SimulationRES060Service {
     p.multiplicateurBono = m.Multiplicateur_Bono__c;
     p.surfaceMaxM2 = m.Surface_Max_m2__c;
     p.facteurFcSansBonification = m.Facteur_fC_Sans_Bonification__c;
+    p.majorationDcal = m.Majoration_DCAL__c;
+    p.dacs = m.DACS_kWh_m2__c;
+    p.rendementFixe = m.Rendement_Fixe__c;
+    p.coefMitoyenneteAucune = m.Coef_Mitoyennete_Aucune__c;
+    p.coefMitoyennete1Cote = m.Coef_Mitoyennete_1_Cote__c;
+    p.coefMitoyennete2Cotes = m.Coef_Mitoyennete_2_Cotes__c;
+    p.coefMitoyenneteDefaut = m.Coef_Mitoyennete_Defaut__c;
+    p.anneeMaisonCibleMax = m.Annee_Maison_Cible_Max__c;
     return p;
   }
 

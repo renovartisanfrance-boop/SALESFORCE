@@ -15,7 +15,7 @@ private class SimulationRES060ControllerTest {
     Simulation_RES060__c r = SimulationRES060Controller.simuler(s);
     Test.stopTest();
 
-    Assert.areEqual(1.2, r.Indice__c, 'indice calculé');
+    Assert.areEqual(2.7, r.Indice__c, 'indice calculé');
     Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, r.Zone__c, 'zone');
     Assert.isNull(r.Id, 'rien n\'est enregistré');
     Assert.areEqual(

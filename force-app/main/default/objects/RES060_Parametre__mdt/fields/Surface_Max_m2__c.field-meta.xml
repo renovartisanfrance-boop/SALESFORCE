@@ -3,7 +3,7 @@
     <fullName>Surface_Max_m2__c</fullName>
     <label>Surface maximale (m²)</label>
     <inlineHelpText
-  >Au-delà de cette surface habitable, l'indice est mis à 0. Vide = pas de limite.</inlineHelpText>
+  >Au-delà de cette surface habitable : hors limite (2 PAC max), indice mis à 0. Vide = pas de limite.</inlineHelpText>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <type>Number</type>
     <precision>6</precision>

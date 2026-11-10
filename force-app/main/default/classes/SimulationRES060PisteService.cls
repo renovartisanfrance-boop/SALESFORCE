@@ -38,7 +38,7 @@ public with sharing class SimulationRES060PisteService {
     Lead.Surface_habitable__c,
     Lead.RES_Anne_maison__c,
     Lead.Type_de_Chauffage__c,
-    Lead.RES_Ann_e_Chaudi_re__c,
+    Lead.RES060_Mitoyenn__c,
     Lead.RES_Bono_Social__c,
     Lead.RES060__c
   };
@@ -147,7 +147,6 @@ public with sharing class SimulationRES060PisteService {
     }
 
     Integer anneeMaison = annee(p.RES_Anne_maison__c);
-    Integer anneeChaudiere = annee(p.RES_Ann_e_Chaudi_re__c);
     List<String> manque = new List<String>();
     if (province == null) {
       manque.add('province (code postal / adresse)');
@@ -161,13 +160,6 @@ public with sharing class SimulationRES060PisteService {
     if (typeChaudiere == null) {
       manque.add('type de chauffage');
     }
-    if (
-      anneeChaudiere == null &&
-      (typeChaudiere == 'Gaz' ||
-      typeChaudiere == 'Fioul')
-    ) {
-      manque.add('année de la chaudière');
-    }
     if (!manque.isEmpty()) {
       p.RES060_Statut__c = (INFO_MANQUANTE + String.join(manque, ', '))
         .left(255);
@@ -180,8 +172,7 @@ public with sharing class SimulationRES060PisteService {
       Surface__c = p.Surface_habitable__c,
       Annee_Maison__c = anneeMaison,
       Type_Chaudiere__c = typeChaudiere,
-      Annee_Chaudiere__c = anneeChaudiere,
-      Condensation__c = false,
+      Mitoyennete__c = p.RES060_Mitoyenn__c,
       Bono_Social__c = bono == true
     );
     Decimal indiceSansBonification = service.indiceSansBonification(s);

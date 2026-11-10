@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rendement_Fixe__c</fullName>
+    <label>Rendement chaudière fixe (η)</label>
+    <inlineHelpText
+  >Rendement utilisé pour toutes les chaudières gaz et fioul (0,70).</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

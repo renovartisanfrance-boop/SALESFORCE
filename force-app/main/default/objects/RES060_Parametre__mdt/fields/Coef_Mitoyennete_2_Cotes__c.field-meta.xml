@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Coef_Mitoyennete_2_Cotes__c</fullName>
+    <label>Coef. mitoyenne 2 côtés</label>
+    <inlineHelpText
+  >Coefficient sur la prime pour une maison entre deux mitoyens (0,85 = −15 %).</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

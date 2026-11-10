@@ -1,24 +1,34 @@
 /**
- * Tests du calcul RES060. Les valeurs attendues ont été obtenues avec le simulateur HTML (version 3).
+ * Tests du calcul RES060_FM. Les valeurs attendues ont été recalculées avec la formule du calculateur
+ * télépro « Éligibilité PAC RES060FM indice » (version 2) et son tableau D_CAL × 1,3.
  * Les réglages sont fournis par le test : les résultats ne dépendent pas des Custom Metadata de l'org.
  */
 @IsTest
 private class SimulationRES060ServiceTest {
   private static SimulationRES060Service service() {
-    return service(220);
+    return service(320);
   }
 
   private static SimulationRES060Service service(Decimal surfaceMax) {
     SimulationRES060Service.Parametres p = new SimulationRES060Service.Parametres();
     p.scop = 4;
     p.facteurFc = 2;
-    p.prixDefaut = 155;
+    p.prixDefaut = 160;
     p.coutPack1Pac = 6600;
-    p.coutPackCascade = 12500;
-    p.seuilCascadeM2 = 220;
+    p.coutPackCascade = 13000;
+    p.seuilCascadeM2 = 210;
     p.seuilZoneVerte = 3500;
     p.multiplicateurBono = 1.5;
     p.surfaceMaxM2 = surfaceMax;
+    p.facteurFcSansBonification = 2;
+    p.majorationDcal = 1.3;
+    p.dacs = 11;
+    p.rendementFixe = 0.70;
+    p.coefMitoyenneteAucune = 1;
+    p.coefMitoyennete1Cote = 0.95;
+    p.coefMitoyennete2Cotes = 0.85;
+    p.coefMitoyenneteDefaut = 0.95;
+    p.anneeMaisonCibleMax = 1997;
 
     SimulationRES060Service.Province madrid = new SimulationRES060Service.Province();
     madrid.nom = 'Madrid';
@@ -55,104 +65,127 @@ private class SimulationRES060ServiceTest {
       Surface__c = surface,
       Annee_Maison__c = anneeMaison,
       Type_Chaudiere__c = type,
-      Condensation__c = false,
-      Bono_Social__c = false
+      Bono_Social__c = false,
+      Mitoyennete__c = SimulationRES060Service.MITOYENNETE_AUCUNE
     );
   }
 
   @IsTest
-  static void calculZoneRouge() {
+  static void calculMaisonIsolee() {
     Simulation_RES060__c s = simulation('Madrid', 120, 1970, 'Gaz');
-    s.Annee_Chaudiere__c = 1990;
 
     service().calculer(s);
 
-    Assert.areEqual(163.7, s.DCAL__c, 'D_CAL Madrid 1961-1980');
-    Assert.areEqual(0.65, s.Rendement__c, 'gaz 1979-1997');
-    Assert.areEqual(25.31, s.AES_MWh__c, 'AES');
-    Assert.areEqual(7846.27, s.Prime__c, 'prime');
+    Assert.areEqual(212.8, s.DCAL__c, 'D_CAL Madrid 1961-1980 × 1,3');
+    Assert.areEqual(0.70, s.Rendement__c, 'rendement fixe');
+    Assert.areEqual(31.65, s.AES_MWh__c, 'AES avec eau chaude 11 kWh/m²');
+    Assert.areEqual(10128.55, s.Prime__c, 'prime');
     Assert.areEqual(6600, s.Cout_Pack__c, 'pack 1 PAC');
-    Assert.areEqual(1246.27, s.Benefice__c, 'bénéfice');
-    Assert.areEqual(1.2, s.Indice__c, 'indice');
-    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s.Zone__c, 'zone');
+    Assert.areEqual(3528.55, s.Benefice__c, 'bénéfice');
+    Assert.areEqual(3.5, s.Indice__c, 'indice');
+    Assert.areEqual(SimulationRES060Service.ZONE_VERTE, s.Zone__c, 'zone');
     Assert.areEqual(
       SimulationRES060Service.STATUT_ELIGIBLE,
       s.Statut__c,
       'statut'
     );
-    Assert.areEqual(155, s.Prix_Valorisation__c, 'prix par défaut appliqué');
+    Assert.areEqual(160, s.Prix_Valorisation__c, 'prix par défaut appliqué');
   }
 
   @IsTest
-  static void calculBonoCascadeZoneVerte() {
-    // Sans limite de surface, le calcul cascade 2 PAC reste celui du simulateur.
+  static void calculBonoCascadeDeuxMitoyens() {
     Simulation_RES060__c s = simulation('Madrid', 250, 1930, 'Fioul');
-    s.Annee_Chaudiere__c = 1980;
     s.Bono_Social__c = true;
+    s.Mitoyennete__c = SimulationRES060Service.MITOYENNETE_2_COTES;
 
-    service(null).calculer(s);
+    service().calculer(s);
 
-    Assert.areEqual(27320.54, s.Prime__c, 'prime avec bono');
-    Assert.areEqual(12500, s.Cout_Pack__c, 'cascade 2 PAC');
-    Assert.areEqual(14820.54, s.Benefice__c, 'bénéfice');
-    Assert.areEqual(14.8, s.Indice__c, 'indice');
-    Assert.areEqual(SimulationRES060Service.ZONE_VERTE, s.Zone__c, 'zone');
+    Assert.areEqual(29825.16, s.Prime__c, 'prime bono ×1,5 et −15 %');
+    Assert.areEqual(13000, s.Cout_Pack__c, 'cascade 2 PAC');
+    Assert.areEqual(16.8, s.Indice__c, 'indice');
     Assert.isTrue(s.Statut__c.contains('cascade'), 'statut cascade');
   }
 
   @IsTest
-  static void prixDeValorisationModifiable() {
+  static void prixModifiableEtMitoyenneteParDefaut() {
     Simulation_RES060__c s = simulation('Madrid', 120, 1970, 'Gaz');
-    s.Annee_Chaudiere__c = 1990;
+    s.Mitoyennete__c = null;
     s.Prix_Valorisation__c = 200;
 
     service().calculer(s);
 
     Assert.areEqual(200, s.Prix_Valorisation__c, 'le prix saisi est conservé');
-    Assert.areEqual(10124.22, s.Prime__c, 'prime à 200 €/MWh');
-    Assert.areEqual(3.5, s.Indice__c, 'indice');
-    Assert.areEqual(
-      SimulationRES060Service.ZONE_VERTE,
-      s.Zone__c,
-      'passe en zone verte'
+    Assert.areEqual(12027.65, s.Prime__c, 'prime à 200 €/MWh, −5 % par défaut');
+    Assert.areEqual(5.4, s.Indice__c, 'indice');
+  }
+
+  @IsTest
+  static void anneeMaisonVideEtUnMitoyen() {
+    Simulation_RES060__c s = simulation('Madrid', 150, null, 'Gaz');
+    s.Mitoyennete__c = SimulationRES060Service.MITOYENNETE_1_COTE;
+
+    service().calculer(s);
+
+    Assert.areEqual(237.1, s.DCAL__c, 'année vide = ≤1940');
+    Assert.areEqual(13333.6, s.Prime__c, 'prime');
+    Assert.areEqual(6.7, s.Indice__c, 'indice');
+  }
+
+  @IsTest
+  static void maisonApres1997CalculeeEtSignalee() {
+    SimulationRES060Service svc = service();
+    Simulation_RES060__c s2005 = simulation('Madrid', 120, 2005, 'Gaz');
+    s2005.Mitoyennete__c = null;
+    Simulation_RES060__c s2015 = simulation('Madrid', 120, 2015, 'Gaz');
+    s2015.Mitoyennete__c = null;
+    Simulation_RES060__c s1997 = simulation('Madrid', 120, 1997, 'Gaz');
+
+    svc.calculer(new List<Simulation_RES060__c>{ s2005, s2015, s1997 });
+
+    Assert.areEqual(127.8, s2005.DCAL__c, 'tranche 1981-2007 × 1,3');
+    Assert.areEqual(-0.6, s2005.Indice__c, 'indice calculé quand même');
+    Assert.isTrue(
+      s2005.Statut__c.endsWith(' · maison après 1997'),
+      s2005.Statut__c
+    );
+    Assert.areEqual(66.6, s2015.DCAL__c, 'tranche 2013-2019 × 1,3');
+    Assert.areEqual(-3.3, s2015.Indice__c, 'indice');
+    Assert.isTrue(s2015.Statut__c.contains('maison après'), s2015.Statut__c);
+    Assert.isFalse(
+      s1997.Statut__c.contains('maison après'),
+      '1997 : dans la cible'
     );
   }
 
   @IsTest
-  static void condensationEtAnneeMaisonVide() {
-    Simulation_RES060__c s = simulation('Madrid', 150, null, 'Gaz');
-    s.Annee_Chaudiere__c = 2005;
-    s.Condensation__c = true;
+  static void electriqueEtCharbonNonEligibles() {
+    Simulation_RES060__c elec = simulation('Madrid', 100, 1970, 'Electrique');
+    Simulation_RES060__c charbon = simulation('Madrid', 100, 1970, 'Charbon');
 
-    service().calculer(s);
+    service().calculer(new List<Simulation_RES060__c>{ elec, charbon });
 
-    Assert.areEqual(182.4, s.DCAL__c, 'année vide = ≤1940');
-    Assert.areEqual(0.85, s.Rendement__c, 'gaz condensation récente');
-    Assert.areEqual(7857.95, s.Prime__c, 'prime');
-    Assert.areEqual(1.3, s.Indice__c, 'indice');
-  }
-
-  @IsTest
-  static void electriqueIndiceNegatif() {
-    Simulation_RES060__c s = simulation('Madrid', 100, 2010, 'Electrique');
-
-    service().calculer(s);
-
-    Assert.areEqual(1488.00, s.Prime__c, 'prime');
-    Assert.areEqual(-5.1, s.Indice__c, 'indice négatif');
-    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s.Zone__c, 'zone');
+    Assert.areEqual(
+      SimulationRES060Service.STATUT_NON_ELIGIBLE_ELECTRIQUE,
+      elec.Statut__c,
+      'électrique'
+    );
+    Assert.isNull(elec.Indice__c, 'pas d\'indice');
+    Assert.areEqual(
+      SimulationRES060Service.STATUT_NON_ELIGIBLE_ELECTRIQUE,
+      charbon.Statut__c,
+      'charbon'
+    );
   }
 
   @IsTest
   static void provinceDeduiteDuCodePostal() {
     Simulation_RES060__c s = simulation(null, 120, 1970, 'Gaz');
     s.Code_Postal__c = ' 28001 ';
-    s.Annee_Chaudiere__c = 1990;
 
     service().calculer(s);
 
     Assert.areEqual('Madrid', s.Province__c, 'province déduite');
-    Assert.areEqual(1.2, s.Indice__c, 'calcul fait');
+    Assert.areEqual(3.5, s.Indice__c, 'calcul fait');
   }
 
   @IsTest
@@ -238,56 +271,30 @@ private class SimulationRES060ServiceTest {
   }
 
   @IsTest
-  static void tableDesRendements() {
+  static void rendementEtMitoyennete() {
+    SimulationRES060Service svc = service();
+    Assert.areEqual(0.70, svc.rendement('Gaz'), 'gaz');
+    Assert.areEqual(0.70, svc.rendement('Fioul'), 'fioul');
+    Assert.isNull(svc.rendement('Electrique'), 'électrique non éligible');
+    Assert.isNull(svc.rendement('Bois'), 'bois non éligible');
+
     Assert.areEqual(
-      0.55,
-      SimulationRES060Service.rendement('Gaz', 1978, false),
-      'gaz < 1979'
-    );
-    Assert.areEqual(
-      0.65,
-      SimulationRES060Service.rendement('Gaz', 1997, false),
-      'gaz ≤ 1997'
-    );
-    Assert.areEqual(
-      0.73,
-      SimulationRES060Service.rendement('Gaz', null, false),
-      'gaz année vide = 2000'
+      1,
+      svc.coefMitoyennete(SimulationRES060Service.MITOYENNETE_AUCUNE),
+      'isolée'
     );
     Assert.areEqual(
-      0.83,
-      SimulationRES060Service.rendement('Gaz', 1990, true),
-      'gaz condensation ancienne'
+      0.95,
+      svc.coefMitoyennete(SimulationRES060Service.MITOYENNETE_1_COTE),
+      '1 côté'
     );
     Assert.areEqual(
-      0.65,
-      SimulationRES060Service.rendement('Fioul', 1984, false),
-      'fioul < 1985'
+      0.85,
+      svc.coefMitoyennete(SimulationRES060Service.MITOYENNETE_2_COTES),
+      '2 côtés'
     );
-    Assert.areEqual(
-      0.70,
-      SimulationRES060Service.rendement('Fioul', 1997, false),
-      'fioul ≤ 1997'
-    );
-    Assert.areEqual(
-      0.79,
-      SimulationRES060Service.rendement('Fioul', 1998, false),
-      'fioul récent'
-    );
-    Assert.areEqual(
-      0.83,
-      SimulationRES060Service.rendement('Fioul', 2010, true),
-      'fioul condensation'
-    );
-    Assert.areEqual(
-      0.55,
-      SimulationRES060Service.rendement('Charbon', 2010, false),
-      'charbon'
-    );
-    Assert.isNull(
-      SimulationRES060Service.rendement('Bois', 2010, false),
-      'bois non éligible'
-    );
+    Assert.areEqual(0.95, svc.coefMitoyennete(null), 'vide = défaut −5 %');
+    Assert.areEqual(0.95, svc.coefMitoyennete('autre'), 'inconnue = défaut');
   }
 
   @IsTest
@@ -335,50 +342,69 @@ private class SimulationRES060ServiceTest {
   }
 
   @IsTest
-  static void surfaceAuDelaDe220IndiceAZero() {
-    Simulation_RES060__c s = simulation('Madrid', 250, 1930, 'Fioul');
-    s.Annee_Chaudiere__c = 1980;
-    s.Bono_Social__c = true;
-    Simulation_RES060__c limite = simulation('Madrid', 220, 1970, 'Gaz');
-    limite.Annee_Chaudiere__c = 1990;
+  static void seuilsDeSurface() {
+    SimulationRES060Service svc = service();
+    Simulation_RES060__c s210 = simulation('Madrid', 210, 1970, 'Gaz');
+    s210.Mitoyennete__c = null;
+    Simulation_RES060__c s211 = simulation('Madrid', 211, 1970, 'Gaz');
+    s211.Mitoyennete__c = null;
+    Simulation_RES060__c s320 = simulation('Madrid', 320, 1970, 'Gaz');
+    s320.Mitoyennete__c = null;
+    Simulation_RES060__c s321 = simulation('Madrid', 321, 2005, 'Gaz');
 
-    service().calculer(new List<Simulation_RES060__c>{ s, limite });
+    svc.calculer(new List<Simulation_RES060__c>{ s210, s211, s320, s321 });
 
-    Assert.areEqual(0, s.Indice__c, 'indice à 0 au-delà de 220 m²');
-    Assert.areEqual(0, s.Prime__c, 'prime à 0');
-    Assert.areEqual(
-      SimulationRES060Service.ZONE_ROUGE,
-      s.Zone__c,
-      'zone rouge'
+    Assert.areEqual(6600, s210.Cout_Pack__c, '210 m² : 1 PAC');
+    Assert.areEqual(10.2, s210.Indice__c, 'indice 210 m²');
+    Assert.areEqual(13000, s211.Cout_Pack__c, '211 m² : cascade');
+    Assert.areEqual(3.9, s211.Indice__c, 'indice 211 m²');
+    Assert.areEqual(12.7, s320.Indice__c, '320 m² pile : calcul normal');
+    Assert.areEqual(0, s321.Indice__c, 'au-delà de 320 m² : indice à 0');
+    Assert.areEqual(0, s321.Prime__c, 'prime à 0');
+    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s321.Zone__c, 'zone');
+    Assert.isTrue(
+      s321.Statut__c.startsWith('Surface supérieure à 320'),
+      s321.Statut__c
     );
     Assert.isTrue(
-      s.Statut__c.startsWith('Surface supérieure à 220'),
-      s.Statut__c
+      s321.Statut__c.contains('maison après'),
+      'signal maison aussi hors limite'
     );
-    Assert.isNull(s.DCAL__c, 'pas de détail de calcul');
-    Assert.areNotEqual(0, limite.Indice__c, '220 m² pile : calcul normal');
+    Assert.isNull(s321.DCAL__c, 'pas de détail de calcul');
+  }
+
+  @IsTest
+  static void sansLimiteDeSurface() {
+    Simulation_RES060__c s = simulation('Madrid', 400, 1970, 'Gaz');
+
+    service(null).calculer(s);
+
+    Assert.areEqual(13000, s.Cout_Pack__c, 'cascade');
+    Assert.isTrue(s.Indice__c > 0, 'calcul fait sans limite');
   }
 
   @IsTest
   static void indiceSansBonification() {
     SimulationRES060Service svc = service();
     Simulation_RES060__c s = simulation('Madrid', 120, 1970, 'Gaz');
-    s.Annee_Chaudiere__c = 1990;
     s.Bono_Social__c = true;
-    Simulation_RES060__c grande = simulation('Madrid', 250, 1970, 'Gaz');
-    grande.Annee_Chaudiere__c = 1990;
+    s.Mitoyennete__c = null;
+    Simulation_RES060__c grande = simulation('Madrid', 400, 1970, 'Gaz');
 
     Decimal sansBonif = svc.indiceSansBonification(s);
     Decimal sansBonifGrande = svc.indiceSansBonification(grande);
     svc.calculer(s);
 
-    // Avec fC 2 et bono x1,5 : 7 846,27 x 1,5 - 6 600 = 5 169 € ; sans : 7 846,27 / 2 - 6 600 = -2 677 €.
-    Assert.areEqual(5.2, s.Indice__c, 'indice normal avec bono');
-    Assert.areEqual(-2.7, sansBonif, 'indice sans bonification');
+    Assert.areEqual(7.8, s.Indice__c, 'indice normal avec bono ×1,5');
+    Assert.areEqual(
+      3.0,
+      sansBonif,
+      'indice sans bonification (fM 2, sans ×1,5)'
+    );
     Assert.areEqual(
       0,
       sansBonifGrande,
-      'règle des 220 m² aussi sans bonification'
+      'limite de 320 m² aussi sans bonification'
     );
     Assert.isNull(grande.Indice__c, 'la simulation reçue n\'est pas modifiée');
   }

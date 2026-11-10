@@ -95,6 +95,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Simulation_RES060__c.Mitoyennete__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Simulation_RES060__c.Cout_Pack__c</field>
         <readable>true</readable>

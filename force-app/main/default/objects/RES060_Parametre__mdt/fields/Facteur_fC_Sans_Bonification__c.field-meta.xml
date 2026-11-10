@@ -3,7 +3,7 @@
     <fullName>Facteur_fC_Sans_Bonification__c</fullName>
     <label>Facteur fC sans bonification</label>
     <inlineHelpText
-  >fC utilisé pour l'indice « sans bonification » (le bono ×1,5 n'est jamais appliqué). Vide = 1.</inlineHelpText>
+  >fM utilisé pour l'indice « sans bonification » (le bono ×1,5 n'est jamais appliqué). Vide = 1.</inlineHelpText>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <type>Number</type>
     <precision>6</precision>

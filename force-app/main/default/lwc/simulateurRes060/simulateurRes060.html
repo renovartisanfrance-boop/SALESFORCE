@@ -5,7 +5,7 @@
         <span class="k">ECONATURA</span>
         <span class="s">Simulateur de marge — Pompe à chaleur</span>
       </div>
-      <span class="pill-fiche">RES060FC · fC=2</span>
+      <span class="pill-fiche">RES060_FM · fM=2</span>
     </header>
 
     <div class="colonnes">
@@ -56,7 +56,7 @@
         </div>
 
         <div class="card">
-          <h2 class="sec">2 · Chaudière &amp; profil</h2>
+          <h2 class="sec">2 · Chauffage &amp; profil</h2>
           <div class="grid">
             <lightning-combobox
               label="Type de chaudière"
@@ -65,40 +65,17 @@
               value={saisie.Type_Chaudiere__c}
               onchange={handleChange}
             ></lightning-combobox>
-            <lightning-input
-              type="number"
-              label="Année exacte de la chaudière"
-              data-champ="Annee_Chaudiere__c"
-              value={saisie.Annee_Chaudiere__c}
-              placeholder="Ex : 2005"
+            <lightning-combobox
+              label="Mitoyenneté"
+              field-level-help="Isolée : pas de réduction. 1 mitoyen : −5 %. 2 mitoyens : −15 %. Non renseignée : −5 %."
+              data-champ="Mitoyennete__c"
+              options={mitoyennetes}
+              value={saisie.Mitoyennete__c}
               onchange={handleChange}
-            ></lightning-input>
+            ></lightning-combobox>
           </div>
           <div class="field">
-            <span class="lbl-champ">Chaudière à condensation ?</span>
-            <div class="seg">
-              <button
-                data-champ="Condensation__c"
-                data-valeur="false"
-                aria-pressed={condNon}
-                onclick={handleSegment}
-              >
-                Non / inconnu
-              </button>
-              <button
-                data-champ="Condensation__c"
-                data-valeur="true"
-                aria-pressed={condOui}
-                onclick={handleSegment}
-              >
-                Oui, condensation
-              </button>
-            </div>
-          </div>
-          <div class="field">
-            <span class="lbl-champ"
-              >Consommateur vulnérable sévère (bono social severo) ?</span
-            >
+            <span class="lbl-champ">Bono social ?</span>
             <div class="seg">
               <button
                 data-champ="Bono_Social__c"
