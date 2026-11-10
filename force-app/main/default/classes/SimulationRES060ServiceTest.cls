@@ -20,7 +20,7 @@ private class SimulationRES060ServiceTest {
     p.seuilZoneVerte = 3500;
     p.multiplicateurBono = 1.5;
     p.surfaceMaxM2 = surfaceMax;
-    p.facteurFcSansBonification = 2;
+    p.facteurFcSansBonification = 1;
     p.majorationDcal = 1.3;
     p.dacs = 11;
     p.rendementFixe = 0.70;
@@ -401,9 +401,9 @@ private class SimulationRES060ServiceTest {
 
     Assert.areEqual(7.8, s.Indice__c, 'indice normal avec bono ×1,5');
     Assert.areEqual(
-      3.0,
+      -1.8,
       sansBonif,
-      'indice sans bonification (fM 2, sans ×1,5)'
+      'indice sans bonification (fM 1, sans ×1,5)'
     );
     Assert.areEqual(
       0,

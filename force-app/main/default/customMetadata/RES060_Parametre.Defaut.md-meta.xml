@@ -60,7 +60,7 @@
     </values>
     <values>
         <field>Facteur_fC_Sans_Bonification__c</field>
-        <value xsi:type="xsd:double">2</value>
+        <value xsi:type="xsd:double">1</value>
     </values>
     <values>
         <field>Majoration_DCAL__c</field>

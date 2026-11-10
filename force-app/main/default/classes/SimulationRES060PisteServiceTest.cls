@@ -69,9 +69,9 @@ private class SimulationRES060PisteServiceTest {
     Assert.areEqual('Asturias', lu.RES060_Province__c, 'province trouvée');
     Assert.areEqual(5.0, lu.RES060_Indice__c, 'indice');
     Assert.areEqual(
-      5.0,
+      -0.8,
       lu.RES060_Indice_Sans_Bonification__c,
-      'indice sans bonification (sans bono : identique)'
+      'indice sans bonification (fM 1, sans ×1,5)'
     );
     Assert.areEqual(
       SimulationRES060Service.ZONE_VERTE,
