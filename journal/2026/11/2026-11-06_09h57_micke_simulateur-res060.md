@@ -118,6 +118,10 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   Aucun recalcul automatique côté Dossier : ces valeurs restent tant qu'on ne relance pas le script.
 - Tranches indice (Piste et Dossier) modifiées en prod par l'utilisateur (< 4 / 4-6 / 6-8 / 8-10 / 10+) : recopiées
   dans le dépôt.
+- Google Sheet « test calculateur » : 2 nouveaux onglets. « Pistes RES060 » (767 pistes avec indice, triées par indice,
+  11 colonnes dont Indice FM en nombre, Plus de 210m², Après 1997) et « Dossiers RES060 » (200 dossiers : Statut dossier
+  = RDV- Statut Dossier, Statut visite = PREVISITE- Statut, RES- Shab = MPR_SHAB__c sinon MPR*SHAB.Piste). En-tête gras,
+  filtre. Photo figée au 10/11 : à régénérer si besoin.
 
 ## Fichiers touchés
 
