@@ -75,6 +75,21 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Dossiers RES060, indice sans bonification** (champ Pro__c.RES060_Indice_sans_bonification__c créé par
   l'utilisateur, recopié dans le dépôt) : 200/200 remplis (bulk 750Jv000019KtAlIAK, 0 échec). Indices normaux
   revérifiés : 200/200 identiques.
+- **10/11 : passage au calculateur officiel RES060_FM** (fichier « Eligibilite PAC telepro RES060FM indice (2) »),
+  qui remplace le calcul FC : D_CAL officiel × 1,3 (arrondi au dixième) + 11 kWh/m² d'eau chaude, rendement fixe
+  0,70 (l'année de chaudière ne sert plus), fM 2, 160 €/MWh, bono « RES- Bono Social » ×1,5, mitoyenneté
+  (champ utilisateur « RES060- Medianería » : isolée 1 / 1 côté 0,95 / 2 côtés 0,85 / vide 0,95), 1 PAC ≤ 210 m²
+  (6 600 €), cascade 211-320 m² (13 000 €), au-delà indice 0 ; gaz et fioul seuls éligibles. Maison après 1997 :
+  calculée mais signalée (« · maison après 1997 » dans le statut, « ⚠️Maison après 97 · » devant
+  « RES060- Retour calculateur », à la demande de l'utilisateur). Indice sans bonification = même calcul sans ×1,5.
+  Tout est réglable dans `RES060_Parametre__mdt` (8 nouveaux réglages). Écran du simulateur adapté (mitoyenneté).
+  Déployé `0AfJv00000381urKAA` (32 composants, 71 tests, couverture 97-99 %).
+- Tableau D_CAL × 1,3 contrôlé contre le fichier : 188/192 identiques, 4 écarts de 0,1 (le fichier part de valeurs
+  officielles plus précises), effet sur l'indice ≤ 0,02.
+- Recalcul des pistes RES060 (7 379 dans le périmètre, 828 changent) : 710 écrites (bulk 750Jv000019R6GYIA0),
+  **118 refusées** : 109 par la règle LEAD_ENVOI_CONF2 (modifiée le 10/11 par l'utilisateur : « RES060- Medianería »
+  obligatoire pour les pistes en « Conf Ok- Att prévisite », non rempli sur les anciennes), 9 par « année 4 chiffres ».
+  Revérifié : seules ces 118 restent à l'ancien calcul. Dossiers RES060 : 198/200 changés, 200/200 conformes.
 
 ## Fichiers touchés
 
@@ -103,4 +118,8 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - [x] Connecteur Piste : fait et déployé.
 - [ ] Ajouter les 4 cases RES060 sur la page de la Piste et donner l'accès en lecture aux télépros / confirmateurs
       (pour l'instant seul renov.artisan.france les voit, via le jeu d'autorisations « Simulateur RES060 »).
-- [ ] Option : recalculer d'un coup les 678 pistes RES060 déjà remplies (vérifier avant les flows SMS/email).
+- [x] Recalcul des pistes RES060 (fait avec la formule FM le 10/11).
+- [ ] 118 pistes encore à l'ancien calcul (règles LEAD_ENVOI_CONF2 et « année 4 chiffres ») : attendre la décision
+      de l'utilisateur (assouplir la règle ou remplir la mitoyenneté), puis relancer `calcFM.apex` + bulk.
+- [ ] « RES060- Retour calculateur » reste au seuil 3,5 (réglage Seuil_Zone_Verte 3 500) alors que la fiche FM
+      accepte à partir de 4 : à confirmer avec l'utilisateur.
