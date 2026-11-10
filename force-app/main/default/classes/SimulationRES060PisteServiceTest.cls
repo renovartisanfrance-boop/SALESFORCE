@@ -446,7 +446,7 @@ private class SimulationRES060PisteServiceTest {
     p.RES060_Mitoyenn__c = SimulationRES060Service.MITOYENNETE_AUCUNE;
     insert p;
     Lead isolee = [
-      SELECT RES060_Indice__c, RES060_Statut__c, RES060_Retour_Calculateur__c
+      SELECT RES060_Indice__c, RES060_Statut__c
       FROM Lead
       WHERE Id = :p.Id
     ];
@@ -466,10 +466,6 @@ private class SimulationRES060PisteServiceTest {
     Assert.isTrue(
       isolee.RES060_Statut__c.contains('maison après 1997'),
       isolee.RES060_Statut__c
-    );
-    Assert.isTrue(
-      isolee.RES060_Retour_Calculateur__c.startsWith('⚠️Maison après 97'),
-      isolee.RES060_Retour_Calculateur__c
     );
     Assert.areEqual(
       -0.7,

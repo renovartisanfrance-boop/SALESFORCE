@@ -100,6 +100,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - Tranche indice Piste : + « / Apres 1997 » quand le statut du calculateur contient « maison après » (déployé
   `0AfJv000003827lKAA`, 760/760 conformes, 92 concernées). Dossier : pas fait, l'année de la maison n'existe que dans
   le texte long DR_Infos_Piste_R_sidentiel__c (interdit en formule) : solution proposée à l'utilisateur.
+- « RES060- Retour calculateur » remis exactement comme avant (sans « Maison après 97 ») à la demande de
+  l'utilisateur : déployé `0AfJv00000382CbKAI` (13 tests). Ne plus jamais toucher ce champ. L'info « maison après
+  1997 » reste dans RES060- Statut calculateur et RES060- Tranche indice.
 
 ## Fichiers touchés
 
