@@ -119,7 +119,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - [ ] Ajouter les 4 cases RES060 sur la page de la Piste et donner l'accès en lecture aux télépros / confirmateurs
       (pour l'instant seul renov.artisan.france les voit, via le jeu d'autorisations « Simulateur RES060 »).
 - [x] Recalcul des pistes RES060 (fait avec la formule FM le 10/11).
-- [ ] 118 pistes encore à l'ancien calcul (règles LEAD_ENVOI_CONF2 et « année 4 chiffres ») : attendre la décision
-      de l'utilisateur (assouplir la règle ou remplir la mitoyenneté), puis relancer `calcFM.apex` + bulk.
+- [x] 109 pistes bloquées par LEAD_ENVOI_CONF2 : réglé par l'utilisateur, recalculées (recalcul en mémoire du 10/11 :
+      plus aucun écart sauf 9 pistes).
+- [ ] 9 pistes sans indice (info manquante : surface / année de la maison) bloquées par la règle « année 4 chiffres »
+      (bulk 750Jv000019RCdiIAG) : leur statut reste vide tant que l'année n'est pas corrigée sur la piste.
 - [ ] « RES060- Retour calculateur » reste au seuil 3,5 (réglage Seuil_Zone_Verte 3 500) alors que la fiche FM
       accepte à partir de 4 : à confirmer avec l'utilisateur.
