@@ -90,6 +90,8 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   **118 refusées** : 109 par la règle LEAD_ENVOI_CONF2 (modifiée le 10/11 par l'utilisateur : « RES060- Medianería »
   obligatoire pour les pistes en « Conf Ok- Att prévisite », non rempli sur les anciennes), 9 par « année 4 chiffres ».
   Revérifié : seules ces 118 restent à l'ancien calcul. Dossiers RES060 : 198/200 changés, 200/200 conformes.
+- Google Sheet « test calculateur » passé en FM (mitoyenneté −5 % par défaut) : feuille 1 colonne O (169 lignes),
+  feuille 2 colonne O (26 lignes), feuille 3 colonne C (200 Dossiers, 0 écart avec l'indice Salesforce).
 
 ## Fichiers touchés
 
@@ -107,8 +109,6 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 
 ## Problèmes / points d'attention
 
-- Les feuilles Google « test calculateur » (feuilles 1 et 3) ont été calculées avec l'ancienne version
-  (160 €/MWh, 3 zones) : à recalculer si besoin.
 - Les autres utilisateurs n'ont pas encore accès : leur attribuer le jeu d'autorisations « Simulateur RES060 ».
 
 ## Prochaines étapes
