@@ -97,6 +97,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   « vide = 0 » affichait « inférieur a 2,5 » sans indice). Déployé `0AfJv00000381zhKAA`. Contrôle : 760/760 pistes
   (221 avec la mention), 200/200 dossiers (22). Attention : le Dossier a deux champs de même libellé (le mien
   RES060_Tranche_Indice__c, non modifié, et celui de l'utilisateur).
+- Tranche indice Piste : + « / Apres 1997 » quand le statut du calculateur contient « maison après » (déployé
+  `0AfJv000003827lKAA`, 760/760 conformes, 92 concernées). Dossier : pas fait, l'année de la maison n'existe que dans
+  le texte long DR_Infos_Piste_R_sidentiel__c (interdit en formule) : solution proposée à l'utilisateur.
 
 ## Fichiers touchés
 

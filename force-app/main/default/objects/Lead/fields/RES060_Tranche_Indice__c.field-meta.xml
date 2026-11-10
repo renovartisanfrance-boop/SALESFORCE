@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RES060_Tranche_Indice__c</fullName>
     <description
-  >Champ calculé : tranche de RES060_Indice__c, + « -Plus de 210m² » si Surface_habitable__c &gt; 210.</description>
+  >Champ calculé : tranche de RES060_Indice__c, + « -Plus de 210m² » si Surface_habitable__c &gt; 210, + « / Apres 1997 » si le calculateur signale une maison après 1997.</description>
     <externalId>false</externalId>
     <formula>IF(
   ISBLANK(RES060_Indice__c),
@@ -28,11 +28,16 @@
     AND(NOT(ISBLANK(Surface_habitable__c)), Surface_habitable__c &gt; 210),
     &quot;-Plus de 210m²&quot;,
     &quot;&quot;
+  ) &amp;
+  IF(
+    CONTAINS(RES060_Statut__c, &quot;maison après&quot;),
+    &quot;/ Apres 1997&quot;,
+    &quot;&quot;
   )
 )</formula>
     <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
     <inlineHelpText
-  >Tranche de l&apos;indice du calculateur RES060, suivie de « -Plus de 210m² » si la surface habitable dépasse 210 m². Vide si l&apos;indice n&apos;est pas calculé.</inlineHelpText>
+  >Tranche de l&apos;indice du calculateur RES060, suivie de « -Plus de 210m² » si la surface habitable dépasse 210 m², puis « / Apres 1997 » si la maison est construite après 1997. Vide si l&apos;indice n&apos;est pas calculé.</inlineHelpText>
     <label>RES060- Tranche indice</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
