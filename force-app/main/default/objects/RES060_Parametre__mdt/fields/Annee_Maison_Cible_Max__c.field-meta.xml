@@ -3,7 +3,7 @@
     <fullName>Annee_Maison_Cible_Max__c</fullName>
     <label>Année maison max (hors cible après)</label>
     <inlineHelpText
-  >Après cette année, l'indice est calculé mais signalé « maison après … ».</inlineHelpText>
+  >Après cette année de construction, l'indice est mis à 0 et signalé « maison après … ». Vide = pas de règle.</inlineHelpText>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <type>Number</type>
     <precision>4</precision>

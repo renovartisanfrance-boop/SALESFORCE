@@ -423,17 +423,17 @@ private class SimulationRES060PisteServiceTest {
   }
 
   @IsTest
-  static void pisteAuDelaDe320M2() {
+  static void pisteAuDelaDe210M2() {
     Test.setMock(HttpCalloutMock.class, new BouchonCallout());
     Lead p = pisteAsturias('Grande');
-    p.Surface_habitable__c = 350;
+    p.Surface_habitable__c = 211;
 
     insert p;
 
     Lead lu = relire(p.Id);
     Assert.areEqual(0, lu.RES060_Indice__c, 'indice à 0');
     Assert.isTrue(
-      lu.RES060_Statut__c.startsWith('Surface supérieure à 320'),
+      lu.RES060_Statut__c.startsWith('Surface supérieure à 210'),
       lu.RES060_Statut__c
     );
   }
@@ -441,15 +441,13 @@ private class SimulationRES060PisteServiceTest {
   @IsTest
   static void mitoyenneteEtMaisonApres97() {
     Test.setMock(HttpCalloutMock.class, new BouchonCallout());
-    Lead p = pisteAsturias('Recente');
-    p.RES_Anne_maison__c = '2005';
+    Lead p = pisteAsturias('Mitoyenne');
+    p.RES_Anne_maison__c = '1990';
     p.RES060_Mitoyenn__c = SimulationRES060Service.MITOYENNETE_AUCUNE;
-    insert p;
-    Lead isolee = [
-      SELECT RES060_Indice__c, RES060_Statut__c
-      FROM Lead
-      WHERE Id = :p.Id
-    ];
+    Lead recente = pisteAsturias('Recente');
+    recente.RES_Anne_maison__c = '2005';
+    insert new List<Lead>{ p, recente };
+    Decimal isolee = relire(p.Id).RES060_Indice__c;
 
     Test.startTest();
     update new Lead(
@@ -458,19 +456,22 @@ private class SimulationRES060PisteServiceTest {
     );
     Test.stopTest();
 
-    Assert.areEqual(
-      0.3,
-      isolee.RES060_Indice__c,
-      'maison 2005 calculée quand même'
-    );
-    Assert.isTrue(
-      isolee.RES060_Statut__c.contains('maison après 1997'),
-      isolee.RES060_Statut__c
-    );
+    Assert.areEqual(0.3, isolee, 'maison isolée');
     Assert.areEqual(
       -0.7,
       relire(p.Id).RES060_Indice__c,
       'recalcul quand la mitoyenneté change (−15 %)'
+    );
+    Lead lu = relire(recente.Id);
+    Assert.areEqual(0, lu.RES060_Indice__c, 'maison 2005 : indice à 0');
+    Assert.areEqual(
+      0,
+      lu.RES060_Indice_Sans_Bonification__c,
+      'aussi sans bonification'
+    );
+    Assert.isTrue(
+      lu.RES060_Statut__c.contains('maison après 1997'),
+      lu.RES060_Statut__c
     );
   }
 }

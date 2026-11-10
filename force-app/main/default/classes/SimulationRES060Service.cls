@@ -5,8 +5,8 @@
  *   AES (kWh/an) = (D_CAL majoré + D_ACS 11) × S × (1/η fixe 0,70 − 1/SCOP)
  *   Prime        = AES ÷ 1000 × fM × (multiplicateur si bono) × prix (€/MWh) × coef. mitoyenneté
  *   Bénéfice     = Prime − coût du pack (1 PAC jusqu'au seuil cascade, sinon cascade 2 PAC).
- * Seuls le gaz et le fioul sont éligibles. Une maison construite après l'année cible est
- * calculée quand même, mais signalée dans le statut (« maison après … »).
+ * Seuls le gaz et le fioul sont éligibles. Hors cible (surface au-delà du maximum, 210 m², ou maison
+ * construite après l'année cible, 1997) : indice mis à 0, signalé dans le statut (« maison après … »).
  * Les valeurs modifiables sont dans RES060_Parametre__mdt et RES060_DCAL_Province__mdt.
  */
 public with sharing class SimulationRES060Service {
@@ -22,7 +22,9 @@ public with sharing class SimulationRES060Service {
   public static final String STATUT_PROVINCE_INCONNUE = 'Donnée manquante : province inconnue';
   public static final String STATUT_SANS_DCAL = 'Donnée manquante : pas de D_CAL publié pour cette province (Canarias)';
   public static final String STATUT_SANS_REGLAGES = 'Donnée manquante : réglages RES060 introuvables';
-  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : hors limite (2 PAC max), indice mis à 0';
+  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : indice mis à 0';
+  /** Statut d'une maison construite après l'année cible (suivi de « · maison après … »). */
+  public static final String STATUT_INDICE_ZERO = 'Indice mis à 0';
 
   /** Valeurs du champ mitoyenneté (mêmes valeurs sur la Piste et la Simulation). */
   public static final String MITOYENNETE_AUCUNE = 'Aislada/Independiente';
@@ -53,7 +55,7 @@ public with sharing class SimulationRES060Service {
     public Decimal coefMitoyennete1Cote;
     public Decimal coefMitoyennete2Cotes;
     public Decimal coefMitoyenneteDefaut;
-    /** Après cette année de construction : calcul fait mais maison signalée (vide = pas de signal). */
+    /** Après cette année de construction : indice mis à 0 et maison signalée (vide = pas de règle). */
     public Decimal anneeMaisonCibleMax;
   }
 
@@ -284,17 +286,23 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_ATTENTE;
       return;
     }
+    // Hors cible (surface au-delà du maximum ou maison après l'année cible) : indice mis à 0.
     String signalMaison = signalMaison(s.Annee_Maison__c);
-    if (params.surfaceMaxM2 != null && s.Surface__c > params.surfaceMaxM2) {
+    Boolean tropGrande =
+      params.surfaceMaxM2 != null &&
+      s.Surface__c > params.surfaceMaxM2;
+    if (tropGrande || String.isNotBlank(signalMaison)) {
       s.Prime__c = 0;
       s.Benefice__c = 0;
       s.Indice__c = 0;
       s.Zone__c = ZONE_ROUGE;
       s.Statut__c =
-        String.format(
-          STATUT_SURFACE_MAX,
-          new List<Object>{ params.surfaceMaxM2.format() }
-        ) + signalMaison;
+        (tropGrande
+          ? String.format(
+              STATUT_SURFACE_MAX,
+              new List<Object>{ params.surfaceMaxM2.format() }
+            )
+          : STATUT_INDICE_ZERO) + signalMaison;
       return;
     }
     Province province = provincesParNom.get(s.Province__c);
