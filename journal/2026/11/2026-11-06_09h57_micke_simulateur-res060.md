@@ -103,6 +103,12 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - « RES060- Retour calculateur » remis exactement comme avant (sans « Maison après 97 ») à la demande de
   l'utilisateur : déployé `0AfJv00000382CbKAI` (13 tests). Ne plus jamais toucher ce champ. L'info « maison après
   1997 » reste dans RES060- Statut calculateur et RES060- Tranche indice.
+- **Nouvelle règle : indice à 0 si surface > 210 m² ou maison après 1997** (aussi pour l'indice sans bonification).
+  Réglage Surface_Max_m2 passé de 320 à 210 ; Annee_Maison_Cible_Max (1997) met maintenant l'indice à 0. Statuts :
+  « Surface supérieure à 210 m² : indice mis à 0 » ou « Indice mis à 0 · maison après 1997 ». Déployé `0AfJv00000382FpKAI`
+  (71 tests). Pistes : 273 passées à 0 (bulk 750Jv000019RPUVIA4 ; 9 refus « année 4 chiffres » habituels). Dossiers :
+  23 passés à 0, 200/200 conformes. Sheet : colonnes O (texte) + P « Indice FM (nombre) », Q « Plus de 210m² »,
+  R « Après 1997 » sur les feuilles 1 et 2 ; feuille 3 : C (texte) + E, F, G. Indices écrits en nombres (triables).
 
 ## Fichiers touchés
 
