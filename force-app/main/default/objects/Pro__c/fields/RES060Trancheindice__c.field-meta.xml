@@ -8,18 +8,18 @@
   ISBLANK(RES060_Indice_calculateur__c),
   &quot;&quot;,
   IF(
-    RES060_Indice_calculateur__c &lt; 2.5,
-    &quot;Dossier inférieur a 2,5&quot;,
+    RES060_Indice_calculateur__c &lt; 4,
+    &quot;Dossier inférieur a 4&quot;,
     IF(
-      RES060_Indice_calculateur__c &lt; 3.5,
-      &quot;Dossier Compris entre 2,5 et 3,5&quot;,
+      RES060_Indice_calculateur__c &lt; 6,
+      &quot;Dossier Compris 4/6&quot;,
       IF(
-        RES060_Indice_calculateur__c &lt; 5,
-        &quot;Dossier Compris entre 3,5 et 5&quot;,
+        RES060_Indice_calculateur__c &lt; 8,
+        &quot;Dossier Compris 6/8&quot;,
         IF(
-          RES060_Indice_calculateur__c &lt; 7,
-          &quot;Dossier Compris entre 5 et 7&quot;,
-          &quot;Dossier Compris entre 7 et plus&quot;
+          RES060_Indice_calculateur__c &lt; 10,
+          &quot;Dossier Compris 8/10&quot;,
+          &quot;Dossier Compris 10+&quot;
         )
       )
     )
@@ -30,7 +30,6 @@
     &quot;&quot;
   )
 )</formula>
-    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
     <inlineHelpText
   >Tranche de l&apos;indice du calculateur RES060, suivie de « -Plus de 210m² » si la surface habitable dépasse 210 m². Vide si l&apos;indice n&apos;est pas calculé.</inlineHelpText>
     <label>RES060- Tranche indice</label>

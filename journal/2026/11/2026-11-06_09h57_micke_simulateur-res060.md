@@ -112,6 +112,12 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
 - **Indice sans bonification = fM 1 et sans ×1,5** (demande utilisateur ; réglage Facteur_fC_Sans_Bonification 2 → 1).
   Déployé `0AfJv00000382PVKAY` (71 tests). Pistes : 491 recalculées (indice normal inchangé, 0 refus). Dossiers :
   175 changés, 200/200 conformes.
+- **Exception ponctuelle (demande utilisateur)** : les 25 Dossiers à indice 0 (22 > 210 m², 3 maisons après 1997) ont
+  reçu leur indice réel calculé sans la règle « indice 0 » (cascade 13 000 € au-delà de 210 m²), et leur SHAB de la
+  piste (Surface_habitablee__c) dans « RES- Shab » (MPR_SHAB__c). 25/25 vérifiés. Indice sans bonification laissé à 0.
+  Aucun recalcul automatique côté Dossier : ces valeurs restent tant qu'on ne relance pas le script.
+- Tranches indice (Piste et Dossier) modifiées en prod par l'utilisateur (< 4 / 4-6 / 6-8 / 8-10 / 10+) : recopiées
+  dans le dépôt.
 
 ## Fichiers touchés
 
