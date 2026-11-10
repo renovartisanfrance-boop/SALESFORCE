@@ -109,6 +109,9 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   (71 tests). Pistes : 273 passées à 0 (bulk 750Jv000019RPUVIA4 ; 9 refus « année 4 chiffres » habituels). Dossiers :
   23 passés à 0, 200/200 conformes. Sheet : colonnes O (texte) + P « Indice FM (nombre) », Q « Plus de 210m² »,
   R « Après 1997 » sur les feuilles 1 et 2 ; feuille 3 : C (texte) + E, F, G. Indices écrits en nombres (triables).
+- **Indice sans bonification = fM 1 et sans ×1,5** (demande utilisateur ; réglage Facteur_fC_Sans_Bonification 2 → 1).
+  Déployé `0AfJv00000382PVKAY` (71 tests). Pistes : 491 recalculées (indice normal inchangé, 0 refus). Dossiers :
+  175 changés, 200/200 conformes.
 
 ## Fichiers touchés
 
