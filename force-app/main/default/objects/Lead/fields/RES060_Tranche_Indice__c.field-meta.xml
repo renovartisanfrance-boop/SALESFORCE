@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RES060_Tranche_Indice__c</fullName>
-    <label>RES060- Tranche indice</label>
-    <description>Champ calculé : tranche de RES060_Indice__c.</description>
-    <inlineHelpText
-  >Tranche de l'indice du calculateur RES060. Vide si l'indice n'est pas calculé.</inlineHelpText>
-    <type>Text</type>
+    <description
+  >Champ calculé : tranche de RES060_Indice__c, + « -Plus de 210m² » si Surface_habitable__c &gt; 210.</description>
+    <externalId>false</externalId>
     <formula>IF(
   ISBLANK(RES060_Indice__c),
   &quot;&quot;,
@@ -25,11 +23,19 @@
         )
       )
     )
+  ) &amp;
+  IF(
+    AND(NOT(ISBLANK(Surface_habitable__c)), Surface_habitable__c &gt; 210),
+    &quot;-Plus de 210m²&quot;,
+    &quot;&quot;
   )
 )</formula>
     <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <inlineHelpText
+  >Tranche de l&apos;indice du calculateur RES060, suivie de « -Plus de 210m² » si la surface habitable dépasse 210 m². Vide si l&apos;indice n&apos;est pas calculé.</inlineHelpText>
+    <label>RES060- Tranche indice</label>
     <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
     <unique>false</unique>
-    <externalId>false</externalId>
-    <trackTrending>false</trackTrending>
 </CustomField>

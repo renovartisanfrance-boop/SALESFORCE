@@ -92,6 +92,11 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   Revérifié : seules ces 118 restent à l'ancien calcul. Dossiers RES060 : 198/200 changés, 200/200 conformes.
 - Google Sheet « test calculateur » passé en FM (mitoyenneté −5 % par défaut) : feuille 1 colonne O (169 lignes),
   feuille 2 colonne O (26 lignes), feuille 3 colonne C (200 Dossiers, 0 écart avec l'indice Salesforce).
+- « RES060- Tranche indice » : ajout de « -Plus de 210m² » quand la surface dépasse 210 m² (Piste : Surface_habitable__c ;
+  Dossier : champ utilisateur Pro__c.RES060Trancheindice__c avec Surface_habitablee__c, passé en « vide = vide » car
+  « vide = 0 » affichait « inférieur a 2,5 » sans indice). Déployé `0AfJv00000381zhKAA`. Contrôle : 760/760 pistes
+  (221 avec la mention), 200/200 dossiers (22). Attention : le Dossier a deux champs de même libellé (le mien
+  RES060_Tranche_Indice__c, non modifié, et celui de l'utilisateur).
 
 ## Fichiers touchés
 
