@@ -136,7 +136,11 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   rentable » (nouveau réglage Seuil_Non_Rentable 3 000) ; sinon plus de 230 m² ou maison après 1997 → « 🟨A confirmer-
   Sans envoi visite » ; sinon ≥ 3,5 → ✅ / 🟨. Déployé `0AfJv00000384cbKAA` (71 tests). Pistes : 253 mises à jour
   (61 maisons après 1997, 192 plus de 230 m²), 0 refus, contrôle sans écart sauf les 9 bloquées. Répartition sur
-  779 pistes avec indice : 421 ✅, 223 🟨, 135 ❌ non rentable. Dossiers non touchés (demande limitée à la Piste).
+  779 pistes avec indice : 421 ✅, 223 🟨, 135 ❌ non rentable.
+- **Dossiers alignés sur la logique Piste** (demande utilisateur) : recalcul des 200 dossiers sans règle « indice 0 »,
+  coûts 6 600 / 7 500 / 13 000 €, bono = Bono social Final. Indices déjà conformes ; 13 dossiers (> 230 m² ou maison
+  après 1997) avaient l'indice sans bonification à 0 : recalculés. Contrôle : 200/200 conformes. L'exception
+  ponctuelle des 25 dossiers n'existe plus : ils suivent maintenant la règle normale.
 
 ## Fichiers touchés
 
