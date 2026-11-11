@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Zone_Intervention__c</fullName>
+    <label>Départements desservis</label>
+    <inlineHelpText
+  >Ex. 75, 77, 91, 93 : sert à choisir le dépôt le plus proche d’un chantier.</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

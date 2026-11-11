@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Certification__c</fullName>
+    <label>Certification</label>
+    <inlineHelpText>Ex. NF PAC, Keymark, Solar Keymark.</inlineHelpText>
+    <type>Text</type>
+    <length>120</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

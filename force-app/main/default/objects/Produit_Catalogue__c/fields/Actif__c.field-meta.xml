@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Actif__c</fullName>
+    <label>Actif</label>
+    <inlineHelpText
+  >Décocher pour retirer l’article des listes sans le supprimer.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>true</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>

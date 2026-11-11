@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Seuil_Alerte__c</fullName>
+    <label>Seuil d’alerte</label>
+    <inlineHelpText
+  >Quand le disponible passe en dessous, une alerte de réapprovisionnement est levée.</inlineHelpText>
+    <type>Number</type>
+    <precision>6</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <defaultValue>2</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>

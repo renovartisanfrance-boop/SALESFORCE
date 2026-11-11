@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Dépôt</label>
+    <pluralLabel>Dépôts</pluralLabel>
+    <gender>Masculine</gender>
+    <startsWith>Consonant</startsWith>
+    <description
+  >Dépôts logistiques où est stockée la marchandise (dépôt propre, logisticien, camion…).</description>
+    <nameField>
+        <label>Nom du dépôt</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <externalSharingModel>Private</externalSharingModel>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <searchLayouts>
+        <searchResultsAdditionalFields
+    >Type_Depot__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Ville__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >Logisticien__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >Telephone_Responsable__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Actif__c</searchResultsAdditionalFields>
+    </searchLayouts>
+</CustomObject>

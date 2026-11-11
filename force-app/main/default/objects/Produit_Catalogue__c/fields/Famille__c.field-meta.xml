@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Famille__c</fullName>
+    <label>Famille</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pompe à chaleur</fullName>
+                <default>true</default>
+                <label>Pompe à chaleur</label>
+            </value>
+            <value>
+                <fullName>Ballon thermodynamique</fullName>
+                <default>false</default>
+                <label>Ballon thermodynamique</label>
+            </value>
+            <value>
+                <fullName>Chauffe-eau</fullName>
+                <default>false</default>
+                <label>Chauffe-eau</label>
+            </value>
+            <value>
+                <fullName>Système solaire combiné</fullName>
+                <default>false</default>
+                <label>Système solaire combiné</label>
+            </value>
+            <value>
+                <fullName>Panneau photovoltaïque</fullName>
+                <default>false</default>
+                <label>Panneau photovoltaïque</label>
+            </value>
+            <value>
+                <fullName>Onduleur / Batterie</fullName>
+                <default>false</default>
+                <label>Onduleur / Batterie</label>
+            </value>
+            <value>
+                <fullName>VMC</fullName>
+                <default>false</default>
+                <label>VMC</label>
+            </value>
+            <value>
+                <fullName>Climatisation</fullName>
+                <default>false</default>
+                <label>Climatisation</label>
+            </value>
+            <value>
+                <fullName>Poêle / Chaudière biomasse</fullName>
+                <default>false</default>
+                <label>Poêle / Chaudière biomasse</label>
+            </value>
+            <value>
+                <fullName>Isolation</fullName>
+                <default>false</default>
+                <label>Isolation</label>
+            </value>
+            <value>
+                <fullName>Éclairage LED</fullName>
+                <default>false</default>
+                <label>Éclairage LED</label>
+            </value>
+            <value>
+                <fullName>Radiateur</fullName>
+                <default>false</default>
+                <label>Radiateur</label>
+            </value>
+            <value>
+                <fullName>Accessoire</fullName>
+                <default>false</default>
+                <label>Accessoire</label>
+            </value>
+            <value>
+                <fullName>Pièce détachée</fullName>
+                <default>false</default>
+                <label>Pièce détachée</label>
+            </value>
+            <value>
+                <fullName>Consommable</fullName>
+                <default>false</default>
+                <label>Consommable</label>
+            </value>
+            <value>
+                <fullName>Autre</fullName>
+                <default>false</default>
+                <label>Autre</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Taux_Marge__c</fullName>
+    <label>Taux de marge</label>
+    <type>Percent</type>
+    <formula
+  >IF(Prix_Vente_HT__c &gt; 0, (Prix_Vente_HT__c - Prix_Achat_HT__c) / Prix_Vente_HT__c, 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <precision>5</precision>
+    <scale>1</scale>
+</CustomField>

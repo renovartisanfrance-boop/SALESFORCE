@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_Depot__c</fullName>
+    <label>Type de dépôt</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Dépôt propre</fullName>
+                <default>false</default>
+                <label>Dépôt propre</label>
+            </value>
+            <value>
+                <fullName>Dépôt logisticien</fullName>
+                <default>true</default>
+                <label>Dépôt logisticien</label>
+            </value>
+            <value>
+                <fullName>Chez le fournisseur</fullName>
+                <default>false</default>
+                <label>Chez le fournisseur</label>
+            </value>
+            <value>
+                <fullName>Chez un installateur</fullName>
+                <default>false</default>
+                <label>Chez un installateur</label>
+            </value>
+            <value>
+                <fullName>Véhicule / Camion</fullName>
+                <default>false</default>
+                <label>Véhicule / Camion</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Actif__c</fullName>
+    <label>Actif</label>
+    <inlineHelpText
+  >Décocher quand le dépôt n’est plus utilisé (il reste dans l’historique).</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>true</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>
