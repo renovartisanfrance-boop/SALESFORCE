@@ -3,7 +3,7 @@
     <fullName>Surface_Max_m2__c</fullName>
     <label>Surface maximale (m²)</label>
     <inlineHelpText
-  >Au-delà de cette surface habitable, l'indice est mis à 0. Vide = pas de limite.</inlineHelpText>
+  >Au-delà de cette surface habitable : pack « au-delà surface max » et « Sans envoi visite » dans Retour calculateur. Vide = pas de palier.</inlineHelpText>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <type>Number</type>
     <precision>6</precision>

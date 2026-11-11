@@ -16,6 +16,7 @@ private class SimulationRES060ServiceTest {
     p.prixDefaut = 160;
     p.coutPack1Pac = 6600;
     p.coutPackCascade = 7500;
+    p.coutPackGrandeSurface = 13000;
     p.seuilCascadeM2 = 210;
     p.seuilZoneVerte = 3500;
     p.multiplicateurBono = 1.5;
@@ -133,7 +134,7 @@ private class SimulationRES060ServiceTest {
   }
 
   @IsTest
-  static void maisonApres1997IndiceAZero() {
+  static void maisonApres1997CalculNormal() {
     SimulationRES060Service svc = service();
     Simulation_RES060__c s2005 = simulation('Madrid', 120, 2005, 'Gaz');
     Simulation_RES060__c s1998 = simulation('Madrid', 120, 1998, 'Gaz');
@@ -143,24 +144,18 @@ private class SimulationRES060ServiceTest {
     Decimal sansBonif = svc.indiceSansBonification(s1998);
     svc.calculer(new List<Simulation_RES060__c>{ s2005, s1998, s1997 });
 
-    Assert.areEqual(0, s2005.Indice__c, 'maison 2005 : indice à 0');
-    Assert.areEqual(0, s2005.Prime__c, 'prime à 0');
-    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s2005.Zone__c, 'zone');
+    Assert.areEqual(-0.3, s2005.Indice__c, 'maison 2005 : calcul normal');
     Assert.areEqual(
-      SimulationRES060Service.STATUT_INDICE_ZERO + ' · maison après 1997',
+      SimulationRES060Service.STATUT_ELIGIBLE + ' · maison après 1997',
       s2005.Statut__c,
-      'statut'
+      'maison signalée dans le statut'
     );
-    Assert.isNull(s2005.DCAL__c, 'pas de détail de calcul');
-    Assert.areEqual(0, s1998.Indice__c, '1998 : hors cible, même avec bono');
-    Assert.areEqual(0, sansBonif, 'aussi sans bonification');
+    Assert.areEqual(2.8, s1998.Indice__c, '1998 avec bono : calcul normal');
+    Assert.areEqual(-3.5, sansBonif, 'sans bonification aussi');
+    Assert.areEqual(-0.3, s1997.Indice__c, '1997 : même calcul');
     Assert.areEqual(
-      -0.3,
-      s1997.Indice__c,
-      '1997 : dans la cible, calcul normal'
-    );
-    Assert.isFalse(
-      s1997.Statut__c.contains('maison après'),
+      SimulationRES060Service.STATUT_ELIGIBLE,
+      s1997.Statut__c,
       '1997 : pas de signal'
     );
   }
@@ -374,17 +369,17 @@ private class SimulationRES060ServiceTest {
       '230 m² pile : calcul normal avec 7 500 €'
     );
     Assert.isTrue(s230.Indice__c > 0, 'indice calculé à 230 m²');
-    Assert.areEqual(0, s231.Indice__c, 'au-delà de 230 m² : indice à 0');
-    Assert.areEqual(0, s231.Prime__c, 'prime à 0');
-    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s231.Zone__c, 'zone');
+    Assert.areEqual(13000, s231.Cout_Pack__c, 'au-delà de 230 m² : 13 000 €');
+    Assert.areEqual(6.5, s231.Indice__c, 'au-delà de 230 m² : calcul normal');
     Assert.areEqual(
-      'Surface supérieure à 230 m² : indice mis à 0',
+      SimulationRES060Service.STATUT_ELIGIBLE +
+      ' · cascade 2 PAC · plus de 230 m²',
       s231.Statut__c,
       'statut'
     );
-    Assert.isNull(s231.DCAL__c, 'pas de détail de calcul');
+    Assert.areEqual(0.1, s250.Indice__c, '250 m², maison 2005 : calcul normal');
     Assert.isTrue(
-      s250.Statut__c.startsWith('Surface supérieure à 230') &&
+      s250.Statut__c.contains('plus de 230 m²') &&
       s250.Statut__c.contains('maison après 1997'),
       s250.Statut__c
     );
@@ -419,9 +414,9 @@ private class SimulationRES060ServiceTest {
       'indice sans bonification (fM 1, sans ×1,5)'
     );
     Assert.areEqual(
-      0,
+      3.9,
       sansBonifGrande,
-      'limite de 230 m² aussi sans bonification'
+      '400 m² sans bonification : calcul normal à 13 000 €'
     );
     Assert.isNull(grande.Indice__c, 'la simulation reçue n\'est pas modifiée');
   }

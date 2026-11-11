@@ -50,7 +50,8 @@ private class SimulationRES060PisteServiceTest {
         RES060_Zone__c,
         RES060_Statut__c,
         RES060_Province__c,
-        RES060_Indice_Sans_Bonification__c
+        RES060_Indice_Sans_Bonification__c,
+        RES060_Retour_Calculateur__c
       FROM Lead
       WHERE Id = :id
     ];
@@ -431,10 +432,15 @@ private class SimulationRES060PisteServiceTest {
     insert p;
 
     Lead lu = relire(p.Id);
-    Assert.areEqual(0, lu.RES060_Indice__c, 'indice à 0');
+    Assert.isTrue(lu.RES060_Indice__c != 0, 'indice calculé');
     Assert.isTrue(
-      lu.RES060_Statut__c.startsWith('Surface supérieure à 230'),
+      lu.RES060_Statut__c.contains('plus de 230 m²'),
       lu.RES060_Statut__c
+    );
+    Assert.areEqual(
+      '🟨A confirmer- Sans envoi visite',
+      lu.RES060_Retour_Calculateur__c,
+      'plus de 230 m² : sans envoi visite'
     );
   }
 
@@ -463,11 +469,12 @@ private class SimulationRES060PisteServiceTest {
       'recalcul quand la mitoyenneté change (−15 %)'
     );
     Lead lu = relire(recente.Id);
-    Assert.areEqual(0, lu.RES060_Indice__c, 'maison 2005 : indice à 0');
+    Assert.isNotNull(lu.RES060_Indice__c, 'maison 2005 : indice calculé');
+    Assert.isTrue(lu.RES060_Indice__c < 3, 'indice faible');
     Assert.areEqual(
-      0,
-      lu.RES060_Indice_Sans_Bonification__c,
-      'aussi sans bonification'
+      '❌Dossier non rentable',
+      lu.RES060_Retour_Calculateur__c,
+      'indice sous 3 : non rentable'
     );
     Assert.isTrue(
       lu.RES060_Statut__c.contains('maison après 1997'),

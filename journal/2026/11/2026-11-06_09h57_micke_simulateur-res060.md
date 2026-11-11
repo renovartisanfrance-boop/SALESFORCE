@@ -128,7 +128,15 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   avant ; déployé (71 tests OK). Pistes : 224 mises à jour (25 entre 211 et 230 m² ont maintenant un vrai indice),
   0 refus ; recalcul de contrôle : plus aucun écart sauf les 9 pistes bloquées. Dossiers : 12 entre 211 et 230 m²
   recalculés avec 7 500 € ; les 13 autres de l'exception (> 230 m² ou après 1997) gardent leur indice réel (13 000 €).
-  Le Google Sheet n'a pas été régénéré.
+  Le Google Sheet n'a pas été régénéré (l'utilisateur n'en a plus besoin).
+- **11/11 — Plus d'indice forcé à 0 sur la Piste** (demande utilisateur) : l'indice se calcule pour toutes les
+  surfaces et toutes les années. Coûts : 6 600 € ≤ 210 m², 7 500 € de 211 à 230 m², **13 000 €** au-delà (nouveau
+  réglage Cout_Pack_Grande_Surface 13 000). Statut : « · plus de 230 m² » et « · maison après 1997 » en signal.
+  **« RES060- Retour calculateur » modifié à la demande explicite de l'utilisateur** : indice < 3 → « ❌Dossier non
+  rentable » (nouveau réglage Seuil_Non_Rentable 3 000) ; sinon plus de 230 m² ou maison après 1997 → « 🟨A confirmer-
+  Sans envoi visite » ; sinon ≥ 3,5 → ✅ / 🟨. Déployé `0AfJv00000384cbKAA` (71 tests). Pistes : 253 mises à jour
+  (61 maisons après 1997, 192 plus de 230 m²), 0 refus, contrôle sans écart sauf les 9 bloquées. Répartition sur
+  779 pistes avec indice : 421 ✅, 223 🟨, 135 ❌ non rentable. Dossiers non touchés (demande limitée à la Piste).
 
 ## Fichiers touchés
 

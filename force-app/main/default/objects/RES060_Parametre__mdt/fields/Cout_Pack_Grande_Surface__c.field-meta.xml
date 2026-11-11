@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cout_Pack_Grande_Surface__c</fullName>
+    <label>Coût pack au-delà surface max (€)</label>
+    <inlineHelpText
+  >Coût du pack quand la surface habitable dépasse la surface maximale (cascade 2 PAC). Vide = coût pack cascade.</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <type>Number</type>
+    <precision>10</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <externalId>false</externalId>
+</CustomField>

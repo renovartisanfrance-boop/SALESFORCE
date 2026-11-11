@@ -94,4 +94,12 @@
         <field>Annee_Maison_Cible_Max__c</field>
         <value xsi:type="xsd:double">1997</value>
     </values>
+    <values>
+        <field>Cout_Pack_Grande_Surface__c</field>
+        <value xsi:type="xsd:double">13000</value>
+    </values>
+    <values>
+        <field>Seuil_Non_Rentable__c</field>
+        <value xsi:type="xsd:double">3000</value>
+    </values>
 </CustomMetadata>

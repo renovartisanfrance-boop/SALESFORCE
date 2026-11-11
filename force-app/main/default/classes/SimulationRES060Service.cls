@@ -4,9 +4,10 @@
  *   D_CAL majoré = D_CAL officiel × majoration (1,3), arrondi au dixième
  *   AES (kWh/an) = (D_CAL majoré + D_ACS 11) × S × (1/η fixe 0,70 − 1/SCOP)
  *   Prime        = AES ÷ 1000 × fM × (multiplicateur si bono) × prix (€/MWh) × coef. mitoyenneté
- *   Bénéfice     = Prime − coût du pack (1 PAC jusqu'au seuil cascade, sinon cascade 2 PAC).
- * Seuls le gaz et le fioul sont éligibles. Hors cible (surface au-delà du maximum, 210 m², ou maison
- * construite après l'année cible, 1997) : indice mis à 0, signalé dans le statut (« maison après … »).
+ *   Bénéfice     = Prime − coût du pack : 1 PAC jusqu'au seuil cascade (210 m²), pack cascade jusqu'à la
+ *                  surface max (230 m²), pack grande surface au-delà.
+ * Seuls le gaz et le fioul sont éligibles. L'indice est calculé pour toutes les surfaces et toutes les années ;
+ * le statut signale « plus de 230 m² » et « maison après 1997 » (lu par « RES060- Retour calculateur »).
  * Les valeurs modifiables sont dans RES060_Parametre__mdt et RES060_DCAL_Province__mdt.
  */
 public with sharing class SimulationRES060Service {
@@ -15,16 +16,15 @@ public with sharing class SimulationRES060Service {
   public static final String STATUT_ELIGIBLE = 'Éligible';
   public static final String STATUT_NON_ELIGIBLE = 'Non éligible : bois / pellets (combustible non fossile)';
   public static final String STATUT_NON_ELIGIBLE_ELECTRIQUE = 'Non éligible : chauffage électrique ou charbon (seuls gaz et fioul)';
-  /** Ajouté au statut quand la maison est construite après l'année cible (texte lu par « RES060- Tranche indice »). */
+  /** Ajouté au statut quand la maison est construite après l'année cible (lu par « Tranche indice » et « Retour calculateur »). */
   public static final String MAISON_APRES = ' · maison après {0}';
   public static final String STATUT_ATTENTE_CHAUDIERE = 'En attente : choisir le type de chaudière';
   public static final String STATUT_ATTENTE = 'En attente : renseigner la province et la surface';
   public static final String STATUT_PROVINCE_INCONNUE = 'Donnée manquante : province inconnue';
   public static final String STATUT_SANS_DCAL = 'Donnée manquante : pas de D_CAL publié pour cette province (Canarias)';
   public static final String STATUT_SANS_REGLAGES = 'Donnée manquante : réglages RES060 introuvables';
-  public static final String STATUT_SURFACE_MAX = 'Surface supérieure à {0} m² : indice mis à 0';
-  /** Statut d'une maison construite après l'année cible (suivi de « · maison après … »). */
-  public static final String STATUT_INDICE_ZERO = 'Indice mis à 0';
+  /** Ajouté au statut quand la surface dépasse la surface max. */
+  public static final String PLUS_DE = ' · plus de {0} m²';
 
   /** Valeurs du champ mitoyenneté (mêmes valeurs sur la Piste et la Simulation). */
   public static final String MITOYENNETE_AUCUNE = 'Aislada/Independiente';
@@ -41,8 +41,10 @@ public with sharing class SimulationRES060Service {
     public Decimal seuilCascadeM2;
     public Decimal seuilZoneVerte;
     public Decimal multiplicateurBono;
-    /** Au-delà de cette surface, l'indice est mis à 0 (vide = pas de limite). */
+    /** Au-delà de cette surface : pack grande surface et surface signalée (vide = pas de palier). */
     public Decimal surfaceMaxM2;
+    /** Coût du pack au-delà de la surface max (vide = coût cascade). */
+    public Decimal coutPackGrandeSurface;
     /** fM utilisé pour l'indice « sans bonification » (vide = 1). */
     public Decimal facteurFcSansBonification;
     /** D_CAL officiel × majoration (vide = 1). */
@@ -55,7 +57,7 @@ public with sharing class SimulationRES060Service {
     public Decimal coefMitoyennete1Cote;
     public Decimal coefMitoyennete2Cotes;
     public Decimal coefMitoyenneteDefaut;
-    /** Après cette année de construction : indice mis à 0 et maison signalée (vide = pas de règle). */
+    /** Après cette année de construction : maison signalée dans le statut (vide = pas de signal). */
     public Decimal anneeMaisonCibleMax;
   }
 
@@ -286,25 +288,10 @@ public with sharing class SimulationRES060Service {
       s.Statut__c = STATUT_ATTENTE;
       return;
     }
-    // Hors cible (surface au-delà du maximum ou maison après l'année cible) : indice mis à 0.
     String signalMaison = signalMaison(s.Annee_Maison__c);
-    Boolean tropGrande =
+    Boolean grandeSurface =
       params.surfaceMaxM2 != null &&
       s.Surface__c > params.surfaceMaxM2;
-    if (tropGrande || String.isNotBlank(signalMaison)) {
-      s.Prime__c = 0;
-      s.Benefice__c = 0;
-      s.Indice__c = 0;
-      s.Zone__c = ZONE_ROUGE;
-      s.Statut__c =
-        (tropGrande
-          ? String.format(
-              STATUT_SURFACE_MAX,
-              new List<Object>{ params.surfaceMaxM2.format() }
-            )
-          : STATUT_INDICE_ZERO) + signalMaison;
-      return;
-    }
     Province province = provincesParNom.get(s.Province__c);
     if (province == null) {
       s.Statut__c = STATUT_PROVINCE_INCONNUE;
@@ -335,7 +322,9 @@ public with sharing class SimulationRES060Service {
       multiplicateur *
       coefMitoyennete(s.Mitoyennete__c).doubleValue();
     Boolean cascade = s.Surface__c > params.seuilCascadeM2;
-    Decimal cout = cascade ? params.coutPackCascade : params.coutPack1Pac;
+    Decimal cout = grandeSurface
+      ? valeur(params.coutPackGrandeSurface, params.coutPackCascade)
+      : cascade ? params.coutPackCascade : params.coutPack1Pac;
     Double benefice = prime - cout.doubleValue();
 
     s.DCAL__c = dcal;
@@ -351,6 +340,12 @@ public with sharing class SimulationRES060Service {
     s.Statut__c =
       STATUT_ELIGIBLE +
       (cascade ? ' · cascade 2 PAC' : '') +
+      (grandeSurface
+        ? String.format(
+            PLUS_DE,
+            new List<Object>{ params.surfaceMaxM2.format() }
+          )
+        : '') +
       signalMaison;
   }
 
@@ -470,6 +465,7 @@ public with sharing class SimulationRES060Service {
     p.seuilZoneVerte = m.Seuil_Zone_Verte__c;
     p.multiplicateurBono = m.Multiplicateur_Bono__c;
     p.surfaceMaxM2 = m.Surface_Max_m2__c;
+    p.coutPackGrandeSurface = m.Cout_Pack_Grande_Surface__c;
     p.facteurFcSansBonification = m.Facteur_fC_Sans_Bonification__c;
     p.majorationDcal = m.Majoration_DCAL__c;
     p.dacs = m.DACS_kWh_m2__c;
