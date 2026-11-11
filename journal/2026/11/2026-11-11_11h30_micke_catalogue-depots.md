@@ -48,4 +48,10 @@ largement ; l'utilisateur supprimera ceux qui ne servent pas.
 
 - [ ] L'utilisateur fait le tri des champs.
 - [ ] Décider de l'objet « Stock par dépôt » (quantité disponible, réservée, seuil).
-- [ ] Sauvegarder sur GitHub (commit + push).
+- [x] Sauvegarder sur GitHub (commit + push).
+
+## Complément
+
+- Objet renommé « Catalogue articles » (enregistrement = « Article ») : Salesforce a déjà un onglet
+  standard « Catalogue de produits » (SalesforceProductCatalog), d'où deux onglets du même nom.
+  Nom technique inchangé : `Produit_Catalogue__c`. Déployé en prod avec l'accord de l'utilisateur.
