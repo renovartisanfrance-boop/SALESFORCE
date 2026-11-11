@@ -423,17 +423,17 @@ private class SimulationRES060PisteServiceTest {
   }
 
   @IsTest
-  static void pisteAuDelaDe210M2() {
+  static void pisteAuDelaDe230M2() {
     Test.setMock(HttpCalloutMock.class, new BouchonCallout());
     Lead p = pisteAsturias('Grande');
-    p.Surface_habitable__c = 211;
+    p.Surface_habitable__c = 231;
 
     insert p;
 
     Lead lu = relire(p.Id);
     Assert.areEqual(0, lu.RES060_Indice__c, 'indice à 0');
     Assert.isTrue(
-      lu.RES060_Statut__c.startsWith('Surface supérieure à 210'),
+      lu.RES060_Statut__c.startsWith('Surface supérieure à 230'),
       lu.RES060_Statut__c
     );
   }

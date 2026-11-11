@@ -6,7 +6,7 @@
 @IsTest
 private class SimulationRES060ServiceTest {
   private static SimulationRES060Service service() {
-    return service(210);
+    return service(230);
   }
 
   private static SimulationRES060Service service(Decimal surfaceMax) {
@@ -15,7 +15,7 @@ private class SimulationRES060ServiceTest {
     p.facteurFc = 2;
     p.prixDefaut = 160;
     p.coutPack1Pac = 6600;
-    p.coutPackCascade = 13000;
+    p.coutPackCascade = 7500;
     p.seuilCascadeM2 = 210;
     p.seuilZoneVerte = 3500;
     p.multiplicateurBono = 1.5;
@@ -98,12 +98,12 @@ private class SimulationRES060ServiceTest {
     s.Bono_Social__c = true;
     s.Mitoyennete__c = SimulationRES060Service.MITOYENNETE_2_COTES;
 
-    // Sans limite de surface : le calcul cascade 2 PAC reste celui du calculateur FM.
+    // Sans limite de surface : au-delà de 210 m², le pack coûte 7 500 €.
     service(null).calculer(s);
 
     Assert.areEqual(29825.16, s.Prime__c, 'prime bono ×1,5 et −15 %');
-    Assert.areEqual(13000, s.Cout_Pack__c, 'cascade 2 PAC');
-    Assert.areEqual(16.8, s.Indice__c, 'indice');
+    Assert.areEqual(7500, s.Cout_Pack__c, 'pack au-delà de 210 m²');
+    Assert.areEqual(22.3, s.Indice__c, 'indice');
     Assert.isTrue(s.Statut__c.contains('cascade'), 'statut cascade');
   }
 
@@ -354,24 +354,37 @@ private class SimulationRES060ServiceTest {
     SimulationRES060Service svc = service();
     Simulation_RES060__c s210 = simulation('Madrid', 210, 1970, 'Gaz');
     s210.Mitoyennete__c = null;
-    Simulation_RES060__c s211 = simulation('Madrid', 211, 1970, 'Gaz');
+    Simulation_RES060__c s230 = simulation('Madrid', 230, 1970, 'Gaz');
+    s230.Mitoyennete__c = null;
+    Simulation_RES060__c s231 = simulation('Madrid', 231, 1970, 'Gaz');
     Simulation_RES060__c s250 = simulation('Madrid', 250, 2005, 'Gaz');
 
-    svc.calculer(new List<Simulation_RES060__c>{ s210, s211, s250 });
+    svc.calculer(new List<Simulation_RES060__c>{ s210, s230, s231, s250 });
 
     Assert.areEqual(6600, s210.Cout_Pack__c, '210 m² : 1 PAC');
     Assert.areEqual(10.2, s210.Indice__c, '210 m² pile : calcul normal');
-    Assert.areEqual(0, s211.Indice__c, 'au-delà de 210 m² : indice à 0');
-    Assert.areEqual(0, s211.Prime__c, 'prime à 0');
-    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s211.Zone__c, 'zone');
+    Assert.areEqual(7500, s230.Cout_Pack__c, '211 à 230 m² : pack à 7 500 €');
+    Assert.isTrue(
+      Math.abs(s210.Prime__c / 210 * 230 - s230.Prime__c) < 0.1,
+      'prime proportionnelle à la surface'
+    );
     Assert.areEqual(
-      'Surface supérieure à 210 m² : indice mis à 0',
-      s211.Statut__c,
+      ((s230.Prime__c - 7500) / 1000).setScale(1, RoundingMode.HALF_UP),
+      s230.Indice__c,
+      '230 m² pile : calcul normal avec 7 500 €'
+    );
+    Assert.isTrue(s230.Indice__c > 0, 'indice calculé à 230 m²');
+    Assert.areEqual(0, s231.Indice__c, 'au-delà de 230 m² : indice à 0');
+    Assert.areEqual(0, s231.Prime__c, 'prime à 0');
+    Assert.areEqual(SimulationRES060Service.ZONE_ROUGE, s231.Zone__c, 'zone');
+    Assert.areEqual(
+      'Surface supérieure à 230 m² : indice mis à 0',
+      s231.Statut__c,
       'statut'
     );
-    Assert.isNull(s211.DCAL__c, 'pas de détail de calcul');
+    Assert.isNull(s231.DCAL__c, 'pas de détail de calcul');
     Assert.isTrue(
-      s250.Statut__c.startsWith('Surface supérieure à 210') &&
+      s250.Statut__c.startsWith('Surface supérieure à 230') &&
       s250.Statut__c.contains('maison après 1997'),
       s250.Statut__c
     );
@@ -383,7 +396,7 @@ private class SimulationRES060ServiceTest {
 
     service(null).calculer(s);
 
-    Assert.areEqual(13000, s.Cout_Pack__c, 'cascade');
+    Assert.areEqual(7500, s.Cout_Pack__c, 'pack au-delà de 210 m²');
     Assert.isTrue(s.Indice__c > 0, 'calcul fait sans limite');
   }
 
@@ -408,7 +421,7 @@ private class SimulationRES060ServiceTest {
     Assert.areEqual(
       0,
       sansBonifGrande,
-      'limite de 210 m² aussi sans bonification'
+      'limite de 230 m² aussi sans bonification'
     );
     Assert.isNull(grande.Indice__c, 'la simulation reçue n\'est pas modifiée');
   }

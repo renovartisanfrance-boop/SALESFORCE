@@ -24,7 +24,7 @@
     </values>
     <values>
         <field>Cout_Pack_Cascade__c</field>
-        <value xsi:type="xsd:double">13000</value>
+        <value xsi:type="xsd:double">7500</value>
     </values>
     <values>
         <field>Seuil_Cascade_m2__c</field>
@@ -56,7 +56,7 @@
     </values>
     <values>
         <field>Surface_Max_m2__c</field>
-        <value xsi:type="xsd:double">210</value>
+        <value xsi:type="xsd:double">230</value>
     </values>
     <values>
         <field>Facteur_fC_Sans_Bonification__c</field>

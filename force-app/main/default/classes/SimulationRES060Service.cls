@@ -15,7 +15,7 @@ public with sharing class SimulationRES060Service {
   public static final String STATUT_ELIGIBLE = 'Éligible';
   public static final String STATUT_NON_ELIGIBLE = 'Non éligible : bois / pellets (combustible non fossile)';
   public static final String STATUT_NON_ELIGIBLE_ELECTRIQUE = 'Non éligible : chauffage électrique ou charbon (seuls gaz et fioul)';
-  /** Ajouté au statut quand la maison est construite après l'année cible (texte lu par « RES060- Retour calculateur »). */
+  /** Ajouté au statut quand la maison est construite après l'année cible (texte lu par « RES060- Tranche indice »). */
   public static final String MAISON_APRES = ' · maison après {0}';
   public static final String STATUT_ATTENTE_CHAUDIERE = 'En attente : choisir le type de chaudière';
   public static final String STATUT_ATTENTE = 'En attente : renseigner la province et la surface';

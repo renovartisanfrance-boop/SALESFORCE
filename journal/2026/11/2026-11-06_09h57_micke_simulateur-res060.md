@@ -122,6 +122,13 @@ avec un prix de valorisation (€/MWh) modifiable. Le lien avec la Piste viendra
   11 colonnes dont Indice FM en nombre, Plus de 210m², Après 1997) et « Dossiers RES060 » (200 dossiers : Statut dossier
   = RDV- Statut Dossier, Statut visite = PREVISITE- Statut, RES- Shab = MPR_SHAB__c sinon MPR*SHAB.Piste). En-tête gras,
   filtre. Photo figée au 10/11 : à régénérer si besoin.
+- **11/11 — Limite portée à 230 m²** (demande utilisateur) : 6 600 € jusqu'à 210 m², **7 500 € de 211 à 230 m²**
+  (réglage Cout_Pack_Cascade 13 000 → 7 500), indice à 0 au-delà de 230 m² (Surface_Max 210 → 230). Tranches indice
+  Piste et Dossier : seuil et texte passés à 230 m². « RES060- Retour calculateur » non modifié. Prod = dépôt vérifié
+  avant ; déployé (71 tests OK). Pistes : 224 mises à jour (25 entre 211 et 230 m² ont maintenant un vrai indice),
+  0 refus ; recalcul de contrôle : plus aucun écart sauf les 9 pistes bloquées. Dossiers : 12 entre 211 et 230 m²
+  recalculés avec 7 500 € ; les 13 autres de l'exception (> 230 m² ou après 1997) gardent leur indice réel (13 000 €).
+  Le Google Sheet n'a pas été régénéré.
 
 ## Fichiers touchés
 
