@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visuel bono social</title>
+<style>
+  :root{--navy:#0f2a44;--ink:#1d2b36;--orange:#ff7a1a;--green:#12a150;--yellow:#ffe14d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1080px;height:1350px;overflow:hidden;background:#fff}
+  body{font-family:"Segoe UI",Arial,sans-serif;color:var(--ink)}
+  .canvas{position:relative;width:1080px;height:1350px;
+    background:linear-gradient(160deg,#eaf6ff 0%,#fff 45%,#fff6ec 100%);
+    padding:46px 50px 32px;display:flex;flex-direction:column;gap:22px}
+  .title{font-family:"Arial Black",Arial,sans-serif;font-weight:900;color:var(--navy);font-size:66px;line-height:1.02;letter-spacing:-1px}
+  .title em{font-style:normal;color:var(--orange)}
+  .subtitle{font-size:28px;font-weight:700;color:#3b4b58;margin-top:8px}
+
+  /* Extraits zoomés des vraies factures */
+  .panels{display:flex;flex-direction:column;gap:18px}
+  .panel{background:#fff;border-radius:16px;padding:14px 16px 16px;box-shadow:0 12px 28px rgba(15,42,68,.14);position:relative}
+  .panel:nth-child(1){transform:rotate(-1deg)}
+  .panel:nth-child(2){transform:rotate(1deg)}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .tag{background:var(--orange);color:#fff;font-family:"Arial Black",Arial,sans-serif;font-size:30px;padding:4px 22px;border-radius:999px;white-space:nowrap}
+  .head span{font-size:20px;color:#6b7a86;font-weight:600}
+  .strip{position:relative;overflow:hidden;border-radius:6px;background:#fff;margin-top:8px;
+    outline:3px solid var(--orange);outline-offset:0}
+  .strip img{position:absolute;display:block}
+  .strip::after{content:"";position:absolute;inset:0;background:rgba(255,225,77,.38);mix-blend-mode:multiply;pointer-events:none}
+
+  /* Pompe à chaleur */
+  .result{flex:1;display:flex;align-items:center;justify-content:center;gap:30px;min-height:0}
+  .pump-wrap{position:relative;flex:none}
+  .pump{display:block;width:430px;height:auto}
+  .badge{position:absolute;top:-14px;right:-26px;width:150px;height:150px;border-radius:50%;background:var(--green);color:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Arial Black",Arial,sans-serif;
+    transform:rotate(10deg);box-shadow:0 10px 24px rgba(18,161,80,.4)}
+  .badge b{font-size:44px;line-height:1}.badge span{font-size:21px;letter-spacing:1px}
+  .res-text{font-family:"Arial Black",Arial,sans-serif;color:var(--navy);font-size:40px;line-height:1.1}
+  .res-text small{display:block;font-family:"Segoe UI",Arial,sans-serif;font-size:26px;font-weight:700;color:#3b4b58;margin-top:10px}
+
+  /* Bandeau */
+  .bottom{background:var(--navy);color:#fff;border-radius:22px;padding:22px 26px;display:flex;align-items:center;gap:22px}
+  .bottom p{flex:1;font-size:27px;font-weight:700;line-height:1.22}
+  .bottom p b{color:var(--yellow)}
+  .cta{background:var(--orange);color:#fff;font-family:"Arial Black",Arial,sans-serif;font-size:25px;border-radius:999px;padding:18px 26px;white-space:nowrap;letter-spacing:.5px}
+  .legal{font-size:15px;color:#6b7a86;text-align:center}
+
+  /* Carré */
+  body.sq,body.sq .canvas{height:1080px}
+  body.sq .canvas{padding:36px 44px 24px;gap:14px}
+  body.sq .title{font-size:50px}
+  body.sq .subtitle{font-size:22px;margin-top:4px}
+  body.sq .panels{gap:12px}
+  body.sq .panel{padding:10px 14px 12px}
+  body.sq .head{margin-bottom:4px}
+  body.sq .tag{font-size:24px;padding:2px 18px}
+  body.sq .head span{font-size:17px}
+  body.sq .strip{margin-top:6px}
+  body.sq .pump{width:380px}
+  body.sq .badge{width:130px;height:130px;top:-14px;right:-24px}
+  body.sq .badge b{font-size:32px}.body.sq .badge span{font-size:16px}
+  body.sq .res-text{font-size:40px}
+  body.sq .res-text small{font-size:21px}
+  body.sq .bottom{padding:16px 22px}
+  body.sq .bottom p{font-size:22px}
+  body.sq .cta{font-size:21px;padding:14px 20px}
+  body.sq .legal{font-size:13px}
+
+  /* Story (zones haut et bas laissées libres pour l'interface Meta) */
+  body.story,body.story .canvas{height:1920px}
+  body.story .canvas{padding:230px 50px 250px;gap:30px}
+  body.story .title{font-size:76px}
+  body.story .subtitle{font-size:32px}
+  body.story .result{flex-direction:column;gap:20px;text-align:center}
+  body.story .pump{width:440px}
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div>
+    <h1 class="title">¿Ves esto en tu<br><em>factura de la luz?</em></h1>
+    <p class="subtitle">Facturas reales con bono social</p>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="head"><div class="tag">42,5 %</div><span>de descuento</span></div>
+      <div class="strip" data-src="facture-bono-42-anonyme.png" data-w="2243" data-h="1087" data-x1="0.02" data-x2="0.47" data-y="0.215" data-lh="0.024"></div>
+      <div class="strip" data-src="facture-bono-42-anonyme.png" data-w="2243" data-h="1087" data-x1="0.02" data-x2="0.41" data-y="0.695" data-lh="0.024"></div>
+    </div>
+    <div class="panel">
+      <div class="head"><div class="tag">57,5 %</div><span>de descuento</span></div>
+      <div class="strip" data-src="facture-bono-57-anonyme.png" data-w="2095" data-h="1202" data-x1="0.025" data-x2="0.47" data-y="0.247" data-lh="0.022"></div>
+      <div class="strip" data-src="facture-bono-57-anonyme.png" data-w="2095" data-h="1202" data-x1="0.025" data-x2="0.405" data-y="0.679" data-lh="0.022"></div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="pump-wrap">
+      <svg class="pump" viewBox="0 0 380 300">
+        <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#e3e9ee"/></linearGradient></defs>
+        <rect x="20" y="30" width="340" height="230" rx="18" fill="url(#g)" stroke="#c4cfd8" stroke-width="3"/>
+        <circle cx="145" cy="145" r="92" fill="#2b3a46"/>
+        <circle cx="145" cy="145" r="84" fill="none" stroke="#5c6c78" stroke-width="3"/>
+        <g stroke="#7d8d99" stroke-width="3"><line x1="61" y1="145" x2="229" y2="145"/><line x1="145" y1="61" x2="145" y2="229"/><line x1="86" y1="86" x2="204" y2="204"/><line x1="204" y1="86" x2="86" y2="204"/></g>
+        <g fill="#9fb0bd"><ellipse cx="145" cy="108" rx="16" ry="34"/><ellipse cx="182" cy="145" rx="34" ry="16"/><ellipse cx="145" cy="182" rx="16" ry="34"/><ellipse cx="108" cy="145" rx="34" ry="16"/></g>
+        <circle cx="145" cy="145" r="12" fill="#dfe6ec"/>
+        <g stroke="#c4cfd8" stroke-width="5" stroke-linecap="round"><line x1="270" y1="70" x2="335" y2="70"/><line x1="270" y1="95" x2="335" y2="95"/><line x1="270" y1="120" x2="335" y2="120"/><line x1="270" y1="145" x2="335" y2="145"/><line x1="270" y1="170" x2="335" y2="170"/><line x1="270" y1="195" x2="335" y2="195"/></g>
+        <rect x="270" y="220" width="65" height="18" rx="4" fill="#12a150"/>
+        <rect x="60" y="260" width="40" height="22" rx="4" fill="#9aa8b4"/><rect x="280" y="260" width="40" height="22" rx="4" fill="#9aa8b4"/>
+      </svg>
+      <div class="badge"><b>0 €</b><span>GRATIS</span></div>
+    </div>
+    <div class="res-text">Aerotermia<br>100 % gratis<small>Cambia tu antigua caldera</small></div>
+  </div>
+
+  <div class="bottom">
+    <p>¿Tienes uno de estos descuentos? <b>¡Comprueba si puedes cambiar tu antigua caldera por aerotermia a coste 0 €!</b></p>
+    <div class="cta">COMPROBAR GRATIS</div>
+  </div>
+  <div class="legal">Sujeto a condiciones y a estudio técnico. Financiado por Certificados de Ahorro Energético (CAE). Facturas reales anonimizadas.</div>
+</div>
+<script>
+  const fmt = new URLSearchParams(location.hash.slice(1)).get('fmt') || 'feed';
+  if (fmt !== 'feed') document.body.classList.add(fmt);
+  // Chaque bandeau montre une ligne de la vraie facture, agrandie
+  document.querySelectorAll('.strip').forEach(s => {
+    const d = s.dataset, W = s.clientWidth;
+    const imgW = W / (d.x2 - d.x1), imgH = imgW * d.h / d.w;
+    const h = Math.round(d.lh * imgH * 1.35);
+    s.style.height = h + 'px';
+    const im = new Image(); im.src = d.src;
+    im.style.width = imgW + 'px';
+    im.style.left = (-d.x1 * imgW) + 'px';
+    im.style.top = (-(d.y * imgH) + h / 2) + 'px';
+    s.append(im);
+  });
+</script>
+</body>
+</html>

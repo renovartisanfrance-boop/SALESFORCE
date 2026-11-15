@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vues de travail — architecture pour l'intégrateur Salesforce</title>
+<style>
+body{font-family:system-ui,"Segoe UI",Roboto,sans-serif;max-width:1150px;margin:24px auto;padding:0 18px;color:#16181d;font-size:14px;line-height:1.5}
+h1{font-size:22px}h2{font-size:17px;margin-top:28px;border-bottom:1px solid #e7e9ee;padding-bottom:4px}h3{font-size:15px;margin:18px 0 6px;padding:4px 10px;border-radius:6px}
+table{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:13px}th,td{border:1px solid #e1e4ea;padding:5px 8px;text-align:left;vertical-align:top}th{background:#f6f7f9}
+code{background:#f1f3f6;border-radius:4px;padding:0 4px;font-size:12.5px}pre{background:#f6f7f9;padding:10px;border-radius:8px;overflow:auto}
+ul{padding-left:20px}li{margin:3px 0;padding:2px 6px;border-radius:5px;list-style:none}li input{margin-right:6px}
+.note{color:#555b66;margin:2px 0}
+.c{background:#fff6cc}h3.c{background:#ffe680}
+.a{background:#e3efff}h3.a{background:#b9d6ff}
+.v{background:#ffe1de}h3.v{background:#ffb8b0}
+.legend{position:sticky;top:0;background:#fff;padding:8px 0;border-bottom:1px solid #e7e9ee;display:flex;gap:10px;flex-wrap:wrap;z-index:2}
+.legend span{padding:2px 10px;border-radius:999px;font-weight:600;font-size:12.5px}
+@media print{.legend{position:static}}
+</style></head><body>
+<div class="legend"><span class="c">🟨 À confirmer (intégrateur)</span><span class="a">🟦 À créer</span><span class="v">🟥 À vérifier avant de déployer</span></div>
+<h1 class="">Vues de travail — architecture pour l'intégrateur Salesforce</h1>
+<p class="note"><b>Statut (08/11/2026) : RETIRÉ, ne pas développer.</b> Conservé pour mémoire. Les vues par profil sont stables. Elles restent des <b>listes de vue Salesforce</b> créées par l'intégrateur et attribuées par la responsable. Le besoin courant (filtrer un peu plus) est couvert par le <b>filtre rapide dans les titres de colonnes</b> du poste de travail. Ne développer ce module que si Micke le redemande.</p>
+<p class="note">Objectif : la <b>responsable</b> (licence <b>Partner Community</b>) crée elle-même, depuis le portail, les vues de travail de chaque profil : <b>télépros, confirmateurs, secrétaires, closer, comptabilité</b>. L'intégrateur n'intervient que pour une <b>nouvelle fiche</b> ou un <b>nouveau champ</b>.</p>
+<p class="note">Maquette : <code>docs/maquettes/maquette-confirmateur.html</code> → menu « Plus » → « Page responsable » → carte <b>« Vues de travail »</b>.</p>
+<p class="note">Guide du poste confirmateur : <code>docs/integration/poste-confirmateur.md</code> (même code couleur).</p>
+<p class="note"><b>Code couleur</b> : ✅ existe · <b>🟨 Cx = À CONFIRMER</b> (par l'intégrateur) · <b>🟦 Ax = À CRÉER</b> · <b>🟥 Vx = À VÉRIFIER avant de déployer</b>.</p>
+<hr>
+<h2 class="">★ VOS ACTIONS — à faire par l'intégrateur</h2>
+<h3 class="c">🟨 À CONFIRMER par l'intégrateur (jaune)</h3>
+<ul>
+<li class="c"><input type="checkbox"> <b>VT-C1</b> — Le module existant « par fiche et par profil » (présentation des pages) : peut-on <b>réutiliser son paramétrage</b> (fiches × profils) pour attribuer les vues, plutôt que d'en créer un second ?</li>
+<li class="c"><input type="checkbox"> <b>VT-C2</b> — Une licence <b>Partner Community</b> peut-elle créer des listes de vue Salesforce <b>partagées</b> ? (Normalement non : c'est ce qui justifie cette solution.) À constater en sandbox.</li>
+<li class="c"><input type="checkbox"> <b>VT-C3</b> — Quota d'objets personnalisés accessibles aux licences Partner Community dans l'org : la solution n'ajoute <b>qu'un seul objet</b> (<code>Vue_Travail__c</code>).</li>
+<li class="c"><input type="checkbox"> <b>VT-C4</b> — Profils réels à proposer : Télépro, Confirmateur, Secrétaire, Closer, Comptabilité, et responsables (liste exacte des profils du site).</li>
+</ul>
+<h3 class="a">🟦 À CRÉER (bleu)</h3>
+<ul>
+<li class="a"><input type="checkbox"> <b>VT-A1</b> — Custom Metadata <b><code>Champ_Autorise__mdt</code></b> : le <b>catalogue des champs</b> que la responsable peut filtrer ou afficher (§ 2).</li>
+<li class="a"><input type="checkbox"> <b>VT-A2</b> — Objet <b><code>Vue_Travail__c</code></b> : une vue = un enregistrement (§ 3).</li>
+<li class="a"><input type="checkbox"> <b>VT-A3</b> — Classe Apex <b><code>VueTravailService</code></b> + <b><code>VueTravailSelector</code></b> : lecture des vues attribuées à l'utilisateur, construction <b>sécurisée</b> de la requête (§ 4), tests ≥ 85 %.</li>
+<li class="a"><input type="checkbox"> <b>VT-A4</b> — LWC <b><code>vueTravailEditeur</code></b> (page responsable) : création et modification d'une vue, aperçu en direct.</li>
+<li class="a"><input type="checkbox"> <b>VT-A5</b> — LWC <b><code>posteTravail</code></b> générique : le même écran de travail pour tous les profils (liste, tri, largeurs, modification directe, échéance, doublons, fichiers, « Compléter » selon l'objet). Le poste confirmateur en est une configuration.</li>
+<li class="a"><input type="checkbox"> <b>VT-A6</b> — Jeu de permissions <b>« Responsable - Vues de travail »</b> (créer, modifier, supprimer <code>Vue_Travail__c</code>) et <b>« Lecture - Vues de travail »</b> pour les autres profils.</li>
+</ul>
+<h3 class="v">🟥 À VÉRIFIER avant de déployer (rouge)</h3>
+<ul>
+<li class="v"><input type="checkbox"> <b>VT-V1</b> — <b>Sécurité de la requête</b> : aucun texte saisi n'est concaténé dans le SOQL. Seuls les champs du catalogue sont acceptés, les valeurs passent en variables liées, et la requête s'exécute en <code>AccessLevel.USER_MODE</code> (§ 4).</li>
+<li class="v"><input type="checkbox"> <b>VT-V2</b> — Une vue <b>ne montre jamais plus</b> que ce que l'utilisateur voit déjà : partage et droits par champ respectés (test avec un vrai utilisateur partenaire de chaque profil).</li>
+<li class="v"><input type="checkbox"> <b>VT-V3</b> — Les utilisateurs non responsables <b>ne peuvent ni créer ni modifier</b> une vue (droits CRUD + contrôle Apex).</li>
+<li class="v"><input type="checkbox"> <b>VT-V4</b> — Performances : pagination (200 lignes par page), filtres sélectifs, limites de requêtes respectées sur les fiches volumineuses.</li>
+<li class="v"><input type="checkbox"> <b>VT-V5</b> — Cloisonnement <b>Espagne</b> : une vue RES-060 n'est attribuable qu'aux équipes ES.</li>
+</ul>
+<hr>
+<h2 class="">1. Fonctionnement voulu</h2>
+<table>
+<tr><th>Qui</th><th>Fait quoi</th><th>Où</th></tr>
+<tr class=""><td><b>Intégrateur</b> (accès complet)</td><td>Ajoute une fiche (valeur de liste + ligne <code>Fiche_Confirmateur__mdt</code>) ou un champ au catalogue (<code>Champ_Autorise__mdt</code>)</td><td>Configuration Salesforce</td></tr>
+<tr class=""><td><b>Responsable</b> (Partner Community)</td><td>Crée une vue : objet (Pistes ou Dossiers), fiches, filtres, colonnes, tri, et l'attribue à des profils ou à des personnes</td><td>Page responsable du portail</td></tr>
+<tr class=""><td><b>Utilisateurs</b> (Partner Community)</td><td>Voient les vues qui leur sont attribuées, sous la fiche choisie, et travaillent dedans</td><td>Leur écran de travail</td></tr>
+</table>
+<ul>
+<li class="">Une vue attribuée à un profil apparaît dans la ligne des listes, sous la fiche, avec une icône violette ▤.</li>
+<li class="">Les <b>listes de vue Salesforce existantes</b> restent branchables pendant la transition.</li>
+</ul>
+<h2 class="a">2. Catalogue des champs autorisés — <code>Champ_Autorise__mdt</code> (<b>🟦 VT-A1</b>)</h2>
+<table>
+<tr><th>Champ du type</th><th>Contenu</th></tr>
+<tr class=""><td><code>Objet__c</code></td><td><code>Lead</code> ou <code>Pro__c</code></td></tr>
+<tr class=""><td><code>Champ_API__c</code></td><td>Nom d'API exact (ex. <code>CONFIRM_Traitement__c</code>)</td></tr>
+<tr class=""><td><code>Libelle__c</code></td><td>Libellé affiché à la responsable</td></tr>
+<tr class=""><td><code>Type_Filtre__c</code></td><td><code>liste</code>, <code>texte</code>, <code>date</code>, <code>echeance</code>, <code>aucun</code></td></tr>
+<tr class=""><td><code>Filtrable__c</code> / <code>Affichable__c</code> / <code>Modifiable__c</code></td><td>Cases à cocher</td></tr>
+<tr class=""><td><code>Ordre__c</code></td><td>Ordre dans les menus</td></tr>
+</table>
+<p>Contenu de départ (repris de la maquette, noms d'API vérifiés dans l'org le 08/11/2026) :</p>
+<table>
+<tr><th>Objet</th><th>Libellé</th><th>Champ API</th><th>Type</th></tr>
+<tr class=""><td>Lead</td><td>Créé le</td><td><code>CreatedDate</code></td><td>date</td></tr>
+<tr class="c"><td>Lead</td><td>Provenance</td><td><code>Apporteurs__c</code> (<b>🟨</b> voir C2 du guide confirmateur)</td><td>texte</td></tr>
+<tr class=""><td>Lead</td><td>Origine (régie / interne)</td><td><code>LeadSource</code></td><td>liste</td></tr>
+<tr class=""><td>Lead</td><td>Nom complet / Téléphone</td><td><code>Name</code> / <code>Phone</code></td><td>texte</td></tr>
+<tr class=""><td>Lead</td><td>Doublon</td><td><code>Doublon_Telephone_Indicateur__c</code></td><td>aucun (affichage)</td></tr>
+<tr class=""><td>Lead</td><td>Échéance</td><td><code>ENVOI_CONF_Date_de_Rappel__c</code> + <code>ENVOI_CONF_Cr_neau_de_Rappel__c</code></td><td>échéance (calculée)</td></tr>
+<tr class=""><td>Lead</td><td>Créneau</td><td><code>ENVOI_CONF_Cr_neau_de_Rappel__c</code></td><td>liste</td></tr>
+<tr class=""><td>Lead</td><td>Traitement</td><td><code>CONFIRM_Traitement__c</code></td><td>liste, modifiable</td></tr>
+<tr class=""><td>Lead</td><td>Commentaire conf</td><td><code>CONFIRM_Commentaire__c</code></td><td>texte, modifiable</td></tr>
+<tr class=""><td>Lead</td><td>Commentaire régie / télépro</td><td><code>REGIE_Commentaire_Regie__c</code></td><td>texte</td></tr>
+<tr class=""><td>Pro__c</td><td>Apporteur</td><td><code>DR_Provenance__c</code></td><td>texte</td></tr>
+<tr class=""><td>Pro__c</td><td>Client / Téléphone</td><td><code>Name</code> / <code>Phone__c</code></td><td>texte</td></tr>
+<tr class=""><td>Pro__c</td><td>Infos dossier</td><td><code>DR_PROconvers__c</code></td><td>texte</td></tr>
+<tr class=""><td>Pro__c</td><td>Statut prévisite</td><td><code>Pr_visite_Statut__c</code></td><td>liste, modifiable</td></tr>
+<tr class=""><td>Pro__c</td><td>Pré-visiteur</td><td><code>Pr_visite_Nom_St__c</code></td><td>liste, modifiable</td></tr>
+<tr class=""><td>Pro__c</td><td>Date d'envoi / de passage</td><td><code>Audit_Envoi_en_Visite__c</code> / <code>PREVISITE_Date__c</code></td><td>date</td></tr>
+<tr class=""><td>Pro__c</td><td>Commentaire</td><td><code>Pr_visite_Commentaire__c</code></td><td>texte, modifiable</td></tr>
+</table>
+<p>Pour les secrétaires, le closer et la comptabilité, ajouter au catalogue les champs <code>Pro__c</code> qu'ils utilisent : statuts devis, installation, CEE, MPR, documents… Les noms d'API sont dans <code>poste-confirmateur.md</code> § 3.</p>
+<h2 class="a">3. Objet <code>Vue_Travail__c</code> (<b>🟦 VT-A2</b>) — un seul objet</h2>
+<table>
+<tr><th>Champ</th><th>Type</th><th>Contenu</th></tr>
+<tr class=""><td><code>Name</code></td><td>Texte</td><td>Nom de la vue</td></tr>
+<tr class=""><td><code>Objet__c</code></td><td>Liste</td><td><code>Lead</code> / <code>Pro__c</code></td></tr>
+<tr class=""><td><code>Fiches__c</code></td><td>Liste multiple</td><td>Codes de fiche (vide = toutes)</td></tr>
+<tr class=""><td><code>Definition__c</code></td><td>Texte long (131 072)</td><td>JSON : filtres, colonnes, tri (format ci-dessous)</td></tr>
+<tr class="c"><td><code>Profils__c</code></td><td>Liste multiple</td><td>Télépro, Confirmateur, Secrétaire, Closer, Comptabilité (<b>🟨 VT-C4</b>)</td></tr>
+<tr class=""><td><code>Utilisateurs__c</code></td><td>Texte long</td><td>Id des personnes attribuées, séparés par <code>;</code></td></tr>
+<tr class=""><td><code>Active__c</code></td><td>Case à cocher</td><td>Vue visible ou non</td></tr>
+<tr class=""><td><code>Ordre__c</code></td><td>Nombre</td><td>Position dans la ligne des listes</td></tr>
+</table>
+<pre>
+{
+  "version": 1,
+  "filtres": [
+    { "champ": "CONFIRM_Traitement__c", "operateur": "in",
+      "valeurs": ["🟨 NRP- 3x", "🟨 NRP- 4x", "🟨 NRP- 5x"] }
+  ],
+  "colonnes": ["CreatedDate", "Apporteurs__c", "Name", "Phone", "Doublon_Telephone_Indicateur__c",
+               "ENVOI_CONF_Date_de_Rappel__c", "CONFIRM_Traitement__c", "CONFIRM_Commentaire__c"],
+  "tri": { "champ": "ENVOI_CONF_Date_de_Rappel__c", "sens": "asc" }
+}
+</pre>
+<p>Opérateurs : <code>in</code> (est l'un de), <code>nin</code> (n'est pas), <code>has</code> (contient), <code>empty</code>, <code>full</code>, <code>today</code>, <code>d7</code>, <code>month</code>, <code>older</code> ; pour l'échéance : <code>retard</code>, <code>maintenant</code>, <code>heure</code>, <code>avenir</code>. Toutes les conditions sont combinées par <b>ET</b>.</p>
+<h2 class="v">4. Construction sécurisée de la requête (<b>🟦 VT-A3</b>, <b>🟥 VT-V1</b>)</h2>
+<ul>
+<li class="">Charger la vue. Ne garder que les champs <b>présents dans <code>Champ_Autorise__mdt</code></b> pour cet objet ; ignorer tout le reste.</li>
+<li class="">Pour chaque filtre, produire une condition <b>avec variable liée</b> : <code>CONFIRM_Traitement__c IN :valeurs0</code>, <code>Name LIKE :texte1</code>…</li>
+<li class="">Exécuter avec <code>Database.queryWithBinds(soql, binds, AccessLevel.USER_MODE)</code> : partage et droits par champ de l'utilisateur appliqués.</li>
+<li class=""><b>Échéance</b> : filtrer en SOQL sur la date de rappel (≤ aujourd'hui, = aujourd'hui…), puis calculer l'état exact (retard, maintenant, dans l'heure, à venir) en Apex ou en LWC, avec les créneaux et <code>Regle_Rappel__mdt</code>.</li>
+<li class="">Pagination de 200 lignes, tri sur un champ du catalogue uniquement.</li>
+<li class="">Lecture des vues attribuées : sélecteur dédié, limité aux vues <code>Active__c</code> dont <code>Profils__c</code> contient le profil de l'utilisateur ou dont <code>Utilisateurs__c</code> contient son Id.</li>
+</ul>
+<h2 class="">5. Nouvelle fiche : procédure</h2>
+<ul>
+<li class=""><b>Intégrateur</b> : ajouter la valeur dans <code>TypeDeDossier__c</code> (et les champs « Création Dossier », fiches prévisite si besoin), une ligne <code>Fiche_Confirmateur__mdt</code>, et les éventuels nouveaux champs dans <code>Champ_Autorise__mdt</code>.</li>
+<li class=""><b>Responsable</b> : créer les vues de travail de la fiche et les attribuer aux profils. Aucun déploiement de code.</li>
+</ul>
+<h2 class="">6. Charge estimée</h2>
+<table>
+<tr><th>Cas</th><th>Charge de l'intégrateur</th></tr>
+<tr class=""><td>Code écrit et testé en sandbox par Claude avec Micke, l'intégrateur relit, vérifie (VT-V1 à VT-V5) et déploie</td><td><b>½ journée</b>, en plus de la journée du poste confirmateur</td></tr>
+<tr class=""><td>Tout écrit par l'intégrateur</td><td>environ <b>8 à 10 jours</b> (objet, catalogue, Apex sécurisé et tests, éditeur LWC, écran générique)</td></tr>
+</table>
+</body></html>

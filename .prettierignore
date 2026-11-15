@@ -11,3 +11,7 @@
 coverage/
 # Maquettes HTML en un seul fichier : testées telles quelles, ne pas les reformater
 docs/maquettes/**/*.html
+
+# Documents HTML autonomes (contrats, calculateurs, guides, visuels) : livrés tels quels, ne pas les reformater
+docs/**/*.html
+marketing/**

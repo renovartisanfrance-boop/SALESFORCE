@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Contrato de subcontratación — Instalador</title>
+<style>
+@font-face { font-family: "Poppins"; font-weight: 400; src: url("assets/Poppins-Regular.ttf"); }
+@font-face { font-family: "Poppins"; font-weight: 700; src: url("assets/Poppins-Bold.ttf"); }
+@font-face { font-family: "Caladea"; font-weight: 400; src: url("assets/Caladea-Regular.ttf"); }
+@font-face { font-family: "Caladea"; font-weight: 700; src: url("assets/Caladea-Bold.ttf"); }
+
+:root {
+  --green: #1b8a4b;
+  --green-dark: #14663a;
+  --ink: #2b3440;
+  --muted: #5a6672;
+  --foot: #3b403e;
+  --box: #f3f7f4;
+  --line: #dce4de;
+  --dots: #98a59e;
+}
+
+@page {
+  size: 595.92pt 842.88pt;
+  margin: 45.8pt 42.6pt 44pt 42.6pt;
+  @bottom-left {
+    content: "ECONATURA Energía Renovable · Contrato de subcontratación · Confidencial";
+    font: 400 7pt "Poppins"; color: #3b403e; vertical-align: top; padding-top: 18.2pt;
+  }
+  @bottom-right {
+    content: "Página " counter(page) " / " counter(pages);
+    font: 400 7pt "Poppins"; color: #3b403e; vertical-align: top; padding-top: 18.2pt;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fff; }
+body {
+  font-family: "Caladea", serif; font-size: 10pt; line-height: 14.8pt; color: var(--ink);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+p { margin: 0 0 4.5pt; text-align: justify; }
+b, strong { font-weight: 700; }
+
+/* ---------- En-tête page 1 ---------- */
+.head { position: relative; height: 70.2pt; }
+.head img { position: absolute; left: 0; top: -0.1pt; width: 80.9pt; height: 62.3pt; }
+.head .meta {
+  position: absolute; right: 0; top: 0; text-align: right;
+  font: 400 7.2pt/12pt "Poppins"; letter-spacing: 1.1pt; color: var(--muted);
+}
+.bar { height: 3pt; border-radius: 1.5pt;
+  background: linear-gradient(90deg, #1b8a4a 0%, #46a045 11%, #96bb38 31%, #efb223 50%, #e98529 70%, #e46e2b 80%, #dd582b 89%, #d6402b 100%); }
+h1 { font: 700 18pt/21pt "Poppins"; color: var(--ink); margin: 14.5pt 0 6pt; letter-spacing: -0.2pt; }
+.sub { font: 400 9.4pt/13pt "Poppins"; color: var(--muted); margin: 0 0 16pt; }
+
+.kicker { font: 700 7.8pt/11pt "Poppins"; color: var(--green); letter-spacing: 1.1pt; text-transform: uppercase; margin: 0 0 6.5pt; }
+
+.party { background: var(--box); border: 0.75pt solid var(--line); border-radius: 4pt; padding: 7.5pt 12pt 9pt; margin-bottom: 9pt; }
+.party table { border-collapse: collapse; width: 100%; }
+.party td { padding: 0; vertical-align: top; }
+.party td.l { width: 142pt; font: 400 8.8pt/13.5pt "Poppins"; color: var(--muted); padding: 2.2pt 0 2.2pt; }
+.party td.v { font-size: 9.6pt; line-height: 13pt; padding: 3pt 0 2pt; }
+.party .note { font-size: 9.6pt; margin-top: 7pt; text-align: left; }
+.dot { display: inline-block; border-bottom: 0.75pt dotted var(--dots); height: 11pt; vertical-align: bottom; }
+.party.fill td.l { padding: 2.2pt 0 2.2pt; }
+.party.fill td.v { padding: 0; vertical-align: bottom; height: 18.2pt; }
+.parties-end { margin-top: 3pt; }
+
+
+/* ---------- Page 1 (positions absolues) ---------- */
+.p1 { position: relative; height: 752pt; break-after: page; overflow: hidden; }
+.p1 .a { position: absolute; white-space: nowrap; margin: 0; }
+.p1 .meta { font: 400 7.2pt/1.4 "Poppins"; letter-spacing: 0.84pt; color: var(--muted); text-align: right; }
+.p1 .bar { height: 3pt; border-radius: 1.5pt; background: linear-gradient(90deg, #1b8a4a 0%, #46a045 11%, #96bb38 31%, #efb223 50%, #e98529 70%, #e46e2b 80%, #dd582b 89%, #d6402b 100%); }
+.p1 .h1 { font: 700 18pt/21.7pt "Poppins"; color: var(--ink); letter-spacing: -0.2pt; }
+.p1 .sub { font: 400 9.4pt/1.4 "Poppins"; color: var(--muted); }
+.p1 .kick { font: 700 7.8pt/1.4 "Poppins"; color: var(--green); letter-spacing: 1.1pt; }
+.p1 .box { background: var(--box); border: 0.75pt solid var(--line); border-radius: 4pt; }
+.p1 .lab { font: 400 8.8pt/1.4 "Poppins"; color: var(--muted); }
+.p1 .lab.two { line-height: 13.5pt; }
+.p1 .val { font: 400 9.6pt/1.19 "Caladea"; color: var(--ink); }
+.p1 .fin { font: 400 10pt/1.19 "Caladea"; color: var(--ink); }
+.p1 .dot { height: 0; border-top: 0.75pt dotted var(--dots); }
+
+/* ---------- Corps ---------- */
+.page-break { break-before: page; }
+h2 { font: 700 11pt/15pt "Poppins"; color: var(--green); margin: 16pt 0 6pt; break-after: avoid; }
+h3 { font: 700 10pt/14pt "Poppins"; color: var(--ink); margin: 11pt 0 4pt; break-after: avoid; }
+.n { font-weight: 700; }
+ul { margin: 0 0 4.5pt; padding-left: 13pt; }
+li { text-align: justify; margin: 0 0 2.5pt; padding-left: 2pt; }
+li::marker { font-size: 8pt; }
+
+.badge { display: inline-block; background: var(--green); color: #fff; font: 700 7.8pt/11pt "Poppins"; letter-spacing: 1.6pt;
+  padding: 3pt 8.2pt 3.2pt; border-radius: 3pt; margin: 0 0 4pt; }
+.annex + h2, .badge + h2 { margin-top: 2pt; }
+.annex { margin-top: 26pt; }
+.badge { break-after: avoid; }
+.annex h2, .annex h3 { break-after: avoid; }
+table tr, li { break-inside: avoid; }
+.annex.first { margin-top: 0; }
+.small { font-size: 8.4pt; line-height: 12.5pt; color: var(--muted); }
+.legal-note { font-size: 8.4pt; line-height: 12.8pt; color: var(--muted); margin-bottom: 8pt; }
+
+table.grid { width: 100%; border-collapse: collapse; margin: 6pt 0 8pt; font-size: 9pt; line-height: 13pt; }
+table.grid th { background: var(--box); color: var(--green-dark); font: 700 8.2pt/12pt "Poppins"; letter-spacing: 0.9pt; text-transform: uppercase; text-align: left; padding: 5pt 7pt; border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); }
+table.grid td { padding: 6pt 7pt; border-bottom: 0.75pt solid var(--line); vertical-align: top; text-align: left; }
+table.grid td.amt { font-weight: 700; white-space: nowrap; }
+
+table.zones { width: 100%; border-collapse: collapse; margin: 6pt 0; font-size: 9pt; }
+table.zones th { background: var(--box); color: var(--green-dark); font: 700 8.2pt/12pt "Poppins"; letter-spacing: 0.9pt; text-align: left; padding: 5pt 7pt; border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); }
+table.zones td { padding: 4pt 7pt; border-bottom: 0.75pt solid var(--line); width: 33.3%; }
+
+.callout { background: #f7fbf8; border-left: 2pt solid var(--green); padding: 6pt 10pt; font-size: 8.4pt; line-height: 13pt; color: var(--muted); margin: 6pt 0 8pt; }
+
+.two { display: flex; gap: 14pt; }
+.two > div { flex: 1; }
+
+/* ---------- Signature ---------- */
+.sign { display: flex; gap: 45.8pt; margin-top: 36pt; break-inside: avoid; }
+.sign > div { flex: 1; }
+.sign .space { height: 74pt; border-bottom: 0.75pt solid #2b3440; margin: 6pt 0 4pt; }
+.sign .who { font: 400 8.4pt/13pt "Poppins"; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- =================== PAGE 1 : parties (champs publipostés depuis le CRM) ===================
+     Positions absolues calquées au point près sur le contrat de prévisite V2.x (mêmes emplacements de champs). -->
+<div class="p1">
+<img class="a" src="assets/logo-econatura.png" alt="ECONATURA Energía Renovable" style="left:0.20pt;top:-0.10pt;width:80.9pt;height:62.3pt">
+<div class="a meta" style="right:0;top:0.60pt">CONTRATO · CONFIDENCIAL</div>
+<div class="a meta" style="right:0;top:12.60pt">REF. CONTRATO-INST-2026 · V1.7 (ES)</div>
+<div class="a bar" style="left:-0.60pt;top:70.20pt;width:511pt"></div>
+<div class="a h1" style="left:0.20pt;top:89.00pt">Contrato de subcontratación — Instalación de equipos<br>de calefacción y agua caliente sanitaria</div>
+<div class="a sub" style="left:0.20pt;top:138.60pt">Entre ECONATURA Energía Renovable S.L. y la empresa instaladora habilitada</div>
+<div class="a kick" style="left:0.20pt;top:168.10pt">REUNIDOS</div>
+<div class="a box" style="left:-0.28pt;top:184.82pt;width:510.79pt;height:130.55pt"></div>
+<div class="a box" style="left:-0.28pt;top:323.57pt;width:510.79pt;height:197.3pt"></div>
+<div class="a lab" style="left:12.20pt;top:195.50pt">Denominación social</div><div class="a val" style="left:154.00pt;top:196.80pt"><b>ECONATURA ENERGÍA RENOVABLE, S.L.</b></div>
+<div class="a lab" style="left:12.20pt;top:213.50pt">NIF</div><div class="a val" style="left:154.00pt;top:214.80pt">B22479810</div>
+<div class="a lab" style="left:12.20pt;top:231.50pt">Domicilio social</div><div class="a val" style="left:154.00pt;top:232.80pt">Calle Hermosilla 48, 28001 Madrid</div>
+<div class="a lab" style="left:12.20pt;top:249.50pt">Representada por</div><div class="a val" style="left:154.00pt;top:250.80pt">D. Mickael Benhamou / D. Ryan Safwat</div>
+<div class="a lab" style="left:12.20pt;top:268.20pt">En calidad de</div><div class="a val" style="left:154.00pt;top:269.60pt">Administradores</div>
+<div class="a val" style="left:12.20pt;top:292.80pt">En lo sucesivo, «<b>ECONATURA</b>» o «la Sociedad», de una parte,</div>
+<div class="a lab two" style="left:12.20pt;top:333.40pt">Nombre y apellidos o<br>denominación</div>
+<div class="a lab" style="left:12.20pt;top:364.20pt">Profesión o actividad</div>
+<div class="a lab" style="left:12.20pt;top:382.20pt">Situación</div>
+<div class="a lab" style="left:12.20pt;top:401.00pt">NIF (DNI / NIE)</div>
+<div class="a lab" style="left:12.20pt;top:419.00pt">Domicilio fiscal</div>
+<div class="a lab" style="left:12.20pt;top:437.00pt">Código postal y localidad</div>
+<div class="a lab" style="left:12.20pt;top:455.00pt">Teléfono</div>
+<div class="a lab" style="left:12.20pt;top:473.00pt">Correo electrónico</div>
+<div class="a dot" style="left:153.90pt;top:346.40pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:376.40pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:394.40pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:412.40pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:431.20pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:467.20pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:485.20pt;width:243.75pt"></div>
+<div class="a dot" style="left:153.90pt;top:449.20pt;width:68.25pt"></div><div class="a dot" style="left:230.39pt;top:449.20pt;width:156.75pt"></div>
+<div class="a val" style="left:12.20pt;top:498.30pt">En lo sucesivo, «<b>el Instalador</b>» o «el Subcontratista», de otra parte.</div>
+<div class="a fin" style="left:0.20pt;top:530.20pt">En lo sucesivo, conjuntamente denominadas «las Partes».</div>
+</div>
+
+<!-- =================== EXPONEN =================== -->
+<div class="kicker">Exponen</div>
+<p>ECONATURA desarrolla una actividad de rehabilitación energética de viviendas y, en particular, la sustitución de calderas por bombas de calor y otros equipos de calefacción y de agua caliente sanitaria, actuaciones susceptibles de generar Certificados de Ahorro Energético (CAE). Para la ejecución de dichas actuaciones, ECONATURA suministra los equipos y recurre a empresas instaladoras habilitadas.</p>
+<p>El Instalador es una sociedad instaladora habilitada que dispone de la totalidad de las habilitaciones, carnés profesionales, medios técnicos y humanos y seguros exigidos por la normativa vigente para ejecutar este tipo de instalaciones. Las Partes se reúnen con el fin de definir las condiciones en las que el Instalador ejecutará dichas instalaciones por cuenta de ECONATURA.</p>
+<p><b>Expuesto lo anterior, las Partes acuerdan las siguientes cláusulas:</b></p>
+
+<h2>Cláusula 1 — Objeto</h2>
+<p><span class="n">1.1.</span> El presente contrato define las condiciones en las que el Instalador ejecuta, en régimen de subcontratación y en calidad de empresario independiente, en el domicilio de los clientes de ECONATURA y con los equipos suministrados por esta, instalaciones de bombas de calor aerotérmicas aire-agua y de termos termodinámicos u otros acumuladores de agua caliente sanitaria, así como su puesta en servicio y la entrega de la documentación necesaria para los expedientes CAE.</p>
+<p><span class="n">1.2.</span> ECONATURA podrá proponer asimismo al Instalador la instalación de otros equipos del ámbito de la calefacción, la climatización o el agua caliente sanitaria. Los equipos, las prestaciones y el precio correspondientes se fijarán mediante adenda escrita antes del primer encargo de ese tipo. En todo lo demás, se aplicará el presente contrato.</p>
+
+<h2>Cláusula 2 — Prestaciones a cargo del Instalador</h2>
+<p>Para cada encargo aceptado, el Instalador se obliga a:</p>
+<ul>
+  <li>aceptar el encargo y una de las fechas propuestas a través de la aplicación de ECONATURA, en las condiciones de la cláusula 7;</li>
+  <li>recoger y verificar el kit de equipos en el depósito logístico indicado por ECONATURA, en las condiciones de la cláusula 5;</li>
+  <li>retirar el generador existente o, si así lo prevé la orden de trabajo, dejarlo en situación de preinstalación, en las condiciones de la cláusula 6;</li>
+  <li>instalar los equipos del kit con el pequeño material relacionado en el Anexo 1;</li>
+  <li>realizar la conexión hidráulica a la instalación de calefacción existente y, en su caso, al circuito de agua caliente sanitaria, así como la conexión eléctrica desde el cuadro de la vivienda con las protecciones necesarias;</li>
+  <li>efectuar el llenado, la purga, las pruebas de estanqueidad y de presión, la puesta en marcha y el ajuste de la instalación conforme a las instrucciones del fabricante;</li>
+  <li>explicar al cliente el funcionamiento de la instalación y entregarle los manuales de uso y mantenimiento;</li>
+  <li>completar con los datos técnicos de la instalación y firmar los documentos preparados por ECONATURA (Anexo 2);</li>
+  <li>presentar al cliente la oferta de contrato de mantenimiento y recabar su aceptación o su desistimiento firmados, en las condiciones de la cláusula 12;</li>
+  <li>dejar el lugar de trabajo limpio y retirar embalajes y residuos de obra;</li>
+  <li>transmitir la documentación indicada en el Anexo 2 a través de la aplicación en un plazo de <b>cuarenta y ocho (48) horas</b> desde la finalización de la instalación.</li>
+</ul>
+<p>ECONATURA prepara la documentación administrativa de cada instalación y realiza su tramitación ante la Administración. El Instalador no tiene que efectuar ningún trámite administrativo: únicamente completa con los datos técnicos y firma los documentos que ECONATURA le facilita listos.</p>
+<p>Las instalaciones se ejecutarán conforme a las reglas del oficio, al Reglamento de Instalaciones Térmicas en los Edificios (RITE, Real Decreto 1027/2007), al Reglamento Electrotécnico para Baja Tensión (Real Decreto 842/2002), a la normativa de gases fluorados (Real Decreto 115/2017), a las instrucciones de los fabricantes y a las exigencias del sistema CAE indicadas por ECONATURA.</p>
+
+<h2>Cláusula 3 — Condición del Instalador, independencia y ausencia de exclusividad</h2>
+<p><span class="n">3.1.</span> El Instalador es una sociedad debidamente constituida e inscrita en España, que dispone de todas las habilitaciones vigentes exigidas por la cláusula 4. Asume por sí solo la totalidad de sus obligaciones fiscales, laborales y de seguridad social, así como las correspondientes a su personal. Designa a los técnicos que destina a las instalaciones y garantiza que cada uno de ellos cumple las condiciones de habilitación de la cláusula 4.</p>
+<p><span class="n">3.2.</span> El Instalador ejecuta las instalaciones con sus propios medios: vehículos, en particular para el transporte del kit, herramienta, equipos de medición y de puesta en marcha, pequeño material y personal. ECONATURA únicamente le suministra los equipos del kit relacionados en el Anexo 1 y un acceso nominativo a su aplicación.</p>
+<p><span class="n">3.3.</span> El Instalador organiza libremente su trabajo y el de su personal. No se le impone horario ni lugar de trabajo alguno. Los plazos previstos en el presente contrato constituyen plazos de ejecución vinculados a cada encargo aceptado, y no obligaciones de organización.</p>
+<p><span class="n">3.4.</span> El Instalador es libre de aceptar o rechazar cualquier encargo que se le proponga, sin necesidad de justificar su decisión y sin que de ello pueda derivarse penalización alguna.</p>
+<p><span class="n">3.5.</span> ECONATURA no garantiza volumen alguno de encargos, ni mínimo ni periodicidad. El presente contrato no comporta compromiso alguno de provisión de trabajo.</p>
+<p><span class="n">3.6.</span> El contrato carece de toda exclusividad. El Instalador permanece libre de ejercer su actividad para cualquier otro cliente durante toda la vigencia del contrato, con la única reserva de las cláusulas 19 y 20.</p>
+<p><span class="n">3.7.</span> El Instalador no podrá subcontratar total ni parcialmente la ejecución de un encargo sin autorización escrita previa de ECONATURA y, en todo caso, respetando el régimen de la Ley 32/2006, reguladora de la subcontratación en el sector de la construcción, cuando resulte aplicable. El subcontratista autorizado deberá cumplir las condiciones de habilitación de la cláusula 4 y asumir las obligaciones de confidencialidad y de protección de datos del presente contrato. El Instalador continuará siendo el único responsable frente a ECONATURA de la ejecución de las instalaciones.</p>
+<p><span class="n">3.8.</span> El presente contrato no comporta relación laboral por cuenta ajena, ni vínculo de dependencia, ni integración del Instalador ni de su personal en la organización de ECONATURA. El Instalador es el único empleador de su personal y asume íntegramente la responsabilidad correspondiente.</p>
+
+<h2>Cláusula 4 — Habilitaciones, condiciones de validez y seguros</h2>
+<p><span class="n">4.1.</span> La validez y la entrada en vigor del presente contrato quedan condicionadas a la entrega previa por el Instalador, y a su validación por ECONATURA, de la totalidad de los elementos y justificantes relacionados en el Anexo 3.</p>
+<p><span class="n">4.2.</span> El Instalador declara y garantiza que dispone, y mantendrá al día durante toda la vigencia del contrato, de la totalidad de las habilitaciones exigidas por la normativa vigente y por el sistema CAE para las instalaciones objeto del contrato, y en particular:</p>
+<ul>
+  <li>su habilitación como empresa instaladora <strong>y</strong> como empresa mantenedora de instalaciones térmicas en edificios, inscrita en el registro de la comunidad autónoma correspondiente, y los carnés profesionales RITE de los técnicos que intervengan;</li>
+  <li>la habilitación de la empresa y los certificados personales de manipulación de gases fluorados conforme al Real Decreto 115/2017;</li>
+  <li>su habilitación como empresa instaladora en baja tensión o, en su defecto, el recurso a una empresa habilitada para la parte eléctrica, en las condiciones del apartado 3.7;</li>
+  <li>su inscripción vigente en el Registro de Empresas Acreditadas (REA) para intervenir como subcontratista, conforme a la Ley 32/2006, reguladora de la subcontratación en el sector de la construcción;</li>
+  <li>su organización preventiva conforme a la Ley 31/1995 (modalidad preventiva) y la formación en prevención de riesgos laborales de su personal.</li>
+</ul>
+<p><span class="n">4.3.</span> Si la normativa exigiera, ahora o en el futuro, otra habilitación para las instalaciones objeto del contrato, el Instalador se obliga a obtenerla y a informar de ello a ECONATURA.</p>
+<p><span class="n">4.4.</span> El Instalador entregará, antes del primer encargo y posteriormente cada doce (12) meses, los certificados de estar al corriente de sus obligaciones tributarias (artículo 43.1.f de la Ley 58/2003, General Tributaria) y de seguridad social.</p>
+<p><span class="n">4.5.</span> El Instalador garantiza la exactitud de dichos elementos e informará a ECONATURA sin demora de cualquier modificación, suspensión o pérdida de alguno de ellos. La pérdida de una habilitación, el cese de la actividad, la falta de entrega de los certificados del apartado 4.4 o la pérdida de la cobertura del seguro suspenden de pleno derecho la asignación de nuevos encargos.</p>
+
+<h2>Cláusula 5 — Kit de equipos suministrado por ECONATURA y pequeño material</h2>
+<p><span class="n">5.1.</span> Para cada encargo, ECONATURA suministra los equipos relacionados en el Anexo 1 en un kit único, que el Instalador recoge en el depósito logístico indicado por ECONATURA, con el albarán que esta le facilita. ECONATURA no realiza ninguna entrega en el domicilio del cliente.</p>
+<p><span class="n">5.2.</span> En el momento de la recogida, el Instalador verifica la conformidad del kit con el albarán (referencias, cantidades y estado aparente) y lo firma, haciendo constar en él cualquier falta o daño aparente. Los defectos que solo puedan detectarse al desembalar se comunicarán en la aplicación, con fotografías, antes de su instalación. A falta de reserva, el kit se entenderá recibido conforme, salvo vicios ocultos.</p>
+<p><span class="n">5.3.</span> Los equipos continúan siendo propiedad de ECONATURA hasta su instalación en el domicilio del cliente. Desde su recogida, incluido el transporte, el Instalador actúa como depositario: los conserva con diligencia, los destina exclusivamente al encargo correspondiente y responde de su pérdida, robo o deterioro.</p>
+<p><span class="n">5.4.</span> Los equipos no instalados, sobrantes o defectuosos, así como la totalidad del kit cuando la instalación no se realice por cualquier causa (anulación, desistimiento o negativa del cliente, imposibilidad técnica, aplazamiento sin nueva fecha o terminación del contrato), se devolverán completos y en buen estado al depósito logístico en un plazo de siete (7) días, salvo otra instrucción de ECONATURA, con el albarán de devolución que esta establezca. El Instalador no podrá en ningún caso retener, ceder, vender, prestar ni instalar dichos equipos fuera del encargo correspondiente, ni invocar derecho de retención alguno, incluso en caso de controversia sobre sus remuneraciones.</p>
+<p><span class="n">5.5.</span> A falta de devolución en dicho plazo, ECONATURA requerirá por escrito al Instalador. Transcurridos cinco (5) días desde el requerimiento sin devolución, ECONATURA podrá facturar al Instalador el valor de reposición de los equipos no devueltos, compensarlo con las cantidades que le adeude y ejercitar cuantas acciones civiles y penales le correspondan, en particular por apropiación indebida (artículo 253 del Código Penal). La falta de devolución constituye incumplimiento grave a los efectos de la cláusula 21.</p>
+<p><span class="n">5.6.</span> El pequeño material necesario para una instalación completa y conforme corre a cargo del Instalador, está comprendido en el precio previsto en la cláusula 9 y deberá cumplir la normativa aplicable. Su relación enunciativa figura en el Anexo 1.</p>
+<p><span class="n">5.7.</span> Antes de iniciar los trabajos, el Instalador comprueba que los equipos y las condiciones de la vivienda (emisores, instalación eléctrica, emplazamientos) permiten una instalación conforme. Si detecta una incompatibilidad o una anomalía, la comunicará a ECONATURA en la aplicación antes de cualquier ejecución y no proseguirá sin sus instrucciones escritas.</p>
+
+<h2>Cláusula 6 — Generador existente y gestión de residuos</h2>
+<p><span class="n">6.1.</span> Salvo que la orden de trabajo prevea mantener la caldera existente, el Instalador la desmonta y la retira, desconecta y anula de forma segura la alimentación de combustible conforme a la normativa aplicable, y entrega el equipo retirado a un gestor autorizado de residuos conforme a la Ley 7/2022, de residuos y suelos contaminados para una economía circular.</p>
+<p><span class="n">6.2.</span> Cuando la orden de trabajo prevea mantener la caldera, el Instalador la deja en situación de preinstalación: no conectada a la bomba de calor y con accionamiento manual reservado a las emergencias.</p>
+<p><span class="n">6.3.</span> El Instalador aporta en la aplicación las fotografías previstas en el Anexo 2. Estas operaciones están comprendidas en el precio de la cláusula 9.</p>
+<p><span class="n">6.4.</span> La retirada de depósitos de combustible, de chimeneas o de cualquier otro elemento distinto del generador queda excluida, salvo acuerdo escrito previo en las condiciones del apartado 9.4.</p>
+
+<h2>Cláusula 7 — Propuesta, aceptación y planificación de los encargos</h2>
+<p><span class="n">7.1.</span> ECONATURA publica en su aplicación los encargos correspondientes a las zonas de actuación del Instalador, que figuran en el Anexo 4. Cada encargo indica el municipio, el código postal, el tipo de vivienda, los equipos previstos y <b>cuatro (4) o cinco (5) fechas de disponibilidad del cliente</b>, con exclusión de su identidad y de sus datos de contacto. La asignación de una zona no comporta exclusividad alguna.</p>
+<p><span class="n">7.2.</span> Mientras un encargo figure en la aplicación, el Instalador puede aceptarlo eligiendo una de las fechas propuestas. El encargo deja de estar disponible cuando lo acepta otro instalador o cuando ECONATURA lo retira.</p>
+<p><span class="n">7.3.</span> Tras la aceptación, ECONATURA llama al Instalador para confirmar el encargo y la fecha. Una vez confirmada la fecha, el Instalador se compromete a realizar la instalación ese día.</p>
+<p><span class="n">7.4.</span> La identidad y los datos de contacto del cliente se comunican al Instalador tras la confirmación, exclusivamente para las necesidades del encargo.</p>
+<p><span class="n">7.5.</span> Las Partes evitarán modificar una fecha confirmada, salvo por causa imputable a ECONATURA (en particular, la disponibilidad del material) o a petición del cliente. Un aplazamiento no da lugar a penalización alguna.</p>
+<p><span class="n">7.6.</span> Cuando el cliente esté ausente o deniegue el acceso en la fecha confirmada, o cuando la instalación resulte imposible por una causa no imputable al Instalador ni detectable antes del desplazamiento, el Instalador lo comunicará de inmediato en la aplicación con los elementos justificativos y percibirá la indemnización por desplazamiento infructuoso prevista en el Anexo 5. Dicha indemnización comprende la devolución del kit al depósito logístico, con el albarán de devolución que establecerá ECONATURA. No procederá indemnización alguna cuando la anulación se haya notificado al Instalador antes de su desplazamiento.</p>
+<p><span class="n">7.7.</span> Cuando el Instalador no se presente en una fecha confirmada sin haber avisado previamente a ECONATURA, no percibirá indemnización alguna por dicho encargo. La reiteración de tales ausencias constituye incumplimiento grave a los efectos de la cláusula 21.</p>
+
+<h2>Cláusula 8 — Recepción y puesta en servicio</h2>
+<p><span class="n">8.1.</span> Al término de los trabajos y tras la puesta en marcha, el Instalador firma con el cliente el acta de recepción y puesta en servicio, conforme al modelo facilitado por ECONATURA. El cliente podrá hacer constar en ella sus reservas.</p>
+<p><span class="n">8.2.</span> Las reservas imputables a la ejecución serán subsanadas por el Instalador, a su cargo, en un plazo de ocho (8) días. La subsanación se acredita mediante un acta de levantamiento de reservas firmada por el cliente.</p>
+
+<h2>Cláusula 9 — Remuneración</h2>
+<p><span class="n">9.1.</span> Como contraprestación por cada instalación de bomba de calor aerotérmica aire-agua, con su termo termodinámico o acumulador de agua caliente sanitaria cuando figure en el expediente, completa, recibida sin reservas pendientes y validada en las condiciones de la cláusula 11, ECONATURA abonará al Instalador un <b>precio a tanto alzado de dos mil seiscientos (2.600) euros, sin IVA</b>, conforme al cuadro de tarifas del Anexo 5.</p>
+<p><span class="n">9.2.</span> Dicho precio cubre la integridad de las prestaciones descritas en las cláusulas 2, 5, 6 y 8: recogida y transporte del kit, desplazamientos, mano de obra, pequeño material, retirada y gestión del generador sustituido, puesta en marcha, firma de los documentos y presentación de la oferta de mantenimiento. El contrato de mantenimiento, cuando el cliente lo acepte, se celebra y se factura directamente entre el Instalador y el cliente conforme a la cláusula 12, sin remuneración alguna por parte de ECONATURA.</p>
+<p><span class="n">9.3.</span> El precio de la instalación de los demás equipos previstos en el apartado 1.2 se fijará en la adenda correspondiente.</p>
+<p><span class="n">9.4.</span> Cualquier trabajo complementario no comprendido en la cláusula 2 (en particular, sustitución de emisores, adecuación importante de la instalación eléctrica o retirada de un depósito de combustible) únicamente será remunerado si ha sido objeto de un presupuesto aceptado por escrito por ECONATURA antes de su ejecución.</p>
+<p><span class="n">9.5.</span> El cuadro de tarifas del Anexo 5 únicamente podrá modificarse mediante adenda escrita firmada por ambas Partes. El cuadro modificado se aplicará a las instalaciones realizadas a partir de la fecha de firma de la adenda.</p>
+
+<h2>Cláusula 10 — Prohibición de cobros y de sobrefacturación al cliente</h2>
+<p><span class="n">10.1.</span> El Instalador no podrá facturar, cobrar ni solicitar al cliente cantidad alguna, por ningún concepto (suplemento, desplazamiento, material, urgencia u otro), por la instalación ni por las demás prestaciones objeto del presente contrato, que remunera exclusivamente ECONATURA.</p>
+<p><span class="n">10.2.</span> Únicamente podrán facturarse al cliente: a) el precio del contrato de mantenimiento aceptado por este, dentro del límite del apartado 12.2; b) las reparaciones, piezas y trabajos no incluidos en dicho contrato ni en la garantía de la cláusula 13, previo presupuesto escrito aceptado expresamente por el cliente.</p>
+<p><span class="n">10.3.</span> Todo cobro al margen de lo previsto en el apartado 10.2 constituye incumplimiento grave a los efectos de la cláusula 21.</p>
+
+<h2>Cláusula 11 — Control de calidad, validación y expediente CAE</h2>
+<p><span class="n">11.1.</span> ECONATURA controlará cada expediente transmitido en un plazo de <b>siete (7) días hábiles</b>. Concluido dicho control, el expediente se valida o se devuelve al Instalador con la relación precisa de los puntos a completar o corregir.</p>
+<p><span class="n">11.2.</span> El Instalador dispondrá de un plazo de cinco (5) días para atenderla. Cuando la subsanación exija un nuevo desplazamiento por causa imputable al Instalador, este se efectuará a su cargo.</p>
+<p><span class="n">11.3.</span> El Instalador reconoce que las actuaciones son objeto de verificación por el verificador acreditado del sistema CAE y por la Administración. Se obliga a permitir y facilitar dichas verificaciones, a aportar cualquier documento o información solicitado y a conservar la documentación de cada instalación durante el plazo exigido por la normativa CAE.</p>
+<p><span class="n">11.4.</span> Cuando un expediente CAE sea rechazado o minorado a causa de una no conformidad imputable al Instalador (ejecución defectuosa, documentación incompleta, inexacta o no conforme), el Instalador la subsanará a su cargo. Si la no conformidad no pudiera subsanarse, el Instalador indemnizará a ECONATURA del perjuicio efectivamente acreditado.</p>
+<p><span class="n">11.5.</span> ECONATURA podrá controlar, con o sin aviso previo, cualquier obra en curso o instalación terminada, directamente o a través de un tercero que designe, con el acuerdo del cliente para el acceso a la vivienda. El Instalador facilitará dichos controles. Las no conformidades detectadas se subsanarán conforme a los apartados 11.2 y 11.4.</p>
+
+<h2>Cláusula 12 — Oferta de mantenimiento al cliente</h2>
+<p><span class="n">12.1.</span> En el momento de la recepción, el Instalador presenta a cada cliente la <b>oferta de contrato de mantenimiento</b> exigida por la normativa CAE, utilizando obligatoriamente el modelo facilitado por ECONATURA, que emite en su condición de empresa habilitada. El contrato de mantenimiento se celebra directamente entre el Instalador y el cliente; ECONATURA no es parte en él y no asume coste alguno.</p>
+<p><span class="n">12.2.</span> El contrato tiene una duración de dos (2) años a contar desde la puesta en servicio. Su precio lo fija el Instalador y no podrá superar <b>trescientos cincuenta (350) euros por año, IVA incluido</b>. Comprende como mínimo las prestaciones del Anexo 6: una visita anual de mantenimiento y un desplazamiento en un plazo de setenta y dos (72) horas cuando el cliente declare una anomalía.</p>
+<p><span class="n">12.3.</span> El cliente es libre de aceptar o rechazar la oferta. Si la acepta, el Instalador <b>no podrá negarse</b> a celebrar el contrato ni a ejecutarlo durante toda su duración, incluso después de la terminación del presente contrato. El rechazo del cliente no afecta a la remuneración de la instalación ni a la garantía de los trabajos de la cláusula 13, que se mantiene durante dos (2) años.</p>
+<p><span class="n">12.4.</span> El Instalador transmite en la aplicación, para cada instalación, la oferta firmada por el cliente con su aceptación o su rechazo. A falta de este documento, el expediente se considerará incompleto en el sentido de la cláusula 11.</p>
+<p><span class="n">12.5.</span> El Instalador factura y cobra directamente al cliente el precio del contrato de mantenimiento y asume el riesgo de impago, sin recurso alguno contra ECONATURA. Las reparaciones, piezas y trabajos no incluidos en el contrato de mantenimiento se acuerdan directamente entre el Instalador y el cliente, conforme al apartado 10.2. Las intervenciones debidas a un defecto de la instalación se rigen por la cláusula 13 y son gratuitas para el cliente.</p>
+<p><span class="n">12.6.</span> El incumplimiento reiterado de las obligaciones de mantenimiento frente a los clientes, o el cobro de un precio superior al límite del apartado 12.2, constituye incumplimiento grave a los efectos de la cláusula 21.</p>
+
+<h2>Cláusula 13 — Garantía de los trabajos y servicio posventa</h2>
+<p><span class="n">13.1.</span> El Instalador garantiza la correcta ejecución de los trabajos durante un plazo de <b>dos (2) años</b> a contar desde la recepción. Durante dicho plazo, subsana a su cargo cualquier defecto o falta de conformidad imputable a la instalación.</p>
+<p><span class="n">13.2.</span> El Instalador interviene en un plazo de setenta y dos (72) horas desde la comunicación de la incidencia, reducido a cuarenta y ocho (48) horas cuando el cliente se encuentre sin calefacción ni agua caliente sanitaria. A falta de intervención en dicho plazo y previo requerimiento escrito no atendido, ECONATURA podrá encargar la intervención a un tercero a cargo del Instalador.</p>
+<p><span class="n">13.3.</span> Las averías de los equipos cubiertas por la garantía del fabricante y no imputables a la instalación quedan fuera de la presente garantía. El Instalador colaborará, no obstante, en su diagnóstico.</p>
+
+<h2>Cláusula 14 — Prevención de riesgos laborales</h2>
+<p>El Instalador es el único responsable de la seguridad y de la salud de su personal, conforme a la Ley 31/1995, de Prevención de Riesgos Laborales. Garantiza su formación e información, le facilita los equipos de protección individual adecuados, y cumple las obligaciones de coordinación de actividades empresariales del Real Decreto 171/2004, cuando procedan.</p>
+
+<h2>Cláusula 15 — Comportamiento en el domicilio del cliente</h2>
+<p>El Instalador se presenta ante el cliente como empresa instaladora independiente que interviene por cuenta de ECONATURA. No asume compromiso comercial alguno por cuenta de ECONATURA, no negocia ni comunica precio alguno relativo a la instalación y no hace firmar documento contractual distinto de los facilitados por ECONATURA, salvo los presupuestos previstos en el apartado 10.2. Respeta los horarios convenidos, la presencia y el comportamiento exigibles a un profesional, protege los suelos y el mobiliario y respeta la integridad del domicilio.</p>
+
+<h2>Cláusula 16 — Seguro y responsabilidad</h2>
+<p><span class="n">16.1.</span> El Instalador suscribirá y mantendrá durante toda la vigencia del contrato, y hasta el término de la garantía de la cláusula 13 y de los contratos de mantenimiento celebrados con los clientes, un seguro de responsabilidad civil general, profesional y posterior a los trabajos, con un capital mínimo de <b>seiscientos mil (600.000) euros por siniestro</b> y, en todo caso, no inferior al exigido por la normativa aplicable. Comunicará el certificado correspondiente antes del primer encargo, en cada renovación y a requerimiento de ECONATURA.</p>
+<p><span class="n">16.2.</span> El Instalador asegurará asimismo los equipos del kit desde su recogida en el depósito logístico hasta su instalación, incluidos su transporte y su almacenamiento, por su valor de reposición, mediante un seguro de mercancías transportadas o una cobertura equivalente, cuyo justificante aportará a ECONATURA.</p>
+<p><span class="n">16.3.</span> El Instalador es el único responsable de la correcta ejecución de los trabajos y de los daños que pudiera causar durante los mismos al cliente, a terceros o a los equipos bajo su custodia. Mantendrá indemne a ECONATURA frente a cualquier reclamación derivada de su ejecución o de las obligaciones laborales, fiscales y de seguridad social relativas a su personal.</p>
+
+<h2>Cláusula 17 — Protección de datos de carácter personal</h2>
+<p><span class="n">17.1.</span> En el marco de las instalaciones, el Instalador trata datos de carácter personal de clientes de ECONATURA. Actúa a tal efecto en calidad de encargado del tratamiento de ECONATURA, responsable del tratamiento, con sujeción al Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018 (LOPDGDD).</p>
+<p><span class="n">17.2.</span> Las condiciones del tratamiento se definen en el Anexo 7 — Acuerdo de encargo de tratamiento de datos personales, que se firma simultáneamente con el presente contrato, del que forma parte integrante y sin el cual el contrato no producirá efectos.</p>
+
+<h2>Cláusula 18 — Propiedad de los documentos y entregables</h2>
+<p>Los informes, fotografías, actas y demás documentos producidos o recabados por el Instalador en el marco del presente contrato y transmitidos a ECONATURA son propiedad exclusiva de esta desde su transmisión. El Instalador cede a ECONATURA, con carácter exclusivo y por el plazo legal de protección, la totalidad de los derechos de explotación correspondientes, para todos los soportes y sin limitación territorial. La remuneración prevista en la cláusula 9 comprende dicha cesión.</p>
+
+<h2>Cláusula 19 — Confidencialidad y uso de la marca</h2>
+<p><span class="n">19.1.</span> El Instalador mantendrá estrictamente confidencial toda información de ECONATURA (clientes, tarifas, métodos, herramientas, aplicación) a la que acceda, durante la vigencia del contrato y durante los cinco (5) años siguientes a su terminación.</p>
+<p><span class="n">19.2.</span> El Instalador no podrá utilizar la denominación, la marca ni el logotipo de ECONATURA en su publicidad, sus documentos comerciales, sus vehículos, su sitio web o sus redes sociales sin autorización escrita previa de ECONATURA.</p>
+
+<h2>Cláusula 20 — No captación de clientes</h2>
+<p><span class="n">20.1.</span> El Instalador se abstiene de captar, solicitar o desviar, directa o indirectamente, a los clientes cuya identidad o domicilio le hayan sido comunicados por ECONATURA en el marco de la ejecución del presente contrato, con el fin de ofrecerles una prestación idéntica o similar a las comercializadas por ECONATURA.</p>
+<p><span class="n">20.2.</span> No constituyen captación las intervenciones de garantía (cláusula 13) ni la ejecución de los contratos de mantenimiento celebrados conforme a la cláusula 12. El Instalador no podrá, en cambio, proponer al cliente un contrato de mantenimiento distinto del modelo de ECONATURA, ni su renovación, sin acuerdo escrito previo de ECONATURA.</p>
+<p><span class="n">20.3.</span> Esta prohibición se aplica durante toda la vigencia del contrato y durante dos (2) años tras su terminación. Queda estrictamente limitada a los clientes referidos en el apartado 20.1 y no restringe en modo alguno la libertad del Instalador de ejercer su actividad, incluso para empresas competidoras de ECONATURA.</p>
+<p><span class="n">20.4.</span> Todo incumplimiento constatado dará lugar de pleno derecho al pago por el Instalador de una penalización a tanto alzado de dos mil (2.000) euros por cliente desviado, sin perjuicio de la resolución inmediata del contrato y de la reparación del daño que exceda de dicho importe.</p>
+
+<h2>Cláusula 21 — Duración y resolución</h2>
+<p><span class="n">21.1.</span> El contrato se firma por tiempo indefinido desde su entrada en vigor. Cualquiera de las Partes podrá ponerle fin en cualquier momento, mediante simple notificación escrita, sin preaviso, sin necesidad de motivación y sin indemnización para ninguna de ellas. Los encargos ya confirmados a la fecha de la notificación se llevarán a término y serán remunerados en las condiciones del contrato.</p>
+<p><span class="n">21.2.</span> El contrato podrá resolverse de pleno derecho, sin preaviso ni indemnización, en caso de incumplimiento grave, en particular: pérdida de una habilitación o del seguro, captación de clientes, vulneración de las obligaciones de confidencialidad o de protección de datos, defectos de ejecución reiterados, uso indebido o falta de devolución de los equipos suministrados (apartados 5.4 y 5.5), ausencias reiteradas en fechas confirmadas sin aviso previo (apartado 7.7), cobro de cantidades al cliente fuera del caso previsto en el apartado 10.2, o comportamiento negligente en el domicilio de un cliente.</p>
+<p><span class="n">21.3.</span> A la terminación del contrato, el acceso del Instalador a la aplicación quedará interrumpido; el Instalador devolverá los equipos en su poder y restituirá o suprimirá, según instrucción de ECONATURA, los datos y documentos de los clientes, conforme al Anexo 7, salvo los necesarios para los contratos de mantenimiento celebrados con ellos. Las obligaciones de garantía (cláusula 13), de seguro (cláusula 16) y de verificación CAE (apartado 11.3) subsisten tras la terminación. Los contratos de mantenimiento celebrados con los clientes se mantienen hasta su término y el Instalador sigue obligado a ejecutarlos (apartado 12.3).</p>
+
+<h2>Cláusula 22 — Anexos y modificaciones</h2>
+<p>Los Anexos 1 a 7 forman parte integrante del contrato. El Anexo 4 (zonas) podrá actualizarse mediante simple intercambio escrito entre las Partes. El Anexo 5 (cuadro de tarifas) únicamente podrá modificarse mediante adenda, conforme al apartado 9.5. Cualquier otra modificación del contrato requerirá adenda escrita firmada por ambas Partes.</p>
+
+<h2>Cláusula 23 — Nulidad parcial</h2>
+<p>Si alguna de las estipulaciones del presente contrato fuera declarada nula o inaplicable, las restantes conservarán plena vigencia y las Partes se reunirán para sustituir la estipulación excluida por una disposición válida de efecto económico equivalente.</p>
+
+<h2>Cláusula 24 — Legislación aplicable y jurisdicción</h2>
+<p>El contrato se rige por la legislación española. Toda controversia relativa a su interpretación o ejecución se someterá a los juzgados y tribunales competentes de Madrid.</p>
+
+<!-- =================== ANEXOS =================== -->
+<div class="page-break"></div>
+<div class="annex first">
+  <div class="badge">ANEXO 1</div>
+  <h2>Kit de equipos suministrado por ECONATURA y pequeño material a cargo del Instalador</h2>
+  <h3>Kit suministrado por ECONATURA (según la orden de trabajo)</h3>
+  <p>Todos los equipos se entregan en un único kit, que el Instalador recoge en el depósito logístico indicado por ECONATURA, con su albarán. No se realiza ninguna entrega en el domicilio del cliente.</p>
+  <ul>
+    <li>bomba de calor aerotérmica aire-agua: unidad exterior y unidad interior;</li>
+    <li>termo termodinámico, cuando figure en el expediente, u otro acumulador de agua caliente sanitaria según el tipo previsto;</li>
+    <li>depósito de inercia;</li>
+    <li>circulador;</li>
+    <li>separador de lodos (filtro desfangador);</li>
+    <li>desconector hidráulico;</li>
+    <li>vaso de expansión y su soporte;</li>
+    <li>soportes antivibratorios de caucho (<i>rubber foot</i>) de la unidad exterior.</li>
+  </ul>
+  <h3>Pequeño material a cargo del Instalador (comprendido en el precio)</h3>
+  <ul>
+    <li>tuberías, racores y accesorios de conexión hidráulica; llaves de corte, válvulas de seguridad y de llenado, purgadores;</li>
+    <li>aislamiento térmico de las tuberías; evacuación de condensados;</li>
+    <li>bancada o escuadras de la unidad exterior y sus fijaciones;</li>
+    <li>cableado, canalizaciones y protecciones eléctricas (magnetotérmico, diferencial);</li>
+    <li>en su caso, líneas frigoríficas y carga complementaria de refrigerante;</li>
+    <li>consumibles, sellado de pasamuros y cualquier otro elemento necesario para una instalación completa y conforme que no forme parte del kit.</li>
+  </ul>
+  <p class="small">Relación enunciativa y no limitativa.</p>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 2</div>
+  <h2>Documentación a entregar por cada instalación</h2>
+  <ul>
+    <li>reportaje fotográfico completo, realizado en la aplicación dedicada conforme a la lista exacta de fotografías indicada en ella (antes y después de la instalación, placas de características y números de serie, generador existente);</li>
+    <li>acta de recepción y puesta en servicio firmada por el cliente y, en su caso, acta de levantamiento de reservas;</li>
+    <li>informe de puesta en marcha (presión del circuito, temperaturas de impulsión, parámetros de regulación);</li>
+    <li>documentos preparados por ECONATURA, completados con los datos técnicos de la instalación y firmados por el Instalador: declaración responsable sobre la tipología del edificio y certificado de la instalación térmica (condiciones de operación, temperatura exterior de proyecto, temperatura de impulsión, volumen de agua total y volumen específico de la instalación);</li>
+    <li>certificado de instalación de baja tensión, cuando proceda;</li>
+    <li>oferta de contrato de mantenimiento firmada por el cliente, con su aceptación o su desistimiento (cláusula 12);</li>
+    <li>cualquier otro documento indicado en la aplicación.</li>
+  </ul>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 3</div>
+  <h2>Elementos a aportar por el Instalador para la validación de la colaboración</h2>
+  <ul>
+    <li>denominación social, NIF, domicilio social y datos de contacto; justificante de inscripción de la sociedad en el Registro Mercantil;</li>
+    <li>declaración responsable RITE con su justificante de presentación, o certificado de inscripción en el registro de la comunidad autónoma, en el que consten expresamente las dos condiciones de <strong>«empresa instaladora»</strong> y <strong>«empresa mantenedora»</strong> de instalaciones térmicas en edificios; carnés profesionales RITE de los técnicos que intervengan;</li>
+    <li>habilitación de la empresa y certificados personales de manipulación de gases fluorados (Real Decreto 115/2017);</li>
+    <li>justificante de la habilitación como empresa instaladora en baja tensión o identificación de la empresa habilitada a la que recurra;</li>
+    <li>certificado de inscripción vigente en el Registro de Empresas Acreditadas (REA);</li>
+    <li>justificante de la modalidad preventiva y de la formación en prevención de riesgos laborales del personal;</li>
+    <li>certificados de estar al corriente de las obligaciones tributarias y de seguridad social, de menos de doce (12) meses;</li>
+    <li>certificados del seguro de responsabilidad civil y del seguro de las mercancías transportadas previstos en la cláusula 16, y justificantes del pago de las primas;</li>
+    <li>datos bancarios (IBAN) y certificado de titularidad de la cuenta.</li>
+  </ul>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 4</div>
+  <h2>Zonas de actuación cubiertas</h2>
+  <p>El Instalador interviene en las zonas cubiertas por ECONATURA, que se relacionan a continuación, con carácter no exclusivo. Esta relación podrá actualizarse mediante simple intercambio escrito (cláusula 22).</p>
+  <table class="zones">
+    <tr><th colspan="3">ZONAS DE ACTUACIÓN</th></tr>
+    <tr><td>Ávila</td><td>Burgos</td><td>Soria</td></tr>
+    <tr><td>León</td><td>Palencia</td><td>Teruel</td></tr>
+    <tr><td>Araba/Álava</td><td>Salamanca</td><td>Segovia</td></tr>
+    <tr><td>Cuenca</td><td>Valladolid</td><td>Lugo</td></tr>
+    <tr><td>Navarra</td><td>Zamora</td><td>Guadalajara</td></tr>
+    <tr><td>Albacete</td><td>Huesca</td><td>Rioja (La)</td></tr>
+    <tr><td>Asturias</td><td>Lleida</td><td>Madrid</td></tr>
+    <tr><td>Gipuzkoa</td><td>Girona</td><td>Ciudad Real</td></tr>
+    <tr><td>Toledo</td><td>Zaragoza</td><td>Ourense</td></tr>
+  </table>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 5</div>
+  <h2>Cuadro de tarifas</h2>
+  <p>Importes sin IVA. La factura consignará el IVA conforme a la normativa vigente, aplicando, cuando proceda, la inversión del sujeto pasivo prevista en el artículo 84.Uno.2.º f) de la Ley 37/1992.</p>
+  <table class="grid">
+    <tr><th style="width:48%">Prestación</th><th style="width:28%">Zona</th><th>Importe (sin IVA)</th></tr>
+    <tr><td>Instalación completa de bomba de calor aerotérmica aire-agua y, cuando figure en el expediente, de su termo termodinámico o acumulador de ACS, con los equipos del kit (cl. 9.1), recibida y validada</td><td>Todas las zonas</td><td class="amt">2.600 €</td></tr>
+    <tr><td>Indemnización a tanto alzado — desplazamiento infructuoso no imputable al Instalador, incluida la devolución del kit al depósito logístico con el albarán de devolución de ECONATURA (cl. 7.6)</td><td>Todas las zonas</td><td class="amt">200 €</td></tr>
+    <tr><td>Trabajos complementarios autorizados por ECONATURA (cl. 9.4)</td><td>Todas las zonas</td><td class="amt">Según presupuesto aceptado</td></tr>
+  </table>
+  <h3>Facturación y pago</h3>
+  <p>El Instalador remitirá a ECONATURA una factura mensual comprensiva de las instalaciones validadas durante el mes transcurrido y de las indemnizaciones devengadas, emitida a partir del primer día hábil del mes siguiente. El pago se realizará en un plazo máximo de treinta (30) días desde la recepción de la factura, mediante transferencia a la cuenta comunicada por el Instalador. El presente cuadro únicamente podrá modificarse mediante adenda, conforme al apartado 9.5.</p>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 6</div>
+  <h2>Contenido mínimo del contrato de mantenimiento ofrecido al cliente</h2>
+  <p>Contrato celebrado directamente entre el Instalador y el cliente que haya aceptado la oferta (cláusula 12), conforme al modelo de ECONATURA.</p>
+  <ul>
+    <li>duración de dos (2) años a contar desde la puesta en servicio de la instalación;</li>
+    <li>precio fijado por el Instalador, con un máximo de <b>trescientos cincuenta (350) euros por año, IVA incluido</b>, facturado y cobrado por el Instalador;</li>
+    <li>una (1) visita anual de mantenimiento preventivo, conforme al RITE y a las instrucciones del fabricante;</li>
+    <li>en cada visita: comprobación de la presión y llenado del circuito, purga; limpieza del separador de lodos y de los filtros; limpieza de la batería de la unidad exterior y de la evacuación de condensados; comprobación de las conexiones y protecciones eléctricas; control de los parámetros de funcionamiento y ajuste de la regulación; revisión del termo termodinámico o acumulador; control de estanqueidad del circuito frigorífico cuando lo exija la normativa de gases fluorados;</li>
+    <li>informe de cada visita firmado por el cliente, conservado por el Instalador y comunicado a ECONATURA a petición de esta;</li>
+    <li>desplazamiento en un plazo de setenta y dos (72) horas cuando el cliente declare una anomalía; las reparaciones, piezas y trabajos posteriores se acuerdan entre el Instalador y el cliente, previo presupuesto aceptado por este (apartado 10.2);</li>
+    <li>comunicación a ECONATURA, a través de la aplicación, de cualquier avería de los equipos que afecte a su garantía de fabricante.</li>
+  </ul>
+</div>
+
+<div class="annex">
+  <div class="badge">ANEXO 7</div>
+  <h2>Acuerdo de encargo de tratamiento de datos personales</h2>
+  <p class="legal-note">Celebrado en aplicación del artículo 28 del Reglamento (UE) 2016/679 (RGPD) y de la Ley Orgánica 3/2018 (LOPDGDD). El presente anexo se firma simultáneamente con el contrato y forma parte integrante del mismo.</p>
+  <h3>1. Papel de las Partes</h3>
+  <p>ECONATURA ENERGÍA RENOVABLE, S.L. actúa en calidad de responsable del tratamiento. El Instalador actúa en calidad de encargado del tratamiento.</p>
+  <h3>2. Objeto, naturaleza y finalidad del tratamiento</h3>
+  <p>El tratamiento consiste en la consulta, la recogida, el registro, la transmisión y la supresión de datos de carácter personal, con la única finalidad de la ejecución de las instalaciones, de su garantía y de la constitución de los expedientes CAE, con exclusión de cualquier otra finalidad y, en particular, de toda finalidad propia del Instalador.</p>
+  <h3>3. Duración</h3>
+  <p>El tratamiento queda autorizado durante la vigencia del contrato y, para las necesidades de la garantía y de las verificaciones CAE, durante los plazos correspondientes. Los contratos de mantenimiento celebrados directamente con el cliente quedan fuera del presente encargo: para ellos, el Instalador es responsable del tratamiento de los datos que el cliente le facilite. Las obligaciones de confidencialidad y de seguridad subsisten tras su terminación.</p>
+  <h3>4. Categorías de interesados y de datos</h3>
+  <p>Interesados: clientes de ECONATURA y ocupantes de la vivienda. Categorías de datos: identidad y datos de contacto; domicilio y características de la vivienda y de la instalación; fotografías de la vivienda y de los equipos; firma de las actas.</p>
+  <h3>5. Obligaciones del Instalador</h3>
+  <ul>
+    <li>tratar los datos únicamente conforme a instrucción documentada de ECONATURA, incluso en lo relativo a cualquier transferencia fuera del Espacio Económico Europeo;</li>
+    <li>garantizar la confidencialidad de los datos y asegurarse de que toda persona autorizada a tratarlos se haya comprometido por escrito a ello;</li>
+    <li>aplicar las medidas de seguridad previstas en el punto 6;</li>
+    <li>no recurrir a un subencargado sin autorización escrita previa y específica de ECONATURA, e imponerle contractualmente las mismas obligaciones;</li>
+    <li>asistir a ECONATURA en la atención de las solicitudes de ejercicio de derechos de los interesados, y trasladarle sin demora toda solicitud recibida directamente, sin responder por sí mismo;</li>
+    <li>asistir a ECONATURA en la seguridad del tratamiento, en la notificación de violaciones y, en su caso, en las evaluaciones de impacto;</li>
+    <li>notificar toda violación de seguridad de los datos a ECONATURA en un plazo máximo de veinticuatro (24) horas desde que tenga conocimiento de ella, precisando los datos e interesados afectados y las medidas adoptadas;</li>
+    <li>a la finalización de las prestaciones, suprimir la totalidad de los datos y copias, o restituirlos según instrucción de ECONATURA, acreditándolo por escrito;</li>
+    <li>poner a disposición de ECONATURA toda la información necesaria para demostrar el cumplimiento de las obligaciones del presente acuerdo y permitir la realización de auditorías.</li>
+  </ul>
+  <h3>6. Medidas de seguridad</h3>
+  <ul>
+    <li>acceso a la aplicación mediante identificador nominativo y contraseña personal, no compartida;</li>
+    <li>terminales protegidos por código de acceso o biometría, con sistema operativo actualizado;</li>
+    <li>carga de los documentos y fotografías en la aplicación al finalizar la intervención, con supresión inmediata de las copias locales;</li>
+    <li>prohibición de transmitir datos por correo personal, red social, servicio de mensajería no autorizado o servicio de almacenamiento en nube personal;</li>
+    <li>comunicación inmediata de toda pérdida o sustracción de un terminal utilizado para las prestaciones.</li>
+  </ul>
+  <h3>7. Responsabilidad</h3>
+  <p>El Instalador que determine por sí mismo los fines y los medios de un tratamiento, o que trate los datos al margen de las instrucciones de ECONATURA, será considerado responsable del tratamiento respecto de dicho tratamiento y asumirá en exclusiva sus consecuencias.</p>
+</div>
+
+<div class="sign">
+  <div>
+    <div class="kicker">Por ECONATURA</div>
+    <div class="space"></div>
+    <div class="who">Mickael Benhamou / Ryan Safwat · Administradores<br>ECONATURA Energía Renovable, S.L. · Responsable del tratamiento</div>
+  </div>
+  <div>
+    <div class="kicker">El Instalador</div>
+    <div class="space"></div>
+    <div class="who">El Instalador · Encargado del tratamiento<br>Leído y conforme · Firma</div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Oferta de mantenimiento</title>
+<style>
+@font-face { font-family: "Poppins"; font-weight: 400; src: url("../installateur/assets/Poppins-Regular.ttf"); }
+@font-face { font-family: "Poppins"; font-weight: 700; src: url("../installateur/assets/Poppins-Bold.ttf"); }
+@font-face { font-family: "Caladea"; font-weight: 400; src: url("../installateur/assets/Caladea-Regular.ttf"); }
+@font-face { font-family: "Caladea"; font-weight: 700; src: url("../installateur/assets/Caladea-Bold.ttf"); }
+
+:root {
+  --green: #1b8a4b;
+  --green-dark: #14663a;
+  --ink: #2b3440;
+  --muted: #5a6672;
+  --foot: #3b403e;
+  --box: #f3f7f4;
+  --line: #dce4de;
+  --dots: #98a59e;
+}
+
+@page {
+  size: 595.92pt 842.88pt;
+  margin: 45.8pt 42.6pt 44pt 42.6pt;
+  @bottom-left {
+    content: "ECONATURA Energía Renovable · Oferta de mantenimiento";
+    font: 400 7pt "Poppins"; color: #3b403e; vertical-align: top; padding-top: 18.2pt;
+  }
+  @bottom-right {
+    content: "Página " counter(page) " / " counter(pages);
+    font: 400 7pt "Poppins"; color: #3b403e; vertical-align: top; padding-top: 18.2pt;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #fff; }
+body {
+  font-family: "Caladea", serif; font-size: 10pt; line-height: 14.8pt; color: var(--ink);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+p { margin: 0 0 4.5pt; text-align: justify; }
+b, strong { font-weight: 700; }
+
+/* ---------- En-tête page 1 ---------- */
+.head { position: relative; height: 70.2pt; }
+.head img { position: absolute; left: 0; top: -0.1pt; width: 80.9pt; height: 62.3pt; }
+.head .meta {
+  position: absolute; right: 0; top: 0; text-align: right;
+  font: 400 7.2pt/12pt "Poppins"; letter-spacing: 1.1pt; color: var(--muted);
+}
+.bar { height: 3pt; border-radius: 1.5pt;
+  background: linear-gradient(90deg, #1b8a4a 0%, #46a045 11%, #96bb38 31%, #efb223 50%, #e98529 70%, #e46e2b 80%, #dd582b 89%, #d6402b 100%); }
+h1 { font: 700 18pt/21pt "Poppins"; color: var(--ink); margin: 14.5pt 0 6pt; letter-spacing: -0.2pt; }
+.sub { font: 400 9.4pt/13pt "Poppins"; color: var(--muted); margin: 0 0 16pt; }
+
+.kicker { font: 700 7.8pt/11pt "Poppins"; color: var(--green); letter-spacing: 1.1pt; text-transform: uppercase; margin: 0 0 6.5pt; }
+
+.party { background: var(--box); border: 0.75pt solid var(--line); border-radius: 4pt; padding: 7.5pt 12pt 9pt; margin-bottom: 9pt; }
+.party table { border-collapse: collapse; width: 100%; }
+.party td { padding: 0; vertical-align: top; }
+.party td.l { width: 142pt; font: 400 8.8pt/13.5pt "Poppins"; color: var(--muted); padding: 2.2pt 0 2.2pt; }
+.party td.v { font-size: 9.6pt; line-height: 13pt; padding: 3pt 0 2pt; }
+.party .note { font-size: 9.6pt; margin-top: 7pt; text-align: left; }
+.dot { display: inline-block; border-bottom: 0.75pt dotted var(--dots); height: 11pt; vertical-align: bottom; }
+.party.fill td.l { padding: 2.2pt 0 2.2pt; }
+.party.fill td.v { padding: 0; vertical-align: bottom; height: 18.2pt; }
+.parties-end { margin-top: 3pt; }
+
+
+/* ---------- Page 1 (positions absolues) ---------- */
+.p1 { position: relative; height: 752pt; break-after: page; overflow: hidden; }
+.p1 .a { position: absolute; white-space: nowrap; margin: 0; }
+.p1 .meta { font: 400 7.2pt/1.4 "Poppins"; letter-spacing: 0.84pt; color: var(--muted); text-align: right; }
+.p1 .bar { height: 3pt; border-radius: 1.5pt; background: linear-gradient(90deg, #1b8a4a 0%, #46a045 11%, #96bb38 31%, #efb223 50%, #e98529 70%, #e46e2b 80%, #dd582b 89%, #d6402b 100%); }
+.p1 .h1 { font: 700 18pt/21.7pt "Poppins"; color: var(--ink); letter-spacing: -0.2pt; }
+.p1 .sub { font: 400 9.4pt/1.4 "Poppins"; color: var(--muted); }
+.p1 .kick { font: 700 7.8pt/1.4 "Poppins"; color: var(--green); letter-spacing: 1.1pt; }
+.p1 .box { background: var(--box); border: 0.75pt solid var(--line); border-radius: 4pt; }
+.p1 .lab { font: 400 8.8pt/1.4 "Poppins"; color: var(--muted); }
+.p1 .lab.two { line-height: 13.5pt; }
+.p1 .val { font: 400 9.6pt/1.19 "Caladea"; color: var(--ink); }
+.p1 .fin { font: 400 10pt/1.19 "Caladea"; color: var(--ink); }
+.p1 .dot { height: 0; border-top: 0.75pt dotted var(--dots); }
+
+/* ---------- Corps ---------- */
+.page-break { break-before: page; }
+h2 { font: 700 11pt/15pt "Poppins"; color: var(--green); margin: 16pt 0 6pt; break-after: avoid; }
+h3 { font: 700 10pt/14pt "Poppins"; color: var(--ink); margin: 11pt 0 4pt; break-after: avoid; }
+.n { font-weight: 700; }
+ul { margin: 0 0 4.5pt; padding-left: 13pt; }
+li { text-align: justify; margin: 0 0 2.5pt; padding-left: 2pt; }
+li::marker { font-size: 8pt; }
+
+.badge { display: inline-block; background: var(--green); color: #fff; font: 700 7.8pt/11pt "Poppins"; letter-spacing: 1.6pt;
+  padding: 3pt 8.2pt 3.2pt; border-radius: 3pt; margin: 0 0 4pt; }
+.annex + h2, .badge + h2 { margin-top: 2pt; }
+.annex { margin-top: 26pt; break-inside: avoid-page; }
+.annex.first { margin-top: 0; }
+.small { font-size: 8.4pt; line-height: 12.5pt; color: var(--muted); }
+.legal-note { font-size: 8.4pt; line-height: 12.8pt; color: var(--muted); margin-bottom: 8pt; }
+
+table.grid { width: 100%; border-collapse: collapse; margin: 6pt 0 8pt; font-size: 9pt; line-height: 13pt; }
+table.grid th { background: var(--box); color: var(--green-dark); font: 700 8.2pt/12pt "Poppins"; letter-spacing: 0.9pt; text-transform: uppercase; text-align: left; padding: 5pt 7pt; border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); }
+table.grid td { padding: 6pt 7pt; border-bottom: 0.75pt solid var(--line); vertical-align: top; text-align: left; }
+table.grid td.amt { font-weight: 700; white-space: nowrap; }
+
+table.zones { width: 100%; border-collapse: collapse; margin: 6pt 0; font-size: 9pt; }
+table.zones th { background: var(--box); color: var(--green-dark); font: 700 8.2pt/12pt "Poppins"; letter-spacing: 0.9pt; text-align: left; padding: 5pt 7pt; border-top: 0.75pt solid var(--line); border-bottom: 0.75pt solid var(--line); }
+table.zones td { padding: 4pt 7pt; border-bottom: 0.75pt solid var(--line); width: 33.3%; }
+
+.callout { background: #f7fbf8; border-left: 2pt solid var(--green); padding: 6pt 10pt; font-size: 8.4pt; line-height: 13pt; color: var(--muted); margin: 6pt 0 8pt; }
+
+.two { display: flex; gap: 14pt; }
+.two > div { flex: 1; }
+
+/* ---------- Signature ---------- */
+.sign { display: flex; gap: 45.8pt; margin-top: 36pt; break-inside: avoid; }
+.sign > div { flex: 1; }
+.sign .space { height: 74pt; border-bottom: 0.75pt solid #2b3440; margin: 6pt 0 4pt; }
+.sign .who { font: 400 8.4pt/13pt "Poppins"; color: var(--muted); }
+
+.head { margin-bottom: 0; }
+.party td.l { width: 150pt; }
+.party { margin-bottom: 7pt; }
+h1 { margin-top: 12pt; }
+.sub { margin-bottom: 12pt; }
+.decision { margin-top: 22pt; padding: 10pt 12pt; border: 0.75pt solid var(--line); border-radius: 4pt; background: var(--box); break-inside: avoid; }
+.choice { margin: 6pt 0; text-align: left; }
+.box-check { display: inline-block; width: 9pt; height: 9pt; border: 0.9pt solid var(--ink); border-radius: 1.5pt; vertical-align: -1pt; margin-right: 5pt; }
+.sign.three { gap: 22pt; margin-top: 22pt; }
+.sign.three .space { height: 64pt; }
+</style>
+<style>
+.party.fill td.v { height: 17pt; }
+.party { padding: 4pt 12pt 5pt; margin-bottom: 5pt; }
+h1 { font-size: 16pt; line-height: 19pt; margin: 8pt 0 3pt; }
+.sub { margin-bottom: 7pt; }
+.cond { margin: 4pt 0 6pt; }
+.cond li { margin-bottom: 2pt; }
+.decision { margin-top: 7pt; padding: 6pt 12pt; }
+.sign.three { margin-top: 9pt; gap: 18pt; }
+.sign.three .space { height: 30pt; }
+body { font-size: 9.3pt; line-height: 12.7pt; }
+.head { height: 56pt; } .head img { width: 66pt; height: 50.8pt; }
+.party.fill td.v { height: 13.6pt; } .party td.l { padding: 1.2pt 0 !important; } .party .note { margin-top: 3pt; margin-bottom: 0; }
+.legal { font-size: 7.2pt; line-height: 10pt; color: var(--muted); margin-top: 4pt; text-align: justify; }
+</style>
+</head>
+<body>
+<div class="head">
+  <img src="../installateur/assets/logo-econatura.png" alt="ECONATURA Energía Renovable">
+  <div class="meta">OFERTA DE MANTENIMIENTO<br>REF. OFERTA-MANT-2026 · V2.1 (ES)</div>
+</div>
+<div class="bar"></div>
+
+<h1>Oferta de contrato de mantenimiento — Bomba de calor</h1>
+<div class="sub">Oferta emitida por la empresa habilitada · Decisión del propietario</div>
+
+<div class="party fill">
+  <table>
+    <tr><td class="l">Empresa mantenedora</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">NIF</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">Nº registro RITE</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">Teléfono de asistencia</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+  </table>
+  <p class="note">En lo sucesivo, «<b>la Empresa mantenedora</b>», empresa habilitada que ha ejecutado la instalación y emite la presente oferta.</p>
+</div>
+
+<div class="party">
+  <table>
+    <tr><td class="l">Presentada por cuenta de</td><td class="v"><b>ECONATURA ENERGÍA RENOVABLE, S.L.</b> · NIF B22479810 · D. Mickael Benhamou / D. Ryan Safwat («ECONATURA»)</td></tr>
+  </table>
+</div>
+
+<div class="party fill">
+  <table>
+    <tr><td class="l">Nombre y apellidos</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">NIF (DNI / NIE)</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">Dirección de la instalación</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">Bomba de calor (marca, modelo)</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+    <tr><td class="l">Fecha de puesta en servicio</td><td class="v"><span class="dot" style="width:243.75pt"></span></td></tr>
+  </table>
+  <p class="note">En lo sucesivo, «<b>el Propietario</b>».</p>
+</div>
+
+<p style="margin-top:6pt">La Empresa mantenedora, en su condición de empresa habilitada, <b>ofrece al Propietario un contrato de mantenimiento</b> de la nueva instalación de bomba de calor identificada arriba, en las condiciones mínimas siguientes:</p>
+<ul class="cond">
+  <li>duración de <b>dos (2) años</b> a contar desde la fecha de puesta en servicio;</li>
+  <li>como mínimo <b>una (1) visita de control al año</b>;</li>
+  <li><b>atención en un plazo de setenta y dos (72) horas</b> en caso de avería;</li>
+  <li>precio de <b>trescientos cincuenta (350) euros por año como máximo, IVA incluido</b>. Precio propuesto: ............ € por año, IVA incluido.</li>
+</ul>
+<p>El Propietario es <b>libre de aceptar o rechazar</b> esta oferta. Si la acepta, la Empresa mantenedora no puede negarse a prestarle el mantenimiento y formalizará con él el contrato en estas condiciones, directamente y sin intervención de ECONATURA. Las reparaciones y piezas no incluidas solo se realizarán previo presupuesto aceptado por el Propietario. Su decisión no afecta en nada a la instalación realizada ni a las garantías legales de que dispone.</p>
+
+<div class="decision">
+  <div class="kicker">Decisión del Propietario</div>
+  <p class="choice"><span class="box-check"></span> <b>ACEPTO</b> el contrato de mantenimiento en las condiciones anteriores.</p>
+  <p class="choice"><span class="box-check"></span> <b>NO ACEPTO</b> el contrato de mantenimiento.</p>
+  <p class="small">Lugar y fecha: ............................................................. , a ...... / ...... / ............</p>
+</div>
+
+<div class="sign three">
+  <div><div class="kicker">La Empresa mantenedora</div><div class="space"></div><div class="who">Emite la oferta · Firma y sello</div></div>
+  <div><div class="kicker">El Propietario</div><div class="space"></div><div class="who">Leído y conforme · Firma</div></div>
+  <div><div class="kicker">Por ECONATURA</div><div class="space"></div><div class="who">Mickael Benhamou / Ryan Safwat · Administradores</div></div>
+</div>
+
+<p class="legal">Documento exigido por la normativa de Certificados de Ahorro Energético (CAE). ECONATURA (Calle Hermosilla 48, 28001 Madrid) lo conserva para justificar el expediente CAE durante los plazos legales. Derechos de acceso, rectificación, supresión y demás: por escrito a dicha dirección; reclamaciones: www.aepd.es.</p>
+</body>
+</html>

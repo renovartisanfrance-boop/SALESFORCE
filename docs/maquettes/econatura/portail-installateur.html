@@ -1,0 +1,2775 @@
+<title>Portail Installateur</title>
+<style>
+  :root {
+    --green: #16A34A;
+    --green-dark: #15803D;
+    --green-deep: #14532D;
+    --green-tint: #ECFDF3;
+    --green-line: #BBE8CB;
+    --navy: #1E293B;
+    --ink: #334155;
+    --muted: #64748B;
+    --faint: #94A3B8;
+    --line: #E2E8F0;
+    --bg: #F6F8F9;
+    --white: #FFFFFF;
+    --amber: #B45309;
+    --amber-bg: #FEF6E7;
+    --amber-line: #F5D9A8;
+    --blue: #1D4ED8;
+    --blue-bg: #EFF4FF;
+    --blue-line: #C7D7FE;
+    --red: #B91C1C;
+    --red-bg: #FEF2F2;
+    --red-line: #FBCFCF;
+    --shadow: 0 1px 2px rgba(15,23,42,.05), 0 6px 16px -10px rgba(15,23,42,.18);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { margin: 0; color: var(--navy); letter-spacing: -0.02em; }
+  h1 { font-size: 1.6rem; font-weight: 800; }
+  h2 { font-size: 1.05rem; font-weight: 700; }
+  h3 { font-size: .98rem; font-weight: 700; }
+  p { margin: 0; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 6px; }
+
+  .topbar { background: var(--white); }
+  .topbar-in {
+    width: min(1120px, 100% - 2rem); margin-inline: auto;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding-block: .85rem;
+  }
+  .brand { display: flex; align-items: center; gap: .55rem; font-weight: 800; color: var(--green-deep); letter-spacing: -0.02em; }
+  .brand .mark { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg,#1BAE52,#15803D); display: grid; place-items: center; color: #fff; font-size: .9rem; }
+  nav { display: flex; gap: 1.6rem; }
+  nav button { background: none; border: 0; cursor: pointer; font-size: .95rem; font-weight: 600; color: var(--blue); padding: .2rem 0 .55rem; border-bottom: 2.5px solid transparent; }
+  nav button.on { color: var(--green-dark); border-bottom-color: var(--green-dark); }
+  .who { font-size: .92rem; color: var(--navy); font-weight: 500; }
+  .rule { height: 3px; background: linear-gradient(90deg,#16A34A 0%,#65A30D 28%,#EAB308 55%,#F97316 78%,#DC2626 100%); }
+
+  .wrap { width: min(1120px, 100% - 2rem); margin-inline: auto; padding-block: 1.9rem 3rem; }
+  body.wide .wrap { width: min(1680px, 100% - 2rem); }
+  body.wide .topbar-in { width: min(1680px, 100% - 2rem); }
+  .demo { display: flex; gap: .5rem; background: var(--amber-bg); border: 1px solid var(--amber-line); color: var(--amber); border-radius: 8px; padding: .5rem .8rem; font-size: .84rem; font-weight: 600; margin-bottom: 1.4rem; }
+  .crumb { background: none; border: 0; cursor: pointer; padding: 0; color: var(--muted); font-size: .9rem; font-weight: 600; margin-bottom: .9rem; }
+  .crumb:hover { color: var(--green-dark); }
+  .head { margin-bottom: 1.5rem; }
+  .head p { color: var(--muted); margin-top: .25rem; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; }
+  .tile { background: var(--white); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 1.2rem 1.3rem 1.3rem; text-align: left; cursor: pointer; display: grid; gap: .3rem; transition: border-color .12s ease, transform .12s ease; }
+  .tile:hover { border-color: var(--green-line); transform: translateY(-1px); }
+  .tile .ico { font-size: 1.3rem; margin-bottom: .35rem; }
+  .tile .sub { color: var(--muted); font-size: .89rem; }
+
+  /* bandeaux de section */
+
+  .pill { display: inline-block; border-radius: 999px; padding: .17rem .6rem; font-size: .76rem; font-weight: 700; }
+  .pill.new { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-line); }
+  .pill.ok { background: var(--green-tint); color: var(--green-deep); border: 1px solid var(--green-line); }
+  .pill.stop { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-line); }
+  .pill.grey { background: #F1F5F9; color: var(--muted); border: 1px solid var(--line); }
+
+  .btn { border: 0; border-radius: 8px; padding: .55rem 1rem; cursor: pointer; font-size: .9rem; font-weight: 600; background: var(--green); color: #fff; }
+  .btn:hover { filter: brightness(1.06); }
+  .btn.ghost { background: var(--white); color: var(--ink); border: 1px solid var(--line); }
+  .btn.ghost:hover { border-color: var(--faint); }
+  .btn.sm { padding: .4rem .75rem; font-size: .85rem; }
+  .btn:disabled { background: #CBD5E1; cursor: not-allowed; filter: none; }
+  .btn.ghost:disabled { background: #F8FAFC; color: var(--faint); border-color: var(--line); }
+
+  .panel { background: var(--white); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+  .sec { padding: 1.15rem 1.3rem; border-bottom: 1px solid var(--line); }
+  .sec:last-child { border-bottom: 0; }
+  .sec > h2 { margin-bottom: .8rem; }
+  .kv { display: grid; grid-template-columns: 9.5rem minmax(0,1fr); gap: .35rem .9rem; font-size: .92rem; margin: 0; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; color: var(--navy); font-weight: 500; }
+  a.lk { color: var(--green-dark); font-weight: 600; text-decoration: none; }
+
+  /* NRP */
+  .prep { margin-top: 0; font-size: .93rem; line-height: 1.55; color: var(--ink); background: var(--green-tint); border: 1px solid var(--green-line); border-radius: 8px; padding: .8rem .95rem; }
+  .prep ul { margin: .45rem 0 0; padding-left: 1.15rem; }
+  .prep li { margin-bottom: .2rem; }
+  .prep b { color: var(--navy); }
+  h3.sub { font-size: .92rem; font-weight: 700; color: var(--navy); }
+  .sec[hidden] { display: none !important; }
+  .subp { font-size: .88rem; color: var(--muted); margin: .25rem 0 .7rem; }
+  .f[hidden] { display: none !important; }
+  .f { display: grid; gap: .3rem; }
+  .f textarea { font: inherit; border: 1px solid var(--line); border-radius: 8px; padding: .55rem .7rem; background: #F8FAFC; color: var(--ink); resize: vertical; }
+  .f label { font-size: .84rem; font-weight: 600; color: var(--muted); }
+  .f input, .f select, .f textarea { border: 1px solid var(--line); border-radius: 8px; padding: .55rem .7rem; font: inherit; font-size: .92rem; color: var(--navy); background: #FBFCFD; }
+  .f input:focus, .f select:focus, .f textarea:focus { background: #fff; border-color: var(--green); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
+
+  .sms {
+    background: #F8FAFC; border: 1px solid var(--line); border-radius: 9px;
+    padding: .95rem 1.05rem; font-size: .92rem; color: var(--navy); line-height: 1.55; white-space: pre-line;
+  }
+  .thumbs { display: flex; gap: .45rem; flex-wrap: wrap; }
+  .th { width: 46px; height: 46px; border-radius: 7px; display: grid; place-items: center; background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green-dark); font-size: 1rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { text-align: left; padding: .8rem 1.1rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { font-size: .76rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); background: #FBFCFD; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--navy); }
+
+  .screen { display: none; }
+  .screen.on { display: block; }
+
+  @media (max-width: 720px) {
+    .kv { grid-template-columns: minmax(0,1fr); }
+    .kv dt { margin-top: .5rem; }
+    nav { gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* ===== vue liste type Salesforce ===== */
+  .lvhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+  .lveyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--faint); }
+  .lv { overflow: visible; }
+  .lvbar { display: flex; flex-wrap: wrap; gap: .55rem; padding: .85rem 1rem; border-bottom: 1px solid var(--line); background: #FBFCFD; }
+  .lvbar input, .lvbar select {
+    font: inherit; font-size: .88rem; color: var(--navy);
+    border: 1px solid var(--line); border-radius: 8px; padding: .45rem .65rem; background: var(--white);
+  }
+  .lvbar input:focus, .lvbar select:focus { border-color: var(--green); outline: none; }
+  .lvsearch { flex: 1; min-width: 15rem; }
+  .lvwrap { overflow-x: auto; }
+  body.wide .lvwrap { overflow-x: visible; }
+  .lvt { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  .lvt th {
+    text-align: left; font-size: .76rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); background: #F8FAFC; padding: .6rem .6rem; border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  .lvt th.sortable { cursor: pointer; user-select: none; }
+  .lvt th.sortable:hover { color: var(--green-dark); }
+  .lvt th i { font-style: normal; color: var(--faint); font-size: .7rem; }
+  .lvt th.asc i::after { content: "▲"; color: var(--green-dark); }
+  .lvt th.desc i::after { content: "▼"; color: var(--green-dark); }
+  .lvt th, .lvt td { width: 1%; }
+  .lvt th.grow, .lvt td.act { width: auto; }
+  .lvt td { padding: .7rem .6rem; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  .lvt tbody tr:hover { background: var(--green-tint); }
+  .lvt tbody tr:last-child td { border-bottom: 0; }
+  .lvt .cli { font-weight: 700; color: var(--navy); }
+  .lvt td a.lk { font-size: .86rem; white-space: nowrap; }
+  .lvt .dim { color: var(--muted); }
+  .lvt td.act { text-align: right; }
+
+  .modal { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: grid; place-items: center; padding: 1.5rem; z-index: 50; }
+  .modal[hidden] { display: none !important; }
+  .mdbox { background: var(--white); border-radius: 12px; width: min(34rem, 100%); box-shadow: 0 24px 60px -12px rgba(15,23,42,.35); overflow: hidden; }
+  .mdhead { padding: 1.1rem 1.3rem; border-bottom: 1px solid var(--line); }
+  .mdhead p { color: var(--muted); font-size: .88rem; margin-top: .2rem; }
+  .mdbody { padding: 1.2rem 1.3rem; }
+  .mdacts { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; padding: 0 1.3rem 1.2rem; }
+  .techrow { display: flex; gap: .4rem; align-items: center; margin-bottom: .45rem; }
+  .techrow input { flex: 1; font: inherit; font-size: .9rem; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .7rem; background: #FBFCFD; color: var(--navy); }
+  .techrow input:focus { border-color: var(--green); background: #fff; outline: none; }
+  .dropzone {
+    display: block; text-align: center; border: 2px dashed var(--green-line); border-radius: 10px;
+    padding: 1.1rem; background: var(--green-tint); cursor: pointer; margin-top: .6rem;
+  }
+  .dropzone:hover { border-color: var(--green); }
+  .dropzone b { display: block; color: var(--green-deep); font-size: .95rem; }
+  .dropzone span { font-size: .82rem; color: var(--muted); }
+  .thumbs { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+  .thumbs .th { position: relative; width: 46px; height: 46px; border-radius: 8px; border: 1px solid var(--green-line);
+                background: var(--green-tint); display: grid; place-items: center; font-size: 1.1rem; }
+  .thx { position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; line-height: 13px; border-radius: 50%;
+         border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: .7rem; cursor: pointer; padding: 0; }
+  .depacts { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: .7rem; flex-wrap: wrap; }
+  .depbtns { display: flex; align-items: center; gap: .5rem; }
+  .depsaved { font-size: .78rem; font-weight: 700; color: var(--green-dark); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  #dep-adr:disabled, #dep-prov:disabled { background: #f3f4f6; color: #6b7280; }
+  /* ===== facturation ===== */
+  .fx-toggle { display: inline-flex; background: #f1f5f9; border: 1px solid var(--line); border-radius: 999px; padding: .2rem; gap: .2rem; margin-bottom: 1.2rem; }
+  .fx-toggle button { border: 0; background: transparent; border-radius: 999px; padding: .45rem 1.4rem; font: inherit; font-size: .88rem; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .fx-toggle button.on { background: #fff; color: var(--green-dark); border: 1px solid var(--green-line); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .fx-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+  .fx-head h2 { font-size: .95rem; margin: 0; }
+  .fx-head .subp { font-size: .7rem; font-style: italic; margin-top: .1rem; }
+  .fx-refresh { background: var(--blue); border-color: var(--blue); color: #fff; border-radius: 8px; }
+  .fx-filters { background: #fff; border-top: 3px solid var(--blue); border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1rem; }
+  .fx-fhead { width: 100%; text-align: left; border: 0; background: transparent; padding: .8rem 1rem; font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: .5rem; }
+  .fx-fhead i { width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .15s; }
+  .fx-fhead i.open { transform: rotate(45deg); }
+  .fx-fbody { display: grid; grid-template-columns: repeat(6, minmax(0, 170px)); gap: .6rem; padding: 0 1rem 1rem; border-top: 1px solid var(--line); padding-top: .8rem; }
+  .fx-fbody[hidden] { display: none; }
+  .fx-fbody label { font-size: .64rem; letter-spacing: .04em; text-transform: uppercase; }
+  .fx-fbody input { font-size: .78rem; padding: .45rem .6rem; }
+  .fx-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; margin-bottom: 1rem; }
+  .fx-kpi { background: #fff; border-radius: 8px; box-shadow: var(--shadow); padding: .8rem 1rem; border-left: 4px solid var(--green); }
+  .fx-kpi .lb { font-size: .62rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .fx-kpi .val { font-size: 1.25rem; font-weight: 800; margin: .15rem 0; }
+  .fx-kpi .sm { font-size: .64rem; color: var(--faint); }
+  .fx-kpi.orange { border-color: #ea580c; } .fx-kpi.orange .val { color: #ea580c; }
+  .fx-kpi.blue { border-color: var(--blue); } .fx-kpi.blue .val { color: var(--blue); }
+  .fx-kpi.green .val { color: var(--green-dark); }
+  .fx-tablewrap { background: #fff; border-radius: 8px; box-shadow: var(--shadow); overflow: hidden; }
+  .fxt { width: 100%; border-collapse: collapse; font-size: .78rem; }
+  .fxt th { background: #1e293b; color: #cbd5e1; font-size: .74rem; font-weight: 700; padding: .6rem .5rem; text-align: center; border-right: 1px solid #334155; }
+  .fxt th b { color: #fff; }
+  .fxt th:last-child { border-right: 0; }
+  .fxt td { padding: .42rem .6rem; text-align: center; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); vertical-align: middle; }
+  .fxt td:last-child { border-right: 0; }
+  .fxt td.nom { font-weight: 700; text-transform: uppercase; }
+  .fxt td.num { text-align: right; }
+  .fxt td.grp { font-weight: 700; }
+  .fxt tr.enc td:first-child { border-left: 4px solid #ea580c; }
+  .fxt tr.enc td { background: #fffdf5; }
+  .fxt tr.fac td:first-child { border-left: 4px solid var(--blue); }
+  .fxt .fiche { display: inline-flex; align-items: center; gap: .35rem; }
+  .fxt .fiche::before { content: ''; width: 10px; height: 10px; background: var(--green); border-radius: 2px; }
+  .fxt .clk { color: var(--muted); }
+  .fx-foot { display: flex; align-items: center; justify-content: space-between; padding: .7rem 1rem; font-size: .76rem; color: var(--muted); }
+  .fx-pp { font: inherit; font-size: .76rem; padding: .35rem .6rem; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  .fx-pager { display: flex; align-items: center; gap: .6rem; }
+  .fx-pager button { font: inherit; font-size: .74rem; border: 1px solid var(--line); background: #f8fafc; border-radius: 999px; padding: .3rem .8rem; color: var(--faint); }
+  .fx-pager b { color: var(--ink); }
+  .pm-traj { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .9rem; }
+  .pm-traj span { font-size: .76rem; padding: .3rem .6rem; border-radius: 6px; background: #f8fafc; border: 1px solid var(--line); }
+  .pm-traj span b.tg { color: var(--green-dark); } .pm-traj span b.to { color: #d97706; } .pm-traj span b.tf { color: var(--red); }
+  .pm-lbl { font-weight: 700; font-size: .85rem; margin: 1rem 0 .4rem; }
+  .pm-lbl .subp { font-weight: 400; font-size: .74rem; }
+  /* interventions non réalisées / partielles / en retard de clôture */
+  .job.late { border-color: var(--red-line); border-left-color: var(--red); background: #fff5f5; }
+  .job.nr { background: #f3f4f6; border-color: #e5e7eb; border-left-color: #9ca3af; }
+  .job.nr b { color: #6b7280; text-decoration: line-through; }
+  .job.part { background: var(--amber-bg); border-color: var(--amber-line); border-left-color: var(--amber); }
+  .jtag { display: inline-block; font-size: .58rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; padding: .1rem .35rem; border-radius: 4px; margin-left: .3rem; vertical-align: middle; }
+  .jtag.red { background: var(--red); color: #fff; } .jtag.grey { background: #9ca3af; color: #fff; } .jtag.amber { background: var(--amber); color: #fff; } .jtag.blue { background: var(--blue); color: #fff; }
+  .clo-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  #wk-ctrl { display: inline-flex; align-items: center; gap: .6rem; }
+  #wk-ctrl[hidden], .lvfoot[hidden], .clo-table[hidden] { display: none; }
+  .clo-table tr.tsav td:first-child { border-left: 3px solid var(--blue); }
+  .clo-table tr.tlate td:first-child { border-left: 3px solid var(--red); }
+  .clo-table tr.ttoday td:first-child { border-left: 3px solid var(--green); }
+  .clo-table th { text-align: left; font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: .5rem .6rem; border-bottom: 1px solid var(--line); }
+  .clo-table td { padding: .5rem .6rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .clo-table td.acts { text-align: right; white-space: nowrap; }
+  .clo-table .ib { font-size: .72rem; padding: .25rem .55rem; margin-left: .3rem; }
+  .qbox { background: #f8fafc; border: 1px solid var(--line); border-radius: 8px; padding: .9rem 1rem; margin-bottom: 1rem; }
+  .qbox > b { display: block; margin-bottom: .6rem; }
+  .qbtns { display: flex; gap: .6rem; }
+  .qbtns button { font: inherit; font-size: .84rem; font-weight: 600; padding: .5rem 1rem; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+  .qbtns button.on { border-color: var(--green); background: var(--green-tint); color: var(--green-dark); }
+  .kpis3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0 .4rem; }
+  .kpi { background: var(--white); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 1rem 1.2rem; text-align: left; cursor: pointer; display: grid; gap: .15rem; border-top: 4px solid var(--green); font: inherit; }
+  .kpi:hover { border-color: var(--navy); }
+  .kpi .kl { font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .kpi .kn { font-size: 2rem; font-weight: 800; line-height: 1.1; color: var(--navy); }
+  .kpi .ks { font-size: .76rem; color: var(--faint); }
+  .kpi.today { border-top-color: var(--green); } .kpi.today .kn { color: var(--green-dark); }
+  .kpi.late { border-top-color: var(--red); } .kpi.late .kn { color: var(--red); }
+  .kpi.sav { border-top-color: var(--blue); } .kpi.sav .kn { color: var(--blue); }
+  table.plan.daymode th:not(.today):not(.teamcol), table.plan.daymode td:not(.today):not(.teamcol) { background: #f3f4f6; }
+  table.plan.daymode th:not(.today):not(.teamcol), table.plan.daymode th:not(.today):not(.teamcol) span { color: #b0b7c3; }
+  table.plan.daymode td:not(.today):not(.teamcol) .job { opacity: .3; filter: grayscale(1); pointer-events: none; }
+  .tcform { display: flex; align-items: flex-end; gap: .8rem; padding: .9rem 1.1rem; border-bottom: 1px solid var(--line); background: #F8FAFC; }
+  .tcform[hidden] { display: none; }
+  .tcform .f { flex: 1; max-width: 16rem; }
+  .tcsearch { font: inherit; font-size: .82rem; padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 8px; width: 16rem; margin: 0 .4rem; }
+  .tcsearch:focus { outline: none; border-color: var(--green); }
+  .tmrow .ib.del { color: var(--red); border-color: var(--red-line); }
+  .tcsearch.num { width: 6.5rem; margin: 0 .2rem; }
+  .clo-table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+  .clo-table th.sortable:hover { color: var(--green-dark); }
+  .clo-table th.sortable i { font-style: normal; color: var(--faint); font-size: .7rem; }
+  .clo-table th.on { color: var(--green-dark); }
+  .tctable th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+  .tctable th.sortable:hover { color: var(--green-dark); }
+  .tctable th.sortable i { font-style: normal; color: var(--faint); font-size: .7rem; }
+  .tctable th.on { color: var(--green-dark); }
+  .tctable td.n { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .tctable tr.off td { color: var(--faint); background: #FBFCFD; }
+  .tctable input.teamname { max-width: 14rem; }
+  .tctable input.teamname:disabled { color: var(--faint); background: transparent; }
+  .cnttxt { font-weight: 800; color: var(--red); margin-left: .2rem; }
+  .cnttxt[hidden] { display: none; }
+  .typ { display: inline-block; font-size: .7rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; }
+  .typ.inst { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-line); }
+  .typ.sav { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-line); }
+  .tinfo { position: relative; display: inline-flex; align-items: center; gap: .3rem; cursor: help; white-space: nowrap; }
+  .tinfo i { font-style: normal; font-weight: 800; font-size: .62rem; width: 14px; height: 14px; border-radius: 50%; background: var(--navy); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+  .tinfo .tip { display: none; position: absolute; left: 0; top: 130%; z-index: 30; background: #1e293b; color: #fff; border-radius: 8px; padding: .55rem .75rem; font-size: .76rem; line-height: 1.4; box-shadow: 0 10px 24px -8px rgba(15,23,42,.45); min-width: 11rem; }
+  .tinfo .tip b { display: block; margin-bottom: .2rem; color: #a7f3d0; }
+  .tinfo .tip span { display: block; white-space: nowrap; }
+  .tinfo:hover .tip, .tinfo:focus .tip { display: block; }
+  .tile.tile2 { cursor: default; gap: .5rem; align-content: start; }
+  .tilerow { display: grid; gap: .15rem; text-align: left; border: 1px solid var(--line); background: #FBFCFD; border-radius: 8px; padding: .65rem .8rem; font: inherit; cursor: pointer; }
+  .tilerow:hover { border-color: var(--green); background: var(--green-tint); }
+  .tilerow b { font-size: .95rem; color: var(--navy); }
+  .tilerow b span { color: var(--amber); }
+  .tilerow .sub { font-size: .78rem; color: var(--muted); }
+  .assignbar {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    background: var(--blue-bg); border: 1px solid var(--blue-line); border-left: 5px solid var(--blue);
+    border-radius: 10px; padding: .7rem 1rem; margin-bottom: .9rem;
+  }
+  .assignbar[hidden] { display: none !important; }
+  .ab-txt { flex: 1; display: grid; }
+  .ab-txt b { color: var(--blue); font-size: .95rem; }
+  .ab-txt span { font-size: .83rem; color: #4B6BB8; }
+  .ab-legend { display: flex; gap: .9rem; font-size: .8rem; color: var(--muted); }
+
+  table.plan td.slot { background: #FAFDFB; }
+  table.plan td.slotbusy { background: #f3f4f6; }
+  table.plan td.slotbusy .job { opacity: .35; filter: grayscale(1); pointer-events: none; }
+  .slotbtn {
+    display: grid; gap: .1rem; width: 100%; text-align: left; cursor: pointer;
+    border: 1px dashed var(--line); border-radius: 6px; padding: .25rem .3rem; background: transparent;
+  }
+  .slotbtn:hover { background: var(--green-tint); border-color: var(--green); border-style: solid; }
+  .sl { font-size: .66rem; color: var(--muted); white-space: normal; line-height: 1.2; }
+  .sl b { font-weight: 800; }
+  .sl.dep { color: var(--navy); }
+  .sl.vei { color: var(--green-dark); }
+  .slgo { font-size: .66rem; font-weight: 800; color: var(--green-dark); opacity: 0; }
+  .slotbtn:hover .slgo { opacity: 1; }
+  td.slotgood .slotbtn { border-color: var(--green); background: var(--green-tint); }
+  td.slotok .slotbtn { border-color: #f59e0b; background: #fffbeb; }
+  td.slotfar .slotbtn { border-color: var(--red); background: #fef2f2; }
+  .sl b.tg { color: var(--green-dark); } .sl b.to { color: #d97706; } .sl b.tf { color: var(--red); }
+  .mdsep { border: 0; border-top: 1px solid var(--line); margin: 1.3rem 0 1.1rem; }
+  .btn.danger { background: var(--red); }
+  .btn.danger:disabled { background: #E5C3C3; }
+  .mdfoot { padding: .9rem 1.3rem; border-top: 1px solid var(--line); background: #FBFCFD; display: flex; justify-content: flex-end; gap: .6rem; }
+  .lvfoot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+            padding: .7rem 1rem; border-top: 1px solid var(--line); background: #FBFCFD; font-size: .84rem; color: var(--muted); }
+  .lvpager { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+  .lvpager label { display: flex; align-items: center; gap: .35rem; }
+  .lvpager select { font: inherit; font-size: .84rem; border: 1px solid var(--line); border-radius: 6px; padding: .2rem 1.3rem .2rem .45rem; background: var(--white); color: var(--navy); }
+  .pgbtn { border: 1px solid var(--line); background: var(--white); color: var(--ink); border-radius: 6px; padding: .28rem .6rem; font-size: .84rem; font-weight: 600; cursor: pointer; }
+  .pgbtn:hover:not(:disabled) { border-color: var(--green); color: var(--green-dark); }
+  .pgbtn:disabled { color: var(--faint); cursor: not-allowed; }
+  .pgnum { font-weight: 700; color: var(--navy); }
+  .lvt td.callcell { white-space: nowrap; }
+  .lvt .nrpb { display: inline-block; font-size: .76rem; font-weight: 800; border-radius: 999px;
+               padding: .1rem .45rem; background: var(--red-bg); color: var(--red); border: 1px solid var(--red-line); }
+  .lvt .nrpb.full { background: var(--red); color: #fff; border-color: var(--red); }
+  .lvt .nrpb.zero { background: transparent; color: var(--faint); border-color: transparent; font-weight: 600; }
+  .lvt .plus1 {
+    margin-left: .4rem; border: 1px solid var(--line); background: var(--white); color: var(--muted);
+    border-radius: 6px; padding: .1rem .38rem; font-size: .76rem; font-weight: 800; cursor: pointer;
+  }
+  .lvt .plus1:hover { border-color: var(--red-line); color: var(--red); background: var(--red-bg); }
+  .wklabel { font-size: .92rem; font-weight: 700; color: var(--navy); padding: 0 .3rem; }
+  .lvt tfoot td { padding: .7rem .6rem; border-top: 2px solid var(--line); background: #F8FAFC; color: var(--navy); }
+
+  table.plan { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  table.plan th {
+    background: #F8FAFC; border-bottom: 1px solid var(--line); padding: .55rem .5rem; text-align: center;
+    font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); white-space: nowrap;
+  }
+  table.plan th span { display: block; font-size: .8rem; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--navy); margin-top: .1rem; }
+  table.plan th.today, table.plan td.today { background: var(--green-tint); }
+  table.plan th.past { color: var(--faint); }
+  table.plan th.past span { color: var(--faint); }
+  table.plan td.past { background: #EEF1F5; }
+  table.plan td.past .job:not(.late):not(.islate) { opacity: .7; filter: saturate(.6); }
+  table.plan td.past .job:hover { opacity: 1; filter: none; }
+  table.plan { table-layout: fixed; }
+  table.plan td { border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); padding: .25rem; vertical-align: top; width: 13%; height: 2.4rem; }
+  table.plan td.teamcol, table.plan th.teamcol { border-left: 0; width: 9%; min-width: 7.5rem; text-align: left; background: var(--white); }
+  table.plan th.teamcol { background: #F8FAFC; }
+  input.teamname {
+    width: 100%; font: inherit; font-size: .82rem; font-weight: 700; color: var(--navy);
+    border: 1px solid transparent; border-radius: 6px; padding: .18rem .35rem; background: transparent;
+  }
+  input.teamname:hover { border-color: var(--line); background: #FBFCFD; }
+  input.teamname:focus { border-color: var(--green); background: var(--white); outline: none; }
+  .job {
+    width: 100%;
+    border: 1px solid var(--amber-line); background: var(--amber-bg); border-left: 3px solid var(--amber);
+    border-radius: 6px; padding: .25rem .3rem; margin-bottom: .25rem; line-height: 1.25;
+  }
+  .job .jtop { display: flex; align-items: baseline; gap: .3rem; }
+  .job:last-child { margin-bottom: 0; }
+  .job .jh { font-size: .7rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .job b { flex: 1; min-width: 0; font-size: .76rem; color: var(--amber); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .job .jbtns { display: flex; gap: .18rem; flex-wrap: wrap; margin-top: .2rem; }
+  .ib {
+    padding: .05rem .3rem; border: 1px solid var(--line); background: var(--white); color: var(--muted);
+    border-radius: 4px; font-size: .67rem; font-weight: 700; cursor: pointer; white-space: nowrap; line-height: 1.5;
+  }
+  .ib:hover { border-color: var(--green); color: var(--green-dark); }
+  .ib.clo { border-color: var(--green-line); color: var(--green-dark); background: #fff; }
+  .ib.clo:hover { background: var(--green); color: #fff; border-color: var(--green); }
+  .ib.done { border-color: var(--green); background: var(--green); color: #fff; cursor: default; }
+  .job.done { background: var(--green-tint); border-color: var(--green-line); border-left-color: var(--green); }
+  .job.done b { color: var(--green-deep); }
+  .job.sav { background: var(--blue-bg); border-color: var(--blue-line); border-left-color: var(--blue); }
+  .job.sav b { color: var(--blue); }
+  .plflash { margin: .8rem 1rem 0; border-radius: 8px; padding: .55rem .8rem; font-size: .86rem; font-weight: 600; }
+  .plflash.ok { background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green-deep); }
+  .plflash.ko { background: var(--red-bg); border: 1px solid var(--red-line); color: var(--red); }
+  .plflash[hidden] { display: none !important; }
+  .lgd { margin-right: 1rem; display: inline-flex; align-items: center; gap: .35rem; }
+  .lgd i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .lgd i.c-inst { background: var(--green); }
+  .lgd i.c-sav { background: var(--blue); }
+  .lgd i.c-wait { background: var(--amber); }
+  .plfilters { display: flex; gap: 1rem; margin-left: auto; align-items: center; }
+  .plfilters[hidden] { display: none; }
+  .chk { display: inline-flex; align-items: center; gap: .35rem; font-size: .82rem; font-weight: 600; color: var(--navy); cursor: pointer; }
+  .chk input { width: 15px; height: 15px; accent-color: var(--green); }
+  .wknav { display: flex; align-items: center; gap: .6rem; margin-bottom: .9rem; }
+  .job.sav { background: var(--blue-bg); border-color: var(--blue-line); border-left-color: var(--blue); }
+  .job.sav b { color: var(--blue); }
+  .tmhead { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin: 2.4rem 0 .9rem; }
+  .tmcount { display: flex; align-items: center; gap: .55rem; }
+  .tmcount span#tm-n { font-size: 1.35rem; font-weight: 800; color: var(--navy); min-width: 1.6rem; text-align: center; }
+  .tmlab { font-size: .86rem; color: var(--muted); }
+  .teamlist { display: grid; }
+  .tmrow { display: flex; align-items: center; gap: .8rem; padding: .7rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .tmrow:last-child { border-bottom: 0; }
+  .tmrow.off { background: #FBFCFD; }
+  .tmrow .teamname { max-width: 12rem; }
+  .tmrow .teamname:disabled { color: var(--faint); background: transparent; }
+  span.teamname { display: inline-block; font-size: .82rem; font-weight: 700; color: var(--navy); padding: .18rem .35rem; }
+  span.teamname.off { color: var(--faint); }
+  .tmtag { flex: 1; }
+  .tmjobs { font-size: .82rem; color: var(--muted); white-space: nowrap; }
+  .tmnote { margin-top: .8rem; font-size: .88rem; border-radius: 8px; padding: .6rem .85rem; }
+  .tmnote.ok { background: var(--green-tint); border: 1px solid var(--green-line); color: var(--green-deep); }
+  .tmnote.ko { background: var(--red-bg); border: 1px solid var(--red-line); color: var(--red); }
+  .tmnote[hidden] { display: none !important; }
+  .tmrow .btn + .btn { margin-left: .4rem; }
+  table.plan tr.archrow { background: #FBFCFD; }
+  table.plan tr.archrow td { opacity: .72; }
+  .teamname.off { display: block; font-size: .82rem; font-weight: 700; color: var(--faint); padding: .18rem .35rem; }
+  .archtag { display: inline-block; margin-left: .4rem; font-size: .68rem; font-weight: 800; text-transform: uppercase;
+             letter-spacing: .05em; color: var(--muted); background: #F1F5F9; border: 1px solid var(--line);
+             border-radius: 5px; padding: .05rem .35rem; }
+  .lgd i.c-arch { background: #CBD5E1; }
+  .job b .jcity { font-style: normal; font-weight: 500; color: var(--muted); font-size: .7rem; }
+  /* ===== importance du SAV ===== */
+  .prtag { display: inline-block; font-size: .7rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; }
+  .prtag.hi  { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-line); }
+  .prtag.mid { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-line); }
+  .job.urg { border-left-color: var(--red); }
+  .jtag.urg { background: var(--red); color: #fff; }
+  /* ===== création de technicien / doublons ===== */
+  .tcnew { margin-top: .8rem; background: #FBFCFD; border: 1px solid var(--line); border-radius: 9px; padding: .85rem 1rem; }
+  .tcnew[hidden] { display: none; }
+  .tcnew > b { font-size: .9rem; color: var(--navy); }
+  .dupwarn { margin-top: .7rem; background: var(--amber-bg); border: 1px solid var(--amber-line);
+             border-left: 4px solid var(--amber); border-radius: 8px; padding: .7rem .85rem; font-size: .88rem; color: #7a4a08; }
+  .dupwarn[hidden] { display: none; }
+  .dupwarn b { color: var(--amber); }
+  .dupwarn p { margin-top: .3rem; }
+  .dupwarn ul { margin: .5rem 0 .2rem; padding-left: 1.1rem; }
+  .dupwarn li { margin-bottom: .3rem; color: var(--navy); font-weight: 600; }
+  .dupwarn .ib { margin-left: .5rem; font-weight: 700; }
+  .dupacts { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .6rem; }
+  .techrow select { flex: 1; font: inherit; font-size: .9rem; border: 1px solid var(--line); border-radius: 8px;
+                    padding: .5rem .7rem; background: #FBFCFD; color: var(--navy); }
+  .techrow select:focus { border-color: var(--green); background: #fff; outline: none; }
+  /* ===== démarcation des équipes dans le planning ===== */
+  table.plan tbody tr:not(:last-child) > td { border-bottom: 2px solid #C7D0DB; }
+  table.plan td.teamcol, table.plan th.teamcol { border-right: 2px solid #C7D0DB; }
+  table.plan td.teamcol { border-left: 4px solid var(--green); }
+  table.plan tbody tr:nth-child(even) td.teamcol { background: #F1F5F9; }
+  table.plan tr.archrow td.teamcol { border-left-color: #CBD5E1; }
+  table.plan tbody tr:hover td.teamcol { background: var(--green-tint); }
+  /* ===== chantier sur deux jours ===== */
+  .whenbtns { display: flex; gap: .5rem; margin-top: .3rem; }
+  .whenbtns button { font: inherit; font-size: .84rem; font-weight: 600; padding: .45rem .9rem; border-radius: 8px;
+                     border: 1px solid var(--line); background: #fff; cursor: pointer; color: var(--ink); }
+  .whenbtns button.on { border-color: var(--green); background: var(--green-tint); color: var(--green-dark); }
+  #pm-when[hidden] { display: none; }
+  .clo-table tr.grp td { background: #F1F5F9; padding: .55rem .6rem; border-top: 2px solid var(--line); }
+  .clo-table tr.grp .ib { margin-left: .6rem; }
+  .clo-table tr.grp .archtag { margin-left: .5rem; }
+  .lvempty { padding: 2.2rem 1rem; text-align: center; color: var(--muted); font-size: .9rem; }
+
+  /* installations proposées : 3 dates, client masqué jusqu'à la validation */
+  .offerinfo { margin-bottom: 1rem; }
+  .lockv { color: var(--faint); font-weight: 500; white-space: nowrap; }
+  .dchip { display: inline-block; margin-right: .35rem; padding: .16rem .5rem; border-radius: 6px; background: var(--blue-bg); border: 1px solid var(--blue-line); color: var(--blue); font-size: .8rem; font-weight: 600; }
+  b.trj.tg { color: var(--green-dark); } b.trj.to { color: #d97706; } b.trj.tf { color: var(--red); }
+  .datecards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; margin-top: .9rem; }
+  .datecard { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; background: var(--white); display: flex; flex-direction: column; gap: .6rem; }
+  .datecard .dc-day { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+  .datecard .dc-free { font-size: .84rem; color: var(--muted); }
+  .datecard .f { min-width: 0; }
+  .datecard select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+  .datecard .btn { margin-top: auto; }
+  .datecard.none { background: #F8FAFC; }
+  .datecard.none .dc-day { color: var(--muted); }
+  @media (max-width: 720px) { .datecards { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="mark">◆</span> ECONATURA</div>
+    <nav>
+      <button class="on" id="nav1" onclick="go('inicio')">Mes chantiers</button>
+      <button id="nav2" onclick="go('factura')">Ma facturation</button>
+    </nav>
+    <div class="who">Instalaciones Herrera S.L.</div>
+  </div>
+</div>
+<div class="rule"></div>
+
+<div class="wrap">
+  <div class="demo">⚠️ Maquette de démonstration — données d'exemple, aucune action n'est enregistrée.</div>
+
+  <!-- ====== ACCUEIL ====== -->
+  <section class="screen on" id="s-inicio">
+    <div class="head">
+      <h1>Bonjour Andrés</h1>
+      <p>Vos chantiers de pose de pompes à chaleur air/eau.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile tile2">
+        <span class="ico">🗓️</span>
+        <button class="tilerow" onclick="go('planifier')"><b><span id="t-inst">0</span> Installations proposées</b><span class="sub">3 dates au choix : le premier installateur qui valide obtient le chantier.</span></button>
+        <button class="tilerow" onclick="go('savplan')"><b><span id="t-sav">0</span> SAV à planifier</b><span class="sub">Appelez le client et placez le SAV dans le planning.</span></button>
+      </div>
+      <div class="tile tile2">
+        <span class="ico">🗓️</span>
+        <button class="tilerow" onclick="go('planning')"><b>Voir le planning →</b><span class="sub">Vos chantiers et SAV, semaine par semaine, par équipe.</span></button>
+        <button class="tilerow" onclick="openRecap(null, 0)"><b>Récap au camion</b><span class="sub">Feuille de route et matériel à charger, du jour ou de demain.</span></button>
+      </div>
+    </div>
+
+    <div class="kpis3">
+      <button class="kpi today" onclick="goFilter('today')">
+        <span class="kl">Dossiers du jour</span>
+        <span class="kn" id="k-today">0</span>
+        <span class="ks">chantiers et SAV d'aujourd'hui</span>
+      </button>
+      <button class="kpi late" onclick="goFilter('late')">
+        <span class="kl">Chantiers à clôturer</span>
+        <span class="kn" id="k-late">0</span>
+        <span class="ks">passés, non clôturés</span>
+      </button>
+      <button class="kpi sav" onclick="goFilter('sav')">
+        <span class="kl">SAV à venir</span>
+        <span class="kn" id="k-sav">0</span>
+        <span class="ks">SAV du jour et à venir</span>
+      </button>
+    </div>
+
+    <div class="tmhead">
+      <h2>Mon dépôt</h2>
+    </div>
+    <div class="panel" style="padding:1rem 1.1rem;">
+      <div class="grid2">
+        <div class="f"><label>Adresse du dépôt</label>
+          <input id="dep-adr" value="Polígono Industrial de Villaverde, nave 12" disabled>
+        </div>
+        <div class="f"><label>Province</label>
+          <select id="dep-prov" disabled></select>
+        </div>
+      </div>
+      <div class="depacts">
+        <p class="subp">C'est le point de départ utilisé pour calculer les temps de trajet dans le planning.</p>
+        <div class="depbtns">
+          <span class="depsaved" id="dep-saved">✓ Enregistré</span>
+          <button class="btn sm" id="dep-save" onclick="saveDepot()" disabled>Enregistrer</button>
+          <button class="btn ghost sm" id="dep-edit" onclick="editDepot()">Modifier</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tmhead">
+      <h2>Mes équipes d'installation</h2>
+      <div class="tmcount">
+        <span id="tm-n">4</span>
+        <span class="tmlab">équipes actives</span>
+        <button class="btn sm" onclick="teamPlus()">+ Ajouter une équipe</button>
+      </div>
+    </div>
+    <div class="panel" id="tm-panel"><div class="teamlist" id="tm-list"></div></div>
+    <p class="tmnote" id="tm-note" hidden></p>
+
+    <div class="tmhead">
+      <h2>Mes techniciens</h2>
+      <div class="tmcount">
+        <span id="tc-n">0</span>
+        <span class="tmlab">techniciens</span>
+        <input class="tcsearch" id="tc-q" placeholder="Rechercher par nom ou prénom…" oninput="renderTechs()">
+        <button class="btn sm" onclick="document.getElementById('tc-form').hidden = false; document.getElementById('tc-prenom').focus();">+ Ajouter un technicien</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="tcform" id="tc-form" hidden>
+        <div class="f"><label>Prénom</label><input id="tc-prenom" placeholder="Prénom" oninput="tcCheck()"></div>
+        <div class="f"><label>Nom</label><input id="tc-nom" placeholder="Nom" oninput="tcCheck()"></div>
+        <button class="btn sm" id="tc-ok" onclick="techPlus()" disabled>Enregistrer</button>
+        <button class="btn ghost sm" onclick="tcCancel()">Annuler</button>
+      </div>
+      <div class="dupwarn" id="tc-dup" hidden></div>
+      <table class="clo-table tctable" id="tc-list"></table>
+    </div>
+    <p class="subp" style="margin-top:.5rem;">Ces noms sont proposés à la clôture des chantiers. L'historique d'un technicien reprend toutes les interventions clôturées où il était présent.</p>
+  </section>
+
+  <!-- ====== INSTALLATIONS PROPOSÉES ====== -->
+  <section class="screen" id="s-planifier">
+    <button class="crumb" onclick="go('inicio')">← Retour</button>
+
+    <div class="lvhead">
+      <div>
+        <div class="lveyebrow">Installations</div>
+        <h1>Proposées</h1>
+      </div>
+      <div class="lvactions">
+        <button class="btn ghost sm" onclick="resetF('p')">Réinitialiser les filtres</button>
+        <button class="btn ghost sm" onclick="simTaken()" style="margin-left:.5rem;" title="Bouton de démonstration">Démo : un autre installateur valide</button>
+      </div>
+    </div>
+
+    <div class="prep offerinfo">ECONATURA a convenu de <b>3 dates possibles</b> avec chaque client. Validez celle qui vous convient : <b>le premier installateur qui valide obtient le chantier</b>, qui disparaît alors chez les autres. Le nom, le téléphone et l'adresse du client s'affichent dès que vous avez validé.</div>
+    <p class="tmnote" id="p-note" hidden></p>
+
+    <div class="panel lv">
+      <div class="lvbar">
+        <input class="lvsearch" id="p-q" type="search" placeholder="Rechercher une référence, une province…" oninput="renderP()">
+        <select id="p-prov" onchange="renderP()">
+          <option value="">Province : toutes</option>
+        </select>
+        <select id="p-age" onchange="renderP()">
+          <option value="">Ancienneté : toutes</option>
+          <option value="7">Proposé il y a moins de 7 jours</option>
+          <option value="14">Proposé il y a moins de 14 jours</option>
+          <option value="old">Proposé il y a plus de 14 jours</option>
+        </select>
+      </div>
+
+      <div class="lvwrap">
+        <table class="lvt">
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortP('ajout')">Proposé le <i></i></th>
+              <th>Référence</th>
+              <th>Client</th>
+              <th class="sortable" onclick="sortP('prov')">Province <i></i></th>
+              <th class="sortable" onclick="sortP('trajet')">Trajet dépôt <i></i></th>
+              <th>Matériel</th>
+              <th class="sortable grow" onclick="sortP('date')">3 dates proposées <i></i></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="p-body"></tbody>
+        </table>
+      </div>
+      <div class="lvempty" id="p-empty" hidden>Aucune installation ne correspond à ces filtres.</div>
+
+      <div class="lvfoot">
+        <div class="lvrange" id="p-range"></div>
+        <div class="lvpager">
+          <label>Afficher
+            <select id="p-size" onchange="pPage=1; renderP()">
+              <option value="26" selected>26</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            par page
+          </label>
+          <button class="pgbtn" id="p-prev" onclick="pPage--; renderP()">‹ Précédent</button>
+          <span class="pgnum" id="p-pg"></span>
+          <button class="pgbtn" id="p-next" onclick="pPage++; renderP()">Suivant ›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SAV À PLANIFIER ====== -->
+  <section class="screen" id="s-savplan">
+    <button class="crumb" onclick="go('inicio')">← Retour</button>
+
+    <div class="lvhead">
+      <div>
+        <div class="lveyebrow">SAV</div>
+        <h1>À planifier</h1>
+      </div>
+      <div class="lvactions">
+        <button class="btn ghost sm" onclick="resetF('sv')">Réinitialiser les filtres</button>
+        <button class="btn sm" onclick="openSvNew()" style="margin-left:.5rem;">+ Créer un SAV</button>
+      </div>
+    </div>
+
+    <div class="panel lv">
+      <div class="lvbar">
+        <input class="lvsearch" id="sv-q" type="search" placeholder="Rechercher un client, une ville…" oninput="renderSV()">
+        <select id="sv-appel" onchange="renderSV()">
+          <option value="">Tentatives d'appels : toutes</option>
+          <option value="0">Aucune tentative</option>
+          <option value="1">1 tentative</option>
+          <option value="2">2 tentatives</option>
+          <option value="3">3 tentatives</option>
+          <option value="4">4 tentatives</option>
+        </select>
+        <select id="sv-prov" onchange="renderSV()">
+          <option value="">Province : toutes</option>
+        </select>
+        <select id="sv-prio" onchange="renderSV()">
+          <option value="">Importance : toutes</option>
+          <option value="hi">Très élevée</option>
+          <option value="mid">Moyenne</option>
+        </select>
+      </div>
+
+      <div class="lvwrap">
+        <table class="lvt">
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortSV('ajout')">Créé le <i></i></th>
+              <th class="sortable" onclick="sortSV('nrp')">Tentatives d'appels <i></i></th>
+              <th class="sortable" onclick="sortSV('lastcall')">Dernière tentative <i></i></th>
+              <th class="sortable" onclick="sortSV('client')">Client <i></i></th>
+              <th>Téléphone</th>
+              <th class="sortable" onclick="sortSV('prov')">Province <i></i></th>
+              <th class="sortable" onclick="sortSV('prio')">Importance <i></i></th>
+              <th class="grow">Motif</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="sv-body"></tbody>
+        </table>
+      </div>
+      <div class="lvempty" id="sv-empty" hidden>Aucun SAV ne correspond à ces filtres.</div>
+
+      <div class="lvfoot">
+        <div class="lvrange" id="sv-range"></div>
+        <div class="lvpager"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CHOISIR UNE DES 3 DATES ====== -->
+  <section class="screen" id="s-fixer">
+    <button class="crumb" onclick="go('planifier')">← Retour aux installations proposées</button>
+    <div class="head">
+      <h1>Choisir ma date de pose</h1>
+    </div>
+
+    <div class="panel">
+      <div class="sec">
+        <h2>Le chantier</h2>
+        <dl class="kv" id="fi-kv"></dl>
+      </div>
+
+      <div class="sec">
+        <h2>Les 3 dates convenues avec le client</h2>
+        <p class="subp">La pose dure une journée. Choisissez l'équipe : pour chacune, le trajet est indiqué depuis le dépôt et depuis son chantier de la veille.</p>
+        <div class="datecards" id="fi-dates"></div>
+      </div>
+
+      <div class="sec">
+        <div class="prep">
+          <b>Une fois la date validée :</b>
+          <ul>
+            <li>le nom, le téléphone et l'adresse du client s'affichent ;</li>
+            <li>appelez-le pour vous présenter et confirmer votre heure d'arrivée ;</li>
+            <li>rappelez-lui qu'il faut un <b>accès dégagé</b> à la chaufferie et à l'unité extérieure, que l'<b>eau et l'électricité</b> seront coupées quelques heures, et qu'une <b>personne majeure</b> doit être présente pour signer le PV de réception.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>Aucune date ne vous convient ?</h2>
+        <p class="subp">Rendez le chantier : il reste proposé aux autres installateurs.</p>
+        <button class="btn ghost sm" style="margin-top:.7rem;" onclick="openGb(fixRef)">Rendre à ECONATURA</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== PLANNING ÉQUIPES ====== -->
+  <section class="screen" id="s-planning">
+    <button class="crumb" onclick="go('inicio')">← Retour</button>
+    <div class="lvhead">
+      <div>
+        <h1>Planning des équipes</h1>
+      </div>
+    </div>
+
+    <div class="assignbar" id="assignbar" hidden>
+      <div class="ab-txt"><b id="ab-who"></b><span id="ab-sub"></span></div>
+      <div class="ab-legend"><span class="lgd"><i style="background:var(--green)"></i> &lt; 1h30</span><span class="lgd"><i style="background:#f59e0b"></i> 1h30 – 3h</span><span class="lgd"><i style="background:var(--red)"></i> &gt; 3h</span></div>
+      <button class="btn ghost sm" onclick="cancelAssign()">Annuler</button>
+    </div>
+
+    <div class="wknav">
+      <span id="wk-ctrl"><button class="btn ghost sm" onclick="weekShift(-1)">‹ Semaine précédente</button>
+      <span class="wklabel" id="wk-label"></span>
+      <button class="btn ghost sm" onclick="weekShift(1)">Semaine suivante ›</button></span>
+      <span class="wklabel" id="wk-listlabel" hidden></span>
+      <div class="plfilters" id="plfilters">
+        <label class="chk"><input type="checkbox" id="pf-late" onchange="pfOnly(this)"> Non clôturés<span class="cnttxt" id="pf-late-n" hidden></span></label>
+        <label class="chk"><input type="checkbox" id="pf-sav" onchange="pfOnly(this)"> SAV à venir</label>
+        <label class="chk"><input type="checkbox" id="pf-today" onchange="pfOnly(this)"> Dossiers du jour</label>
+      </div>
+    </div>
+
+    <div class="panel lv">
+      <div class="plflash" id="plflash" hidden></div>
+      <div class="lvwrap">
+        <table class="plan" id="plan-table"></table>
+        <table class="clo-table" id="plan-list" hidden></table>
+        <div class="lvempty" id="plan-empty" hidden>Aucun dossier ne correspond à ce filtre.</div>
+      </div>
+      <div class="lvfoot" id="plan-foot">
+        <div class="lvrange">
+          <span class="lgd"><i class="c-wait"></i> À venir</span>
+          <span class="lgd"><i class="c-inst"></i> Clôturé</span>
+          <span class="lgd"><i class="c-sav"></i> SAV</span>
+          <span class="lgd"><i style="background:var(--red)"></i> Non clôturé</span>
+        </div>
+        <div class="lvpager"><span class="lgd"><i class="c-arch"></i> Équipe archivée</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- modale : création d'un SAV -->
+  <div class="modal" id="svmodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2>Créer un SAV</h2>
+        <p>Le SAV est créé dans votre portail et remonte automatiquement à ECONATURA (Salesforce).</p>
+      </div>
+      <div class="mdbody">
+        <div class="grid2">
+          <div class="f"><label>Client</label><input id="sn-client" placeholder="Nom et prénom" oninput="snCheck()"></div>
+          <div class="f"><label>Téléphone</label><input id="sn-tel" placeholder="+34 600 00 00 00" oninput="snCheck()"></div>
+        </div>
+        <div class="grid2" style="margin-top:.8rem;">
+          <div class="f"><label>Adresse</label><input id="sn-adr" placeholder="Rue et numéro" oninput="snCheck()"></div>
+          <div class="f"><label>Province</label><select id="sn-prov" onchange="snCheck()"></select></div>
+        </div>
+        <div class="f" style="margin-top:.8rem;"><label>Chantier d'origine (facultatif)</label>
+          <input id="sn-chantier" placeholder="CH-2026-0133 · posé le 12/09">
+        </div>
+        <div class="f" style="margin-top:.8rem;"><label>Motif du SAV</label>
+          <textarea id="sn-motif" rows="2" placeholder="Code défaut, panne constatée, réserve du client…" oninput="snCheck()"></textarea>
+        </div>
+        <div class="f" style="margin-top:.8rem;"><label>Importance</label>
+          <select id="sn-prio" onchange="snCheck()">
+            <option value="">— Choisir —</option>
+            <option value="hi">Très élevée</option>
+            <option value="mid">Moyenne</option>
+          </select>
+        </div>
+        <p class="subp" style="margin-top:.6rem;">L'importance est fixée à la création et ne peut plus être modifiée ensuite.</p>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closeSvNew()">Annuler</button>
+        <button class="btn" id="sn-ok" onclick="confirmSvNew()" disabled>Créer le SAV</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="recmodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2>Récap au camion</h2>
+        <p id="rc-sub"></p>
+      </div>
+      <div class="mdbody">
+        <div class="grid2">
+          <div class="f"><label>Équipe</label><select id="rc-team" onchange="recDraw()"></select></div>
+          <div class="f"><label>Journée</label><select id="rc-day" onchange="recDayChange()"><option value="0">Aujourd'hui</option><option value="1">Demain</option></select></div>
+        </div>
+        <div class="pm-lbl">Message à envoyer <span class="subp">(matériel à charger, ordre des chantiers, adresses, trajets)</span></div>
+        <div class="sms" id="rc-text"></div>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="document.getElementById('recmodal').hidden = true">Fermer</button>
+        <button class="btn ghost sm" onclick="shareRecap(this)">Partager</button>
+        <button class="btn" onclick="copyRecap(this)">Copier le récap</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="imodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2 id="im-title">Informations client</h2>
+        <p id="im-sub"></p>
+      </div>
+      <div class="mdbody">
+        <dl class="kv" id="im-kv"></dl>
+        <div class="sms" id="im-text" style="margin-top:1rem;"></div>
+      </div>
+      <div class="mdacts" id="im-acts"></div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closeInfo()">Fermer</button>
+        <button class="btn ghost sm" onclick="shareInfo(this)">Partager</button>
+        <button class="btn" onclick="copyInfo(this)">Copier les informations</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modale : confirmation du placement -->
+  <div class="modal" id="pmodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2>Confirmer la date de pose</h2>
+        <p id="pm-sub"></p>
+      </div>
+      <div class="mdbody">
+        <dl class="kv" id="pm-kv"></dl>
+        <div id="pm-when" hidden>
+          <div class="pm-lbl">Le SAV se place <span class="subp">(l'équipe a déjà une installation ce jour-là)</span></div>
+          <div class="whenbtns">
+            <button id="pm-wb" onclick="pmSavWhen('before')">Avant l'installation</button>
+            <button id="pm-wa" class="on" onclick="pmSavWhen('after')">Après l'installation</button>
+          </div>
+        </div>
+        <div class="pm-traj" id="pm-traj"></div>
+        <div class="pm-lbl" id="pm-msglbl">Message pour l'équipe <span class="subp">(à copier ou envoyer par WhatsApp)</span></div>
+        <div class="sms" id="pm-text"></div>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closePm()">Annuler</button>
+        <button class="btn ghost sm" id="pm-copy" onclick="copyPm(this)">Copier le message</button>
+        <button class="btn" id="pm-ok" onclick="confirmPm()">Valider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modale : historique d'une équipe -->
+  <div class="modal" id="hmodal" hidden>
+    <div class="mdbox" style="width:min(58rem,100%);">
+      <div class="mdhead">
+        <h2 id="hm-title">Historique</h2>
+        <p id="hm-sub"></p>
+      </div>
+      <div class="mdbody" style="max-height:60vh;overflow:auto;">
+        <table class="clo-table" id="hm-table"></table>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="document.getElementById('hmodal').hidden = true">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modale : clôture d'installation -->
+  <div class="modal" id="cmodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2 id="cm-title">Je clôture mon installation</h2>
+        <p id="cm-sub"></p>
+      </div>
+      <div class="mdbody">
+        <h3 class="sub">Techniciens présents dans le camion</h3>
+        <p class="subp">Choisissez-les parmi vos techniciens — l'information est reprise sur le PV de réception.</p>
+        <div id="cm-techs"></div>
+        <button class="btn ghost sm" onclick="addTech()" style="margin-top:.5rem;">+ Ajouter une ligne</button>
+        <div class="tcnew" id="cm-new" hidden>
+          <b>Nouveau technicien</b>
+          <div class="grid2" style="margin-top:.5rem;">
+            <div class="f"><label>Prénom</label><input id="cm-np" placeholder="Prénom" oninput="cmNewCheck()"></div>
+            <div class="f"><label>Nom</label><input id="cm-nn" placeholder="Nom" oninput="cmNewCheck()"></div>
+          </div>
+          <div class="dupwarn" id="cm-dup" hidden></div>
+          <div class="depbtns" style="margin-top:.6rem;">
+            <button class="btn ghost sm" onclick="cmNewCancel()">Annuler</button>
+            <button class="btn sm" id="cm-nok" onclick="cmNewSave(false)" disabled>Créer le technicien</button>
+          </div>
+        </div>
+
+        <hr class="mdsep">
+
+        <h3 class="sub">Photos de fin de chantier</h3>
+        <p class="subp">Unité extérieure, unité intérieure, ballon, raccordements, plaques signalétiques, PV signé.</p>
+        <label class="dropzone" for="cm-files">
+          <b>Importer des photos</b>
+          <span>Depuis l'appareil photo ou la galerie · JPG, PNG, PDF</span>
+          <input type="file" id="cm-files" multiple accept="image/*,.pdf" hidden onchange="addPhotos(this)">
+        </label>
+        <div class="thumbs" id="cm-thumbs"></div>
+
+        <hr class="mdsep">
+
+        <div class="f"><label>Commentaire (facultatif)</label>
+          <textarea id="cm-note" rows="2" placeholder="Réserve, point à signaler, matériel manquant…"></textarea>
+        </div>
+        <p class="subp" id="cm-warn" style="margin-top:.8rem;"></p>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closeCloture()">Annuler</button>
+        <button class="btn" id="cm-ok" onclick="confirmCloture()" disabled>Clôturer l'installation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- modale : replanifier -->
+  <div class="modal" id="rmodal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2>Replanifier l'intervention</h2>
+        <p id="rm-sub"></p>
+      </div>
+      <div class="mdbody">
+        <div class="qbox" id="rm-q" hidden>
+          <b>Le chantier a-t-il été commencé ?</b>
+          <div class="qbtns">
+            <button id="rm-q-non" onclick="rmBranch('non')">Non, pas commencé</button>
+            <button id="rm-q-oui" onclick="rmBranch('oui')">Oui, commencé</button>
+          </div>
+          <div id="rm-b-non" hidden style="margin-top:.9rem;">
+            <p class="subp">L'intervention passe en <b>Non réalisée</b> et une nouvelle intervention est créée. Indiquez le motif.</p>
+            <div class="f" style="max-width:26rem;margin-top:.5rem;">
+              <label>Motif</label>
+              <select id="rm-nr" onchange="rmCheck()">
+                <option value="">— Choisir un motif —</option>
+                <option>Client absent</option>
+                <option>Matériel manquant</option>
+                <option>Accès impossible</option>
+                <option>Équipe indisponible</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="f" id="rm-nrcomwrap" hidden style="max-width:36rem;margin-top:.6rem;">
+              <label>Précisez</label>
+              <textarea id="rm-nrcom" rows="2" oninput="rmCheck()"></textarea>
+            </div>
+          </div>
+          <div id="rm-b-oui" hidden style="margin-top:.9rem;">
+            <p class="subp">C'est une <b>reprise</b> : l'intervention passe en <b>Partiellement réalisée</b>, le chantier en « Reprise planifiée ». La clôture se fera sur la nouvelle intervention.</p>
+            <div class="f" style="max-width:36rem;margin-top:.5rem;">
+              <label>Ce qui a été fait / ce qui reste à faire <span style="color:var(--red)">*</span></label>
+              <textarea id="rm-part" rows="3" placeholder="Ex. : unité extérieure posée et raccordée, reste la mise en service et le ballon." oninput="rmCheck()"></textarea>
+            </div>
+          </div>
+        </div>
+        <div id="rm-datewrap">
+        <h3 class="sub" id="rm-datetitle">Nouvelle date</h3>
+        <div class="grid2" style="margin-top:.6rem;">
+          <div class="f"><label>Date</label><input type="date" id="rm-date"></div>
+          <div class="f"><label>Équipe</label><select id="rm-team"></select></div>
+        </div>
+        <p class="subp" id="rm-warn" style="margin-top:.9rem;"></p>
+        <div style="margin-top:1rem;"><button class="btn" id="rm-ok" onclick="confirmReplan()">Confirmer la nouvelle date</button></div>
+        </div>
+
+        <div id="rm-cancelwrap">
+        <hr class="mdsep">
+
+        <h3 class="sub">Ou annuler l'intervention</h3>
+        <p class="subp">Le dossier repart chez ECONATURA avec le motif indiqué. Il disparaît de votre planning.</p>
+        <div class="f" style="max-width:26rem;">
+          <label>Motif d'annulation</label>
+          <select id="rm-cancel" onchange="cancelChange()">
+            <option value="">— Choisir un motif —</option>
+            <option>Le client annule son projet</option>
+            <option>Le client est indisponible à cette période</option>
+            <option>Matériel non livré</option>
+            <option>Logement non conforme au relevé</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="f" id="rm-comwrap" hidden style="max-width:36rem;margin-top:.8rem;">
+          <label>Précisez le motif</label>
+          <textarea id="rm-com" rows="2" placeholder="Expliquez en quelques mots." oninput="cancelChange()"></textarea>
+        </div>
+        <button class="btn danger sm" id="rm-cancelok" style="margin-top:.9rem;" disabled onclick="confirmCancel()">Confirmer l'annulation</button>
+        </div>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closeReplan()">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== FACTURATION ====== -->
+  <section class="screen" id="s-factura">
+    <div class="fx-toggle">
+      <button id="fx-tab-enc" class="on" onclick="fxTab('enc')">🕓 En cours</button>
+      <button id="fx-tab-pay" onclick="fxTab('pay')">✓ Payées</button>
+    </div>
+
+    <div class="fx-head">
+      <div>
+        <h2 id="fx-title">Paiements en cours</h2>
+        <p id="fx-sub" class="subp"></p>
+      </div>
+      <button class="btn sm fx-refresh" onclick="fxRender()">Actualiser</button>
+    </div>
+
+    <div class="fx-filters">
+      <button class="fx-fhead" onclick="document.getElementById('fx-fbody').hidden = !document.getElementById('fx-fbody').hidden; this.querySelector('i').classList.toggle('open')"><i></i> Filtres de recherche</button>
+      <div class="fx-fbody" id="fx-fbody" hidden>
+        <div class="f"><label>N° Facture</label><input data-k="num" placeholder="N° Facture" oninput="fxRender()"></div>
+        <div class="f" id="fx-f-date"><label>Payé le</label><input data-k="paye" placeholder="Payé le" oninput="fxRender()"></div>
+        <div class="f"><label>Nom</label><input data-k="nom" placeholder="Nom" oninput="fxRender()"></div>
+        <div class="f"><label>Total TTC</label><input data-k="ttc" placeholder="Total TTC" oninput="fxRender()"></div>
+        <div class="f"><label>Date facture</label><input data-k="dfac" placeholder="Date facture" oninput="fxRender()"></div>
+        <div class="f"><label>Fiche</label><input data-k="fiche" placeholder="Fiche" oninput="fxRender()"></div>
+      </div>
+    </div>
+
+    <div class="fx-kpis" id="fx-kpis"></div>
+
+    <div class="fx-tablewrap">
+      <table class="fxt" id="fxt"></table>
+      <div class="fx-foot">
+        <span id="fx-count"></span>
+        <select class="fx-pp"><option>25 / page</option><option>50 / page</option><option>100 / page</option></select>
+        <div class="fx-pager"><button disabled>‹ Préc.</button><b>1 / 1</b><button disabled>Suiv. ›</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- modale : rendre à ECONATURA -->
+  <div class="modal" id="modal" hidden>
+    <div class="mdbox">
+      <div class="mdhead">
+        <h2>Rendre le chantier à ECONATURA</h2>
+        <p id="mdsub"></p>
+      </div>
+      <div class="mdbody">
+        <p class="subp">Indiquez le motif : le chantier reste proposé aux autres installateurs.</p>
+        <div class="f">
+          <label>Motif</label>
+          <select id="mdreason" onchange="mdChange()">
+            <option value="">— Choisir un motif —</option>
+            <option>Aucune des 3 dates ne me convient</option>
+            <option>Chantier trop éloigné de mon secteur</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="f" id="mdcomwrap" hidden style="margin-top:.9rem;">
+          <label>Précisez le motif</label>
+          <textarea id="mdcom" rows="3" placeholder="Expliquez en quelques mots pourquoi le chantier ne peut pas être réalisé." oninput="mdChange()"></textarea>
+        </div>
+      </div>
+      <div class="mdfoot">
+        <button class="btn ghost sm" onclick="closeGb()">Annuler</button>
+        <button class="btn" id="mdok" onclick="confirmGb()" disabled>Rendre le chantier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function go(id) {
+    var all = document.querySelectorAll('.screen');
+    for (var i = 0; i < all.length; i++) all[i].classList.remove('on');
+    document.getElementById('s-' + id).classList.add('on');
+    document.getElementById('nav1').className = (id === 'factura') ? '' : 'on';
+    document.getElementById('nav2').className = (id === 'factura') ? 'on' : '';
+    document.body.className = (id === 'planning') ? 'wide' : '';
+    if (id !== 'planning' && typeof assign !== 'undefined' && assign) {
+      assign = null; pm = null;
+      document.getElementById('assignbar').hidden = true;
+      document.getElementById('pmodal').hidden = true;
+      document.getElementById('plfilters').hidden = false;
+      renderPlanning();
+    }
+    window.scrollTo(0, 0);
+  }
+
+  /* ===== données + vues listes ===== */
+  var TODAY = new Date('2026-09-18T00:00:00');
+  /* n-ième jour ouvré après aujourd'hui */
+  function workDay(n) {
+    var d = new Date(TODAY.getTime()), k = 0;
+    while (k < n) { d.setDate(d.getDate() + 1); if (d.getDay() !== 0 && d.getDay() !== 6) k++; }
+    return ymd(d);
+  }
+  /* installations proposées : 3 dates convenues avec le client, nInst = nombre d'installateurs qui voient l'offre */
+  var DATA_P = [
+    { tel:'+34 600 11 22 33', ref:'CH-2026-0187', client:'María Robles',  adr:'Calle Mayor 14',     prov:'Palencia',   mat:'PAC + ballon', ajout:'2026-09-14', dates:[workDay(1), workDay(3), workDay(6)], nInst:3 },
+    { tel:'+34 610 44 55 66', ref:'CH-2026-0191', client:'Antonio Gil',   adr:'Av. Castilla 3',     prov:'Valladolid', mat:'PAC + ballon', ajout:'2026-09-16', dates:[workDay(2), workDay(4), workDay(7)], nInst:2 },
+    { tel:'+34 620 77 88 99', ref:'CH-2026-0179', client:'Carmen Ruiz',   adr:'Camino del Prado 8', prov:'Burgos',     mat:'PAC',          ajout:'2026-09-08', dates:[workDay(1), workDay(2), workDay(5)], nInst:4 },
+    { tel:'+34 630 12 34 56', ref:'CH-2026-0164', client:'Javier Ortega', adr:'Plaza del Sol 2',    prov:'Segovia',    mat:'PAC + ballon', ajout:'2026-09-05', dates:[workDay(3), workDay(5), workDay(8)], nInst:1 },
+    { tel:'+34 640 98 76 54', ref:'CH-2026-0158', client:'Rosa Delgado',  adr:'Av. Aragón 55',      prov:'Zaragoza',   mat:'PAC',          ajout:'2026-08-29', dates:[workDay(2), workDay(6), workDay(9)], nInst:3 },
+    { tel:'+34 650 23 45 67', ref:'CH-2026-0196', client:'Luis Herrero',  adr:'Calle Olmo 12',      prov:'León',       mat:'PAC + ballon', ajout:'2026-09-17', dates:[workDay(4), workDay(7), workDay(10)], nInst:2 }
+  ];
+  (function () {
+    var noms = ['Alba Sanz','Mateo Iglesias','Nuria Prieto','Iván Lozano','Clara Peña','Hugo Ramos','Marta Gallego','Sergio Bravo',
+                'Lucía Campos','Diego Ferrer','Eva Montero','Raúl Cano','Sofía Reyes','Álvaro Nieto','Irene Pardo','Óscar Lara',
+                'Nerea Solís','Pablo Vega','Teresa Rico','Adrián Mena','Silvia Cuesta','Jorge Arias','Paula Bueno','Iker Salas'];
+    var provs = ['Ávila','Burgos','Soria','León','Palencia','Teruel','Salamanca','Segovia','Cuenca','Valladolid','Lugo','Navarra',
+                 'Zamora','Guadalajara','Albacete','Huesca','Asturias','Lleida','Madrid','Girona','Ciudad Real','Toledo','Zaragoza','Ourense'];
+    for (var i = 0; i < noms.length; i++) {
+      var dd = ('0' + (1 + (i * 5) % 28)).slice(-2);
+      var d1 = 1 + i % 4, d2 = d1 + 2 + i % 2, d3 = d2 + 1 + i % 3;
+      DATA_P.push({
+        tel: '+34 6' + (10 + i) + ' ' + (10 + i) + ' ' + (20 + i) + ' ' + (30 + i),
+        ref: 'CH-2026-0' + (200 + i), client: noms[i], adr: 'Calle ' + (10 + i),
+        prov: provs[i % provs.length], mat: i % 2 ? 'PAC' : 'PAC + ballon',
+        ajout: '2026-08-' + dd, dates: [workDay(d1), workDay(d2), workDay(d3)], nInst: 1 + i % 4
+      });
+    }
+  })();
+
+  var DATA_S = [
+    { tel:'+34 601 11 22 33', ref:'CH-2026-0152', client:'Luis Marín',    adr:'Calle Olmo 21',   prov:'León',      date:'2026-09-18', team:1, statut:"Aujourd'hui" },
+    { tel:'+34 602 22 33 44', ref:'CH-2026-0138', client:'Pilar Núñez',   adr:'Calle Real 7',    prov:'Zamora',    date:'2026-09-11', team:1,  statut:'En attente PV' },
+    { tel:'+34 603 33 44 55', ref:'CH-2026-0141', client:'Rosa Delgado',  adr:'Av. Aragón 55',   prov:'Zaragoza',  date:'2026-09-15', team:1, statut:'En attente PV' },
+    { tel:'+34 600 11 22 33', ref:'CH-2026-0187', client:'María Robles',  adr:'Calle Mayor 14',  prov:'Palencia',  date:'2026-09-24', team:1, statut:'À venir' },
+    { tel:'+34 610 44 55 66', ref:'CH-2026-0191', client:'Antonio Gil',   adr:'Av. Castilla 3',  prov:'Valladolid',date:'2026-09-28', team:1, statut:'À venir' }
+  ];
+  (function () {
+    var noms = ['Alba Sanz','Mateo Iglesias','Nuria Prieto','Iván Lozano','Clara Peña','Hugo Ramos','Marta Gallego','Sergio Bravo',
+                'Lucía Campos','Diego Ferrer','Eva Montero','Raúl Cano','Sofía Reyes','Álvaro Nieto','Irene Pardo','Óscar Lara',
+                'Nerea Solís','Pablo Vega','Teresa Rico','Adrián Mena','Silvia Cuesta','Jorge Arias'];
+    var provs = ['Ávila','Burgos','Soria','León','Palencia','Teruel','Salamanca','Segovia','Cuenca','Valladolid','Lugo','Navarra',
+                 'Zamora','Guadalajara','Albacete','Huesca','Asturias','Lleida','Madrid','Girona','Ciudad Real','Toledo'];
+    for (var i = 0; i < noms.length; i++) {
+      var past = i % 3 === 0;
+      var dd = past ? ('0' + (2 + i % 14)).slice(-2) : ('0' + (20 + i % 10)).slice(-2);
+      DATA_S.push({
+        tel: '+34 6' + (60 + i) + ' ' + (10 + i) + ' ' + (20 + i) + ' ' + (30 + i),
+        ref: 'CH-2026-0' + (300 + i), client: noms[i], adr: 'Calle ' + (40 + i),
+        prov: provs[i % provs.length], date: '2026-09-' + dd, team: 1 + (i % 4),
+        statut: past ? 'En attente PV' : 'À venir'
+      });
+    }
+  })();
+
+  function fdate(d) { var p = d.split('-'); return p[2] + '/' + p[1]; }
+  function days(d) { return Math.round((TODAY - new Date(d + 'T00:00:00')) / 864e5); }
+  function statutPill(v) {
+    if (v === "Aujourd'hui") return '<span class="pill ok">Aujourd\'hui</span>';
+    if (v === 'En attente PV') return '<span class="pill new">En attente PV</span>';
+    if (v === 'Non réalisée') return '<span class="pill grey">Non réalisée</span>';
+    if (v === 'SAV clôturé') return '<span class="pill ok">SAV clôturé</span>';
+    if (v === 'Partiellement réalisée') return '<span class="pill new">Partiellement réalisée</span>';
+    if (v === 'Reprise planifiée') return '<span class="pill ok">Reprise planifiée</span>';
+    return '<span class="pill grey">À venir</span>';
+  }
+  function fillProv(id, data) {
+    var sel = document.getElementById(id), seen = {};
+    data.forEach(function (r) { seen[r.prov] = 1; });
+    Object.keys(seen).sort().forEach(function (v) {
+      var o = document.createElement('option'); o.textContent = v; sel.appendChild(o);
+    });
+  }
+  function applySort(rows, st, keyfn) {
+    if (!st.col) return rows;
+    return rows.slice().sort(function (a, b) {
+      var x = keyfn(a, st.col), y = keyfn(b, st.col);
+      return (x < y ? -1 : x > y ? 1 : 0) * (st.dir === 'desc' ? -1 : 1);
+    });
+  }
+  function markHeaders(section, st) {
+    var ths = document.querySelectorAll('#s-' + section + ' .lvt th');
+    for (var i = 0; i < ths.length; i++) { ths[i].classList.remove('asc', 'desc'); }
+    if (!st.col) return;
+    for (var j = 0; j < ths.length; j++) {
+      if ((ths[j].getAttribute('onclick') || '').indexOf("'" + st.col + "'") > -1) ths[j].classList.add(st.dir);
+    }
+  }
+
+  /* --- installations proposées --- */
+  var pPage = 1;
+  var sortStP = { col: 'date', dir: 'asc' };
+  function sortP(c) { sortStP.dir = (sortStP.col === c && sortStP.dir === 'asc') ? 'desc' : 'asc'; sortStP.col = c; pPage = 1; renderP(); }
+  var LOCK = '<span class="lockv">🔒 Masqué jusqu\'à la validation</span>';
+  var JLONG = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  function fjour(d, long) {
+    var x = new Date(d + 'T00:00:00');
+    return (long ? JLONG[x.getDay()] : JOURS[(x.getDay() + 6) % 7] + '.') + ' ' + fdate(d);
+  }
+
+  function rowP(r) {
+    var t = trajet(DEPOT.prov, r.prov);
+    return '<tr>' +
+      '<td class="dim">' + fdate(r.ajout) + '</td>' +
+      '<td>' + r.ref + '</td>' +
+      '<td><span class="lockv">🔒 Masqué</span></td>' +
+      '<td>' + r.prov + '</td>' +
+      '<td><b class="trj ' + tcls(t.min) + '">' + t.txt + '</b></td>' +
+      '<td class="dim">' + r.mat + '</td>' +
+      '<td>' + r.dates.map(function (d) { return '<span class="dchip">' + fjour(d) + '</span>'; }).join('') + '</td>' +
+      '<td class="act"><button class="btn ghost sm" onclick="openGb(\'' + r.ref + '\')">Rendre</button></td>' +
+      '<td class="act"><button class="btn sm" onclick="openFixer(\'' + r.ref + '\')">Choisir une date</button></td>' +
+      '</tr>';
+  }
+  function pNote(msg, ok) {
+    var el = document.getElementById('p-note');
+    el.textContent = msg;
+    el.className = 'tmnote' + (ok ? ' ok' : ' ko');
+    el.hidden = false;
+  }
+  /* démonstration : un autre installateur valide avant nous, le chantier disparaît de la liste */
+  function simTaken() {
+    var r = DATA_P.filter(function (x) { return x.nInst > 1; })[0];
+    if (!r) return;
+    DATA_P = DATA_P.filter(function (x) { return x !== r; });
+    renderP();
+    pNote(r.ref + ' (' + r.prov + ') vient d\'être validé par un autre installateur : il a été retiré de votre liste.', false);
+  }
+
+  /* ===== choisir une des 3 dates ===== */
+  var fixRef = null;
+  function findP(ref) { var r = null; DATA_P.forEach(function (x) { if (x.ref === ref) r = x; }); return r; }
+  function offerMat(r) {
+    return { pac: 'PAC air/eau 11 kW', ballon: r.mat.indexOf('ballon') >= 0 ? 'Ballon ECS 200 L intégré' : 'Sans ballon — ECS conservée' };
+  }
+  /* équipes actives sans installation ce jour-là, la plus proche d'abord */
+  function freeTeams(date, prov) {
+    var out = [];
+    for (var t = 1; t <= TEAMS.length; t++) {
+      if (!isActive(t) || PLAN.some(function (x) { return x.team === t && x.date === date && x.type === 'chantier'; })) continue;
+      var st = slotTimes(t, date, prov);
+      out.push({ team: t, st: st, best: st.veille ? Math.min(st.veille.min, st.depot.min) : st.depot.min });
+    }
+    return out.sort(function (a, b) { return (a.best - b.best) || (a.team - b.team); });
+  }
+  function openFixer(ref) {
+    var r = findP(ref); if (!r) return;
+    fixRef = ref;
+    var m = offerMat(r), tr = trajet(DEPOT.prov, r.prov);
+    document.getElementById('fi-kv').innerHTML =
+      '<dt>Référence</dt><dd>' + r.ref + '</dd>' +
+      '<dt>Client</dt><dd>' + LOCK + '</dd>' +
+      '<dt>Téléphone</dt><dd>' + LOCK + '</dd>' +
+      '<dt>Lieu</dt><dd>' + r.prov + ' · <b class="trj ' + tcls(tr.min) + '">' + tr.txt + '</b> depuis le dépôt · <span class="lockv">adresse exacte après validation</span></dd>' +
+      '<dt>Matériel</dt><dd>' + m.pac + ' · ' + m.ballon + ' · <a class="lk" href="#">Fiche technique</a></dd>' +
+      '<dt>Proposé à</dt><dd>' + (r.nInst > 1 ? r.nInst + ' installateurs — le premier qui valide obtient le chantier' : 'vous seul pour l\'instant') + '</dd>';
+    document.getElementById('fi-dates').innerHTML = r.dates.map(function (d, i) {
+      var free = freeTeams(d, r.prov);
+      if (!free.length) {
+        return '<div class="datecard none"><div class="dc-day">' + fjour(d, true) + '</div>' +
+          '<div class="dc-free">Aucune de vos équipes n\'est libre ce jour-là.</div></div>';
+      }
+      return '<div class="datecard"><div class="dc-day">' + fjour(d, true) + '</div>' +
+        '<div class="dc-free">' + free.length + ' équipe' + (free.length > 1 ? 's' : '') + ' libre' + (free.length > 1 ? 's' : '') + ' · à 08 h 30</div>' +
+        '<div class="f"><label>Équipe</label><select id="fi-team-' + i + '">' +
+        free.map(function (o) {
+          return '<option value="' + o.team + '">' + teamName(o.team) + ' — ' + o.st.depot.txt + ' du dépôt' +
+            (o.st.veille ? ' · ' + o.st.veille.txt + ' de la veille (' + o.st.prevVille + ')' : '') + '</option>';
+        }).join('') + '</select></div>' +
+        '<button class="btn" onclick="pickOffer(' + i + ')">Valider cette date</button></div>';
+    }).join('');
+    go('fixer');
+  }
+
+  function nowStamp() {
+    var d = new Date(), p = function (n) { return ('0' + n).slice(-2); };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function flast(m) {
+    var d = m.split(' ')[0], h = (m.split(' ')[1] || '').replace(':', ' h ');
+    var diff = Math.round((TODAY - new Date(d + 'T00:00:00')) / 864e5);
+    if (diff === 0) return "aujourd'hui " + h;
+    if (diff === 1) return 'hier ' + h;
+    return fdate(d) + ' · ' + h;
+  }
+  /* --- modale « rendre à ECONATURA » --- */
+  var gbRef = null;
+  function openGb(ref) {
+    var r = findP(ref); if (!r) return;
+    gbRef = ref;
+    document.getElementById('mdsub').textContent = r.ref + ' · ' + r.prov;
+    document.getElementById('mdreason').value = '';
+    document.getElementById('mdcom').value = '';
+    mdChange();
+    document.getElementById('modal').hidden = false;
+  }
+  function closeGb() { document.getElementById('modal').hidden = true; }
+  function mdChange() {
+    var sel = document.getElementById('mdreason');
+    var autre = sel.value === 'autre';
+    document.getElementById('mdcomwrap').hidden = !autre;
+    document.getElementById('mdok').disabled = !sel.value || (autre && document.getElementById('mdcom').value.trim().length < 3);
+  }
+  function confirmGb() {
+    if (document.getElementById('mdok').disabled) return;
+    var r = findP(gbRef);
+    DATA_P = DATA_P.filter(function (x) { return x.ref !== gbRef; });
+    closeGb();
+    go('planifier');
+    renderP();
+    if (r) pNote(r.ref + ' (' + r.prov + ') rendu à ECONATURA : il reste proposé aux autres installateurs.', true);
+  }
+
+  function renderP() {
+    var q = document.getElementById('p-q').value.toLowerCase().trim();
+    var fp = document.getElementById('p-prov').value;
+    var fa = document.getElementById('p-age').value;
+    var rows = DATA_P.filter(function (r) {
+      if (fp && r.prov !== fp) return false;
+      var dm = days(r.ajout);
+      if (fa === '7' && dm >= 7) return false;
+      if (fa === '14' && dm >= 14) return false;
+      if (fa === 'old' && dm <= 14) return false;
+      /* la recherche ne porte pas sur le client : il est masqué */
+      if (q && (r.ref + ' ' + r.prov).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    rows = applySort(rows, sortStP, function (r, c) {
+      if (c === 'trajet') return trajet(DEPOT.prov, r.prov).min;
+      if (c === 'date') return r.dates[0];
+      return c === 'ajout' ? r[c] : (r[c] || '').toLowerCase();
+    });
+
+    var size = parseInt(document.getElementById('p-size').value, 10);
+    var pages = Math.max(1, Math.ceil(rows.length / size));
+    if (pPage > pages) pPage = pages;
+    if (pPage < 1) pPage = 1;
+    var from = (pPage - 1) * size;
+    var page = rows.slice(from, from + size);
+
+    document.getElementById('p-body').innerHTML = page.map(rowP).join('');
+    document.getElementById('p-empty').hidden = rows.length > 0;
+    document.getElementById('p-range').textContent = rows.length
+      ? (from + 1) + '–' + (from + page.length) + ' sur ' + rows.length + ' élément' + (rows.length > 1 ? 's' : '')
+      : '0 élément';
+    document.getElementById('p-pg').textContent = 'Page ' + pPage + ' / ' + pages;
+    document.getElementById('p-prev').disabled = pPage <= 1;
+    document.getElementById('p-next').disabled = pPage >= pages;
+    markHeaders('planifier', sortStP);
+    renderHomeCounts();
+  }
+
+  function resetF(w) {
+    if (w === 'p') {
+      ['p-q', 'p-prov', 'p-age'].forEach(function (i) { document.getElementById(i).value = ''; });
+      renderP();
+    } else if (w === 'sv') {
+      ['sv-q', 'sv-appel', 'sv-prov', 'sv-prio'].forEach(function (i) { document.getElementById(i).value = ''; });
+      renderSV();
+    }
+  }
+
+  fillProv('p-prov', DATA_P);
+
+  /* --- SAV à planifier --- */
+  var DATA_SV = [
+    { ref:'SAV-2026-0041', client:'Elena Vidal',  tel:'+34 655 11 22 33', adr:'Calle Hoz 4',        prov:'Cuenca', motif:'Code défaut E5, ne chauffe plus', chantier:'CH-2026-0133 · posé le 12/09', nrp:0, lastcall:'', ajout:'2026-09-17', prio:'hi' },
+    { ref:'SAV-2026-0039', client:'Miguel Torres', tel:'+34 666 22 33 44', adr:'Av. Duques 21',      prov:'Soria',  motif:'Unité extérieure bruyante',       chantier:'CH-2026-0127 · posé le 09/09', nrp:2, lastcall:'2026-09-17 17:20', ajout:'2026-09-15', prio:'mid' },
+    { ref:'SAV-2026-0036', client:'Pilar Núñez',   tel:'+34 677 33 44 55', adr:'Calle Real 7',       prov:'Zamora', motif:'Purge du circuit à refaire',       chantier:'CH-2026-0138 · posé le 11/09', nrp:1, lastcall:'2026-09-16 12:05', ajout:'2026-09-14', prio:'mid' }
+  ];
+  var PRIOL = { hi: 'Très élevée', mid: 'Moyenne' };
+
+  /* ===== création d'un SAV (remonte à ECONATURA / Salesforce) ===== */
+  function openSvNew() {
+    ['sn-client', 'sn-tel', 'sn-adr', 'sn-motif'].forEach(function (i) { document.getElementById(i).value = ''; });
+    document.getElementById('sn-chantier').value = '';
+    document.getElementById('sn-prio').value = '';
+    var sel = document.getElementById('sn-prov');
+    if (!sel.options.length) {
+      Object.keys(COORD).sort().forEach(function (v) { var o = document.createElement('option'); o.textContent = v; sel.appendChild(o); });
+      sel.insertBefore(new Option('— Province —', ''), sel.firstChild);
+    }
+    sel.value = '';
+    snCheck();
+    document.getElementById('svmodal').hidden = false;
+  }
+  function closeSvNew() { document.getElementById('svmodal').hidden = true; }
+  function snCheck() {
+    var v = function (i) { return document.getElementById(i).value.trim(); };
+    document.getElementById('sn-ok').disabled =
+      !(v('sn-client') && v('sn-tel') && v('sn-adr') && v('sn-prov') && v('sn-motif') && v('sn-prio'));
+  }
+  function confirmSvNew() {
+    if (document.getElementById('sn-ok').disabled) return;
+    var v = function (i) { return document.getElementById(i).value.trim(); };
+    var n = 1;
+    DATA_SV.forEach(function (r) { var m = /SAV-\d{4}-(\d+)/.exec(r.ref); if (m) n = Math.max(n, parseInt(m[1], 10)); });
+    PLAN.forEach(function (r) { var m = /SAV-\d{4}-(\d+)/.exec(r.ref || ''); if (m) n = Math.max(n, parseInt(m[1], 10)); });
+    var ref = 'SAV-2026-' + ('000' + (n + 1)).slice(-4);
+    DATA_SV.push({ ref: ref, client: v('sn-client'), tel: v('sn-tel'), adr: v('sn-adr'), prov: v('sn-prov'),
+                   motif: v('sn-motif'), chantier: v('sn-chantier') || 'Non rattaché à un chantier',
+                   nrp: 0, lastcall: '', ajout: ymd(TODAY), prio: v('sn-prio') });
+    closeSvNew();
+    document.getElementById('sv-prio').value = '';
+    renderSV();
+    flash('SAV ' + ref + ' créé pour ' + v('sn-client') + ' — importance ' + PRIOL[v('sn-prio')].toLowerCase() + ', remonté à ECONATURA (Salesforce).', true);
+  }
+
+  var sortStSV = { col: 'prio', dir: 'asc' };
+  function sortSV(c) { sortStSV.dir = (sortStSV.col === c && sortStSV.dir === 'asc') ? 'desc' : 'asc'; sortStSV.col = c; renderSV(); }
+  function addTrySV(ref) {
+    DATA_SV.forEach(function (r) { if (r.ref === ref) { r.nrp = Math.min(4, (r.nrp || 0) + 1); r.lastcall = nowStamp(); } });
+    renderSV();
+  }
+  function renderSV() {
+    var q = document.getElementById('sv-q').value.toLowerCase().trim();
+    var fap = document.getElementById('sv-appel').value, fp = document.getElementById('sv-prov').value;
+    var fpr = document.getElementById('sv-prio').value;
+    var rows = DATA_SV.filter(function (r) {
+      if (fap !== '' && (r.nrp || 0) !== parseInt(fap, 10)) return false;
+      if (fp && r.prov !== fp) return false;
+      if (fpr && (r.prio || 'mid') !== fpr) return false;
+      if (q && (r.client + ' ' + r.ref + ' ' + r.prov + ' ' + r.adr + ' ' + r.motif).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    rows = applySort(rows, sortStSV, function (r, c) {
+      if (c === 'nrp') return r.nrp || 0;
+      if (c === 'lastcall') return r.lastcall || '';
+      if (c === 'prio') return (r.prio || 'mid') === 'hi' ? 0 : 1;
+      return c === 'ajout' ? r[c] : (r[c] || '').toLowerCase();
+    });
+    document.getElementById('sv-body').innerHTML = rows.map(function (r) {
+      var n = r.nrp || 0;
+      var badge = n ? '<span class="nrpb' + (n >= 4 ? ' full' : '') + '">Ne répond pas ×' + n + '</span>' : '<span class="nrpb zero">—</span>';
+      return '<tr>' +
+        '<td class="dim">' + fdate(r.ajout) + '</td>' +
+        '<td class="callcell">' + badge + (n >= 4 ? '' : '<button class="plus1" onclick="addTrySV(\'' + r.ref + '\')" title="Enregistrer une tentative">+1</button>') + '</td>' +
+        '<td class="dim">' + (r.lastcall ? flast(r.lastcall) : '—') + '</td>' +
+        '<td><span class="cli">' + r.client + '</span></td>' +
+        '<td><a class="lk" href="tel:' + r.tel.replace(/ /g, '') + '">' + r.tel + '</a></td>' +
+        '<td>' + r.prov + '</td>' +
+        '<td><span class="prtag ' + ((r.prio || 'mid') === 'hi' ? 'hi' : 'mid') + '">' + PRIOL[r.prio || 'mid'] + '</span></td>' +
+        '<td class="dim">' + r.motif + '</td>' +
+        '<td class="act"><button class="btn sm" onclick="startAssignSav(\'' + r.ref + '\')">Planifier</button></td>' +
+        '</tr>';
+    }).join('');
+    document.getElementById('sv-empty').hidden = rows.length > 0;
+    document.getElementById('sv-range').textContent = rows.length ? rows.length + ' SAV à planifier' : '0 SAV';
+    markHeaders('savplan', sortStSV);
+    renderHomeCounts();
+  }
+  function renderHomeCounts() {
+    document.getElementById('t-inst').textContent = DATA_P.length;
+    document.getElementById('t-sav').textContent = DATA_SV.length;
+  }
+  fillProv('sv-prov', DATA_SV);
+
+  /* ===== dépôt & temps de trajet ===== */
+  var COORD = {
+    'Ávila':[40.66,-4.70],'Burgos':[42.34,-3.70],'Soria':[41.76,-2.47],'León':[42.60,-5.57],
+    'Palencia':[42.01,-4.53],'Teruel':[40.34,-1.11],'Salamanca':[40.97,-5.66],'Segovia':[40.95,-4.12],
+    'Cuenca':[40.07,-2.13],'Valladolid':[41.65,-4.72],'Lugo':[43.01,-7.56],'Navarra':[42.81,-1.64],
+    'Zamora':[41.50,-5.75],'Guadalajara':[40.63,-3.16],'Albacete':[38.99,-1.86],'Huesca':[42.14,-0.41],
+    'Asturias':[43.36,-5.85],'Lleida':[41.61,0.62],'Madrid':[40.42,-3.70],'Girona':[41.98,2.82],
+    'Ciudad Real':[38.99,-3.93],'Toledo':[39.86,-4.02],'Zaragoza':[41.65,-0.89],'Ourense':[42.34,-7.86]
+  };
+  var DEPOT = { adr: 'Polígono Industrial de Villaverde, nave 12', prov: 'Madrid' };
+  function fillDepotProv() {
+    var sel = document.getElementById('dep-prov');
+    if (!sel) return;
+    sel.innerHTML = '';
+    Object.keys(COORD).sort().forEach(function (v) {
+      var o = document.createElement('option');
+      o.textContent = v;
+      if (v === DEPOT.prov) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+  function editDepot() {
+    document.getElementById('dep-adr').disabled = false;
+    document.getElementById('dep-prov').disabled = false;
+    document.getElementById('dep-save').disabled = false;
+    document.getElementById('dep-edit').hidden = true;
+    document.getElementById('dep-saved').hidden = true;
+    document.getElementById('dep-adr').focus();
+  }
+  function saveDepot() {
+    DEPOT.adr = document.getElementById('dep-adr').value;
+    DEPOT.prov = document.getElementById('dep-prov').value;
+    document.getElementById('dep-adr').disabled = true;
+    document.getElementById('dep-prov').disabled = true;
+    document.getElementById('dep-save').disabled = true;
+    document.getElementById('dep-edit').hidden = false;
+    document.getElementById('dep-saved').hidden = false;
+    renderPlanning(); renderP();
+  }
+  function tcls(m) { return m < 90 ? 'tg' : (m <= 180 ? 'to' : 'tf'); }
+  function km(a, b) {
+    var A = COORD[a], B = COORD[b];
+    if (!A || !B) return null;
+    var R = 6371, dLa = (B[0]-A[0]) * Math.PI/180, dLo = (B[1]-A[1]) * Math.PI/180;
+    var x = Math.sin(dLa/2)*Math.sin(dLa/2) +
+            Math.cos(A[0]*Math.PI/180)*Math.cos(B[0]*Math.PI/180)*Math.sin(dLo/2)*Math.sin(dLo/2);
+    return Math.round(2 * R * Math.atan2(Math.sqrt(x), Math.sqrt(1-x)));
+  }
+  function trajet(from, to) {
+    var d = km(from, to);
+    if (d === null) return null;
+    var min = Math.round((d / 75 * 60 + 8) / 5) * 5;
+    return { km: d, min: min, txt: (min >= 60 ? Math.floor(min/60) + 'h' + ('0' + (min%60)).slice(-2) : min + ' min') };
+  }
+
+  /* ===== placement d'un SAV dans le planning ===== */
+  var assign = null;
+  function startAssignSav(ref) {
+    var r = null; DATA_SV.forEach(function (x) { if (x.ref === ref) r = x; });
+    if (!r) return;
+    assign = { ref: r.ref, client: r.client, adr: r.adr, prov: r.prov, tel: r.tel, motif: r.motif, chantier: r.chantier, prio: r.prio || 'mid' };
+    document.getElementById('ab-who').textContent = 'SAV à placer : ' + assign.client + ' · ' + assign.adr + ', ' + assign.prov + ' · importance ' + PRIOL[assign.prio].toLowerCase();
+    document.getElementById('ab-sub').textContent = assign.prio === 'hi'
+      ? 'Importance très élevée : à placer au plus tôt. Cliquez sur un jour.'
+      : 'Cliquez sur un jour : après le chantier de l\'équipe si elle en a un, sinon depuis le dépôt.';
+    document.getElementById('assignbar').hidden = false;
+    ['pf-late', 'pf-sav', 'pf-today'].forEach(function (k) { document.getElementById(k).checked = false; });
+    document.getElementById('plfilters').hidden = true;
+    if (WK < mondayOf(TODAY)) WK = mondayOf(TODAY);
+    go('planning');
+    renderPlanning();
+  }
+  function cancelAssign() {
+    assign = null;
+    document.getElementById('assignbar').hidden = true;
+    document.getElementById('plfilters').hidden = false;
+    renderPlanning();
+  }
+  /* pm = placement en attente de confirmation : un SAV (assign) ou une installation proposée (pm.offer) */
+  var pm = null;
+  function pmMode(isOffer) {
+    document.querySelector('#pmodal h2').textContent = isOffer ? 'Valider cette date de pose' : 'Confirmer le SAV';
+    document.getElementById('pm-msglbl').hidden = isOffer;
+    document.getElementById('pm-text').hidden = isOffer;
+    document.getElementById('pm-copy').hidden = isOffer;
+    document.getElementById('pm-ok').textContent = isOffer ? 'Valider et obtenir le chantier' : 'Valider la date, l\'heure et l\'équipe';
+  }
+  function placeAssign(team, date) {
+    if (!assign) return;
+    var ch = PLAN.filter(function (x) { return x.type === 'chantier' && x.team === team && x.date === date; })[0];
+    pm = { team: team, date: date, ch: ch || null, when: 'after' };
+    pmMode(false);
+    document.getElementById('pm-when').hidden = !ch;
+    document.getElementById('pm-wb').className = '';
+    document.getElementById('pm-wa').className = 'on';
+    pmSavDraw();
+    document.getElementById('pmodal').hidden = false;
+  }
+  function pickOffer(i) {
+    var r = findP(fixRef); if (!r) return;
+    var team = parseInt(document.getElementById('fi-team-' + i).value, 10);
+    if (!team) return;
+    pm = { offer: r, team: team, date: r.dates[i] };
+    var m = offerMat(r), t = slotTimes(team, pm.date, r.prov);
+    pmMode(true);
+    document.getElementById('pm-when').hidden = true;
+    document.getElementById('pm-sub').textContent = r.ref + ' · ' + r.prov;
+    document.getElementById('pm-kv').innerHTML =
+      '<dt>Date de pose</dt><dd><b>' + fjour(pm.date, true) + ' à 08 h 30</b></dd>' +
+      '<dt>Durée</dt><dd><b>1 journée</b></dd>' +
+      '<dt>Équipe</dt><dd><b>' + teamName(team) + '</b></dd>' +
+      '<dt>Client</dt><dd>' + LOCK + '</dd>' +
+      '<dt>Téléphone</dt><dd>' + LOCK + '</dd>' +
+      '<dt>Lieu</dt><dd>' + r.prov + '</dd>' +
+      '<dt>Pompe à chaleur</dt><dd>' + m.pac + '</dd>' +
+      '<dt>Ballon</dt><dd>' + m.ballon + '</dd>';
+    document.getElementById('pm-traj').innerHTML =
+      '<span><b class="' + tcls(t.depot.min) + '">' + t.depot.txt + '</b> depuis le dépôt</span>' +
+      (t.veille ? '<span><b class="' + tcls(t.veille.min) + '">' + t.veille.txt + '</b> depuis le ' + (t.prevType === 'sav' ? 'SAV' : 'chantier') + ' de la veille (' + t.prevVille + ')</span>'
+                : '<span>Veille vide – calcul depuis le dépôt</span>');
+    document.getElementById('pmodal').hidden = false;
+  }
+  function pmSavWhen(v) {
+    pm.when = v;
+    document.getElementById('pm-wb').className = v === 'before' ? 'on' : '';
+    document.getElementById('pm-wa').className = v === 'after' ? 'on' : '';
+    pmSavDraw();
+  }
+  function pmSavDraw() {
+    var ch = pm.ch, before = pm.when === 'before';
+    pm.heure = ch ? (before ? '07 h 00' : '17 h 00') : '08 h 30';
+    var quand = ch ? (before ? ' (avant l\'installation de ' + ch.client + ')' : ' (après l\'installation de ' + ch.client + ')') : '';
+    document.getElementById('pm-sub').textContent = assign.ref + ' · ' + assign.client + ' · ' + assign.adr + ', ' + assign.prov;
+    document.getElementById('pm-kv').innerHTML =
+      '<dt>Date du SAV</dt><dd><b>' + fdate(pm.date) + ' à ' + pm.heure + quand + '</b></dd>' +
+      '<dt>Équipe</dt><dd><b>' + teamName(pm.team) + '</b></dd>' +
+      '<dt>Client</dt><dd>' + assign.client + '</dd>' +
+      '<dt>Téléphone</dt><dd>' + assign.tel + '</dd>' +
+      '<dt>Adresse</dt><dd>' + assign.adr + ', ' + assign.prov + '</dd>' +
+      '<dt>Motif</dt><dd>' + assign.motif + '</dd>' +
+      '<dt>Importance</dt><dd><span class="prtag ' + (assign.prio === 'hi' ? 'hi' : 'mid') + '">' + PRIOL[assign.prio || 'mid'] + '</span></dd>' +
+      '<dt>Chantier d\'origine</dt><dd>' + assign.chantier + '</dd>';
+    var tr = (ch && !before) ? trajet(ch.prov, assign.prov) : trajet(DEPOT.prov, assign.prov);
+    document.getElementById('pm-traj').innerHTML =
+      '<span><b class="' + tcls(tr.min) + '">' + tr.txt + '</b> ' +
+      ((ch && !before) ? 'depuis l\'installation du jour (' + ch.prov + ')' : 'depuis le dépôt') + '</span>' +
+      (ch && before ? '<span><b class="' + tcls(trajet(assign.prov, ch.prov).min) + '">' + trajet(assign.prov, ch.prov).txt + '</b> du SAV vers l\'installation</span>' : '');
+    document.getElementById('pm-text').innerText =
+      'SAV – ' + teamName(pm.team) + '\n' + 'Date : ' + fdate(pm.date) + ' à ' + pm.heure + quand + '\n' +
+      'Client : ' + assign.client + ' – ' + assign.tel + '\n' + 'Adresse : ' + assign.adr + ', ' + assign.prov + '\n' +
+      'Motif : ' + assign.motif + '\n' + 'Importance : ' + PRIOL[assign.prio || 'mid'] + '\n' +
+      'Chantier : ' + assign.chantier + '\n' + 'Réf. ' + assign.ref;
+  }
+  function copyPm(btn) {
+    var t = document.getElementById('pm-text').innerText;
+    if (navigator.clipboard) navigator.clipboard.writeText(t);
+    var old = btn.textContent; btn.textContent = '✓ Copié';
+    setTimeout(function () { btn.textContent = old; }, 1400);
+  }
+  function closePm() { document.getElementById('pmodal').hidden = true; pm = null; }
+  function confirmPm() {
+    if (pm.offer) {
+      /* installation obtenue : elle entre au planning et les coordonnées du client deviennent visibles */
+      var r = pm.offer, m = offerMat(r), id = 'A' + Date.now(), date = pm.date, team = pm.team;
+      PLAN.push({ id: id, type: 'chantier', ref: r.ref, client: r.client, tel: r.tel, adr: r.adr, prov: r.prov,
+                  date: date, team: team, statut: 'À venir', heure: '08 h 30',
+                  mat: m.pac, ballon: m.ballon, compteur: 'Monophasé', bizone: 'Non' });
+      DATA_P = DATA_P.filter(function (x) { return x !== r; });
+      pm = null; fixRef = null;
+      document.getElementById('pmodal').hidden = true;
+      ['pf-late', 'pf-sav', 'pf-today'].forEach(function (k) { document.getElementById(k).checked = false; });
+      WK = mondayOf(new Date(date + 'T00:00:00'));
+      go('planning');
+      renderPlanning(); renderClo(); renderP();
+      flash('Chantier obtenu : ' + r.client + ' le ' + fdate(date) + ' · ' + teamName(team) + '. Appelez le client pour confirmer votre heure d\'arrivée.', true);
+      openInfo(id);
+      document.getElementById('im-title').textContent = 'Chantier obtenu — coordonnées du client';
+      return;
+    }
+    PLAN.push({ id: 'A' + Date.now(), type: 'sav', ref: assign.ref, client: assign.client, tel: assign.tel,
+                adr: assign.adr, prov: assign.prov, date: pm.date, team: pm.team, heure: pm.heure, motif: assign.motif, prio: assign.prio || 'mid' });
+    DATA_SV = DATA_SV.filter(function (x) { return x.ref !== assign.ref; });
+    var msg = 'SAV placé le ' + fdate(pm.date) + ' à ' + pm.heure + ' · ' + teamName(pm.team) + '.';
+    assign = null; pm = null;
+    document.getElementById('pmodal').hidden = true;
+    document.getElementById('assignbar').hidden = true;
+    document.getElementById('plfilters').hidden = false;
+    renderPlanning(); renderClo(); renderSV();
+    flash(msg, true);
+  }
+  function slotTimes(team, date, prov) {
+    var d = new Date(date + 'T00:00:00');
+    var prevKey = ymd(new Date(d.getTime() - 864e5));
+    var prev = PLAN.filter(function (x) { return x.team === team && x.date === prevKey; })
+      .sort(function (a, b) { return a.heure < b.heure ? 1 : -1; })[0];
+    var isMonday = d.getDay() === 1;
+    return {
+      depot: trajet(DEPOT.prov, prov),
+      veille: (prev && !isMonday) ? trajet(prev.prov, prov) : null,
+      prevVille: prev ? prev.prov : null,
+      prevType: prev ? prev.type : null
+    };
+  }
+
+
+  /* ===== facturation ===== */
+  var FICHE = 'RES060 – PAC Individuelle';
+  var FX_ENC = [
+    { statut: 'Att. facture', prev: 'En Att', nom: 'Ana Sáez',     ht: 1850, ech: "À l'installation" },
+    { statut: 'Att. facture', prev: 'En Att', nom: 'Miguel Torres', ht: 1850, ech: "À l'installation" },
+    { statut: 'Att. facture', prev: 'En Att', nom: 'Elena Vidal',  ht: 2300, ech: 'Au solde CAE' },
+    { num: '68', prev: '15/10/2026', dfac: '15/09/2026', nom: 'Pilar Núñez', ht: 1850, ech: "À l'installation" },
+    { num: '68', prev: '15/10/2026', dfac: '15/09/2026', nom: 'Rosa Delgado', ht: 1850, ech: "À l'installation" }
+  ];
+  var FX_PAY = [
+    { num: '67', paye: '18/09/2026', dfac: '18/09/2026', lignes: [
+      { nom: 'Christine Noir Barret', ht: 1850, ech: "À l'installation" },
+      { nom: 'Jason Sainreau',        ht: 1850, ech: "À l'installation" },
+      { nom: 'Mebarek Aouragh',       ht: 2300, ech: 'Au solde CAE' },
+      { nom: 'Najibullah Amani',      ht: 1850, ech: "À l'installation" },
+      { nom: 'Pierre Bou-Mechrek',    ht: 1750, ech: "À l'installation" },
+      { nom: 'Stephane Fawal',        ht: 2300, ech: 'Au solde CAE' } ] },
+    { num: '61', paye: '19/06/2026', dfac: '15/06/2026', lignes: [
+      { nom: 'Samira Bouzidi',              ht: 1850, ech: "À l'installation" },
+      { nom: 'Mebarek Aouragh',             ht: 500,  ech: "À l'installation" },
+      { nom: 'Emmanuelle Lopes de Oliveira', ht: 1850, ech: "À l'installation" },
+      { nom: 'Stephane Fawal',              ht: 1850, ech: "À l'installation" } ] }
+  ];
+  var fxMode = 'enc';
+  function eur(n) { return n.toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + '\u00a0€'; }
+  function fxTab(m) {
+    fxMode = m;
+    document.getElementById('fx-tab-enc').className = m === 'enc' ? 'on' : '';
+    document.getElementById('fx-tab-pay').className = m === 'pay' ? 'on' : '';
+    document.getElementById('fx-title').textContent = m === 'enc' ? 'Paiements en cours' : 'Factures payées';
+    document.getElementById('fx-sub').textContent = m === 'enc' ? '' : 'Historique des règlements reçus';
+    document.querySelector('#fx-f-date label').textContent = m === 'enc' ? 'Paiement prévu' : 'Payé le';
+    document.querySelector('#fx-f-date input').placeholder = m === 'enc' ? 'Paiement prévu' : 'Payé le';
+    fxRender();
+  }
+  function fxFilters() {
+    var f = {};
+    document.querySelectorAll('#fx-fbody input').forEach(function (i) { if (i.value.trim()) f[i.dataset.k] = i.value.trim().toLowerCase(); });
+    return f;
+  }
+  function fxMatch(o, f) {
+    for (var k in f) { if (String(o[k] || '').toLowerCase().indexOf(f[k]) < 0) return false; }
+    return true;
+  }
+  function fxRender() {
+    var f = fxFilters(), t = document.getElementById('fxt'), k = document.getElementById('fx-kpis'), h = '';
+    var th = '<tr><th><b>N° Facture</b> ⇅</th><th><b>' + (fxMode === 'enc' ? 'Paiement prévu' : 'Payé le') + '</b> ⇅</th><th><b>Nom</b> ⇅</th><th>Montant HT ⇅</th><th><b>Total TTC</b> ⇅</th><th><b>Date facture</b> ⇅</th><th>Échéance ⇅</th><th>Fiche ⇅</th></tr>';
+    if (fxMode === 'enc') {
+      var pret = 0, nPret = 0, apayer = 0, nFac = {};
+      var rows = FX_ENC.map(function (r) {
+        var ttc = r.num ? Math.round(FX_ENC.filter(function (x) { return x.num === r.num; }).reduce(function (a, x) { return a + x.ht; }, 0) * 1.21) : null;
+        return Object.assign({}, r, { fiche: FICHE, ttc: ttc === null ? '' : eur(ttc), num: r.num || 'Att. facture' });
+      }).filter(function (r) { return fxMatch(r, f); });
+      rows.forEach(function (r) {
+        if (r.num === 'Att. facture') { pret += r.ht; nPret++; }
+        else if (!nFac[r.num]) { nFac[r.num] = true; apayer += parseFloat(r.ttc.replace(/[^\d,]/g, '').replace(',', '.')); }
+        h += '<tr class="' + (r.num === 'Att. facture' ? 'enc' : 'fac') + '">' +
+          '<td>' + (r.num === 'Att. facture' ? '<span class="clk">🕓</span> Att. facture' : '<b>' + r.num + '</b>') + '</td>' +
+          '<td>' + (r.prev === 'En Att' ? '<span class="clk">🕓</span> En Att' : r.prev) + '</td>' +
+          '<td class="nom">' + r.nom + '</td><td class="num">' + eur(r.ht) + '</td>' +
+          '<td>' + (r.ttc || '—') + '</td><td>' + (r.dfac || '—') + '</td>' +
+          '<td>' + r.ech + '</td><td><span class="fiche">' + r.fiche + '</span></td></tr>';
+      });
+      k.innerHTML = '<div class="fx-kpi orange"><div class="lb">Prêt à facturer</div><div class="val">' + eur(pret) + '</div><div class="sm">' + nPret + ' ligne(s) affichée(s)</div></div>' +
+        '<div class="fx-kpi blue"><div class="lb">À payer</div><div class="val">' + eur(apayer) + '</div><div class="sm">' + Object.keys(nFac).length + ' facture(s) affichée(s)</div></div>';
+      document.getElementById('fx-count').textContent = '1–' + rows.length + ' sur ' + rows.length + ' ligne(s)';
+    } else {
+      var tot = 0, nf = 0;
+      FX_PAY.forEach(function (fa) {
+        var ttc = Math.round(fa.lignes.reduce(function (a, x) { return a + x.ht; }, 0) * 1.21);
+        var flat = { num: fa.num, paye: fa.paye, dfac: fa.dfac, ttc: eur(ttc), nom: fa.lignes.map(function (l) { return l.nom; }).join(' '), fiche: FICHE };
+        if (!fxMatch(flat, f)) return;
+        tot += ttc; nf++;
+        var n = fa.lignes.length;
+        fa.lignes.forEach(function (l, i) {
+          h += '<tr>' + (i === 0 ? '<td class="grp" rowspan="' + n + '">' + fa.num + '</td><td class="grp" rowspan="' + n + '">' + fa.paye + '</td>' : '') +
+            '<td class="nom">' + l.nom + '</td><td class="num">' + eur(l.ht) + '</td>' +
+            (i === 0 ? '<td rowspan="' + n + '">' + eur(ttc) + '</td><td rowspan="' + n + '">' + fa.dfac + '</td>' : '') +
+            '<td>' + l.ech + '</td><td><span class="fiche">' + FICHE + '</span></td></tr>';
+        });
+      });
+      k.innerHTML = '<div class="fx-kpi green" style="grid-column:1/-1"><div class="lb">Payé</div><div class="val">' + eur(tot) + '</div><div class="sm">' + nf + ' facture(s) affichée(s)</div></div>';
+      document.getElementById('fx-count').textContent = '1–' + nf + ' sur ' + nf + ' facture(s)';
+    }
+    t.innerHTML = th + h;
+  }
+
+
+  /* ===== techniciens ===== */
+  var TECHS = ['Carlos Herrera', 'Javier Ruiz', 'Andrés Molina', 'Sergio Navarro', 'Pablo Ortega', 'Iván Castro',
+               'Marcos León', 'Raúl Serrano', 'David Blanco', 'Alberto Gil', 'Rubén Vargas', 'Óscar Peña',
+               'Jorge Campos', 'Mario Delgado', 'Adrián Ramos', 'Luis Iglesias', 'Diego Prieto', 'Hugo Sanz',
+               'Álvaro Cano', 'Víctor Reyes'];
+  function techsOf(team) { return [TECHS[(team * 2 - 2) % TECHS.length], TECHS[(team * 2 - 1) % TECHS.length]]; }
+  function techJobs(name) {
+    return PLAN.filter(function (r) { return r.cloture && r.cloture.techs && r.cloture.techs.indexOf(name) >= 0; })
+               .sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  }
+  var TECH_OFF = {};
+  var tcSort = { col: 'poses', dir: 'desc' };
+  function tcSortBy(c) {
+    if (tcSort.col === c) tcSort.dir = tcSort.dir === 'desc' ? 'asc' : 'desc';
+    else { tcSort.col = c; tcSort.dir = (c === 'name') ? 'asc' : 'desc'; }
+    renderTechs();
+  }
+  function renderTechs() {
+    var active = TECHS.filter(function (t) { return !TECH_OFF[t]; });
+    document.getElementById('tc-n').textContent = active.length;
+    var q = (document.getElementById('tc-q').value || '').trim().toLowerCase();
+    var norm = function (x) { return x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+    var rows = TECHS.map(function (t, i) {
+      var jobs = techJobs(t);
+      return { t: t, i: i, jobs: jobs, poses: jobs.filter(function (x) { return x.type === 'chantier'; }).length,
+               sav: jobs.filter(function (x) { return x.type === 'sav'; }).length, off: !!TECH_OFF[t],
+               last: jobs.length ? jobs[0].date : '' };
+    }).filter(function (o) { return !q || norm(o.t).indexOf(norm(q)) >= 0; });
+    var dir = tcSort.dir === 'desc' ? -1 : 1, col = tcSort.col;
+    rows.sort(function (a, b) {
+      if (a.off !== b.off) return a.off - b.off;
+      var va = col === 'name' ? a.t : (col === 'last' ? a.last : a[col]), vb = col === 'name' ? b.t : (col === 'last' ? b.last : b[col]);
+      if (va < vb) return -dir; if (va > vb) return dir;
+      return b.poses - a.poses || a.t.localeCompare(b.t);
+    });
+    var th = function (c, label) {
+      var on = tcSort.col === c;
+      return '<th class="sortable' + (on ? ' on' : '') + '" onclick="tcSortBy(\'' + c + '\')">' + label + ' <i>' + (on ? (tcSort.dir === 'desc' ? '▼' : '▲') : '⇅') + '</i></th>';
+    };
+    var h = '<tr>' + th('name', 'Technicien') + th('poses', 'Poses') + th('sav', 'SAV') + th('last', 'Dernière intervention') + '<th>Statut</th><th></th></tr>';
+    rows.forEach(function (o) {
+      h += '<tr' + (o.off ? ' class="off"' : '') + '>' +
+        '<td><input class="teamname" value="' + o.t + '" onchange="renameTech(' + o.i + ', this.value)"' + (o.off ? ' disabled' : '') + '></td>' +
+        '<td class="n">' + o.poses + '</td><td class="n">' + o.sav + '</td>' +
+        '<td>' + (o.last ? fdate(o.last) : '—') + '</td>' +
+        '<td>' + (o.off ? '<span class="pill grey">Archivé</span>' : '<span class="pill ok">Actif</span>') + '</td>' +
+        '<td class="acts"><button class="ib" onclick="techHistory(' + o.i + ')">Voir l\'historique</button>' +
+        (o.off ? '<button class="ib" onclick="techToggle(' + o.i + ', false)">Réactiver</button>'
+               : '<button class="ib" onclick="techToggle(' + o.i + ', true)">Archiver</button>') + '</td></tr>';
+    });
+    if (!rows.length) h += '<tr><td colspan="6" class="subp" style="padding:1rem;">Aucun technicien ne correspond à ces filtres.</td></tr>';
+    document.getElementById('tc-list').innerHTML = h;
+  }
+  function techToggle(i, off) {
+    if (off) TECH_OFF[TECHS[i]] = true; else delete TECH_OFF[TECHS[i]];
+    renderTechs();
+  }
+  function renameTech(i, v) {
+    v = v.trim(); if (!v) { renderTechs(); return; }
+    var old = TECHS[i]; TECHS[i] = v;
+    if (TECH_OFF[old]) { TECH_OFF[v] = true; delete TECH_OFF[old]; }
+    PLAN.forEach(function (r) { if (r.cloture && r.cloture.techs) r.cloture.techs = r.cloture.techs.map(function (n) { return n === old ? v : n; }); });
+    renderTechs();
+  }
+  function tcCheck() {
+    document.getElementById('tc-dup').hidden = true;
+    document.getElementById('tc-ok').disabled = !(document.getElementById('tc-prenom').value.trim() && document.getElementById('tc-nom').value.trim());
+  }
+  function tcCancel() {
+    document.getElementById('tc-prenom').value = ''; document.getElementById('tc-nom').value = '';
+    document.getElementById('tc-form').hidden = true;
+    document.getElementById('tc-dup').hidden = true;
+    tcCheck();
+  }
+  /* ===== détection de doublons de techniciens ===== */
+  function normName(s) {
+    return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function lev(a, b) {
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+      }
+      prev = cur.slice();
+    }
+    return prev[n];
+  }
+  function similarTechs(full) {
+    var n = normName(full); if (!n) return [];
+    var p = n.split(' ');
+    return TECHS.filter(function (t) {
+      var m = normName(t); if (!m) return false;
+      if (m === n) return true;
+      if (lev(m, n) <= 2) return true;
+      if (m.indexOf(n) >= 0 || n.indexOf(m) >= 0) return true;
+      var q = m.split(' ');
+      if (p.slice().sort().join(' ') === q.slice().sort().join(' ')) return true;
+      if (p.length > 1 && q.length > 1 && p[p.length - 1] === q[q.length - 1] && p[0].charAt(0) === q[0].charAt(0)) return true;
+      return false;
+    });
+  }
+  function dupHtml(list, useFn, forceFn) {
+    return '<b>Attention : ce technicien existe peut-être déjà.</b>' +
+      '<p>' + (list.length > 1 ? 'Des noms très proches sont déjà enregistrés' : 'Un nom très proche est déjà enregistré') + ' :</p>' +
+      '<ul>' + list.map(function (n) {
+        return '<li>' + n + '<button class="ib" onclick="' + useFn + '(\'' + n.replace(/'/g, "\\'") + '\')">Utiliser celui-ci</button></li>';
+      }).join('') + '</ul>' +
+      '<p>Un doublon casse l\'historique et fausse les compteurs de poses et de SAV — c\'est une source d\'erreurs. ' +
+      'Ne créez une nouvelle fiche que s\'il s\'agit réellement d\'une autre personne.</p>' +
+      '<div class="dupacts"><button class="btn ghost sm" onclick="' + forceFn + '()">Créer quand même</button></div>';
+  }
+
+  /* --- création depuis « Mes techniciens » --- */
+  function techPlus() { techSave(false); }
+  function tcForce() { techSave(true); }
+  function tcUse(name) {
+    document.getElementById('tc-dup').hidden = true;
+    tcCancel();
+    document.getElementById('tc-q').value = name;
+    renderTechs();
+  }
+  function techSave(force) {
+    var pn = document.getElementById('tc-prenom').value.trim(), nm = document.getElementById('tc-nom').value.trim();
+    if (!pn || !nm) return;
+    var full = pn + ' ' + nm;
+    if (!force) {
+      var sim = similarTechs(full);
+      if (sim.length) {
+        var box = document.getElementById('tc-dup');
+        box.innerHTML = dupHtml(sim, 'tcUse', 'tcForce');
+        box.hidden = false;
+        return;
+      }
+    }
+    document.getElementById('tc-dup').hidden = true;
+    TECHS.push(full);
+    tcCancel(); renderTechs();
+  }
+
+  /* --- création depuis la clôture --- */
+  var newRow = null;
+  function cmNewOpen(i) {
+    newRow = i;
+    document.getElementById('cm-np').value = '';
+    document.getElementById('cm-nn').value = '';
+    document.getElementById('cm-dup').hidden = true;
+    document.getElementById('cm-nok').disabled = true;
+    document.getElementById('cm-new').hidden = false;
+    document.getElementById('cm-np').focus();
+  }
+  function cmNewCheck() {
+    document.getElementById('cm-dup').hidden = true;
+    document.getElementById('cm-nok').disabled =
+      !(document.getElementById('cm-np').value.trim() && document.getElementById('cm-nn').value.trim());
+  }
+  function cmNewCancel() {
+    document.getElementById('cm-new').hidden = true;
+    document.getElementById('cm-dup').hidden = true;
+    newRow = null; drawTechs(); clotureCheck();
+  }
+  function cmForce() { cmNewSave(true); }
+  function cmUse(name) {
+    if (newRow !== null) techs[newRow] = name;
+    document.getElementById('cm-new').hidden = true;
+    document.getElementById('cm-dup').hidden = true;
+    newRow = null; drawTechs(); clotureCheck();
+  }
+  function cmNewSave(force) {
+    var pn = document.getElementById('cm-np').value.trim(), nm = document.getElementById('cm-nn').value.trim();
+    if (!pn || !nm) return;
+    var full = pn + ' ' + nm;
+    if (!force) {
+      var sim = similarTechs(full);
+      if (sim.length) {
+        var box = document.getElementById('cm-dup');
+        box.innerHTML = dupHtml(sim, 'cmUse', 'cmForce');
+        box.hidden = false;
+        return;
+      }
+    }
+    if (TECHS.indexOf(full) < 0) TECHS.push(full);
+    if (newRow !== null) techs[newRow] = full;
+    document.getElementById('cm-new').hidden = true;
+    document.getElementById('cm-dup').hidden = true;
+    newRow = null;
+    drawTechs(); clotureCheck(); renderTechs();
+  }
+  function techHistory(i) {
+    var name = TECHS[i], rows = techJobs(name);
+    document.getElementById('hm-title').textContent = 'Historique · ' + name;
+    var np = rows.filter(function (x) { return x.type === 'chantier'; }).length, ns = rows.length - np;
+    document.getElementById('hm-sub').textContent = np + ' pose(s) et ' + ns + ' SAV clôturé(s)' + (rows.length ? ' · du ' + fdate(rows[rows.length - 1].date) + ' au ' + fdate(rows[0].date) : '');
+    var h = '<tr><th>Date</th><th>Type</th><th>Client</th><th>Province</th><th>Équipe</th><th>Avec</th><th>Photos</th></tr>';
+    rows.forEach(function (x) {
+      h += '<tr><td><b>' + fdate(x.date) + '</b></td><td>' + (x.type === 'sav' ? '<span class="typ sav">SAV</span>' : '<span class="typ inst">Installation</span>') + '</td><td><b>' + x.client + '</b></td>' +
+           '<td>' + x.prov + '</td><td>' + teamName(x.team) + '</td>' +
+           '<td>' + x.cloture.techs.filter(function (n) { return n !== name; }).join(', ') + '</td><td>' + x.cloture.photos + '</td></tr>';
+    });
+    document.getElementById('hm-table').innerHTML = h || '';
+    if (!rows.length) document.getElementById('hm-table').innerHTML = '<tr><td class="subp" style="padding:1rem;">Aucune intervention clôturée pour ce technicien.</td></tr>';
+    document.getElementById('hmodal').hidden = false;
+  }
+
+  /* ===== équipes & planning ===== */
+  var TEAMS = [];
+  (function () {
+    for (var i = 1; i <= 15; i++) TEAMS.push({ active: i <= 10 });
+  })();
+  /* une équipe garde son numéro tant qu'elle est active ou qu'elle a encore des poses à venir ;
+     ensuite les équipes suivantes se renumérotent et l'équipe archivée garde son ancien nom */
+  function numbered(n) { var t = TEAMS[n - 1]; return !!t && (t.active || (!!t.archivedAt && !!lastFuture(n))); }
+  function teamName(n) {
+    var t = TEAMS[(n || 1) - 1];
+    if (!t) return 'Équipe ' + n;
+    if (!numbered(n)) return 'Ex-' + (t.archName || ('Équipe ' + n));
+    var k = 0;
+    for (var i = 0; i < n; i++) if (numbered(i + 1)) k++;
+    return 'Équipe ' + k;
+  }
+  function isActive(n) { var t = TEAMS[(n || 1) - 1]; return !!(t && t.active); }
+  function activeCount() { return TEAMS.filter(function (t) { return t.active; }).length; }
+
+  /* dernière intervention à venir d'une équipe */
+  function lastFuture(n) {
+    var f = PLAN.filter(function (x) { return x.team === n && x.date > ymd(TODAY); })
+      .map(function (x) { return x.date; }).sort();
+    return f.length ? f[f.length - 1] : null;
+  }
+  function hasPast(n) { return PLAN.some(function (x) { return x.team === n && x.date <= ymd(TODAY); }); }
+
+  function teamPlus() {
+    for (var i = 0; i < TEAMS.length; i++) {
+      if (!TEAMS[i].active && !TEAMS[i].archivedAt) { TEAMS[i].active = true; refreshTeams(); note(teamName(i + 1) + ' est active.', true); return; }
+    }
+    if (TEAMS.length >= 15) { note('Vous avez atteint le maximum de 15 équipes.', false); return; }
+    TEAMS.push({ active: true }); refreshTeams(); note(teamName(TEAMS.length) + ' est active.', true);
+  }
+  function archiveTeam(n) {
+    var oldName = teamName(n);
+    TEAMS[n - 1].active = false; TEAMS[n - 1].archivedAt = ymd(TODAY); TEAMS[n - 1].archName = oldName;
+    refreshTeams();
+    var lf = lastFuture(n);
+    if (lf) {
+      note(teamName(n) + ' est archivée : elle reste affichée dans le planning jusqu\'à sa dernière intervention du ' + fdate(lf) + ', puis disparaîtra automatiquement.', true);
+    } else if (hasPast(n)) {
+      note(teamName(n) + ' est archivée. Elle disparaît du planning courant ; ses anciens dossiers restent consultables — sa ligne réapparaît en grisé sur les semaines passées où elle a travaillé (bouton « Voir l\'historique »).', true);
+    } else {
+      note(teamName(n) + ' est archivée.', true);
+    }
+  }
+  function reactivateTeam(n) { TEAMS[n - 1].active = true; delete TEAMS[n - 1].archivedAt; delete TEAMS[n - 1].archName; refreshTeams(); note(teamName(n) + ' est de nouveau active.', true); }
+
+  function note(msg, ok) {
+    var el = document.getElementById('tm-note');
+    el.textContent = msg;
+    el.className = 'tmnote' + (ok ? ' ok' : ' ko');
+    el.hidden = false;
+  }
+
+  function teamRange(n) {
+    var d = PLAN.filter(function (x) { return x.team === n; }).map(function (x) { return x.date; }).sort();
+    return d.length ? { from: d[0], to: d[d.length - 1] } : null;
+  }
+  function seeHistory(n) {
+    var rows = PLAN.filter(function (x) { return x.team === n; }).sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    var r = teamRange(n);
+    document.getElementById('hm-title').textContent = 'Historique · ' + teamName(n);
+    document.getElementById('hm-sub').textContent = rows.length + ' intervention(s)' + (r ? ' · du ' + fdate(r.from) + ' au ' + fdate(r.to) : '');
+    var h = '<tr><th>Date</th><th>Type</th><th>Client</th><th>Province</th><th>Matériel</th><th>Techniciens</th><th>Statut</th></tr>';
+    rows.forEach(function (x) {
+      var st = x.cloture ? '<span class="pill ok">Clôturé le ' + fdate(x.cloture.date) + '</span>'
+             : (x.statut === 'Non réalisée' || x.statut === 'Partiellement réalisée' ? statutPill(x.statut)
+             : (x.date < ymd(TODAY) ? '<span class="pill stop">Non clôturé</span>' : '<span class="pill grey">À venir</span>'));
+      h += '<tr><td><b>' + fdate(x.date) + '</b></td><td>' + (x.type === 'sav' ? '<span class="typ sav">SAV</span>' : '<span class="typ inst">Installation</span>') + '</td><td><b>' + x.client + '</b></td>' +
+           '<td>' + x.prov + '</td><td>' + (x.type === 'sav' ? x.motif : x.mat) + '</td><td>' + (x.cloture ? x.cloture.techs.join(', ') : '—') + '</td><td>' + st + '</td></tr>';
+    });
+    document.getElementById('hm-table').innerHTML = h;
+    document.getElementById('hmodal').hidden = false;
+  }
+
+  function renderTeams() {
+    document.getElementById('tm-n').textContent = activeCount();
+    var html = '';
+    var order = TEAMS.map(function (t, i) { return { t: t, n: i + 1 }; })
+      .filter(function (o) { return o.t.active || o.t.archivedAt; })
+      .sort(function (a, b) { return (numbered(b.n) - numbered(a.n)) || (a.n - b.n); });
+    order.forEach(function (o) {
+      var t = o.t, n = o.n, lf = lastFuture(n), r = teamRange(n);
+      var tag = t.active ? ''
+        : (lf ? '<span class="pill new">Archivée le ' + fdate(t.archivedAt) + ' · dans le planning jusqu\'au ' + fdate(lf) + '</span>'
+              : '<span class="pill grey">Archivée le ' + fdate(t.archivedAt) + '</span>');
+      html += '<div class="tmrow' + (t.active ? '' : ' off') + '">' +
+        '<span class="teamname' + (t.active ? '' : ' off') + '">' + teamName(n) + '</span>' +
+        '<span class="tmtag">' + tag + '</span>' +
+        '<span class="tmjobs">' + (!t.active && r ? 'Période de travail : du ' + fdate(r.from) + ' au ' + fdate(r.to) : '') + '</span>' +
+        (t.active
+          ? (activeCount() > 1 ? '<button class="btn ghost sm" onclick="archiveTeam(' + n + ')">Archiver</button>' : '<span class="subp">Équipe par défaut</span>')
+          : '<button class="btn ghost sm" onclick="seeHistory(' + n + ')">Voir l\'historique</button>' +
+            '<button class="btn ghost sm" onclick="reactivateTeam(' + n + ')">Réactiver</button>') +
+        '</div>';
+    });
+    document.getElementById('tm-list').innerHTML = html;
+  }
+  function refreshTeams() { renderTeams(); renderPlanning(); }
+
+  /* --- éléments planifiés : 1 installation max par équipe et par jour, SAV libres --- */
+  var PLAN = [];
+  (function () {
+    var id = 1;
+    DATA_S.forEach(function (r) {
+      PLAN.push({ id: 'C' + (id++), type: 'chantier', ref: r.ref, client: r.client, tel: r.tel,
+                  adr: r.adr, prov: r.prov, date: r.date, team: r.team || 1, statut: r.statut, heure: '08 h 30',
+                  mat: (id % 2 ? 'PAC air/eau 11 kW' : 'PAC air/eau 16 kW'),
+                  ballon: (id % 3 ? 'Ballon ECS 200 L intégré' : 'Sans ballon — ECS conservée'),
+                  compteur: (id % 2 ? 'Monophasé' : 'Triphasé'),
+                  bizone: (id % 4 ? 'Non' : 'Oui') });
+    });
+    /* on écarte les doublons équipe+jour */
+    var taken = {};
+    PLAN.forEach(function (it) {
+      var k = it.team + '|' + it.date, guard = 0;
+      while (taken[k] && guard < 10) { it.team = (it.team % 10) + 1; k = it.team + '|' + it.date; guard++; }
+      taken[k] = 1;
+    });
+    /* on libère la semaine de démonstration des éléments génériques */
+    PLAN = PLAN.filter(function (x) { return !(x.date >= '2026-09-21' && x.date <= '2026-09-27'); });
+
+    /* --- semaine de démonstration : 10 équipes remplies --- */
+    var noms = ['Alba Sanz','Mateo Iglesias','Nuria Prieto','Iván Lozano','Clara Peña','Hugo Ramos','Marta Gallego','Sergio Bravo',
+                'Lucía Campos','Diego Ferrer','Eva Montero','Raúl Cano','Sofía Reyes','Álvaro Nieto','Irene Pardo','Óscar Lara',
+                'Nerea Solís','Pablo Vega','Teresa Rico','Adrián Mena','Silvia Cuesta','Jorge Arias','Paula Bueno','Iker Salas',
+                'Rubén Gil','Carla Mora','Hugo Sáez','Lidia Roca','Tomás Vela','Ainhoa Gil','Bruno Sanz','Celia Ríos',
+                'Dario Pinto','Elsa Marín','Fabio Luna','Gema Ortiz','Hector Paz','Inés Bravo','Jon Aguirre','Keila Soto',
+                'Luca Ferrer','Mara Quintana','Nico Vidal','Olga Ruano','Pau Castell','Queralt Gil','Raquel Ponce','Saúl Vega',
+                'Tania Lobo','Unai Prats'];
+    var provs = ['Ávila','Burgos','Soria','León','Palencia','Teruel','Salamanca','Segovia','Cuenca','Valladolid','Lugo','Navarra',
+                 'Zamora','Guadalajara','Albacete','Huesca','Asturias','Lleida','Madrid','Girona','Ciudad Real','Toledo','Zaragoza','Ourense'];
+    var jours = ['2026-09-14','2026-09-15','2026-09-16','2026-09-17','2026-09-18','2026-09-21','2026-09-22','2026-09-23','2026-09-24','2026-09-25'];
+    var k = 0;
+    for (var tm = 1; tm <= 10; tm++) {
+      for (var dj = 0; dj < jours.length; dj++) {
+        /* une équipe prend 4 jours sur 5, pour laisser respirer le planning */
+        if ((tm + dj) % 6 === 0) continue;
+        var occupe = PLAN.some(function (x) { return x.type === 'chantier' && x.team === tm && x.date === jours[dj]; });
+        if (occupe) { k++; continue; }
+        PLAN.push({
+          id: 'D' + (id++), type: 'chantier', ref: 'CH-2026-0' + (400 + k),
+          client: noms[k % noms.length], tel: '+34 6' + (20 + k % 70) + ' ' + (10 + k % 80) + ' ' + (20 + k % 70) + ' ' + (30 + k % 60),
+          adr: 'Calle ' + (10 + k), prov: provs[k % provs.length], date: jours[dj], team: tm,
+          statut: 'À venir', heure: '08 h 30',
+          mat: (k % 3 === 0 ? 'PAC air/eau 8 kW' : (k % 2 ? 'PAC air/eau 11 kW' : 'PAC air/eau 16 kW')),
+          ballon: (k % 3 ? 'Ballon ECS ' + (k % 2 ? '200' : '270') + ' L intégré' : 'Sans ballon — ECS conservée'),
+          compteur: (k % 2 ? 'Monophasé' : 'Triphasé'),
+          bizone: (k % 4 ? 'Non' : 'Oui')
+        });
+        /* semaine passée : la plupart sont clôturés, quelques-uns ne le sont pas */
+        var last = PLAN[PLAN.length - 1];
+        if (last.date < ymd(TODAY) && !((tm * 7 + dj) % 5 === 0)) {
+          last.cloture = { date: last.date, techs: techsOf(tm), photos: 4 }; last.statut = 'En attente PV';
+        }
+        k++;
+      }
+    }
+    /* quelques SAV répartis en début ou fin de journée */
+    var savDemo = [
+      { t: 2, d: '2026-09-21', h: '07 h 30', c: 'Pilar Núñez',  pr: 'Zamora',   m: 'Purge du circuit' },
+      { t: 4, d: '2026-09-22', h: '17 h 30', c: 'Elena Vidal',  pr: 'Cuenca',   m: 'Code défaut E5' },
+      { t: 6, d: '2026-09-23', h: '07 h 30', c: 'Ana Sáez',     pr: 'Ávila',    m: "Pas d'eau chaude le matin" },
+      { t: 7, d: '2026-09-24', h: '17 h 00', c: 'Miguel Torres', pr: 'Soria',   m: 'Unité extérieure bruyante' },
+      { t: 9, d: '2026-09-25', h: '07 h 30', c: 'Rosa Delgado', pr: 'Zaragoza', m: 'Circulateur — pièce reçue' },
+      { t: 10, d: '2026-09-22', h: '17 h 30', c: 'Ana Sáez',    pr: 'Ávila',    m: 'Réglage de la courbe de chauffe' },
+      { t: 2, d: '2026-09-25', h: '16 h 30', c: 'Marta Gallego', pr: 'Palencia', m: 'Sonde extérieure à remplacer' },
+      { t: 3, d: '2026-09-24', h: '08 h 00', c: 'Diego Ferrer', pr: 'Valladolid', m: 'Fuite raccord ballon' },
+      { t: 5, d: '2026-09-15', h: '17 h 00', c: 'Rosa Delgado', pr: 'Zaragoza', m: 'Circulateur bruyant', done: true },
+      { t: 8, d: '2026-09-16', h: '17 h 30', c: 'Ana Sáez', pr: 'Ávila', m: 'Erreur sonde ECS' }
+    ];
+    savDemo.forEach(function (v, n) {
+      PLAN.push({ id: 'DS' + (id++), type: 'sav', ref: 'SAV-2026-0' + (60 + n), client: v.c,
+                  tel: '+34 64' + n + ' 11 22 33', adr: 'Calle ' + (70 + n), prov: v.pr,
+                  date: v.d, team: v.t, heure: v.h, motif: v.m,
+                  cloture: v.done ? { date: v.d, techs: techsOf(v.t), photos: 2 } : undefined, statut: v.done ? 'SAV clôturé' : undefined });
+    });
+    /* démo : on ne laisse ouverts (non clôturés) que quelques chantiers passés, et la moitié de ceux du jour */
+    var keep = { '2026-09-11': 1, '2026-09-15': 1, '2026-09-16': 1, '2026-09-17': 1 }, seen = {}, todayN = 0;
+    PLAN.forEach(function (r) {
+      if (r.type !== 'chantier' || r.cloture || r.date > ymd(TODAY)) return;
+      if (r.date === ymd(TODAY)) { if (todayN++ % 2) { r.cloture = { date: r.date, techs: techsOf(r.team), photos: 5 }; r.statut = 'En attente PV'; } return; }
+      if (keep[r.date] && !seen[r.date]) { seen[r.date] = true; return; }
+      r.cloture = { date: r.date, techs: techsOf(r.team), photos: 4 }; r.statut = 'En attente PV';
+    });
+  })();
+
+  var WK = new Date('2026-09-14T00:00:00');
+  function weekShift(n) { var nw = new Date(WK.getTime() + n * 7 * 864e5); if (assign && nw < mondayOf(TODAY)) return; WK = nw; renderPlanning(); }
+  function ymd(d) { var p = function (n) { return ('0' + n).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+  var MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  var JOURS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+
+  function findItem(id) { for (var i = 0; i < PLAN.length; i++) if (PLAN[i].id === id) return PLAN[i]; return null; }
+
+  /* --- clôture d'installation --- */
+  var clotureId = null, techs = [], photos = [];
+  function openCloture(id) {
+    var it = findItem(id);
+    if (!it) return;
+    clotureId = id;
+    techs = techsOf(it.team).slice(); photos = [];
+    document.getElementById('cm-title').textContent = it.type === 'sav' ? 'Je clôture mon SAV' : 'Je clôture mon installation';
+    document.getElementById('cm-sub').textContent = it.ref + ' · ' + it.client + ' · ' + it.adr + ', ' + it.prov + ' · ' + fdate(it.date) + (it.motif ? ' · ' + it.motif : '');
+    document.getElementById('cm-note').value = '';
+    newRow = null;
+    document.getElementById('cm-new').hidden = true;
+    document.getElementById('cm-dup').hidden = true;
+    drawTechs(); drawPhotos(); clotureCheck();
+    document.getElementById('cmodal').hidden = false;
+  }
+  function closeCloture() { document.getElementById('cmodal').hidden = true; }
+  function addTech() { techs.push(''); drawTechs(); clotureCheck(); }
+  function setTech(i, v) {
+    if (v === '__new') { cmNewOpen(i); return; }
+    techs[i] = v; drawTechs(); clotureCheck();
+  }
+  function delTech(i) { techs.splice(i, 1); drawTechs(); clotureCheck(); }
+  function drawTechs() {
+    var active = TECHS.filter(function (n) { return !TECH_OFF[n]; });
+    document.getElementById('cm-techs').innerHTML = techs.map(function (t, i) {
+      var opts = '<option value="">— Choisir le technicien ' + (i + 1) + ' —</option>';
+      active.forEach(function (n) { opts += '<option value="' + n + '"' + (n === t ? ' selected' : '') + '>' + n + '</option>'; });
+      if (t && active.indexOf(t) < 0) opts += '<option value="' + t + '" selected>' + t + ' (archivé)</option>';
+      opts += '<option value="__new">+ Nouveau technicien…</option>';
+      return '<div class="techrow">' +
+        '<select onchange="setTech(' + i + ', this.value)">' + opts + '</select>' +
+        (techs.length > 1 ? '<button class="ib del" onclick="delTech(' + i + ')" title="Retirer">×</button>' : '') +
+        '</div>';
+    }).join('');
+  }
+  function addPhotos(input) {
+    for (var i = 0; i < input.files.length; i++) photos.push(input.files[i].name);
+    if (!input.files.length) photos.push('photo_' + (photos.length + 1) + '.jpg');
+    input.value = '';
+    drawPhotos(); clotureCheck();
+  }
+  function drawPhotos() {
+    document.getElementById('cm-thumbs').innerHTML = photos.map(function (n, i) {
+      return '<span class="th" title="' + n + '">📷<button class="thx" onclick="photos.splice(' + i + ',1); drawPhotos(); clotureCheck();">×</button></span>';
+    }).join('') || '<span class="subp">Aucune photo pour l\'instant.</span>';
+  }
+  function clotureCheck() {
+    var named = techs.filter(function (t) { return t.trim().length > 2; }).length;
+    var ok = named >= 1 && photos.length >= 1;
+    document.getElementById('cm-ok').disabled = !ok;
+    document.getElementById('cm-warn').textContent = ok ? ''
+      : (named < 1
+          ? 'Sélectionnez au moins un technicien présent sur place (ou créez-le) et ajoutez une photo pour clôturer.'
+          : 'Il faut au moins une photo pour clôturer.');
+  }
+  function confirmCloture() {
+    var it = findItem(clotureId);
+    if (!it) return;
+    var clo = { date: ymd(TODAY), techs: techs.filter(function (t) { return t.trim(); }), photos: photos.length };
+    it.cloture = clo;
+    it.statut = it.type === 'sav' ? 'SAV clôturé' : 'En attente PV';
+    closeCloture();
+    renderPlanning(); renderClo(); renderTechs();
+    flash((it.type === 'sav' ? 'SAV' : 'Installation') + ' de ' + it.client + ' clôturé — ' + it.cloture.techs.length + ' technicien(s), ' + photos.length + ' photo(s) transmises à ECONATURA.', true);
+  }
+
+  /* --- replanification --- */
+  var replanId = null;
+  function openReplan(id) {
+    var it = findItem(id);
+    if (!it) return;
+    replanId = id;
+    document.getElementById('rm-sub').textContent =
+      (it.type === 'chantier' ? 'Installation' : 'SAV') + ' · ' + it.client + ' · ' + it.adr + ', ' + it.prov;
+    document.getElementById('rm-date').value = it.date;
+    var sel = document.getElementById('rm-team');
+    sel.innerHTML = '';
+    TEAMS.forEach(function (tm, k) {
+      if (!tm.active && (k + 1) !== it.team) return;
+      var o = document.createElement('option');
+      o.value = k + 1; o.textContent = teamName(k + 1) + (tm.active ? '' : ' (archivée)');
+      if ((k + 1) === it.team) o.selected = true;
+      sel.appendChild(o);
+    });
+    document.getElementById('rm-warn').textContent = it.type === 'chantier'
+      ? 'Une équipe ne peut avoir qu\'une seule installation par jour.'
+      : 'Un SAV peut être posé avant ou après une installation.';
+    document.getElementById('rm-cancel').value = '';
+    document.getElementById('rm-com').value = '';
+    cancelChange();
+    /* chantier du jour ou passé, non clôturé : on demande s'il a été commencé */
+    rmMode = null;
+    var needQ = it.type === 'chantier' && it.date <= ymd(TODAY) && !it.cloture && it.statut !== 'Non réalisée' && it.statut !== 'Partiellement réalisée';
+    document.getElementById('rm-q').hidden = !needQ;
+    document.getElementById('rm-datewrap').hidden = needQ;
+    document.getElementById('rm-q-non').className = ''; document.getElementById('rm-q-oui').className = '';
+    document.getElementById('rm-b-non').hidden = true; document.getElementById('rm-b-oui').hidden = true;
+    document.getElementById('rm-nr').value = ''; document.getElementById('rm-nrcom').value = ''; document.getElementById('rm-part').value = '';
+    document.getElementById('rm-nrcomwrap').hidden = true;
+    document.getElementById('rm-datetitle').textContent = 'Nouvelle date';
+    document.getElementById('rm-ok').disabled = false;
+    document.getElementById('rm-cancelwrap').hidden = needQ;
+    document.getElementById('rm-date').value = needQ ? ymd(new Date(TODAY.getTime() + 864e5)) : it.date;
+    document.getElementById('rmodal').hidden = false;
+  }
+  var rmMode = null;
+  function rmBranch(m) {
+    rmMode = m;
+    document.getElementById('rm-q-non').className = m === 'non' ? 'on' : '';
+    document.getElementById('rm-q-oui').className = m === 'oui' ? 'on' : '';
+    document.getElementById('rm-b-non').hidden = m !== 'non';
+    document.getElementById('rm-b-oui').hidden = m !== 'oui';
+    document.getElementById('rm-datewrap').hidden = false;
+    document.getElementById('rm-datetitle').textContent = m === 'oui' ? 'Date de reprise' : 'Nouvelle date';
+    document.getElementById('rm-cancelwrap').hidden = m === 'oui';
+    rmCheck();
+  }
+  function rmCheck() {
+    var ok = true;
+    if (rmMode === 'non') {
+      var v = document.getElementById('rm-nr').value;
+      document.getElementById('rm-nrcomwrap').hidden = v !== 'autre';
+      ok = !!v && (v !== 'autre' || document.getElementById('rm-nrcom').value.trim().length >= 3);
+    } else if (rmMode === 'oui') {
+      ok = document.getElementById('rm-part').value.trim().length >= 5;
+    }
+    document.getElementById('rm-ok').disabled = !ok;
+  }
+  function closeReplan() { document.getElementById('rmodal').hidden = true; }
+  function cancelChange() {
+    var sel = document.getElementById('rm-cancel');
+    var autre = sel.value === 'autre';
+    document.getElementById('rm-comwrap').hidden = !autre;
+    document.getElementById('rm-cancelok').disabled =
+      !sel.value || (autre && document.getElementById('rm-com').value.trim().length < 3);
+  }
+  function confirmCancel() {
+    var it = findItem(replanId);
+    if (!it) return;
+    PLAN = PLAN.filter(function (x) { return x.id !== it.id; });
+    closeReplan();
+    renderPlanning();
+    flash((it.type === 'chantier' ? 'Installation' : 'SAV') + ' de ' + it.client + ' annulé — le dossier repart chez ECONATURA.', false);
+  }
+  function confirmReplan() {
+    var it = findItem(replanId);
+    if (!it) return;
+    var date = document.getElementById('rm-date').value;
+    var team = parseInt(document.getElementById('rm-team').value, 10);
+    if (it.type === 'chantier') {
+      var busy = PLAN.filter(function (x) {
+        return x.type === 'chantier' && x.id !== it.id && x.team === team && x.date === date;
+      });
+      if (busy.length) {
+        document.getElementById('rm-warn').innerHTML =
+          '<b style="color:var(--red)">Impossible : ' + teamName(team) + ' a déjà l\'installation de ' + busy[0].client + ' ce jour-là.</b>';
+        return;
+      }
+    }
+    if (rmMode) {
+      /* on ne modifie jamais l'ancienne intervention : on la qualifie et on en crée une nouvelle */
+      var neu = {};
+      for (var kk in it) neu[kk] = it[kk];
+      neu.id = 'R' + Date.now(); neu.date = date; neu.team = team; delete neu.cloture; delete neu.motifNR; delete neu.partiel;
+      neu.prev = { date: it.date, team: it.team, statut: rmMode === 'oui' ? 'Partiellement réalisée' : 'Non réalisée' };
+      if (rmMode === 'oui') {
+        it.statut = 'Partiellement réalisée'; it.partiel = document.getElementById('rm-part').value.trim(); it.reprise = date;
+        neu.statut = 'Reprise planifiée';
+      } else {
+        var m = document.getElementById('rm-nr').value;
+        it.statut = 'Non réalisée'; it.motifNR = (m === 'autre' ? document.getElementById('rm-nrcom').value.trim() : m); it.reprise = date;
+        neu.statut = 'À venir';
+      }
+      PLAN.push(neu);
+      closeReplan();
+      renderPlanning(); renderClo();
+      flash((rmMode === 'oui' ? 'Reprise planifiée' : 'Intervention non réalisée — nouvelle date') + ' : ' + it.client + ' le ' + fdate(date) + ' · ' + teamName(team) + '.', true);
+      return;
+    }
+    it.date = date; it.team = team;
+    closeReplan();
+    renderPlanning(); renderClo();
+    flash((it.type === 'chantier' ? 'Installation' : 'SAV') + ' de ' + it.client + ' replanifié au ' + fdate(date) + ' · ' + teamName(team) + '.', true);
+  }
+
+  /* --- planning en mode liste (filtres) : toutes les semaines confondues --- */
+  var plSort = { col: 'date', dir: 'asc' };
+  function plSortBy(c) {
+    if (plSort.col === c) plSort.dir = plSort.dir === 'asc' ? 'desc' : 'asc';
+    else { plSort.col = c; plSort.dir = 'asc'; }
+    renderPlanning();
+  }
+  function renderPlanList(fLate, fSav, fToday) {
+    var rows = PLAN.filter(function (r) {
+      return (fLate && isOpenLate(r) && r.date < ymd(TODAY)) ||
+             (fSav && r.type === 'sav' && r.date >= ymd(TODAY) && !r.cloture) ||
+             (fToday && r.date === ymd(TODAY));
+    });
+    var dir = plSort.dir === 'desc' ? -1 : 1;
+    rows.sort(function (a, b) {
+      if (plSort.col === 'type' && a.type !== b.type) return (a.type < b.type ? -1 : 1) * dir;
+      if (a.date !== b.date) return (a.date < b.date ? -1 : 1) * (plSort.col === 'date' ? dir : 1);
+      return a.heure < b.heure ? -1 : 1;
+    });
+    var parts = [];
+    if (fLate) parts.push('Non clôturés');
+    if (fSav) parts.push('SAV à venir');
+    if (fToday) parts.push('Dossiers du jour');
+    document.getElementById('wk-listlabel').textContent = parts.join(' + ') + ' — ' + rows.length + ' dossier(s)' + ((fLate || fSav) ? ', toutes semaines confondues' : '');
+    var t = document.getElementById('plan-list');
+    if (!rows.length) { t.hidden = true; document.getElementById('plan-empty').hidden = false; return; }
+    var th = function (c, label) {
+      var on = plSort.col === c;
+      return '<th class="sortable' + (on ? ' on' : '') + '" onclick="plSortBy(\'' + c + '\')">' + label + ' <i>' + (on ? (plSort.dir === 'desc' ? '▼' : '▲') : '⇅') + '</i></th>';
+    };
+    var h = '<tr>' + th('date', 'Date') + '<th>Heure</th><th>Client</th><th>Téléphone</th><th>Province</th>' + th('type', 'Type') + '<th>Statut</th><th></th></tr>';
+    /* regroupement par équipe (actives d'abord), puis tri interne */
+    var groups = {};
+    rows.forEach(function (r) { (groups[r.team] = groups[r.team] || []).push(r); });
+    var teamIds = Object.keys(groups).map(Number).sort(function (a, b) {
+      if (isActive(a) !== isActive(b)) return isActive(a) ? -1 : 1;
+      return a - b;
+    });
+    teamIds.forEach(function (ti) {
+    var list = groups[ti];
+    h += '<tr class="grp"><td colspan="8"><b>' + teamName(ti) + '</b> ' +
+      '<span class="pill ' + (isActive(ti) ? 'ok' : 'grey') + '">' + list.length + ' dossier' + (list.length > 1 ? 's' : '') + '</span> ' +
+      '<span class="tinfo" tabindex="0"><i>i</i><span class="tip"><b>' + teamName(ti) + '</b>' +
+        techsOf(ti).map(function (n) { return '<span>' + n + '</span>'; }).join('') + '</span></span>' +
+      (isActive(ti) ? '' : '<span class="archtag">Archivée</span>') +
+      '<button class="ib" onclick="openRecap(' + ti + ', 0)">Récap camion</button>' +
+      '</td></tr>';
+    list.forEach(function (r) {
+      var j = Math.round((TODAY - new Date(r.date + 'T00:00:00')) / 864e5);
+      var cls, st;
+      if (r.type === 'sav' && !r.cloture && j <= 0) {
+        cls = 'tsav';
+        st = j === 0 ? '<span class="pill ok">Aujourd\'hui · ' + r.motif + '</span>' : '<span class="pill grey">À venir · ' + r.motif + '</span>';
+      } else if (r.cloture) {
+        cls = 'ttoday'; st = '<span class="pill ok">Clôturé</span>';
+      } else if (j > 0) {
+        cls = 'tlate';
+        st = '<span class="pill stop">Non clôturé · J+' + j + '</span>';
+      } else {
+        cls = 'ttoday'; st = '<span class="pill new">À clôturer ce soir</span>';
+      }
+      var acts = '<button class="ib" onclick="openInfo(\'' + r.id + '\')">Infos</button>';
+      if (!r.cloture) acts += '<button class="ib" onclick="openReplan(\'' + r.id + '\')">Replanifier</button>';
+      if (!r.cloture && r.date <= ymd(TODAY)) acts += '<button class="ib clo" onclick="openCloture(\'' + r.id + '\')">Clôturer</button>';
+      h += '<tr class="' + cls + '"><td><b>' + fdate(r.date) + '</b></td><td>' + r.heure.replace(' h ', ':') + '</td>' +
+        '<td><b>' + r.client + '</b></td><td>' + r.tel + '</td><td>' + r.prov + '</td>' +
+        '<td>' + (r.type === 'sav'
+            ? '<span class="typ sav">SAV</span>' + (r.prio === 'hi' ? ' <span class="prtag hi">Très élevée</span>' : '')
+            : '<span class="typ inst">Installation</span>') + '</td><td>' + st + '</td><td class="acts">' + acts + '</td></tr>';
+    });
+    });
+    t.innerHTML = h;
+  }
+
+  /* --- chantiers du jour / passés non clôturés (accueil) --- */
+  function isOpenLate(r) {
+    return r.date <= ymd(TODAY) && !r.cloture && r.statut !== 'Non réalisée' && r.statut !== 'Partiellement réalisée';
+  }
+  function renderClo() {
+    if (document.getElementById('tc-list')) renderTechs();
+    document.getElementById('k-today').textContent = PLAN.filter(function (r) { return r.date === ymd(TODAY); }).length;
+    document.getElementById('k-late').textContent = PLAN.filter(function (r) { return isOpenLate(r) && r.date < ymd(TODAY); }).length;
+    document.getElementById('k-sav').textContent = PLAN.filter(function (r) { return r.type === 'sav' && r.date >= ymd(TODAY) && !r.cloture; }).length;
+  }
+  function pfOnly(cb) {
+    if (cb.checked) ['pf-late', 'pf-sav', 'pf-today'].forEach(function (k) { if (k !== cb.id) document.getElementById(k).checked = false; });
+    renderPlanning();
+  }
+  function goFilter(which) {
+    document.getElementById('pf-late').checked = which === 'late';
+    document.getElementById('pf-sav').checked = which === 'sav';
+    document.getElementById('pf-today').checked = which === 'today';
+    go('planning');
+    renderPlanning();
+  }
+
+  function flash(msg, ok) {
+    var el = document.getElementById('plflash');
+    el.textContent = msg;
+    el.className = 'plflash' + (ok ? ' ok' : ' ko');
+    el.hidden = false;
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.hidden = true; }, 4000);
+  }
+
+  /* --- informations client --- */
+  function openInfo(id) {
+    var it = findItem(id);
+    if (!it) return;
+    document.getElementById('im-title').textContent = it.type === 'chantier' ? 'Installation' : 'Intervention SAV';
+    document.getElementById('im-sub').textContent = it.ref + ' · ' + teamName(it.team) + ' · ' + fdate(it.date);
+    document.getElementById('im-kv').innerHTML =
+      '<dt>Référence</dt><dd>' + it.ref + '</dd>' +
+      '<dt>Client</dt><dd>' + it.client + '</dd>' +
+      '<dt>Téléphone</dt><dd><a class="lk" href="tel:' + it.tel.replace(/ /g, '') + '">' + it.tel + '</a> · <a class="lk" href="#">WhatsApp</a></dd>' +
+      '<dt>Adresse</dt><dd>' + it.adr + ', ' + it.prov + ' · <a class="lk" href="#">Itinéraire</a></dd>' +
+      '<dt>Date et heure</dt><dd><b>' + fdate(it.date) + ' à ' + it.heure + '</b></dd>' +
+      '<dt>Équipe</dt><dd>' + teamName(it.team) + '</dd>' +
+      (it.mat ? '<dt>Pompe à chaleur</dt><dd>' + it.mat + '</dd>' : '') +
+      (it.ballon ? '<dt>Ballon</dt><dd>' + it.ballon + '</dd>' : '') +
+      (it.compteur ? '<dt>Compteur</dt><dd>' + it.compteur + '</dd>' : '') +
+      (it.bizone ? '<dt>Kit bizone</dt><dd>' + it.bizone + '</dd>' : '') +
+      (it.statut ? '<dt>Statut</dt><dd>' + statutPill(it.statut) + '</dd>' : '') +
+      (it.motifNR ? '<dt>Motif</dt><dd>' + it.motifNR + ' — replanifié au ' + fdate(it.reprise) + '</dd>' : '') +
+      (it.partiel ? '<dt>Réalisé / reste</dt><dd>' + it.partiel + ' — reprise le ' + fdate(it.reprise) + '</dd>' : '') +
+      (it.prev ? '<dt>Intervention précédente</dt><dd>' + fdate(it.prev.date) + ' · ' + teamName(it.prev.team) + ' · ' + it.prev.statut + '</dd>' : '') +
+      (it.motif ? '<dt>Motif du SAV</dt><dd>' + it.motif + '</dd>' : '') +
+      (it.type === 'sav' ? '<dt>Importance</dt><dd><span class="prtag ' + (it.prio === 'hi' ? 'hi' : 'mid') + '">' + PRIOL[it.prio || 'mid'] + '</span></dd>' : '');
+    document.getElementById('im-text').textContent =
+      (it.type === 'chantier' ? 'Instalación' : 'Servicio postventa') + ' — ' + it.ref + '\n' +
+      it.client + '\n' + it.tel + '\n' + it.adr + ', ' + it.prov + '\n' +
+      fdate(it.date) + ' · ' + it.heure + '\n' + teamName(it.team) +
+      (it.mat ? '\nPAC : ' + it.mat : '') + (it.ballon ? '\nBallon : ' + it.ballon : '') +
+      (it.compteur ? '\nCompteur : ' + it.compteur : '') + (it.bizone ? '\nKit bizone : ' + it.bizone : '') +
+      (it.motif ? '\n' + it.motif : '');
+    var acts = '';
+    if (it.type === 'chantier' && it.date <= ymd(TODAY) && !it.cloture) {
+      acts += '<button class="btn" onclick="closeInfo(); openCloture(\'' + it.id + '\')">Je clôture mon installation</button>';
+    } else if (it.cloture) {
+      acts += '<span class="pill ok">Installation clôturée le ' + fdate(it.cloture.date) + '</span>';
+    }
+    document.getElementById('im-acts').innerHTML = acts;
+    document.getElementById('imodal').hidden = false;
+  }
+  function closeInfo() { document.getElementById('imodal').hidden = true; }
+  function copyInfo(btn) {
+    var t = document.getElementById('im-text').innerText;
+    if (navigator.clipboard) navigator.clipboard.writeText(t);
+    var old = btn.textContent; btn.textContent = '✓ Copié';
+    setTimeout(function () { btn.textContent = old; }, 1400);
+  }
+  function shareInfo(btn) {
+    var t = document.getElementById('im-text').innerText;
+    if (navigator.share) { navigator.share({ title: 'Chantier', text: t }).catch(function () {}); return; }
+    copyInfo(btn);
+  }
+
+  /* --- récap au camion : feuille de route + matériel à charger --- */
+  var rec = { team: null, day: 0 };
+  function openRecap(teamId, day) {
+    rec.team = teamId || null; rec.day = day || 0;
+    document.getElementById('rc-day').value = String(rec.day);
+    recFillTeams(); recDraw();
+    document.getElementById('recmodal').hidden = false;
+  }
+  function recJobs(team, key) {
+    return PLAN.filter(function (r) {
+      return r.team === team && r.date === key && r.statut !== 'Non réalisée';
+    }).sort(function (a, b) { return a.heure < b.heure ? -1 : 1; });
+  }
+  function recFillTeams() {
+    var day = parseInt(document.getElementById('rc-day').value, 10);
+    var key = ymd(new Date(TODAY.getTime() + day * 864e5));
+    var sel = document.getElementById('rc-team'); sel.innerHTML = '';
+    var ok = [];
+    for (var t = 1; t <= TEAMS.length; t++) if (recJobs(t, key).length) ok.push(t);
+    ok.forEach(function (t) {
+      var o = document.createElement('option');
+      o.value = t; o.textContent = teamName(t);
+      if (t === rec.team) o.selected = true;
+      sel.appendChild(o);
+    });
+    if (!ok.length) {
+      var o2 = document.createElement('option');
+      o2.value = ''; o2.textContent = '— Aucune équipe n\'a de dossier ce jour-là —';
+      sel.appendChild(o2);
+    }
+  }
+  function recDayChange() { recFillTeams(); recDraw(); }
+  function recDraw() {
+    rec.team = parseInt(document.getElementById('rc-team').value, 10) || null;
+    rec.day = parseInt(document.getElementById('rc-day').value, 10);
+    var d = new Date(TODAY.getTime() + rec.day * 864e5), key = ymd(d);
+    if (!rec.team) {
+      document.getElementById('rc-text').innerText = 'Aucun dossier prévu ' + (rec.day === 0 ? "aujourd'hui" : 'demain') + '.';
+      document.getElementById('rc-sub').textContent = fdate(key);
+      return;
+    }
+    var list = recJobs(rec.team, key);
+    var JF = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    var lines = [
+      'Feuille de route ' + (rec.day === 0 ? 'du jour' : 'de demain') + ' — ' + JF[d.getDay()] + ' ' + fdate(key),
+      teamName(rec.team) + ' — ' + techsOf(rec.team).join(' · '),
+      ''
+    ];
+    var mats = [];
+    list.forEach(function (r) {
+      if (r.type === 'sav') return;
+      mats.push('- ' + r.mat + (r.ballon && r.ballon.indexOf('Sans') < 0 ? ' + ' + r.ballon : '') + ' — ' + r.client);
+      if (r.bizone === 'Oui') mats.push('- Kit bizone — ' + r.client);
+      if (r.compteur === 'Triphasé') mats.push('- Raccordement triphasé — ' + r.client);
+    });
+    lines.push('MATÉRIEL À CHARGER AU DÉPÔT');
+    if (!mats.length) lines.push('- Journée SAV : caisse à outils, consommables et pièces de rechange.');
+    else { mats.forEach(function (m) { lines.push(m); }); lines.push('- Consommables, fluide, fixations et PV de réception.'); }
+    lines.push('');
+    lines.push('DÉPART : ' + DEPOT.adr + ' (' + DEPOT.prov + ')');
+    lines.push('');
+    var nI = 0, nS = 0;
+    list.forEach(function (r, i) {
+      if (r.type === 'sav') nS++; else nI++;
+      var prev = i ? list[i - 1] : null;
+      var tr = prev ? trajet(prev.prov, r.prov) : trajet(DEPOT.prov, r.prov);
+      lines.push(r.heure.replace(' h ', ':') + ' — ' + (r.type === 'sav' ? 'SAV · ' : '') + r.client +
+                 ' (' + tr.txt + ' de trajet' + (prev ? '' : ' depuis le dépôt') + ')');
+      lines.push('   ' + r.adr + ', ' + r.prov);
+      lines.push('   ' + r.tel + ' · Réf. ' + r.ref);
+      if (r.type === 'sav') lines.push('   Motif : ' + r.motif + ' · importance ' + PRIOL[r.prio || 'mid'].toLowerCase());
+      else lines.push('   ' + r.mat + ' · ' + r.ballon + ' · ' + r.compteur + ' · kit bizone : ' + r.bizone);
+      lines.push('');
+    });
+    lines.push(nI + ' installation' + (nI > 1 ? 's' : '') + ' + ' + nS + ' SAV · photos et PV signé obligatoires avant la clôture.');
+    document.getElementById('rc-text').innerText = lines.join('\n');
+    document.getElementById('rc-sub').textContent = teamName(rec.team) + ' · ' + fdate(key) + ' · ' + list.length + ' dossier(s)';
+  }
+  function copyRecap(btn) {
+    var t = document.getElementById('rc-text').innerText;
+    if (navigator.clipboard) navigator.clipboard.writeText(t);
+    var old = btn.textContent; btn.textContent = '✓ Copié';
+    setTimeout(function () { btn.textContent = old; }, 1400);
+  }
+  function shareRecap(btn) {
+    var t = document.getElementById('rc-text').innerText;
+    if (navigator.share) { navigator.share({ title: 'Feuille de route', text: t }).catch(function () {}); return; }
+    copyRecap(btn);
+  }
+
+  function mondayOf(d) { var x = new Date(d.getTime()); var wd = (x.getDay() + 6) % 7; x.setDate(x.getDate() - wd); return x; }
+  function renderPlanning() {
+    var lateRows = PLAN.filter(function (r) { return isOpenLate(r) && r.date < ymd(TODAY); });
+    var nI = lateRows.filter(function (r) { return r.type === 'chantier'; }).length, nS = lateRows.length - nI;
+    var cb = document.getElementById('pf-late-n');
+    cb.textContent = ' : ' + nI + ' installation' + (nI > 1 ? 's' : '') + ' + ' + nS + ' SAV';
+    cb.hidden = !lateRows.length;
+    var fLate = document.getElementById('pf-late').checked, fSav = document.getElementById('pf-sav').checked, fToday = document.getElementById('pf-today').checked;
+    var dayMode = fToday && !fLate && !fSav;
+    if (dayMode) WK = mondayOf(TODAY);
+    document.getElementById('plan-table').className = 'plan' + (dayMode ? ' daymode' : '');
+    var days7 = [];
+    for (var d = 0; d < 7; d++) days7.push(new Date(WK.getTime() + d * 864e5));
+    var first = days7[0], last = days7[6];
+    document.getElementById('wk-label').textContent =
+      first.getDate() + ' ' + MOIS[first.getMonth()] + ' – ' + last.getDate() + ' ' + MOIS[last.getMonth()] + ' ' + last.getFullYear();
+
+    var listMode = fLate || fSav;
+    document.getElementById('wk-ctrl').hidden = listMode || dayMode;
+    document.getElementById('wk-listlabel').hidden = !(listMode || dayMode);
+    if (dayMode) document.getElementById('wk-listlabel').textContent = 'Dossiers du jour — ' + fdate(ymd(TODAY)) + ' · ' + PLAN.filter(function (r) { return r.date === ymd(TODAY); }).length + ' dossier(s)';
+    document.getElementById('plan-table').hidden = listMode;
+    document.getElementById('plan-foot').hidden = listMode;
+    document.getElementById('plan-list').hidden = !listMode;
+    document.getElementById('plan-empty').hidden = true;
+    if (listMode) { renderPlanList(fLate, fSav, fToday); return; }
+    if (dayMode) document.getElementById('plan-foot').hidden = true;
+    var inWeek = PLAN.filter(function (r) { return r.date >= ymd(first) && r.date <= ymd(last); });
+
+    var shown = [];
+    for (var ti = 1; ti <= TEAMS.length; ti++) {
+      var busy = inWeek.some(function (r) { return r.team === ti; });
+      if (isActive(ti) || busy) shown.push(ti);
+    }
+
+    var g = '<thead><tr><th class="teamcol">Équipe</th>';
+    for (var d2 = 0; d2 < 7; d2++) {
+      var dd = days7[d2];
+      var kcls = ymd(dd) === ymd(TODAY) ? 'today' : (ymd(dd) < ymd(TODAY) ? 'past' : '');
+      if (assign && ymd(dd) < ymd(TODAY)) continue;
+      g += '<th class="' + kcls + '">' + JOURS[d2] +
+           '<span>' + dd.getDate() + '/' + ('0' + (dd.getMonth() + 1)).slice(-2) + '</span></th>';
+    }
+    g += '</tr></thead><tbody>';
+    shown.forEach(function (t) {
+      var arch = !isActive(t);
+      g += '<tr class="' + (arch ? 'archrow' : '') + '"><td class="teamcol">' +
+        (arch
+          ? '<span class="teamname off">' + teamName(t) + '</span><span class="archtag">Archivée</span>'
+          : '<span class="teamname">' + teamName(t) + '</span>') +
+        '</td>';
+      for (var d3 = 0; d3 < 7; d3++) {
+        var key = ymd(days7[d3]);
+        if (assign && key < ymd(TODAY)) continue;
+        var cell = inWeek.filter(function (r) { return r.team === t && r.date === key; })
+          .sort(function (a, b) { return a.heure < b.heure ? -1 : 1; });
+        var cellCls = (key === ymd(TODAY) ? 'today' : (key < ymd(TODAY) ? 'past' : ''));
+        var slotHtml = '';
+        if (assign && (!isActive(t) || key < ymd(TODAY))) { cellCls += ' slotbusy'; }
+        if (assign && isActive(t) && key >= ymd(TODAY)) {
+          var ch = cell.filter(function (x) { return x.type === 'chantier'; })[0];
+          var tr = ch ? trajet(ch.prov, assign.prov) : trajet(DEPOT.prov, assign.prov);
+          cellCls += ' slot' + (tr.min < 90 ? ' slotgood' : (tr.min <= 180 ? ' slotok' : ' slotfar'));
+          slotHtml = '<button class="slotbtn" onclick="placeAssign(' + t + ', \'' + key + '\')">' +
+            (ch ? '<span class="sl vei"><b class="' + tcls(tr.min) + '">' + tr.txt + '</b> – Depuis le chantier du jour (' + ch.prov + ')</span>'
+                : '<span class="sl dep"><b class="' + tcls(tr.min) + '">' + tr.txt + '</b> – Depuis le dépôt</span>') +
+            '<span class="slgo">Placer ici</span></button>';
+        }
+        g += '<td class="' + cellCls + '">' + slotHtml +
+          cell.map(function (r) {
+            var cls = r.type === 'sav' ? 'sav' : (r.cloture ? 'done' : '');
+            var tag = '', frozen = false;
+            if (r.type === 'sav') {
+              if (r.prio === 'hi' && !r.cloture) { cls += ' urg'; tag = '<span class="jtag urg">Urgent</span>'; }
+              if (isOpenLate(r) && r.date < ymd(TODAY)) { cls += ' islate'; tag = '<span class="jtag red">Non clôturé</span>'; }
+            } else {
+              if (r.statut === 'Non réalisée') { cls = 'nr'; frozen = true; tag = '<span class="jtag grey">Non réalisée</span>'; }
+              else if (r.statut === 'Partiellement réalisée') { cls = 'part'; frozen = true; tag = '<span class="jtag amber">Partiel</span>'; }
+              else if (r.statut === 'Reprise planifiée') { tag = '<span class="jtag blue">Reprise</span>'; }
+              else if (isOpenLate(r) && r.date < ymd(TODAY)) { cls = 'late'; tag = '<span class="jtag red">Non clôturé</span>'; }
+            }
+            return '<div class="job ' + cls + '">' +
+              '<div class="jtop">' + (tag ? '' : '<span class="jh">' + r.heure.replace(' h ', ':') + '</span>') +
+              '<b>' + (r.type === 'sav' ? 'SAV · ' : '') + r.client + ' <em class="jcity">· ' + r.prov + '</em></b>' + tag + '</div>' +
+              '<div class="jbtns">' +
+                '<button class="ib" onclick="openInfo(\'' + r.id + '\')" title="Infos du chantier">Infos</button>' +
+                (frozen || r.cloture ? '' : '<button class="ib" onclick="openReplan(\'' + r.id + '\')" title="Je replanifie / J\'annule">Replanifier</button>') +
+                (!frozen
+                  ? (r.cloture
+                      ? '<span class="ib done" title="Clôturé le ' + fdate(r.cloture.date) + '">✓ Clôturé</span>'
+                      : (r.date <= ymd(TODAY)
+                          ? '<button class="ib clo" onclick="openCloture(\'' + r.id + '\')" title="Je clôture">Clôturer</button>'
+                          : ''))
+                  : '') +
+              '</div>' +
+              '</div>';
+          }).join('') + '</td>';
+      }
+      g += '</tr>';
+    });
+    g += '</tbody>';
+    document.getElementById('plan-table').innerHTML = g;
+  }
+  fillDepotProv(); renderTeams(); renderPlanning(); renderClo(); renderTechs(); renderSV(); fxTab('enc');
+  renderP();
+</script>

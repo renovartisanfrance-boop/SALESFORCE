@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poste confirmateur — guide de l'intégrateur Salesforce</title>
+<style>
+body{font-family:system-ui,"Segoe UI",Roboto,sans-serif;max-width:1150px;margin:24px auto;padding:0 18px;color:#16181d;font-size:14px;line-height:1.5}
+h1{font-size:22px}h2{font-size:17px;margin-top:28px;border-bottom:1px solid #e7e9ee;padding-bottom:4px}h3{font-size:15px;margin:18px 0 6px;padding:4px 10px;border-radius:6px}
+table{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:13px}th,td{border:1px solid #e1e4ea;padding:5px 8px;text-align:left;vertical-align:top}th{background:#f6f7f9}
+code{background:#f1f3f6;border-radius:4px;padding:0 4px;font-size:12.5px}pre{background:#f6f7f9;padding:10px;border-radius:8px;overflow:auto}
+ul{padding-left:20px}li{margin:3px 0;padding:2px 6px;border-radius:5px;list-style:none}li input{margin-right:6px}
+.note{color:#555b66;margin:2px 0}
+.c{background:#fff6cc}h3.c{background:#ffe680}
+.a{background:#e3efff}h3.a{background:#b9d6ff}
+.v{background:#ffe1de}h3.v{background:#ffb8b0}
+.legend{position:sticky;top:0;background:#fff;padding:8px 0;border-bottom:1px solid #e7e9ee;display:flex;gap:10px;flex-wrap:wrap;z-index:2}
+.legend span{padding:2px 10px;border-radius:999px;font-weight:600;font-size:12.5px}
+@media print{.legend{position:static}}
+</style></head><body>
+<div class="legend"><span class="c">🟨 À confirmer (intégrateur)</span><span class="a">🟦 À créer</span><span class="v">🟥 À vérifier avant de déployer</span></div>
+<h1 class="">Poste confirmateur — guide de l'intégrateur Salesforce</h1>
+<p class="note">À lire avant de développer ou de déployer le poste confirmateur.</p>
+<p class="note">Fonctionnel validé : <code>docs/analyse/04-poste-confirmateur.md</code>. Maquette : <code>docs/maquettes/maquette-confirmateur.html</code>.</p>
+<p class="note"><b>Vues de travail</b> : <b>retiré</b> (ne pas développer). Les vues par profil restent des listes de vue Salesforce. <b>Onglets visibles par personne</b> : réglés <b>par l'intégrateur</b> (droits / menu du site), pas dans la page responsable.</p>
+<p class="note">Noms d'API relevés <b>en lecture seule</b> dans l'org de production le <b>08/11/2026</b> (<code>sf sobject describe</code>).</p>
+<p class="note"><b>Code couleur</b> : ✅ existe dans l'org · <b>🟨 Cx = À CONFIRMER</b> (par l'intégrateur, non bloquant) · <b>🟦 Ax = À CRÉER</b> · <b>🟥 Vx = À VÉRIFIER avant de déployer</b>.</p>
+<p class="note">Chaque code renvoie à la liste d'actions ci-dessous : cochez-les au fur et à mesure.</p>
+<hr>
+<h2 class="">★ VOS ACTIONS — à faire par l'intégrateur</h2>
+<h3 class="c">🟨 À CONFIRMER par l'intégrateur (jaune) — vérifications rapides dans l'org, non bloquantes ; demander à Micke seulement en cas de doute</h3>
+<ul>
+<li class="c"><input type="checkbox"> <b>C1</b> — Champ qui porte la <b>fiche</b> de la piste : <code>TypeDeDossier__c</code> ? (autres candidats : <code>TYPE_DE_DOSSIER__c</code>, <code>DR_Type_dossier__c</code>, type d'enregistrement) → § 1, § 5</li>
+<li class="c"><input type="checkbox"> <b>C2</b> — Champ <b>Provenance</b> affiché : <code>Apporteurs__c</code> ? (ou <code>CONFIRM_Provenance__c</code>, <code>NonREGIE_miniAppAff__c</code>, <code>Regie__c</code>) → § 1</li>
+<li class="c"><input type="checkbox"> <b>C3</b> — Ordre de priorité de la <b>date et du créneau de rappel</b> : CONFIRM → REGIE → TELEPRO ? → § 1</li>
+<li class="c"><input type="checkbox"> <b>C4</b> — Champ du <b>confirmateur attribué</b> : <code>Utilisateur__c</code> ou <code>Confirmateurs__c</code> ? → § 1</li>
+<li class="c"><input type="checkbox"> <b>C5</b> — « Année de la maison » = <code>Ann_e_de_la_Chaudiere__c</code> (nom d'API trompeur) ? → § 2</li>
+<li class="c"><input type="checkbox"> <b>C6</b> — AGRI : raison sociale et SIRET dans les mêmes champs <code>PRO_…</code> que le tertiaire ? → § 2</li>
+<li class="c"><input type="checkbox"> <b>C7</b> — Statut de <b>signature du devis</b> d'une piste : <code>RES_Statut_Devis__c</code> ou <code>YS_Statut__c</code> ? → § 3</li>
+<li class="c"><input type="checkbox"> <b>C8</b> — <b>Statut du dossier</b> : <code>PAC_STATUT_DOSSIER__c</code> ou le champ propre à chaque fiche ? → § 3</li>
+<li class="c"><input type="checkbox"> <b>C9</b> — <b>Mécanisme qui crée le Dossier</b> (<code>Pro__c</code>) à la conversion (Flow ? Apex ?). Aucun lien direct Piste ↔ Dossier trouvé → § 2</li>
+<li class="c"><input type="checkbox"> <b>C10</b> — <b>Vues de liste</b> exactes à brancher pour chaque fiche (Traitement, Rappels, Hors cible) → § 1</li>
+<li class="c"><input type="checkbox"> <b>C11</b> — <b>Fichiers</b> : sont-ils attachés à la Piste, au Dossier ou aux deux ? À la conversion, les fichiers de la piste doivent-ils être liés au dossier créé ? → § 2</li>
+</ul>
+<h3 class="a">🟦 À CRÉER (bleu)</h3>
+<ul>
+<li class="a"><input type="checkbox"> <b>A1</b> — <code>User.Preferences_Ecran__c</code> : texte long (131 072), JSON des réglages du confirmateur → § 7</li>
+<li class="a"><input type="checkbox"> <b>A2</b> — <code>Regle_Rappel__mdt</code> (ou objet de paramétrage modifiable par le responsable) : Fiche, Mode A/B, Délai, Provenance → § 7</li>
+<li class="a"><input type="checkbox"> <b>A3</b> — <code>Champ_Obligatoire_Conversion__mdt</code> : Fiche, Objet, Champ API, Ordre → § 2</li>
+<li class="a"><input type="checkbox"> <b>A4</b> — <code>Fiche_Confirmateur__mdt</code> : table des codes de fiche → § 5</li>
+<li class="a"><input type="checkbox"> <b>A5</b> — Nouvelles règles de doublons dans <code>Doublon_Regle__mdt</code> + classes <code>DoublonRegle</code> : <b>téléphone toutes fiches</b> et <b>adresse</b> → § 4</li>
+<li class="a"><input type="checkbox"> <b>A7</b> — <code>Lead.Consentement_Preuve__c</code> + <code>Lead.Consentement_Date__c</code> : preuve de la demande du client (règle à valider par Micke) → § 7</li>
+<li class="a"><input type="checkbox"> <b>A8</b> — <code>Lead.CONFIRM_Premier_Appel__c</code> (date-heure) : premier changement de Traitement, pour l'indicateur « délai avant premier appel » → § 7</li>
+<li class="a"><input type="checkbox"> <b>A9</b> — Vues de liste « <b>NRP 6x et +</b> », une par fiche → § 1</li>
+<li class="a"><input type="checkbox"> <b>A10</b> — Champ <b>surface de serre</b> (AGRI) : aucun trouvé, à créer ou à identifier → § 2</li>
+<li class="a"><input type="checkbox"> <b>A11</b> — <b>Menu du site</b> : garder le bandeau et le menu actuels (logo, Accueil, Pistes, Dossiers, Reporting Dossiers, Standard, Campagnes (REGIES), Plus, recherche, cloche, profil). Seuls ajouts : un élément <b>« Prévisite »</b> après « Dossiers », visible selon le réglage par confirmateur, et <b>« Page responsable »</b> dans « Plus », réservé aux responsables (audience du menu de navigation). Les LWC se placent <b>sous</b> le bandeau, dans les pages existantes.</li>
+</ul>
+<ul>
+<li class="a"><input type="checkbox"> <b>A14</b> — <b>Filtre rapide dans les titres de colonnes</b> : uniquement dans le LWC (rien à créer dans Salesforce), appliqué sur les lignes déjà chargées. <b>Depuis le 09/11/2026, un seul composant LWC de liste (<code>listeDeVue</code>) sert à tous les écrans</b> : Pistes (Leads, Data, Confirmation) et Dossiers (Prévisite, Signature, Statut docs, Envoi en pose, Dépôt dossier). Mêmes fonctions partout : tri au clic sur le titre, filtre dans chaque titre (valeurs à cocher avec leur nombre, recherche au-delà de 8 valeurs, « contient… » pour le texte), barre des filtres actifs avec « Effacer les filtres », largeur des colonnes à la souris (double-clic = taille automatique), tri et largeurs gardés par liste dans <code>User.Preferences_Ecran__c</code> (A1). Le format est <b>identique à l'écran Confirmation</b> pour toutes les listes : case à cocher, modification en ligne (crayon, double-clic, ligne surlignée, barre Annuler / Enregistrer, enregistrement groupé en Apex avec <code>WITH USER_MODE</code>), icônes Fichiers et Historique, boutons Récents · SMS · Actualiser, Aide. Chaque écran ne fait que lui passer : la liste de vue (onglet → fiche → liste), ses colonnes et les colonnes modifiables. <b>Seuls les champs changent d'une liste à l'autre.</b></li>
+<li class="a"><input type="checkbox"> <b>A15</b> — <b>Listes de vue attribuées</b> (onglet « Listes de vue » de la page responsable), modifiables par la responsable (licence Partner Community, donc <b>pas une Custom Metadata</b>). Créer un objet de paramétrage <code>Config_Liste__c</code> : <code>Fiche__c</code> (code de la fiche), <code>Onglet__c</code> (liste : <code>Leads</code>, <code>Data</code>, <code>Confirmation</code>, <code>Prévisite</code>, <code>Signature</code>, <code>Statut docs</code>, <code>Envoi en pose</code>, <code>Dépôt dossier</code> ; <b>remplace <code>Profil__c</code></b> depuis le 09/11/2026 : les listes sont rangées par onglet), <code>Liste__c</code> (nom ou Id de la vue de liste Salesforce), <code>Nom_Ecran__c</code> (nom affiché dans le poste), <code>Ordre__c</code> (nombre). Droits : création et modification pour la responsable, lecture pour les autres. <b>Pas de champ de réglage des filtres</b> (décision du 08/11/2026) : chacun filtre librement sur les colonnes de sa liste de vue.</li>
+</ul>
+<p>  <b>Qui voit la liste</b> (09/11/2026 : <b>plus de création de liste dans le poste, ni de listes individuelles</b> ; les listes sont des listes de vue génériques gérées dans Salesforce, le poste ne fait que les afficher ; dans le pop-up d'une liste, <b>le nom et la liste de vue Salesforce sont en lecture seule</b> — <code>Nom_Ecran__c</code> et <code>Liste__c</code> de <code>Config_Liste__c</code> se règlent dans Salesforce, pas dans le poste). <b>Règle de hiérarchie (09/11/2026), la même dans tous les écrans : onglet → fiche → listes.</b> Une personne voit une liste si elle a <b>l'onglet</b> (A21) <b>et</b> si elle est cochée sur <b>la fiche</b> (A20), puis : listes communes de cet onglet sur cette fiche, sauf celles dont elle est retirée (en personne, ou via son profil). La barre des fiches de Pistes et Dossiers ne montre que les fiches de la personne. ~~<code>Liste_Individuelle__c</code>~~ : <b>objet abandonné le 09/11/2026</b>, ne pas le créer. <b>Personnes retirées d'une liste commune</b> : petit objet enfant <b>🟦</b> <code>Config_Liste_Exclusion__c</code> : <code>Config_Liste__c</code> (relation principal-détail), <code>Utilisateur__c</code> (recherche User, vide si retrait par profil) et <b><code>Profil__c</code></b> (liste de choix Télépro / Confirmateur / Secrétaire / Closer, vide si retrait d'une personne, 09/11/2026) ; un enregistrement par liste et par personne, ou par liste et par profil. « Retirer tous les profils » = un enregistrement par profil. La personne exclue (en nom, ou via son profil) ne voit pas cette liste commune, même si elle est cochée sur la fiche. Le code lit le profil de la personne depuis le champ de profil métier déjà utilisé pour A20 (🟨 à confirmer : <code>Profile.Name</code> ou champ dédié sur User).</p>
+<p>  <b>Comment le code lit une liste individuelle</b> (<b>🟨</b> à confirmer avec l'intégrateur) : à la création, le LWC lit la liste de départ avec l'API <code>lightning/uiListsApi</code> (<code>getListInfoByName</code> : filtres et colonnes) et propose ses filtres ; pour chaque champ, <b>toutes les valeurs</b> viennent de la description de la liste de choix. <b>Champs modifiables = uniquement les colonnes de la liste de départ</b> (<code>displayColumns</code>). Les conditions de la liste sur des champs qui ne sont pas des colonnes (<code>filteredByInfo</code>) sont <b>reprises telles quelles, non modifiables</b>. L'Apex refuse tout autre champ. Ensuite l'Apex construit la requête lui-même (<b>SOQL dynamique</b> avec variables liées, champs limités à une liste autorisée, <b><code>WITH USER_MODE</code></b> pour respecter le partage) au lieu d'ouvrir la vue de liste. Une liste dont <code>Date_Fin__c</code> est dépassée n'est plus chargée (et un traitement de nuit peut la supprimer).</p>
+<ul>
+<li class="v"><input type="checkbox"> <b>A16</b> — <b>Récemment ouverts</b> : la dernière ouverture vient de l'objet standard <code>RecentlyViewed</code> (<code>LastViewedDate</code>, <b>🟨</b> vérifier qu'il est alimenté pour les utilisateurs du site Experience). Pour le <b>nombre d'ouvertures et leurs heures</b>, créer un petit journal <code>Journal_Ouverture__c</code> (<code>Piste__c</code> lien Lead, <code>Utilisateur__c</code>, <code>Date_Ouverture__c</code>), écrit par le LWC à l'ouverture de la fiche et purgé après 30 jours. Les actions du jour viennent de <code>LeadHistory</code> (voir <b>🟥 V6</b>). <b>Tout est filtré sur l'utilisateur connecté</b> : <code>Journal_Ouverture__c.Utilisateur__c = UserInfo.getUserId()</code>, <code>LeadHistory.CreatedById = UserInfo.getUserId()</code>. Les SMS automatiques (créés par l'utilisateur système) ne sont affichés que s'ils suivent une action de cet utilisateur sur la même piste.</li>
+<li class="a"><input type="checkbox"> <b>A17</b> — <b>Relances après NRP et priorités, par profil et par fiche</b> :</li>
+<li class="">champ <b><code>Lead.CONFIRM_Prochain_Appel__c</code></b> (date-heure) pour les confirmateurs, et <b><code>Lead.TELEPRO_Prochain_Appel__c</code></b> (date-heure) pour les télépros ;</li>
+<li class="c">objet de paramétrage <b><code>Regle_Relance__c</code></b>, modifiable par la responsable (pas une Custom Metadata) : <code>Onglet__c</code> (<b>une seule règle par onglet, valable pour toutes les fiches</b> depuis le 09/11/2026 : <code>Leads</code>, <code>Data</code>, <code>Confirmation</code>, plus tard les onglets Dossiers ; <code>Fiche__c</code> et <code>Profil__c</code> ne sont plus utilisés pour les relances), <code>Champ_Traitement__c</code> (confirmateur : <code>CONFIRM_Traitement__c</code> ; télépro : <b><code>RENO_Sous_Statut_Leads__c</code></b>, « LEADS- Statut », confirmé par Micke), <code>Delais__c</code> (JSON NRP 1x→7x pour les confirmateurs, <b>1x→12x pour les télépros</b> : <code>30m</code>, <code>1h</code>, <code>2h</code>, <code>demi</code>, <code>lendemain</code>, <code>autre</code>), <code>Ordre_Priorite__c</code> (nouvelle, rappel, relance), <b><code>Delai_Nouvelle__c</code></b> (délai pour appeler une nouvelle piste : <code>15m</code>, <code>30m</code>, <code>1h</code>, <code>2h</code>, <code>demi</code>, <code>lendemain</code>) et <b><code>Seuils_Retard__c</code></b> (texte long JSON, <b>un seuil par valeur de statut</b>, en minutes, par exemple <code>{"▣ EN ATT DE TRAITEMENT":120,"🟨 NRP- 1x":60,"🟦 Rappel Nécessaire":30}</code>). Une piste est <b>en retard</b> quand l'heure prévue de son statut est dépassée de plus que le seuil de cette valeur. Heure prévue : nouvelle piste = date de création (ou d'attribution) + délai « nouvelle » ; NRP = prochain appel calculé (A17) ; rappel promis = date + début du créneau. Rien d'autre à créer : le code lit la valeur du statut et cherche sa ligne ; ce calcul sert au reporting « qui est en retard ». Les réglages de distribution (file d'attente, plafond…) restent <b>par fiche et par profil</b> : les garder dans un objet séparé ou dans des lignes <code>Fiche__c</code> distinctes. Le mode A/B et le délai « le plus vite possible » de <b>A2</b> peuvent y être regroupés : un seul objet ;</li>
+<li class=""><b>calcul dans le déclencheur Apex de la Piste</b> (before update, quand le champ de traitement passe à un NRP et que la date ou le créneau ne sont pas modifiés en même temps), pour que <b>l'ancien et le nouvel onglet</b> en profitent. Plage de travail : 9h-19h30, fuseau Europe/Paris ;</li>
+<li class="">tri du LWC : groupe de priorité (via <b>A13</b>), puis échéance ;</li>
+<li class="a"><input type="checkbox"> <b>A18</b> — <b>Distribution automatique des pistes</b> (télépros et confirmateurs, par fiche ; code fourni par Claude, voir <code>04-poste-confirmateur.md</code> § « Distribution automatique ») :</li>
+<li class="v"><b>file d'attente = liste de vue « à attribuer » choisie par la responsable</b>, par fiche et par onglet (<b>Attribution Auto : seulement <code>Leads</code> et <code>Data</code></b> depuis le 09/11/2026 ; l'attribution des confirmateurs n'est pas réglée dans cet onglet) (champ <code>Liste_Attribution__c</code> dans <code>Regle_Relance__c</code>, nom d'API de la liste de vue). Lecture côté Apex avec <code>ApexPages.StandardSetController</code> + <code>setFilterId(&lt;Id de la liste de vue&gt;)</code>, ce qui reprend exactement ses filtres. <b>🟥</b> Vérifier que chaque liste exclut les pistes déjà attribuées et reste sous 10 000 lignes ;</li>
+<li class=""><code>User.Derniere_Activite__c</code> (date-heure), mis à jour par l'écran à chaque action : c'est la présence ; « absent » au-delà de 30 min ;</li>
+<li class=""><b>nouvel utilisateur</b> : coché sur <b>aucune fiche</b> par défaut (aucune ligne créée dans le paramétrage fiche × personne) ; il ne reçoit rien tant que la responsable ne l'a pas attribué ;</li>
+<li class="v"><b>éligibilité d'un destinataire</b> = même profil + <b>a l'onglet de son métier</b> (Confirmation pour les confirmateurs, Leads ou Data pour les télépros) + cochée sur la fiche + présente + <b>même pays</b>. Créer <code>User.Pays__c</code> (liste FR / ES) et le pays de la fiche dans <code>Fiche_Confirmateur__mdt</code> (RES-060 = ES). Le contrôle du pays est fait <b>dans l'Apex de distribution</b> (verrou), pas seulement dans l'écran. Il complète <b>🟥 V3</b> (cloisonnement Espagne) ;</li>
+<li class="">répartition équitable à la première action du jour, « donne-moi du travail » quand la liste est vide, rééquilibrage au traitement : <b>sans tâche planifiée</b> ;</li>
+<li class=""><b>verrou</b> <code>SELECT … FOR UPDATE</code> sur les pistes déplacées, pour qu'une piste ne parte jamais à deux personnes ;</li>
+<li class="c">écriture dans le champ d'attribution existant (<b>🟨</b> télépro : <code>LOOKUP- Telepro</code>, utilisé par l'outil actuel de la responsable ; confirmateur : <code>Utilisateur__c</code>) ;</li>
+<li class="">délai « fin » à la dernière étape (NRP 12x télépro, NRP 7x confirmateur) : plus de relance ni de distribution ;</li>
+<li class="v"><b>🟥</b> vérifier que changer le champ d'attribution donne bien l'accès en lecture et écriture à la nouvelle personne (règles de partage basées sur ce champ).</li>
+<li class="a"><input type="checkbox"> <b>A19</b> — *(reporté : ira dans le reporting de l'activité, pas dans la page responsable)* <b>Sécurité « licences désactivées »</b> (pistes et dossiers) : détection des utilisateurs <b><code>User.IsActive = false</code></b> (licence désactivée) qui ont encore des pistes ou des dossiers attribués. Les absences du jour ne sont <b>pas</b> concernées : la distribution automatique (A18) s'en charge.</li>
+</ul>
+<p>  pour les champs d'attribution des Pistes (LOOKUP- Telepro, <code>Utilisateur__c</code>) et des Dossiers (<code>Confirmateurs__c</code> et champs secrétaire / closer, <b>🟨</b> à identifier). Calcul à l'ouverture de l'onglet Contrôle et chaque nuit (rapport du matin). Action unique <b>« Rebasculer dans la file automatique »</b> en Apex, en lot, avec verrou : on vide le champ d'attribution, et la piste ou le dossier repart dans la file ; une ligne d'historique par enregistrement. Pastille rouge sur la fiche <b>seulement</b> si un problème est détecté.</p>
+<ul>
+<li class="a"><input type="checkbox"> <b>A12</b> — <b>Onglets bêta</b> : publier les nouveaux écrans dans des <b>onglets « bêta » à côté des onglets actuels</b> (qui restent en place), visibles par tous les profils concernés.</li>
+<li class="a"><input type="checkbox"> <b>A13</b> — Table de correspondance <b>valeur de liste → groupe</b> (Custom Metadata <code>Groupe_Valeur__mdt</code> : NRP + nombre, Rappel, Hors cible, Conf OK, En attente). La logique du code s'appuie sur cette table, <b>jamais sur le texte des libellés</b>. L'affichage garde les libellés et émojis actuels.</li>
+<li class="c"><input type="checkbox"> <b>A23</b> — <b>Mail auto</b> (onglet « Mail auto » de la page responsable, 09/11/2026, filtre par fiche) : nouvel objet <b>🟦</b> <code>Mail_Auto__c</code> : <code>Fiche__c</code> (code de la fiche, texte ou liste de choix comme A20), <code>Objet__c</code> (liste de choix : Piste / Dossier), <code>Evenement__c</code> (liste de choix des déclencheurs : <code>RDV_Confirme</code>, <code>Veille_RDV</code>, <code>Visite_Realisee</code>, <code>Devis_Sans_Reponse</code>, <code>Devis_Signe</code>, <code>Date_Pose</code>, <code>Docs_Incomplets</code>, <code>Dossier_Depose</code> ; 🟨 liste exacte à confirmer avec Micke et à relier aux champs de statut réels), <code>Modele_Email__c</code> (texte 255 : <code>DeveloperName</code> du modèle <code>EmailTemplate</code> ; les modèles sont créés dans Salesforce, pas dans le poste), <code>Delai__c</code> (liste de choix : Immediat / J-1_18h / J+1 / J+2 / J+3 / J+7), <code>Actif__c</code> (case). Un enregistrement par fiche et par événement. L'envoi lui-même : un flow ou Apex déclenché sur Lead / Dossier qui lit <code>Mail_Auto__c</code> pour la fiche et l'événement, vérifie l'adresse e-mail et le refus de communication (🟨 champ d'opt-out à confirmer : <code>HasOptedOutOfEmail</code> ou champ maison), envoie avec <code>Messaging.SingleEmailMessage</code> + le modèle, et trace une activité (<code>Task</code> ou <code>EmailMessage</code>) sur l'enregistrement. Les envois différés (J+1…) passent par un traitement planifié quotidien. Compteur « Envoyés (30 j) » = nombre de <code>EmailMessage</code> liés, par modèle, sur 30 jours.</li>
+<li class="a"><input type="checkbox"> <b>A22</b> — <b>Contrôle du paramétrage</b> (dernier onglet de la page responsable, 09/11/2026) : aucun objet à créer. Une méthode Apex (ou le LWC) relit <code>Acces_Onglets__c</code>, <code>Equipe_Fiche__c</code>, <code>Config_Liste__c</code>, <code>Config_Liste_Exclusion__c</code>, <code>Mail_Auto__c</code> et <code>Fiche_Parametre__c</code>, et renvoie la liste des incohérences : personne sur une fiche sans onglet (rouge), onglet sans fiche (orange), onglet × fiche avec des personnes mais aucune liste commune (rouge), liste individuelle sans l'onglet ou la fiche (rouge), personne retirée de toutes les listes (orange), liste individuelle terminée, retrait inutile, fiche vide (information). Le nombre d'incohérences rouges s'affiche en pastille sur l'onglet. Pas de correction automatique : la responsable corrige elle-même.</li>
+<li class="a"><input type="checkbox"> <b>A21</b> — <b>Accès aux sous-onglets de Pistes et de Dossiers</b> (onglet « Visibilité Onglets » de la page responsable, 09/11/2026) : objet <b><code>Acces_Onglets__c</code></b>, une ligne par utilisateur : <code>Utilisateur__c</code> (recherche User, unique), <code>Onglets_Pistes__c</code> (liste de sélection multiple : <code>Leads</code>, <code>Data</code>, <code>Confirmation</code>) et <code>Onglets_Dossiers__c</code> (liste de sélection multiple : <code>Prévisite</code>, <code>Signature</code>, <code>Statut docs</code>, <code>Envoi en pose</code>, <code>Dépôt dossier</code>). Un objet et non un champ sur User, car une responsable Partner Community ne peut pas modifier la fiche User des autres. Le LWC « Dossiers » n'affiche que les sous-onglets cochés. Droits : création / modification pour la responsable, lecture pour chacun sur sa ligne. Comme V11 : affichage seulement, la sécurité reste le partage Salesforce. Valeurs par défaut par profil (confirmées le 09/11/2026) : télépros <code>Leads</code> + <code>Data</code> ; confirmateurs <code>Confirmation</code> + <code>Signature</code> ; secrétaires <code>Prévisite</code> + <code>Statut docs</code> + <code>Dépôt dossier</code> ; closers <code>Envoi en pose</code>. <b>Un nouvel utilisateur n'a rien par défaut</b> (décision du 09/11/2026) : aucun onglet, aucune fiche, aucune liste ; la responsable règle tout dans Paramétrage, l'onglet Contrôle lui rappelle les nouveaux utilisateurs non paramétrés. Les valeurs par défaut ci-dessus servent de repère visuel (onglets habituels du profil en couleur, les autres grisés mais cochables). <b>🟦 Elles sont réglables par la responsable (09/11/2026, étoile « par défaut » sous chaque onglet de l'en-tête du profil)</b> : stocker la liste des onglets par défaut par profil dans <code>Fiche_Parametre__c</code> (un enregistrement par profil : <code>Profil__c</code>, <code>Onglets_Defaut__c</code> multi-sélection), et la lire à la création d'un utilisateur du portail pour pré-remplir <code>Acces_Onglets__c</code>, au lieu de coder les valeurs en dur.</li>
+<li class="a"><input type="checkbox"> <b>A20</b> — <b>Équipes</b> (onglet « Équipes » de la page responsable, 08/11/2026) : objet personnalisé <b><code>Equipe_Fiche__c</code></b>, une ligne par case cochée : <code>Fiche__c</code> (code de la fiche, valeurs de <code>Fiche_Confirmateur__mdt</code>), <code>Utilisateur__c</code> (recherche User), <code>Profil__c</code> (liste : Télépro / Confirmateur / Secrétaire / Closer). Clé unique fiche + utilisateur + profil (règle de validation ou champ texte unique calculé par le code). <b>Ce n'est pas un groupe ni une règle de partage Salesforce</b> : c'est une simple table lue par notre code pour (1) la distribution (qui reçoit) et (2) l'affichage des listes communes (qui voit). Droits : création / suppression pour la responsable, lecture pour les autres profils du portail. <b>Fiches désactivées de l'affichage</b> : la responsable peut masquer une fiche où plus personne n'est coché. <code>Fiche_Confirmateur__mdt</code> n'étant pas modifiable par elle (Custom Metadata), stocker ce choix dans un petit objet <b><code>Fiche_Parametre__c</code></b> : <code>Fiche__c</code> (code, unique), <code>Desactivee__c</code> (case à cocher). Une fiche désactivée reste dans Salesforce ; elle est seulement cachée dans la page responsable.</li>
+</ul>
+<h3 class="v">🟥 À VÉRIFIER avant de déployer en production (rouge)</h3>
+<ul>
+<li class="v"><input type="checkbox"> <b>V10</b> — Le calcul du prochain appel (A17) ne doit pas entrer en conflit avec les <b>Flows SMS</b> existants déclenchés par les NRP : vérifier l'ordre d'exécution et l'absence de double mise à jour.</li>
+<li class="v"><input type="checkbox"> <b>V11</b> — <b>Visibilité des listes = filtre de notre code, pas une sécurité.</b> Le poste n'affiche que les listes prévues pour la personne (Équipes + Listes communes, moins les retraits), mais l'accès réel aux pistes et dossiers reste décidé par le <b>partage Salesforce</b> (voir V2). Pour que le code puisse lire une liste de vue pour un utilisateur, <b>chaque liste de vue utilisée doit être partagée dans Salesforce avec tous les utilisateurs du portail concernés</b> (par exemple un groupe public « Portail - tous »), une fois pour toutes. Vérifier aussi que la licence Partner Community donne bien accès aux nouveaux objets (<code>Equipe_Fiche__c</code>, <code>Config_Liste__c</code>, <code>Config_Liste_Exclusion__c</code>, <code>Fiche_Parametre__c</code>, <code>Acces_Onglets__c</code>).</li>
+<li class="v"><input type="checkbox"> <b>V0</b> — Avant d'ouvrir la bêta : tester en sandbox <b>toutes les actions qui enregistrent</b> (traitement, échéance, fiche client, conversion, fichiers). Les deux onglets modifient les mêmes données.</li>
+</ul>
+<ul>
+<li class="v"><input type="checkbox"> <b>V1</b> — Droits du profil « PORTAIL INTERNE - Confirmateur » (lecture / écriture champ par champ) sur tous les champs de ce guide, et sur <code>User.Preferences_Ecran__c</code> pour sa propre fiche.</li>
+<li class="v"><input type="checkbox"> <b>V2</b> — <b>Partage</b> : aujourd'hui ce profil lit et modifie <b>les 1 686 dossiers</b> via les règles de partage vers les groupes (« Résidentiel- Resp Confirmateurs »…). Cible : « ses dossiers uniquement ». À valider avec Micke.</li>
+<li class="v"><input type="checkbox"> <b>V3</b> — Cloisonnement <b>Espagne</b> (RES-060) : les équipes ES ne voient pas les dossiers français, et inversement.</li>
+<li class="v"><input type="checkbox"> <b>V4</b> — Retirer NRP 6x et 7x des filtres des vues « Traitement Conf ».</li>
+<li class="v"><input type="checkbox"> <b>V5</b> — Flows existants : création du dossier, SMS automatiques (NRP 1x et 3x), et règles de validation <code>Previsite_2_tertiaire</code> et <code>Conversion_VerificationTERTIAIRE</code>.</li>
+<li class="v"><input type="checkbox"> <b>V6</b> — <b>Suivi de l'historique</b> activé sur Traitement, Date et Créneau conf, Commentaire conf (20 champs maximum par objet).</li>
+<li class="v"><input type="checkbox"> <b>V7</b> — Fuseau horaire Europe/Paris pour le calcul des échéances.</li>
+<li class="v"><input type="checkbox"> <b>V8</b> — Affichage des <b>libellés</b> et non des noms d'API pour toutes les listes de choix (§ 6).</li>
+<li class="v"><input type="checkbox"> <b>V9</b> — <b>Fichiers dans le site</b> : les utilisateurs partenaires voient-ils les fichiers ajoutés en interne ? (<code>ContentDocumentLink.Visibility</code> doit être <code>AllUsers</code>.) Peuvent-ils en ajouter (droits du profil, réglage du site, taille maximale) ?</li>
+</ul>
+<hr>
+<h2 class="">0. Règles de déploiement</h2>
+<ul>
+<li class="">Développer et tester dans la <b>sandbox</b> d'abord. <b>Aucun déploiement en production sans l'accord écrit de Micke.</b></li>
+<li class="">Nouveau code dans <code>force-app/</code> : Trigger → Handler → Service → Selector, <code>with sharing</code>, <code>WITH USER_MODE</code>, code bulkifié, tests ≥ 85 %, Jest pour chaque LWC.</li>
+<li class="">Le poste confirmateur <b>fonctionne déjà</b> sur le site Experience « business saas » : cette version est une <b>refonte visuelle avec quelques fonctions en plus</b>. Elle réutilise les champs, vues de liste, Flows et règles existants. Ne rien casser de l'existant.</li>
+</ul>
+<h2 class="">1. Onglet Pistes — colonnes (objet <code>Lead</code>, libellé « Piste »)</h2>
+<table>
+<tr><th>Élément à l'écran</th><th>Champ (API)</th><th>Libellé dans l'org</th><th>Type</th><th>État</th></tr>
+<tr class="c"><td>Filtre « fiche »</td><td><code>TypeDeDossier__c</code></td><td>Type de dossier</td><td>liste multiple</td><td><b>🟨 C1</b></td></tr>
+<tr class=""><td>Créé le</td><td><code>CreatedDate</code></td><td>Date de création</td><td>date/heure</td><td>✅</td></tr>
+<tr class="c"><td>Provenance (texte)</td><td><code>Apporteurs__c</code></td><td>DR- Apporteurs</td><td>texte</td><td><b>🟨 C2</b></td></tr>
+<tr class=""><td>Provenance Régie / Interne (icône)</td><td><code>LeadSource</code></td><td>Origine de la piste</td><td>liste</td><td>✅ INTERNE, REGIES, LEADS, DATA-…</td></tr>
+<tr class=""><td>Nom complet</td><td><code>Name</code> (<code>FirstName</code>, <code>LastName</code>)</td><td>Nom</td><td>—</td><td>✅</td></tr>
+<tr class=""><td>Téléphone</td><td><code>Phone</code></td><td>Téléphone</td><td>téléphone</td><td>✅ (<code>MobilePhone</code> = « Téléphone 2 »)</td></tr>
+<tr class="a"><td>Doublon ✔ / ⚠</td><td><code>Doublon_Telephone_Indicateur__c</code> + <code>Doublon_Telephone__c</code></td><td>Doublon - Téléphone / Groupe téléphone</td><td>formule / lien</td><td>✅ existe, <b>🟦 A5</b></td></tr>
+<tr class=""><td>Échéance — date</td><td><code>ENVOI_CONF_Date_de_Rappel__c</code></td><td>CONFIRM- Date de Rappel</td><td>date</td><td>✅</td></tr>
+<tr class=""><td>Échéance — créneau</td><td><code>ENVOI_CONF_Cr_neau_de_Rappel__c</code></td><td>CONFIRM- Créneau de Rappel</td><td>liste</td><td>✅ (valeurs § 6)</td></tr>
+<tr class="c"><td>Échéance si pas de date conf</td><td><code>REGIE_Date_de_Rappel__c</code>, <code>REGIE_Creneau_Rappel__c</code>, <code>TELEPRO_Date_de_Rappel__c</code>, <code>TELEPRO_Creneau_Rappel__c</code></td><td>REGIE- / TELEPRO- …</td><td>date / liste</td><td><b>🟨 C3</b></td></tr>
+<tr class=""><td>Traitement</td><td><code>CONFIRM_Traitement__c</code></td><td>CONFIRM- Traitement</td><td>liste</td><td>✅ 27 valeurs</td></tr>
+<tr class=""><td>Commentaire conf</td><td><code>CONFIRM_Commentaire__c</code></td><td>CONFIRM- Commentaire</td><td>texte long</td><td>✅</td></tr>
+<tr class=""><td>Commentaire régie / télépro</td><td><code>REGIE_Commentaire_Regie__c</code> / <code>Telepro_Commentaire_pour_Confirmateur__c</code></td><td>REGIE- Commentaire Regie / TELEPRO- Commentaire</td><td>texte</td><td>✅</td></tr>
+<tr class="c"><td>Confirmateur attribué</td><td><code>Utilisateur__c</code></td><td>LOOKUP- Confirmateur</td><td>lien Utilisateur</td><td><b>🟨 C4</b></td></tr>
+<tr class=""><td>Motif hors cible</td><td><code>Motif_Hors_cible__c</code></td><td>Motif Hors cible</td><td>liste</td><td>✅</td></tr>
+<tr class="v"><td>Historique</td><td><code>LeadHistory</code></td><td>—</td><td>—</td><td><b>🟥 V6</b></td></tr>
+</table>
+<p>Listes de la fiche (sous-niveau) :</p>
+<table>
+<tr><th>Liste à l'écran</th><th>Règle</th><th>Vue de liste Salesforce</th></tr>
+<tr class="v"><td>Traitement conf</td><td>« ▣ EN ATT DE TRAITEMENT » ou NRP 1x à 5x</td><td>ex. « 2.1BAT Régies- Traitement Conf » — <b>🟨 C10</b>, <b>🟥 V4</b></td></tr>
+<tr class="c"><td>Rappels conf</td><td>« 🟦 Rappel Nécessaire » (API <code>🟦 A Rappeler</code>) ou échéance dépassée</td><td>ex. « 2.2BAT Régies- Rappels Conf » — <b>🟨 C10</b></td></tr>
+<tr class="c"><td>NRP 6x et +</td><td>« 🟨 NRP- 6x » ou « 🟨 NRP- 7x + Mail/SMS »</td><td><b>🟦 A9</b></td></tr>
+<tr class="c"><td>Hors cible</td><td>toutes les valeurs « ⬛ HORS CIBLE… »</td><td><b>🟨 C10</b></td></tr>
+</table>
+<h2 class="">2. Fiche client — ouverte par un clic sur le nom (conversion) (objet <code>Lead</code>)</h2>
+<p>Champs communs : <code>FirstName</code>, <code>LastName</code>, <code>Phone</code>, <code>Email</code>, <code>Street</code>, <code>PostalCode</code>, <code>City</code> ✅ (adresse transmise par la régie : <code>REGIE_Adresse_Client__c</code>).</p>
+<table>
+<tr><th>Groupe</th><th>À l'écran</th><th>Champ (API)</th><th>Libellé</th><th>État</th></tr>
+<tr class=""><td>RES</td><td>Type de chauffage</td><td><code>Type_de_Chauffage__c</code></td><td>RES- Type de Chauffage</td><td>✅</td></tr>
+<tr class=""><td>RES</td><td>Surface habitable</td><td><code>Surface_habitable__c</code></td><td>RES- Shab</td><td>✅</td></tr>
+<tr class="c"><td>RES</td><td>Année de la maison</td><td><code>Ann_e_de_la_Chaudiere__c</code></td><td>RES- Année de la Maison</td><td><b>🟨 C5</b></td></tr>
+<tr class=""><td>RES</td><td>Catégorie de revenus</td><td><code>Bareme_Ma_prim_renovv__c</code></td><td>RES- Précarité</td><td>✅</td></tr>
+<tr class=""><td>RES</td><td>Propriétaire occupant</td><td><code>Situation_du_demandeur__c</code></td><td>RES- Statut Occupation</td><td>✅</td></tr>
+<tr class=""><td>RES-060</td><td>Bono social, année chaudière</td><td><code>RES_Bono_Social__c</code>, <code>RES_Ann_e_Chaudi_re__c</code></td><td>RES- Bono Social / RES- Année Chaudière</td><td>✅</td></tr>
+<tr class=""><td>TER</td><td>Raison sociale</td><td><code>PRO_Nom_du_Signataire__c</code></td><td>PRO- Raison Sociale (⚠ nom d'API trompeur)</td><td>✅</td></tr>
+<tr class=""><td>TER</td><td>SIRET, code APE, siège</td><td><code>PRO_Numero_de_Siret__c</code>, <code>PRO_Code_APE__c</code>, <code>PRO_Siege_Social_Adresse_numero_et_voie__c</code></td><td>PRO- …</td><td>✅</td></tr>
+<tr class=""><td>TER</td><td>Nombre de logements / de précaires</td><td><code>PAC_Nb_Logements__c</code> / <code>PAC_179_Logements_Pr_carite__c</code></td><td>PAC 179- …</td><td>✅</td></tr>
+<tr class=""><td>TER</td><td>Signataire</td><td><code>PRO_Pr_nom_du_Signataire__c</code>, <code>PRO_Fonction_du_Signataire__c</code>, <code>PRO_T_l_phone_Signataire__c</code>, <code>PRO_Email_Signataire__c</code></td><td>PRO- … Signataire</td><td>✅</td></tr>
+<tr class="c"><td>AGRI</td><td>Raison sociale, SIRET</td><td>mêmes champs PRO</td><td></td><td><b>🟨 C6</b></td></tr>
+<tr class="a"><td>AGRI</td><td>Surface de serre</td><td>—</td><td>—</td><td><b>🟦 A10</b></td></tr>
+<tr class="a"><td>Toutes</td><td>Liste des champs obligatoires par fiche</td><td>—</td><td>—</td><td><b>🟦 A3</b></td></tr>
+</table>
+<p>Fichiers et historique (volet de droite de la fenêtre, et bouton trombone de la ligne) :</p>
+<table>
+<tr><th>À l'écran</th><th>Source Salesforce</th><th>État</th></tr>
+<tr class="c"><td>Liste des fichiers (nom, date, taille, type, aperçu)</td><td><code>ContentDocumentLink</code> (<code>LinkedEntityId</code> = Id de la piste) → <code>ContentVersion</code> (<code>Title</code>, <code>FileExtension</code>, <code>ContentSize</code>, <code>CreatedDate</code>)</td><td>✅ standard, <b>🟨 C11</b></td></tr>
+<tr class="v"><td>Miniatures (photos et 1re page des PDF) sans ouvrir le fichier</td><td>rendu fourni par Salesforce : <code>/sfc/servlet.shepherd/version/renditionDownload?rendition=THUMB240BY180&amp;versionId=&lt;ContentVersionId&gt;</code> (préfixer avec le chemin du site Experience)</td><td>✅ standard, <b>🟥 V9</b></td></tr>
+<tr class=""><td>Agrandir au clic, sans télécharger</td><td>rendu <code>THUMB720BY480</code> en grand, ou aperçu standard (<code>NavigationMixin</code>, page <code>filePreview</code>)</td><td>✅ standard</td></tr>
+<tr class="v"><td>Ajouter des fichiers</td><td>composant standard <code>lightning-file-upload</code> (<code>record-id</code> = Id de la piste)</td><td>✅ standard, <b>🟥 V9</b></td></tr>
+<tr class="v"><td>Historique</td><td><code>LeadHistory</code> (+ SMS automatiques si tracés)</td><td><b>🟥 V6</b></td></tr>
+</table>
+<p>Prévisite : <code>N_cessite_Pr_visite__c</code> (PREVISITE- Nécessité), <code>PREVISITE_Statut__c</code>, <code>PREVISITE_Nom_St__c</code> / <code>LOOKUP_Previsiteur__c</code>, <code>Date_de_Previsite__c</code>, <code>PREVISITE_Fiche_Residentiel__c</code> / <code>_Tertiaire__c</code> / <code>_Agri__c</code> ✅.</p>
+<p>Conversion :</p>
+<ul>
+<li class=""><code>Status</code> passe à <code>Qualified</code> (« ✅Converti »).</li>
+<li class="">Le champ « Création Dossier » de la fiche passe à OUI (§ 5).</li>
+<li class="v">Respecter <code>Previsite_2_tertiaire</code> et <code>Conversion_VerificationTERTIAIRE</code> (<b>🟥 V5</b>).</li>
+<li class="c">Création du <code>Pro__c</code> : <b>🟨 C9</b>.</li>
+</ul>
+<h2 class="">3. Fenêtre « Doublon possible » — statuts affichés</h2>
+<table>
+<tr><th>Fiche en double</th><th>À l'écran</th><th>Champ (API)</th><th>État</th></tr>
+<tr class="c"><td>Piste</td><td>Provenance (régie ou télépro)</td><td><code>Apporteurs__c</code> + <code>LeadSource</code> (même choix que <b>🟨 C2</b>)</td><td>✅</td></tr>
+<tr class=""><td>Piste</td><td>Date de création</td><td><code>CreatedDate</code></td><td>✅</td></tr>
+<tr class="c"><td>Dossier</td><td>Provenance</td><td><code>DR_Provenance__c</code> (ADMIN- Apporteurs), <code>LeadSource__c</code>, <code>LOOKUP_Apporteur_d_affaires__c</code></td><td><b>🟨 C2</b></td></tr>
+<tr class=""><td>Dossier</td><td>Date de création de la piste d'origine</td><td><code>Piste_Date_de_Cr_ation__c</code> (Piste- Date de Création), sinon <code>CreatedDate</code></td><td>✅</td></tr>
+<tr class=""><td>Piste</td><td>Statut de la piste</td><td><code>Status</code> (Annulée / ▣ Non Converti / ✅Converti)</td><td>✅</td></tr>
+<tr class=""><td>Piste</td><td>Traitement conf</td><td><code>CONFIRM_Traitement__c</code></td><td>✅</td></tr>
+<tr class=""><td>Piste</td><td>Motif d'annulation</td><td><code>Motif_Hors_cible__c</code></td><td>✅</td></tr>
+<tr class="c"><td>Piste</td><td>Signature devis</td><td><code>RES_Statut_Devis__c</code> / <code>YS_Statut__c</code></td><td><b>🟨 C7</b></td></tr>
+<tr class=""><td>Dossier</td><td>Fiche, téléphone, adresse</td><td><code>Fiche_CEE__c</code>, <code>Phone__c</code>, <code>Adresse__c</code>, <code>Client_Adresse_Chantier__c</code></td><td>✅</td></tr>
+<tr class="c"><td>Dossier</td><td>Statut du dossier</td><td><code>PAC_STATUT_DOSSIER__c</code> ou <code>PAC_TH171_Statut_Dossier__c</code>, <code>PAC_TH179_Statut_Dossier__c</code>, <code>RENO_TH174_Statut_Dossier__c</code>…</td><td><b>🟨 C8</b></td></tr>
+<tr class=""><td>Dossier</td><td>Motif et date d'annulation</td><td><code>RDV_Motif_Annulation__c</code>, <code>RDV_Date_Dossier_Annul__c</code></td><td>✅</td></tr>
+<tr class=""><td>Dossier</td><td>Signature devis</td><td><code>Devis_Statut__c</code>, <code>DEVIS_Date_Signature__c</code></td><td>✅</td></tr>
+<tr class=""><td>Dossier</td><td>Statut installation</td><td><code>INSTALLATIONN_PAC__c</code>, <code>PAC_Date_d_Installation__c</code></td><td>✅</td></tr>
+</table>
+<h2 class="">4. Doublons — moteur existant à étendre (ne pas le refaire)</h2>
+<ul>
+<li class="">Déjà en place : classe <code>DoublonService</code>, règles <code>Doublon_Regle__mdt</code>, groupes <code>Doublon_Groupe__c</code>, liens <code>Lead.Doublon_Telephone__c</code> / <code>Pro__c.Doublon_Telephone__c</code>, indicateur <code>Lead.Doublon_Telephone_Indicateur__c</code>.</li>
+<li class=""><b>Une seule règle active</b> : <code>TELEPHONE_RES060</code> (classe <code>DoublonRegle_TelephoneRes060</code>), limitée à RES-060.</li>
+<li class="a">À ajouter : <b>🟦 A5</b> (téléphone toutes fiches, adresse). La fenêtre doublon est en <b>consultation seule</b> : seulement une croix pour fermer. Si elle a été ouverte depuis la fiche client, la fermeture ramène sur cette fiche.</li>
+</ul>
+<h2 class="c">5. Codes de fiche ↔ valeurs Salesforce (<b>🟨 C1</b>, à ranger dans <b>🟦 A4</b>)</h2>
+<table>
+<tr><th>Code écran</th><th><code>Lead.TypeDeDossier__c</code> (API ⇒ libellé)</th><th>Champ « Création Dossier »</th></tr>
+<tr class=""><td>RES-171</td><td><code>RESIDENTIEL_REGIES_-_TH171</code> ⇒ 🟩BAR TH171- PAC Individuelle</td><td><code>PRO_DOSSIER_PAC_SEUL__c</code></td></tr>
+<tr class=""><td>RES-174</td><td><code>RESIDENTIEL_REGIES_-_TH174</code> ⇒ 🟩BAR TH174- Rénovation Globale</td><td><code>PRO_DOSSIER_RENO_GLOBALE__c</code></td></tr>
+<tr class=""><td>RES-168</td><td><code>RESIDENTIEL_REGIES_-_TH168</code> ⇒ 🟩BAR TH168- Solaire</td><td><code>NEW_PRODUCT_8_RES168__c</code></td></tr>
+<tr class=""><td>RES-060</td><td><code>RESIDENTIEL_REGIES_-_RES060</code> ⇒ 🟩BAR RES-060 PAC</td><td><code>NEW_PRODUCT_7_RES060__c</code></td></tr>
+<tr class=""><td>TER-179</td><td><code>BAT_REGIES_-_TH179</code> ⇒ 🟩BAR TH179- PAC Collective</td><td><code>PRO_DOSSIER_SERRE_AGRICOLE__c</code> (⚠ nom trompeur)</td></tr>
+<tr class=""><td>TER-163</td><td><code>BAT_REGIES_-_TH163</code> ⇒ 🟩BAT TH163- PAC Tertiaire</td><td><code>NEW_PRODUCT_5__c</code></td></tr>
+<tr class=""><td>AGRI-108</td><td><code>AGRI_REGIES_-_TH117</code> (⚠) ⇒ 🟩AGRI TH108- PAC Serres</td><td><code>NEW_PRODUCT_1__c</code></td></tr>
+<tr class=""><td>AGRI-119</td><td><code>AGRI_REGIES_-_TH119</code> ⇒ 🟩AGRI TH119- VMC</td><td><code>NEW_PRODUCT_2__c</code></td></tr>
+</table>
+<p>Autres champs « Création Dossier » : <code>PRO_DOSSIER_DESTRAT__c</code> (TH142), <code>NEW_PRODUCT_4__c</code> (EQ108).</p>
+<h2 class="v">6. Pièges : nom d'API ≠ libellé (<b>🟥 V8</b>)</h2>
+<table>
+<tr><th>Champ</th><th>Nom d'API</th><th>Libellé à afficher</th></tr>
+<tr class=""><td><code>CONFIRM_Traitement__c</code></td><td>🟩Conf Ok- Att prévisite</td><td>🟫Conf Ok- Visite en attente</td></tr>
+<tr class="a"><td><code>CONFIRM_Traitement__c</code></td><td>🟦 A Rappeler</td><td>🟦 Rappel Nécessaire</td></tr>
+<tr class=""><td><code>CONFIRM_Traitement__c</code></td><td>⬛ HORS CIBLE-  Trop petit</td><td>⬛ HORS CIBLE- Surface Trop Petite</td></tr>
+<tr class=""><td><code>ENVOI_CONF_Cr_neau_de_Rappel__c</code></td><td>MATIN (10H-15H)</td><td>MATIN (10H-13H)</td></tr>
+<tr class=""><td><code>ENVOI_CONF_Cr_neau_de_Rappel__c</code></td><td>SOIR (15H- 19H30)</td><td>SOIR (14H- 19H30)</td></tr>
+<tr class=""><td><code>Status</code></td><td>Unqualified / New / Qualified</td><td>Annulée / ▣ Non Converti / ✅Converti</td></tr>
+<tr class=""><td><code>TypeDeDossier__c</code></td><td>AGRI_REGIES_-_TH117</td><td>🟩AGRI TH108- PAC Serres</td></tr>
+</table>
+<p>Plages horaires des créneaux pour le calcul de l'échéance (<b>🟥 V7</b>) :</p>
+<table>
+<tr><th>Créneau (libellé)</th><th>Début</th><th>Fin</th></tr>
+<tr class=""><td>LE PLUS VITE POSSIBLE</td><td>création (ou 9h le jour de rappel)</td><td>+ délai de la fiche (15 min par défaut)</td></tr>
+<tr class=""><td>MATIN (10H-13H)</td><td>10h00</td><td>13h00</td></tr>
+<tr class=""><td>SOIR (14H- 19H30)</td><td>14h00</td><td>19h30</td></tr>
+<tr class=""><td>10H-11H / 11H-12H / 12H-13H30</td><td>10h00 / 11h00 / 12h00</td><td>11h00 / 12h00 / 13h30</td></tr>
+<tr class=""><td>15H30-17H / 17H-18H30 / 18H30-19H30</td><td>15h30 / 17h00 / 18h30</td><td>17h00 / 18h30 / 19h30</td></tr>
+</table>
+<h2 class="">7. Détail des éléments à créer</h2>
+<table>
+<tr><th>Code</th><th>Élément</th><th>Contenu</th></tr>
+<tr class=""><td><b>A1</b></td><td><code>User.Preferences_Ecran__c</code></td><td>JSON <code>{version, largeurs, tris}</code> (format dans <code>04-poste-confirmateur.md</code>)</td></tr>
+<tr class=""><td><b>A2</b></td><td><code>Regle_Rappel__mdt</code></td><td>Fiche, Mode (A = le plus vite possible, B = toute la journée 9h-19h30), Délai (min, 15 par défaut), Provenance (optionnelle)</td></tr>
+<tr class=""><td><b>A3</b></td><td><code>Champ_Obligatoire_Conversion__mdt</code></td><td>Fiche, Objet, Champ API, Ordre</td></tr>
+<tr class=""><td><b>A4</b></td><td><code>Fiche_Confirmateur__mdt</code></td><td>Table du § 5 + groupe RES / TER / AGRI / ES</td></tr>
+<tr class=""><td><b>A5</b></td><td>Règles de doublons</td><td>Téléphone toutes fiches (pistes non converties + dossiers), adresse normalisée</td></tr>
+<tr class=""><td><b>A7</b></td><td><code>Lead.Consentement_Preuve__c</code>, <code>Lead.Consentement_Date__c</code></td><td>Texte, date-heure (consentement préalable obligatoire depuis le 11/08/2026)</td></tr>
+<tr class=""><td><b>A8</b></td><td><code>Lead.CONFIRM_Premier_Appel__c</code></td><td>Date-heure</td></tr>
+<tr class=""><td><b>A9</b></td><td>Vues de liste « NRP 6x et + »</td><td>Une par fiche</td></tr>
+<tr class=""><td><b>A10</b></td><td>Surface de serre (AGRI)</td><td>Nombre (m²)</td></tr>
+</table>
+<h2 class="">8. Charge estimée</h2>
+<p>Estimation pour <b>un développeur Salesforce confirmé</b>, à affiner après les vérifications C1 à C11 :</p>
+<table>
+<tr><th>Lot</th><th>Contenu</th><th>Jours</th></tr>
+<tr class=""><td>Cadrage</td><td>Vérifications C1-C11 dans l'org, sandbox prête</td><td>1</td></tr>
+<tr class=""><td>Modèle de données</td><td>A1-A10, droits du profil, vues de liste</td><td>3</td></tr>
+<tr class=""><td>Apex</td><td>Lecture des vues, attribution, échéances, conversion, préférences, historique, extension des doublons + tests ≥ 85 %</td><td>7</td></tr>
+<tr class=""><td>LWC Pistes</td><td>Liste, modification, tri, largeurs, bandeau, attribution, filtres de colonnes, Récents, doublons, fiche client et conversion</td><td>12</td></tr>
+<tr class=""><td>LWC Prévisite</td><td>Onglet prévisite sur <code>Pro__c</code></td><td>3</td></tr>
+<tr class=""><td>LWC Reporting</td><td>Reporting dossiers, version mobile</td><td>3</td></tr>
+<tr class=""><td>Page responsable</td><td>Fiches × confirmateurs, vues, onglets, règles de rappel</td><td>6</td></tr>
+<tr class=""><td>Tests Jest</td><td>Un test par composant</td><td>3</td></tr>
+<tr class=""><td>Recette et mise en production</td><td>Recette sandbox avec Micke, corrections, partage (V2, V3), déploiement</td><td>5</td></tr>
+<tr class=""><td><b>Total</b></td><td></td><td><b>≈ 43 jours (≈ 9 semaines)</b> si tout est écrit par l'intégrateur</td></tr>
+</table>
+<ul>
+<li class=""><b>Première version utile</b> (Pistes + attribution + doublons + fiche client et conversion) : environ <b>25 jours</b>.</li>
+</ul>
+<h3 class="">Scénario retenu par Micke : code livré prêt à déployer</h3>
+<ul>
+<li class="">L'intégrateur vérifie C1 à C11 dans l'org (rapide, non bloquant).</li>
+<li class="">Le code (LWC, Apex, tests, métadonnées A1 à A10) est écrit dans <code>force-app/</code>, déployé et recetté dans la <b>sandbox pcp1</b>, puis validé par Micke à l'écran.</li>
+<li class="">L'intégrateur fait la relecture, les vérifications <b>V1 à V9</b>, puis le déploiement en production avec l'accord de Micke.</li>
+</ul>
+<p>Charge de l'intégrateur dans ce scénario : <b>1 jour</b>, ou 2 jours si un point de partage ou de droits (V1 à V3) doit être corrigé.</p>
+</body></html>
