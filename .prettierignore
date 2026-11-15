@@ -9,3 +9,5 @@
 .vscode
 
 coverage/
+# Maquettes HTML en un seul fichier : testées telles quelles, ne pas les reformater
+docs/maquettes/**/*.html
