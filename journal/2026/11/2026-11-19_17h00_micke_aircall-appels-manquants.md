@@ -29,6 +29,10 @@ s'arrête au 20 octobre, et récupérer les appels manquants de la ligne +33 6 5
   - Date réelle de l'appel dans « LETTRE- Commentaire Traitement ».
   - Piste liée quand le numéro correspondait à une piste (10 numéros sur 17).
 - Aucune tâche (Task) recréée, aucune modification dans Aircall.
+- Ensuite, à la demande de l'utilisateur : suppression (corbeille) des fiches dont le correspondant a eu
+  une conversation plus tard (appel entrant ou sortant, toutes lignes, d'après l'historique Aircall) =
+  messages déjà traités. 10 fiches supprimées : SA-55889, 55891, 55893, 55896, 55898, 55905, 55906,
+  55907, 55908, 55911. Restent 13 fiches à traiter.
 
 ## Fichiers touchés
 
