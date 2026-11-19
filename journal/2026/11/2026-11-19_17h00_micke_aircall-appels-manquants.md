@@ -33,6 +33,8 @@ s'arrête au 20 octobre, et récupérer les appels manquants de la ligne +33 6 5
   une conversation plus tard (appel entrant ou sortant, toutes lignes, d'après l'historique Aircall) =
   messages déjà traités. 10 fiches supprimées : SA-55889, 55891, 55893, 55896, 55898, 55905, 55906,
   55907, 55908, 55911. Restent 13 fiches à traiter.
+- SA-55889 restaurée ensuite à la demande de l'utilisateur (appel sortant de 45 s seulement, peut-être
+  le répondeur). Total : 9 supprimées, 14 fiches à traiter.
 
 ## Fichiers touchés
 
