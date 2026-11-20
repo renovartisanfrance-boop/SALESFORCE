@@ -31,7 +31,7 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
     s'il existe (📁), sinon vers la piste (👤). La section des 3 mises en page Aircall n'affiche plus que « Client » ;
     la liste « APPELS- Par dossier » aussi. Piste / Opportunité / Dossier restent remplis en coulisses.
   - Aucune mise en page Dossier touchée (demande de l'utilisateur).
-- Automatisation écrite dans `force-app` (pas encore installée en prod) :
+- Automatisation écrite dans `force-app`, **installée en prod le 20/11 (accord de l'utilisateur, 16 tests OK)** :
   - `AircallTrigger` → `AircallTriggerHandler` → `AircallRattachementQueueable` → `AircallRattachementService` → `AircallRattachementSelector` ;
   - recherche Salesforce (SOSL) sur les champs téléphone : retrouve le client quel que soit le format, sans champ
     supplémentaire ni modification des 230 000 pistes (les champs téléphone ne sont pas indexés, un SOQL serait refusé) ;
@@ -65,6 +65,6 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 
 ## Prochaines étapes
 
-- [ ] Accord de l'utilisateur pour installer l'automatisation en prod.
+- [x] Automatisation installée en prod (trigger `AircallTrigger` actif).
 - [ ] Attribuer `Aircall_Dossier` aux utilisateurs concernés.
 - [ ] Vérifier sur un vrai appel, puis lancer le rattrapage (depuis le 01/09 ou plus loin).
