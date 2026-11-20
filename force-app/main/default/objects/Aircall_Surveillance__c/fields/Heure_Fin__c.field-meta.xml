@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Heure_Fin__c</fullName>
+    <defaultValue>19</defaultValue>
+    <externalId>false</externalId>
+    <inlineHelpText>Heure de fermeture (heure de Paris).</inlineHelpText>
+    <label>Heure de fin</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
