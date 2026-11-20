@@ -116,6 +116,23 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 - **Préparer sans construire** : accès par régie (plus tard, par la sandbox), saisie de leads par la régie,
   reporting de la régie. Chaque piste doit garder régie, source, prix de revente et télépro.
 
+## Suite du cadrage (20/11, toujours rien de codé)
+
+- Télépro et régie suivent déjà de la piste à l'opportunité (réglage de conversion : `ConfirmateurLookup__c` →
+  `LOOKUP_Telepro__c`, `Campagne_REGIE__c` → `Campagne_REGIE__c`) puis au dossier (constaté sur 486 dossiers
+  de 60 jours, aucun cas perdu ; mécanisme opportunité → dossier non lu, l'utilisateur fera lui-même les liens).
+- Champs neufs à porter jusqu'au dossier : Source de leads et code fournisseur (texte, lisible par des
+  utilisateurs qui n'ont pas accès aux objets de réglage). Prix sur le dossier : en discussion.
+- Visibilité actuelle (lu en production) : piste en « public lecture/écriture/transfert » pour les internes,
+  **privée pour les externes** ; presque tous les utilisateurs actifs sont des partenaires (portail) ;
+  la règle `PORTAIL_TELEPRO` partage toutes les pistes au groupe « PORTAIL INTERNE Télépros » ; le flux
+  `PISTE_SharePiste` crée déjà des partages piste par piste. 15 règles de partage à critères sur la piste (max 50).
+- Verrou entre régies retenu sur le principe : un groupe par régie internalisée, télépros hors du groupe général,
+  partage de chaque piste avec le groupe de sa régie, automatisé. À faire **après** le pilote, par la sandbox.
+  La première régie internalisée démarrera après ce chantier ; il n'y en a qu'une pour l'instant ; un traitement
+  de reprise partagera ses pistes existantes.
+- Édition Enterprise : 500 champs personnalisés par objet ; piste 322, opportunité 389, dossier 406.
+
 ## Prochaines étapes
 
 - [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
