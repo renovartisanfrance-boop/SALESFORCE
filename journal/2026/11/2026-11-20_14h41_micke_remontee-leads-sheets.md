@@ -154,6 +154,27 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 - Points à trancher listés à l'utilisateur le 20/11 (licences, visibilité par vos propres télépros, file d'attribution,
   origine LEADS/REGIES, périmètre des doublons, mode pourcentage, lead facturable, facturation).
 
+## Décisions de cadrage du 20/11 (soir), rien de codé
+
+- Rattachement télépro ↔ régie : objet à part « Télépro de régie » (pas de champ sur Utilisateur).
+- Licences : l'utilisateur garde un stock de licences Partner Community ; la création d'un télépro prend une
+  licence libre, alerte quand le stock est bas. Création d'accès automatisée, validée par l'utilisateur.
+- Visibilité : les télépros maison ne doivent plus voir les pistes d'une régie internalisée, **sans rien perdre
+  de ce qu'ils voient aujourd'hui** → case « Régie internalisée » sur la piste + condition ajoutée aux règles
+  `TELEPRO_ES` et `TELEPRO_LEADS_DATA` (modification de l'existant, par la sandbox).
+- File d'attribution : au choix de Claude → une file par régie internalisée, réattribution par le programme
+  juste après la création ; `FL_Piste` non modifié (`PISTE_LOOKUP_PROPRIETAIRE` ne change le propriétaire que si
+  « LOOKUP- Confirmateur » change).
+- Origine des pistes : `LEADS`, réglable par feuille.
+- Doublon : une piste existante ne bloque que si elle a eu une activité depuis moins de 2 semaines ; un dossier
+  bloque sauf si « RDV- Statut Dossier » (`Pro__c.PAC_STATUT_DOSSIER__c`) = « ⚫DOSSIER- Annulé ».
+  Définition de « activité » à confirmer (`REP_DerniereModif__c` ne suit que 4 champs du confirmateur).
+- Message : `DOUBLON – contact déjà connu depuis le JJ/MM/AAAA, non remonté`.
+- Prix : fixe **ou** pourcentage de campagne, l'un des deux par tarif.
+- Facturable : doublon sur la même feuille = non payé au fournisseur ; doublon interne (déjà connu ailleurs) =
+  payé au fournisseur, non facturé à la régie ; faux numéro (même remonté grâce à l'e-mail) = non facturé.
+- Pas de facture pour l'instant, seulement le relevé. Accès actuels aux opportunités et dossiers : inchangés.
+
 ## Prochaines étapes
 
 - [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
