@@ -173,6 +173,10 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 - Prix : fixe **ou** pourcentage de campagne, l'un des deux par tarif.
 - Facturable : doublon sur la même feuille = non payé au fournisseur ; doublon interne (déjà connu ailleurs) =
   payé au fournisseur, non facturé à la régie ; faux numéro (même remonté grâce à l'e-mail) = non facturé.
+- Précisions finales : « activité » d'une piste = le plus récent entre création, dernier appel ou tâche, dernière
+  modification ; confirmateurs et secrétaires continuent de voir les pistes des régies internalisées (seuls les
+  télépros maison sont fermés) ; faux numéro jamais facturé à la régie, **payé ou non au fournisseur selon le
+  fournisseur** (réglage sur le tarif) ; doublon interne payé au fournisseur et non remonté, perte assumée.
 - Pas de facture pour l'instant, seulement le relevé. Accès actuels aux opportunités et dossiers : inchangés.
 
 ## Prochaines étapes
