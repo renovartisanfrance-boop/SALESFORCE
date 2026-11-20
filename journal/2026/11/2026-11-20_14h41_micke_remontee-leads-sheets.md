@@ -135,6 +135,25 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
   calculé par la Source). La régie internalisée actuelle (une seule) sera regardée plus tard.
 - Édition Enterprise : 500 champs personnalisés par objet ; piste 322, opportunité 389, dossier 406.
 
+## Lecture complète des automatismes de production (20/11, lecture seule : 66 flux, 26 déclencheurs, 486 classes)
+
+- **Campagne** : aucun flux ; un seul déclencheur `CampaignTrigger` (after update) qui ne réagit qu'au passage de
+  `StatutContrat__c` à « Signé » pour un rôle du portail. Écrire des compteurs sur une campagne ne déclenche rien.
+- **Opportunité → Dossier** : le dossier est créé par le flux `Opportunite_FL_AfterCreateUpdate` (c'est là qu'il
+  faudra ajouter Source et code fournisseur). **Campagne Principale** est calculée seule par
+  `PRO_FT_BeforeCreateUpdate` : campagne parente de « Campagne (REGIE) », sinon la campagne elle-même.
+- **`FL_Piste`** : à la création, propriétaire = file `ATTRIBUTION_RDV_REGIES` (7 membres) quand le créateur est
+  administrateur ; `LeadSource = REGIES` et `Regie__c = utilisateur` seulement pour le profil « PORTAIL INTERNE- REGIES ».
+- **`Archiver_les_pistes_Regies_Interne_Leades`** (planifié) : les pistes non converties de plus de 5 mois passent
+  de LEADS/REGIES/INTERNE à DATA-LEADS/DATA-REGIES/DATA-INTERNE.
+- **Visibilité réelle des pistes** (correction) : le groupe de la règle `PORTAIL_TELEPRO` est **vide**. Les télépros
+  Espagne voient les pistes par la règle `TELEPRO_ES` (pays = Espagne → groupe « Résidentiel ES Télépros », 20 membres).
+  Aucune règle ne donne les opportunités ni les dossiers aux télépros Espagne.
+- **Licences** : Partner Community 35, dont 34 utilisées (13 télépros leads, 7 confirmateurs…). Un utilisateur
+  partenaire = un compte à lui. Aucune licence Salesforce complète libre (2/2).
+- Points à trancher listés à l'utilisateur le 20/11 (licences, visibilité par vos propres télépros, file d'attribution,
+  origine LEADS/REGIES, périmètre des doublons, mode pourcentage, lead facturable, facturation).
+
 ## Prochaines étapes
 
 - [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
