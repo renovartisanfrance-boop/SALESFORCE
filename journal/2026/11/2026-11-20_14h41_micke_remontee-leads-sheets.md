@@ -100,7 +100,12 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
   `Lead.Campagne_REGIE__c` et plus `Lead.Regie__c`.
 - Vérifié en production (lecture seule, 20/11) : aucun des 12 flux actifs de la piste, ni `LeadTrigger`,
   `LeadTriggerHandler`, `DoublonService`, ni aucune règle de validation ou de partage de la piste ne cite
-  `Campagne_REGIE__c`. La conversion le recopie vers `Opportunity.Campagne_REGIE__c`. `Pro__c` n'a pas ce champ.
+  `Campagne_REGIE__c`. La conversion le recopie vers `Opportunity.Campagne_REGIE__c`. **Correction (20/11)** : le Dossier `Pro__c` a bien
+  `Campagne_REGIE__c` (« Campagne (REGIE) ») et `CampagneRegie_PRINCIPALE__c` (« Campagne Principale (REGIE
+  PRINCIPALE) ») ; une première lecture tronquée avait fait croire le contraire.
+  Les 138 comptes dont « Accès REGIE » pointe vers une campagne non cochée « Est REGIE » sont 137 comptes
+  `PREVISITEUR- …` et 1 compte `INSTALLATEUR- test`, créés depuis le 15/09/2026 : le champ « Accès REGIE » sert
+  aussi à l'accès des prévisiteurs. Les 945 campagnes « Est REGIE » ont chacune exactement un compte.
   Chiffres : 945 campagnes « Est REGIE », 1 083 comptes avec « Accès REGIE », 1 275 pistes et 413 opportunités
   avec « Campagne (REGIE) ».
 - **Un seul cas : la régie internalisée** (plus de « interne / externe »). Les 945 régies actuelles ne changent pas.
