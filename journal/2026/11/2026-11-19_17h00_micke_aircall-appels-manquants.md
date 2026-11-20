@@ -36,6 +36,18 @@ s'arrête au 20 octobre, et récupérer les appels manquants de la ligne +33 6 5
 - SA-55889 restaurée ensuite à la demande de l'utilisateur (appel sortant de 45 s seulement, peut-être
   le répondeur). Total : 9 supprimées, 14 fiches à traiter.
 
+- 20/11 : export CSV de l'historique Aircall (toutes lignes, 19/10 → 20/11, 2 695 appels, accord de l'utilisateur)
+  pour rattraper les **appels manqués sans message** (absents du Conversation center) et la ligne **ISRA-179**
+  (+33669778323). Fenêtre de coupure exacte : 20/10 13h50 UTC (SA-55777) → 19/11 09h27 UTC (SA-55778).
+  - Écartés : messages vocaux déjà importés, et tout appel suivi d'une conversation (appel décroché,
+    entrant ou sortant, toutes lignes) avec le même numéro.
+  - Importés (19 fiches, SA-55974 à SA-55992) : 14 appels manqués PARTENAIRES EXTERNE, 4 appels manqués
+    - 1 message vocal ISRA-179. Objet « Missed Call from … on … » / « Voicemail from … », même méthode que
+      le 19/11 (commentaire « Appel manqué du … - récupéré le 20/11/2026 »). 3 pistes liées
+      (gerard hoffmann ×2, PASCAL PIQUEE, JEAN LOUIS MILLOT).
+  - Les 4 appels manqués ISRA-179 sont des raccrochés rapides (`short_abandoned`) : importés quand même,
+    comme le faisait la remontée d'origine.
+
 ## Fichiers touchés
 
 - Aucun fichier du dépôt (données prod uniquement). Script d'import dans le dossier temporaire de session.
