@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Spreadsheet_Id__c</fullName>
+    <label>Identifiant du classeur Google</label>
+    <inlineHelpText
+  >La suite de lettres et chiffres dans l’adresse de la feuille, entre /d/ et /edit.</inlineHelpText>
+    <type>Text</type>
+    <length>100</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

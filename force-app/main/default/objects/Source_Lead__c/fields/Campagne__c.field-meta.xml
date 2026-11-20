@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campagne__c</fullName>
+    <label>Campagne</label>
+    <inlineHelpText
+  >Recopiée dans le champ Campagne de la piste.</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_compte_service__c</fullName>
+    <label>E-mail du compte de service Google</label>
+    <inlineHelpText
+  >Adresse du robot Google avec lequel les feuilles sont partagées.</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

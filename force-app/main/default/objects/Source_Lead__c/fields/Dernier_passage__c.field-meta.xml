@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dernier_passage__c</fullName>
+    <label>Dernier passage</label>
+    <inlineHelpText>Dernière lecture réussie de la feuille.</inlineHelpText>
+    <type>DateTime</type>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

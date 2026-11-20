@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Actif__c</fullName>
+    <label>Actif (interrupteur général)</label>
+    <inlineHelpText
+  >Décoché : plus aucune feuille n’est lue, la chaîne s’arrête d’elle-même.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

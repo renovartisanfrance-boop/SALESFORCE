@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_de_dossier__c</fullName>
+    <label>Type de dossier</label>
+    <inlineHelpText
+  >Valeur technique du type de dossier de la piste (ex. RESIDENTIEL_REGIES_-_RES060).</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

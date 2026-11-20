@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Fournisseur de leads</label>
+    <pluralLabel>Fournisseurs de leads</pluralLabel>
+    <gender>Masculine</gender>
+    <startsWith>Consonant</startsWith>
+    <description
+  >Vendeur de leads, interne ou externe. Son code neutre (jamais son nom) apparaît dans les feuilles Google.</description>
+    <nameField>
+        <label>Nom du fournisseur</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>Private</sharingModel>
+    <externalSharingModel>Private</externalSharingModel>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+</CustomObject>

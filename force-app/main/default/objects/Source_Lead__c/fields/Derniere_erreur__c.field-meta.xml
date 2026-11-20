@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Derniere_erreur__c</fullName>
+    <label>Dernière erreur</label>
+    <inlineHelpText>Vide quand tout va bien.</inlineHelpText>
+    <type>LongTextArea</type>
+    <length>2000</length>
+    <visibleLines>3</visibleLines>
+    <required>false</required>
+</CustomField>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Colonne_Remonte__c</fullName>
+    <label>Colonne de résultat</label>
+    <inlineHelpText
+  >Titre de la colonne où Salesforce écrit le résultat de chaque ligne.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <defaultValue>"Remonté"</defaultValue>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

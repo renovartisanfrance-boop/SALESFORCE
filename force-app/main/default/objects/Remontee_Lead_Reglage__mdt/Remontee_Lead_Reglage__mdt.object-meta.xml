@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Réglage remontée des leads</label>
+    <pluralLabel>Réglages remontée des leads</pluralLabel>
+    <description
+  >Réglages généraux de la lecture automatique des feuilles Google de leads.</description>
+    <visibility>Public</visibility>
+</CustomObject>

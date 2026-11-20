@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tentatives_max__c</fullName>
+    <label>Nombre de tentatives</label>
+    <inlineHelpText
+  >Après ce nombre d’échecs, une ligne passe en « ERREUR DÉFINITIVE » et n’est plus retentée.</inlineHelpText>
+    <type>Number</type>
+    <precision>2</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nom_certificat__c</fullName>
+    <label>Nom du certificat</label>
+    <inlineHelpText
+  >Nom unique du certificat Salesforce dont la partie publique est déclarée chez Google.</inlineHelpText>
+    <type>Text</type>
+    <length>80</length>
+    <required>false</required>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

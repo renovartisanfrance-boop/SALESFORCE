@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Piste_existante__c</fullName>
+    <label>Piste concernée</label>
+    <inlineHelpText
+  >Piste déjà présente (doublon) ou piste créée malgré le faux numéro.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Lead</referenceTo>
+    <relationshipName>Rejets_Lead</relationshipName>
+    <relationshipLabel>Rejets de leads</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

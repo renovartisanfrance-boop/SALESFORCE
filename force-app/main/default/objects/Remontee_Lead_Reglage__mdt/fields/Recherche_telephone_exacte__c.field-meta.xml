@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recherche_telephone_exacte__c</fullName>
+    <label>Recherche de doublons sur le téléphone brut</label>
+    <inlineHelpText
+  >Cherche aussi les doublons parmi les anciennes pistes, sur le numéro tel qu’il est enregistré. À décocher si les passages deviennent lents.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>true</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

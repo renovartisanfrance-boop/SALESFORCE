@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Source de leads</label>
+    <pluralLabel>Sources de leads</pluralLabel>
+    <gender>Feminine</gender>
+    <startsWith>Consonant</startsWith>
+    <description
+  >Une feuille Google lue automatiquement par Salesforce : un fournisseur, une régie, une campagne et la correspondance des colonnes.</description>
+    <nameField>
+        <label>Nom de la source</label>
+        <type>Text</type>
+    </nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>Private</sharingModel>
+    <externalSharingModel>Private</externalSharingModel>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+</CustomObject>

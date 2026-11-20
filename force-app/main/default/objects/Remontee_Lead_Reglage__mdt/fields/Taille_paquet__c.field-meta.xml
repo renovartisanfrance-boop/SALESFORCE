@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Taille_paquet__c</fullName>
+    <label>Taille de paquet</label>
+    <inlineHelpText
+  >Nombre maximum de pistes créées par opération (20 conseillé, 200 maximum).</inlineHelpText>
+    <type>Number</type>
+    <precision>3</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>
