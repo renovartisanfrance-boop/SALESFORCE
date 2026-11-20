@@ -131,6 +131,8 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
   partage de chaque piste avec le groupe de sa régie, automatisé. À faire **après** le pilote, par la sandbox.
   La première régie internalisée démarrera après ce chantier ; il n'y en a qu'une pour l'instant ; un traitement
   de reprise partagera ses pistes existantes.
+- Décidé : **les prix ne sont pas copiés sur le dossier** (on s'en tient au coût d'acquisition par dossier,
+  calculé par la Source). La régie internalisée actuelle (une seule) sera regardée plus tard.
 - Édition Enterprise : 500 champs personnalisés par objet ; piste 322, opportunité 389, dossier 406.
 
 ## Prochaines étapes
