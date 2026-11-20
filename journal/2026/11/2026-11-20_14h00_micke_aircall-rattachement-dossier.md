@@ -27,6 +27,9 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
     Copie des mises en page d'avant gardée dans le dossier temporaire de session ;
   - liste de vue « APPELS- Par dossier » (remplace la liste d'essai, supprimée) ;
   - essai manuel : les 7 fiches d'un client test reliées à sa piste, son opportunité et son dossier.
+  - champ formule `Aircall__c.Client__c` (demande de l'utilisateur : un seul champ à regarder) : lien cliquable vers le dossier
+    s'il existe (📁), sinon vers la piste (👤). La section des 3 mises en page Aircall n'affiche plus que « Client » ;
+    la liste « APPELS- Par dossier » aussi. Piste / Opportunité / Dossier restent remplis en coulisses.
   - Aucune mise en page Dossier touchée (demande de l'utilisateur).
 - Automatisation écrite dans `force-app` (pas encore installée en prod) :
   - `AircallTrigger` → `AircallTriggerHandler` → `AircallRattachementQueueable` → `AircallRattachementService` → `AircallRattachementSelector` ;
@@ -40,7 +43,7 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 
 ## Fichiers touchés
 
-- `force-app/main/default/objects/Aircall__c/fields/Dossier__c.field-meta.xml`
+- `force-app/main/default/objects/Aircall__c/fields/Dossier__c.field-meta.xml` et `Client__c.field-meta.xml`
 - `force-app/main/default/objects/Aircall__c/listViews/Appels_Par_Dossier.listView-meta.xml`
 - `force-app/main/default/permissionsets/Aircall_Dossier.permissionset-meta.xml`
 - `force-app/main/default/triggers/AircallTrigger.trigger`

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <description
-  >Voir et modifier le champ Dossier des fiches Aircall.</description>
+  >Voir les champs Client et Dossier des fiches Aircall.</description>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Aircall__c.Client__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Aircall__c.Dossier__c</field>

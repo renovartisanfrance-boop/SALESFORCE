@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Client__c</fullName>
+    <description
+  >Lien unique vers le client de l&apos;appel : le dossier s&apos;il existe, sinon la piste.</description>
+    <externalId>false</externalId>
+    <formula>IF(
+  NOT(ISBLANK(Dossier__c)),
+  HYPERLINK(&quot;/&quot; &amp; Dossier__c, &quot;📁 &quot; &amp; Dossier__r.Name, &quot;_self&quot;),
+  IF(
+    NOT(ISBLANK(Piste__c)),
+    HYPERLINK(
+      &quot;/&quot; &amp; Piste__c,
+      &quot;👤 &quot; &amp; TRIM(BLANKVALUE(Piste__r.FirstName, &quot;&quot;) &amp; &quot; &quot; &amp; Piste__r.LastName),
+      &quot;_self&quot;
+    ),
+    &quot;&quot;
+  )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText
+  >📁 = dossier du client, 👤 = piste (pas encore de dossier). Cliquez pour l&apos;ouvrir.</inlineHelpText>
+    <label>Client</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
