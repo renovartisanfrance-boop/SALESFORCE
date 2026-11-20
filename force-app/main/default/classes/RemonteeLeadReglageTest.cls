@@ -20,6 +20,11 @@ private class RemonteeLeadReglageTest {
     Assert.areEqual(3, reglage.intervalleMinutes);
     Assert.areEqual(5, reglage.tentativesMax);
     Assert.isNull(reglage.nomCertificat);
+    Assert.areEqual(14, reglage.delaiDoublonJours, 'deux semaines par défaut');
+    Assert.isNull(
+      reglage.statutDossierAnnule,
+      'sans réglage, aucun dossier n’est considéré comme annulé'
+    );
   }
 
   @IsTest
@@ -28,7 +33,8 @@ private class RemonteeLeadReglageTest {
       '{"Actif__c":true,"Taille_paquet__c":50,"Intervalle_minutes__c":5,' +
         '"Tentatives_max__c":3,"Nom_certificat__c":"Mon_Certificat",' +
         '"Email_compte_service__c":"robot@exemple.iam.gserviceaccount.com",' +
-        '"Recherche_telephone_exacte__c":false}'
+        '"Recherche_telephone_exacte__c":false,"Delai_doublon_jours__c":30,' +
+        '"Statut_dossier_annule__c":"DOSSIER- Annulé"}'
     );
 
     RemonteeLeadReglage reglage = RemonteeLeadReglage.depuis(saisi);
@@ -43,6 +49,8 @@ private class RemonteeLeadReglageTest {
       reglage.emailCompteService
     );
     Assert.isFalse(reglage.rechercheTelephoneExacte);
+    Assert.areEqual(30, reglage.delaiDoublonJours);
+    Assert.areEqual('DOSSIER- Annulé', reglage.statutDossierAnnule);
   }
 
   @IsTest

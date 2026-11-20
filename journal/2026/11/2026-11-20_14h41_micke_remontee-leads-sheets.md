@@ -17,7 +17,7 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 
 - Branche `micke/remontee-leads-sheets`, partie de `micke/commentaire-piste-unique`.
   **Rien n'est déployé**, ni en production ni en org de test.
-- Objets neufs : `Fournisseur_Lead__c` (code neutre, interne/externe), `Source_Lead__c` (une par
+- Objets neufs : `Fournisseur_Lead__c` (code neutre), `Source_Lead__c` (une par
   feuille : classeur, onglet, régie, campagne, correspondance des colonnes en JSON, suivi),
   `Rejet_Lead__c` (historique des doublons, faux numéros, erreurs).
 - Réglage général `Remontee_Lead_Reglage__mdt` (enregistrement « Défaut », livré **inactif**) :
@@ -30,17 +30,68 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
   `RemonteeLeadFeuille` (analyse d'une feuille), `RemonteeLeadTelephone` (règles téléphone/e-mail),
   `RemonteeLeadSelector`, `RemonteeLeadService` (création des pistes, doublons, rejets),
   `RemonteeLeadQueueable` (la chaîne), `RemonteeLeadGardien` (relance horaire), `RemonteeLeadReglage`.
-- Une classe de test par classe (7), plus un faux Google (`RemonteeLeadGoogleMock`) et des données
+- Une classe de test par classe (8 à ce stade, 13 après la refonte ci-dessous), plus un faux Google (`RemonteeLeadGoogleMock`) et des données
   de test communes (`RemonteeLeadTestData`).
 - Jeu d'autorisations `Remontee_Leads`, 3 onglets, 2 sites distants Google.
 - Liste de déploiement : `manifest/remontee-leads.xml`.
+
+### Refonte du 20/11 après le cadrage (étape 1 seulement, toujours **non déployée**)
+
+1. **Régie = campagne « Est REGIE »**
+   - `Source_Lead__c.Regie__c` pointe vers une Campagne (plus vers un utilisateur). Pas de filtre de
+     recherche (non vérifié pour un lien vers Campagne) : une **règle de validation** refuse une
+     campagne qui n'est pas « Est REGIE », et le programme la refuse aussi à la lecture.
+   - La piste créée porte `Campagne_REGIE__c` ; `Regie__c` (« LOOKUP-REGIE ») n'est plus rempli.
+   - Compte de la régie = le compte dont « Accès REGIE » pointe vers la campagne : noté sur la Source
+     (`Compte_Regie__c`). S'il n'y en a pas exactement un, la Source reçoit une **Alerte**
+     (`Alerte__c`, distincte de « Dernière erreur ») et les leads remontent quand même.
+   - `Fournisseur_Lead__c.Type__c` supprimé ; plus de « interne / externe ». Origine `LEADS` par défaut.
+2. **Doublons**
+   - Même feuille (piste déjà créée depuis la Source, ligne déjà rejetée, ou ligne plus haut dans le
+     paquet) : toujours doublon, `DOUBLON – déjà envoyé le JJ/MM/AAAA (ligne N)`, ni payé ni facturé.
+   - Doublon interne : piste non convertie avec une activité de moins de 14 jours (réglage
+     `Delai_doublon_jours__c` ; activité = max de création, `LastActivityDate`, `LastModifiedDate`),
+     ou dossier dont « RDV- Statut Dossier » n'est pas la valeur du réglage `Statut_dossier_annule__c`
+     (`⚫DOSSIER- Annulé`, lue par describe). Message neutre
+     `DOUBLON – contact déjà connu depuis le JJ/MM/AAAA, non remonté`. Payé au fournisseur, non facturé.
+   - Les dossiers sont cherchés par le groupe de doublons existant, par les opportunités des pistes
+     converties, par le numéro brut (`Pro__c.Phone__c`) et par l'e-mail (`Pro__c.Email__c`).
+   - `Rejet_Lead__c` : motifs « Doublon même feuille / Doublon interne / Faux numéro / Erreur »,
+     régie, « payé au fournisseur », « facturé à la régie », « connu d'une autre régie », piste ou
+     dossier existant, piste créée, prix d'achat, statut du prix, tarif, clé de téléphone.
+3. **Faux numéro** : avec e-mail valable la piste est créée, jamais facturée à la régie, payée au
+   fournisseur seulement si son tarif coche « Faux numéros payés ».
+4. **Prix**
+   - `Tarif_Lead__c` : couple fournisseur + régie, période, mode d'achat (prix fixe / pourcentage de
+     campagne), règle de revente (prix fixe / même prix que l'achat / achat + marge en % ou en €),
+     « faux numéros payés ». Déclencheur `TarifLeadTrigger` → `TarifLeadTriggerHandler` →
+     `LeadPrixService` : deux tarifs actifs d'un même couple ne peuvent pas se recouvrir.
+   - `LeadPrixService` (brique séparée, méthode `tarifer` pour toute autre création de lead) et
+     `LeadPrixSelector`.
+   - Sur la piste : `Prix_Achat__c`, `Prix_Revente__c`, `Statut_Prix__c`, `Paye_fournisseur__c`,
+     `Facture_regie__c`, `Prix_Feuille__c`, `Ecart_Prix__c`, `Tarif_Lead__c`.
+   - Prix de la feuille différent du tarif (prix fixe) : le lead remonte, le résultat se termine par
+     `– ÉCART DE PRIX (feuille X € / tarif Y €)`. Pas de tarif : « Sans tarif » + alerte sur la Source.
+   - `Cloture_Lead__c` + `LeadClotureService` (action de flux « Clôture des leads » : ouvrir le mois,
+     calculer, clôturer) + `LeadClotureBatch` (répartition du coût réel en mode pourcentage, par
+     paquets de la taille du réglage). Met à jour `Campaign.Montant_leads__c`. Aucune facture.
+5. **Ajouts sur des objets existants** (champs seulement) : `Opportunity.Source_Lead__c`,
+   `Opportunity.Code_Fournisseur__c`, `Pro__c.Source_Lead__c`, `Pro__c.Code_Fournisseur__c`,
+   `Campaign.Regie_internalisee__c`, `Campaign.Montant_leads__c`. La conversion et le flux qui crée
+   le dossier ne sont pas modifiés : c'est l'utilisateur qui fera les deux liens.
+
+Vérifications réellement faites : `prettier --check` sur les 108 fichiers du pilote (conformes, donc
+syntaxe Apex lisible), `npm run lint` sans erreur, et contrôle que chaque champ cité dans le code
+existe dans le dépôt ou dans la production. **Les 13 classes de test n'ont jamais été exécutées.**
 
 ### Résultats écrits dans la feuille
 
 | Cas                         | Texte                                                                                |
 | --------------------------- | ------------------------------------------------------------------------------------ |
 | Piste créée                 | `OK – 20/11/2026 14:02 – <Id de la piste>`                                           |
-| Doublon                     | `DOUBLON – déjà reçu le 12/11/2026 par F012` (ou `hors fournisseurs`)                |
+| Piste créée, prix différent | `OK – … – <Id> – ÉCART DE PRIX (feuille 7,5 € / tarif 5 €)`                          |
+| Doublon de la même feuille  | `DOUBLON – déjà envoyé le 12/11/2026 (ligne 245)`                                    |
+| Doublon interne             | `DOUBLON – contact déjà connu depuis le 12/03/2026, non remonté`                     |
 | Faux numéro, e-mail valable | `FAUX NUMÉRO – e-mail seul – créé le … – <Id>` (piste créée, cochée « Faux numéro ») |
 | Faux numéro, pas d'e-mail   | `FAUX NUMÉRO – <raison> – pas d’e-mail valable, non remonté`                         |
 | Refus de Salesforce         | `ERREUR – tentative 2 – <raison>` puis `ERREUR DÉFINITIVE – <raison>`                |
@@ -181,18 +232,28 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 
 ## Prochaines étapes
 
+- [ ] **Exécuter les tests** : première validation dans une org (sandbox pcp1 à reconnecter, ou
+      validation à blanc en production sur accord). Des erreurs de compilation ou de test sont
+      possibles : rien n'a tourné.
 - [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
       (Configuration > Gestion des certificats et des clés), télécharger sa partie publique.
 - [ ] Importer cette partie publique dans le compte de service Google
       `salesforce-leads-robot@salesforce-leads-515313.iam.gserviceaccount.com` (Clés > Importer une clé existante).
 - [ ] Comparer la production et le dépôt, puis déployer **uniquement** `manifest/remontee-leads.xml`
-      avec `RunSpecifiedTests` (GoogleSheetsClientTest, RemonteeLeadFeuilleTest, RemonteeLeadGardienTest,
+      avec `RunSpecifiedTests` (GoogleSheetsClientTest, LeadClotureBatchTest, LeadClotureServiceTest,
+      LeadPrixSelectorTest, LeadPrixServiceTest, RemonteeLeadFeuilleTest, RemonteeLeadGardienTest,
       RemonteeLeadQueueableTest, RemonteeLeadReglageTest, RemonteeLeadSelectorTest,
-      RemonteeLeadServiceTest, RemonteeLeadTelephoneTest) — **après accord explicite de l'utilisateur**.
+      RemonteeLeadServiceTest, RemonteeLeadTelephoneTest, TarifLeadTriggerHandlerTest)
+      — **après accord explicite de l'utilisateur**.
 - [ ] Attribuer le jeu d'autorisations « Remontée des leads » à l'administrateur.
-- [ ] Créer un Fournisseur (code `TEST`) et une Source de test pointant sur la feuille de test,
-      campagne de test, régie vide, « Actif » coché.
+- [ ] Créer un Fournisseur (code `TEST`), une régie de test (campagne « Est REGIE » avec son compte),
+      un Tarif lead et une Source de test pointant sur la feuille de test, « Actif » coché.
 - [ ] Passer le réglage « Défaut » sur Actif, puis lancer une fois `RemonteeLeadGardien.planifier();`
       (Exécuter du code anonyme).
-- [ ] Vérifier la ligne de test : piste créée, colonne « Remonté » remplie ; supprimer la piste de test.
-- [ ] Étape suivante du projet : tarifs d'achat / revente et prix figés sur la piste.
+- [ ] Vérifier la ligne de test : piste créée avec sa « Campagne (REGIE) » et ses prix, colonne
+      « Remonté » remplie ; supprimer la piste de test.
+- [ ] Utilisateur : relier `Source_Lead__c` et `Code_Fournisseur__c` de la piste à l'opportunité
+      (réglage de conversion) puis de l'opportunité au dossier (flux `Opportunite_FL_AfterCreateUpdate`).
+- [ ] Mettre les nouveaux champs et objets sur des mises en page, puis écrans de réglage
+      (présentation « Visibilité Onglets ») — non faits.
+- [ ] Étape 2 (par la sandbox) : accès par régie, groupes, files, création automatique des télépros.

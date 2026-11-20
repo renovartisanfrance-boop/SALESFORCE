@@ -22,6 +22,8 @@
  *     la limite de 100 appels sortants ;
  *   - une feuille en erreur (lecture, écriture, configuration) est notée sur sa Source et laissée
  *     de côté jusqu'au tour suivant, sans bloquer les autres.
+ * Une Source dont les leads remontent mais où quelque chose manque (tarif, compte de la régie)
+ * reçoit une « Alerte », distincte de la « Dernière erreur » qui, elle, signale un arrêt.
  *
  * Rien n'est perdu si l'écriture dans la feuille échoue : la ligne reste sans résultat, elle est
  * relue au tour suivant et reconnue grâce à sa clé (Lead.Ligne_Feuille__c), sans nouvelle piste.
@@ -146,7 +148,15 @@ public with sharing class RemonteeLeadQueueable implements Queueable, Database.A
     );
 
     // ---- 2. Écritures Salesforce ----
-    Map<Id, Map<Integer, String>> statuts = service.traiter(travaux, reglage);
+    RemonteeLeadService.Resultat resultat = service.traiter(travaux, reglage);
+    Map<Id, Map<Integer, String>> statuts = resultat.statuts;
+    // Ce qui est à corriger sur une Source sans arrêter sa remontée (pas de tarif, compte de la
+    // régie introuvable…) et le compte de sa régie, pour le relevé des leads.
+    for (Id idSource : resultat.alertes.keySet()) {
+      Source_Lead__c ligneSuivi = suivre(suivi, idSource);
+      ligneSuivi.Alerte__c = resultat.alertes.get(idSource);
+      ligneSuivi.Compte_Regie__c = resultat.comptesRegie.get(idSource);
+    }
     for (Id idSource : statuts.keySet()) {
       Source_Lead__c source = sources.get(idSource);
       String colonne = GoogleSheetsClient.lettreColonne(

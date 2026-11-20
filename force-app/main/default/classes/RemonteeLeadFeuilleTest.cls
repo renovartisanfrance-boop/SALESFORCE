@@ -22,7 +22,11 @@ private class RemonteeLeadFeuilleTest {
     List<List<String>> lignes = new List<List<String>>{
       ligne('a', '600000001', 'OK – 20/11/2026 10:00 – 00Q000000000001'),
       ligne('b', '600000002', null),
-      ligne('c', '600000003', 'DOUBLON – déjà reçu le 12/11/2026 par F012'),
+      ligne(
+        'c',
+        '600000003',
+        'DOUBLON – contact déjà connu depuis le 12/11/2026, non remonté'
+      ),
       ligne('d', '600000004', 'ERREUR – tentative 2 – règle de validation'),
       ligne('e', '600000005', 'ERREUR DÉFINITIVE – règle de validation'),
       ligne('f', '600000006', 'FAUX NUMÉRO – numéro inventé'),
@@ -162,7 +166,11 @@ private class RemonteeLeadFeuilleTest {
     Assert.isTrue(
       RemonteeLeadFeuille.estTerminee('OK – 20/11/2026 10:00 – 00Q')
     );
-    Assert.isTrue(RemonteeLeadFeuille.estTerminee('doublon – déjà reçu'));
+    Assert.isTrue(
+      RemonteeLeadFeuille.estTerminee(
+        'doublon – déjà envoyé le 12/11/2026 (ligne 4)'
+      )
+    );
     Assert.isTrue(
       RemonteeLeadFeuille.estTerminee('traité à la main'),
       'un texte saisi par une personne vaut résultat'

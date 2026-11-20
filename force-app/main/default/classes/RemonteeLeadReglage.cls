@@ -13,6 +13,7 @@ public with sharing class RemonteeLeadReglage {
   public static final Integer INTERVALLE_DEFAUT = 3;
   public static final Integer INTERVALLE_MAX = 10;
   public static final Integer TENTATIVES_DEFAUT = 5;
+  public static final Integer DELAI_DOUBLON_DEFAUT = 14;
 
   /** Réglage injecté par les tests (les Custom Metadata ne se créent pas en test). */
   @TestVisible
@@ -32,6 +33,16 @@ public with sharing class RemonteeLeadReglage {
   public Boolean rechercheTelephoneExacte = true;
   /** Nombre d'échecs après lequel une ligne passe en erreur définitive. */
   public Integer tentativesMax = TENTATIVES_DEFAUT;
+  /**
+   * Une piste déjà présente ne bloque un nouveau lead que si elle a eu une activité depuis moins
+   * de ce nombre de jours.
+   */
+  public Integer delaiDoublonJours = DELAI_DOUBLON_DEFAUT;
+  /**
+   * Valeur de « RDV- Statut Dossier » pour laquelle un dossier ne bloque plus un nouveau lead.
+   * Vide : tout dossier bloque.
+   */
+  public String statutDossierAnnule;
 
   public static RemonteeLeadReglage lire() {
     if (forcage != null) {
@@ -66,6 +77,12 @@ public with sharing class RemonteeLeadReglage {
     reglage.emailCompteService = source.Email_compte_service__c;
     reglage.rechercheTelephoneExacte =
       source.Recherche_telephone_exacte__c == true;
+    reglage.delaiDoublonJours = borner(
+      source.Delai_doublon_jours__c,
+      DELAI_DOUBLON_DEFAUT,
+      3650
+    );
+    reglage.statutDossierAnnule = source.Statut_dossier_annule__c;
     return reglage;
   }
 

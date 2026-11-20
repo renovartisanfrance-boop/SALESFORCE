@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Regie_Est_REGIE</fullName>
+    <active>true</active>
+    <description
+  >Une Source ne peut pointer que vers une campagne « Est REGIE » (les campagnes des prévisiteurs utilisent le même objet).</description>
+    <errorConditionFormula
+  >AND(NOT(ISBLANK(Regie__c)), NOT(Regie__r.EstREGIE__c))</errorConditionFormula>
+    <errorMessage
+  >La régie doit être une campagne cochée « Est REGIE ».</errorMessage>
+</ValidationRule>

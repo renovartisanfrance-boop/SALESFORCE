@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Regie__c</fullName>
+    <label>Régie</label>
+    <inlineHelpText>Régie de la feuille d’où vient la ligne.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Campaign</referenceTo>
+    <relationshipName>Rejets_de_leads</relationshipName>
+    <relationshipLabel>Rejets de leads</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

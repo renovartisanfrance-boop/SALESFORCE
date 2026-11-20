@@ -5,7 +5,7 @@
     <gender>Masculine</gender>
     <startsWith>Consonant</startsWith>
     <description
-  >Vendeur de leads, interne ou externe. Son code neutre (jamais son nom) apparaît dans les feuilles Google.</description>
+  >Vendeur de leads. Seul son code neutre (jamais son nom) peut apparaître hors de Salesforce.</description>
     <nameField>
         <label>Nom du fournisseur</label>
         <type>Text</type>

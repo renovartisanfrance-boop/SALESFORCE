@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Statut_Prix__c</fullName>
+    <label>Statut du prix</label>
+    <inlineHelpText
+  >Définitif : prix fixe ou clôture faite. Provisoire : fournisseur payé au pourcentage, en attente de clôture. Sans tarif : aucun tarif trouvé à l’arrivée.</inlineHelpText>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Définitif</fullName>
+                <default>false</default>
+                <label>Définitif</label>
+            </value>
+            <value>
+                <fullName>Provisoire</fullName>
+                <default>false</default>
+                <label>Provisoire</label>
+            </value>
+            <value>
+                <fullName>Sans tarif</fullName>
+                <default>false</default>
+                <label>Sans tarif</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

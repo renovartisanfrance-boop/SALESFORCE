@@ -8,14 +8,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Doublon autre fournisseur</fullName>
+                <fullName>Doublon même feuille</fullName>
                 <default>false</default>
-                <label>Doublon autre fournisseur</label>
+                <label>Doublon même feuille</label>
             </value>
             <value>
-                <fullName>Doublon même fournisseur</fullName>
+                <fullName>Doublon interne</fullName>
                 <default>false</default>
-                <label>Doublon même fournisseur</label>
+                <label>Doublon interne</label>
             </value>
             <value>
                 <fullName>Faux numéro</fullName>

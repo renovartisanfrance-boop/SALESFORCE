@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Facture_regie__c</fullName>
+    <label>Facturé à la régie</label>
+    <inlineHelpText
+  >Toujours décoché : une ligne rejetée n’est jamais facturée à la régie.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -36,4 +36,12 @@
         <field>Tentatives_max__c</field>
         <value xsi:type="xsd:double">5</value>
     </values>
+    <values>
+        <field>Delai_doublon_jours__c</field>
+        <value xsi:type="xsd:double">14</value>
+    </values>
+    <values>
+        <field>Statut_dossier_annule__c</field>
+        <value xsi:type="xsd:string">⚫DOSSIER- Annulé</value>
+    </values>
 </CustomMetadata>

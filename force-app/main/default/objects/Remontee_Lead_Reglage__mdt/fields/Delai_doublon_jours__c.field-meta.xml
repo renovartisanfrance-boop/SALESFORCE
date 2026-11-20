@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Delai_doublon_jours__c</fullName>
+    <label>Délai des doublons (jours)</label>
+    <inlineHelpText
+  >Une piste déjà présente ne bloque un nouveau lead que si elle a eu une activité depuis moins de ce nombre de jours.</inlineHelpText>
+    <type>Number</type>
+    <precision>4</precision>
+    <scale>0</scale>
+    <required>false</required>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+</CustomField>

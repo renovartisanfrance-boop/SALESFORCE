@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Date_debut__c</fullName>
+    <label>Date de début</label>
+    <inlineHelpText
+  >Premier jour d’application (date d’arrivée du lead).</inlineHelpText>
+    <type>Date</type>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

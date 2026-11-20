@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dossier_existant__c</fullName>
+    <label>Dossier déjà présent</label>
+    <inlineHelpText
+  >Dossier non annulé du même contact, qui a fait refuser la ligne.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Pro__c</referenceTo>
+    <relationshipName>Rejets_de_leads</relationshipName>
+    <relationshipLabel>Rejets de leads</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

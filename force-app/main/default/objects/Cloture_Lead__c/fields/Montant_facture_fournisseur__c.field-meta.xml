@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Montant_facture_fournisseur__c</fullName>
+    <label>Montant de la facture du fournisseur</label>
+    <inlineHelpText
+  >Mode Pourcentage de campagne : total réellement facturé (budget + commission). S’il est vide, budget × (1 + taux) est utilisé.</inlineHelpText>
+    <type>Currency</type>
+    <precision>16</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

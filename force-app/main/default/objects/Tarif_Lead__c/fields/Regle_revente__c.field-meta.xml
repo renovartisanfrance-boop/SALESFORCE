@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Regle_revente__c</fullName>
+    <label>Règle de revente</label>
+    <inlineHelpText
+  >Comment se calcule le prix facturé à la régie.</inlineHelpText>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Prix fixe</fullName>
+                <default>true</default>
+                <label>Prix fixe</label>
+            </value>
+            <value>
+                <fullName>Meme prix que achat</fullName>
+                <default>false</default>
+                <label>Même prix que l'achat</label>
+            </value>
+            <value>
+                <fullName>Achat plus marge pourcent</fullName>
+                <default>false</default>
+                <label>Achat + marge en %</label>
+            </value>
+            <value>
+                <fullName>Achat plus marge euros</fullName>
+                <default>false</default>
+                <label>Achat + marge en €</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

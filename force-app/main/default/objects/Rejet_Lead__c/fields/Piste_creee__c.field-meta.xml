@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Piste_creee__c</fullName>
+    <label>Piste créée</label>
+    <inlineHelpText
+  >Piste créée malgré le faux numéro, parce que l’e-mail était valable.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Lead</referenceTo>
+    <relationshipName>Rejets_Lead_Piste_creee</relationshipName>
+    <relationshipLabel>Rejets de leads (piste créée)</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Piste_existante__c</fullName>
-    <label>Piste concernée</label>
+    <label>Piste déjà présente</label>
     <inlineHelpText
-  >Piste déjà présente (doublon) ou piste créée malgré le faux numéro.</inlineHelpText>
+  >Piste déjà connue qui a fait refuser la ligne (doublon).</inlineHelpText>
     <type>Lookup</type>
     <referenceTo>Lead</referenceTo>
     <relationshipName>Rejets_Lead</relationshipName>

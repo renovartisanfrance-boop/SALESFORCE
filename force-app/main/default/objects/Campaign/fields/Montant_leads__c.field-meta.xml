@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Montant_leads__c</fullName>
+    <label>Montant des leads</label>
+    <inlineHelpText
+  >Total des leads facturés à cette régie, mis à jour par les clôtures.</inlineHelpText>
+    <type>Currency</type>
+    <precision>16</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

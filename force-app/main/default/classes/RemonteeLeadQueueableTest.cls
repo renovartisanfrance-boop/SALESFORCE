@@ -35,7 +35,12 @@ private class RemonteeLeadQueueableTest {
 
   private static Source_Lead__c suivi(Id idSource) {
     return [
-      SELECT Dernier_passage__c, Derniere_erreur__c, Premiere_ligne_a_traiter__c
+      SELECT
+        Dernier_passage__c,
+        Derniere_erreur__c,
+        Premiere_ligne_a_traiter__c,
+        Alerte__c,
+        Compte_Regie__c
       FROM Source_Lead__c
       WHERE Id = :idSource
     ];
@@ -147,6 +152,12 @@ private class RemonteeLeadQueueableTest {
       etat.Premiere_ligne_a_traiter__c,
       'tant que les résultats ne sont pas écrits'
     );
+    Assert.isTrue(
+      etat.Alerte__c != null && etat.Alerte__c.startsWith('Aucune régie'),
+      'la Source sans régie remonte quand même, avec une alerte : ' +
+      etat.Alerte__c
+    );
+    Assert.isNull(etat.Compte_Regie__c);
   }
 
   @IsTest
@@ -176,7 +187,9 @@ private class RemonteeLeadQueueableTest {
       src.Id,
       new Map<String, String>{
         cellule(2) => 'OK – 20/11/2026 10:00 – 00Q000000000001AAA',
-        cellule(3) => 'DOUBLON – déjà reçu le 12/11/2026 par F002'
+        cellule(
+          3
+        ) => 'DOUBLON – contact déjà connu depuis le 12/11/2026, non remonté'
       }
     );
 
@@ -194,7 +207,7 @@ private class RemonteeLeadQueueableTest {
       mock.cellule(ID, 2, RANG)
     );
     Assert.areEqual(
-      'DOUBLON – déjà reçu le 12/11/2026 par F002',
+      'DOUBLON – contact déjà connu depuis le 12/11/2026, non remonté',
       mock.cellule(ID, 3, RANG)
     );
     Assert.areEqual(

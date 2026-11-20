@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Telephone_Cle__c</fullName>
+    <label>Téléphone (clé de comparaison)</label>
+    <inlineHelpText
+  >Neuf derniers chiffres : sert à reconnaître une personne déjà envoyée dans la même feuille.</inlineHelpText>
+    <type>Text</type>
+    <length>9</length>
+    <required>false</required>
+    <externalId>true</externalId>
+    <trackTrending>false</trackTrending>
+</CustomField>

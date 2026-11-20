@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  Composants du pilote « remontée des leads depuis Google Sheets ».
-  Uniquement du neuf : aucun composant existant n'est modifié (5 champs ajoutés sur la Piste).
-  À déployer avec RunSpecifiedTests et les 7 classes *Test listées dans le journal.
+  Composants du pilote « remontée des leads depuis Google Sheets » (étape 1 du cadrage).
+  Du neuf uniquement. Sur les objets existants, ce sont des AJOUTS de champs, rien n'est modifié :
+  Piste (13 champs), Opportunité (2), Dossier (2), Campagne (2).
+  Les objets neufs sont déployés entiers (champs et règles de validation compris).
+  À déployer avec RunSpecifiedTests et les 13 classes de test :
+  GoogleSheetsClientTest, LeadClotureBatchTest, LeadClotureServiceTest, LeadPrixSelectorTest, LeadPrixServiceTest, RemonteeLeadFeuilleTest, RemonteeLeadGardienTest, RemonteeLeadQueueableTest, RemonteeLeadReglageTest, RemonteeLeadSelectorTest, RemonteeLeadServiceTest, RemonteeLeadTelephoneTest, TarifLeadTriggerHandlerTest
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>GoogleSheetsClient</members>
         <members>GoogleSheetsClientTest</members>
+        <members>LeadClotureBatch</members>
+        <members>LeadClotureBatchTest</members>
+        <members>LeadClotureService</members>
+        <members>LeadClotureServiceTest</members>
+        <members>LeadPrixSelector</members>
+        <members>LeadPrixSelectorTest</members>
+        <members>LeadPrixService</members>
+        <members>LeadPrixServiceTest</members>
         <members>RemonteeLeadFeuille</members>
         <members>RemonteeLeadFeuilleTest</members>
         <members>RemonteeLeadGardien</members>
@@ -24,12 +35,20 @@
         <members>RemonteeLeadTelephone</members>
         <members>RemonteeLeadTelephoneTest</members>
         <members>RemonteeLeadTestData</members>
+        <members>TarifLeadTriggerHandler</members>
+        <members>TarifLeadTriggerHandlerTest</members>
         <name>ApexClass</name>
+    </types>
+    <types>
+        <members>TarifLeadTrigger</members>
+        <name>ApexTrigger</name>
     </types>
     <types>
         <members>Fournisseur_Lead__c</members>
         <members>Source_Lead__c</members>
         <members>Rejet_Lead__c</members>
+        <members>Tarif_Lead__c</members>
+        <members>Cloture_Lead__c</members>
         <members>Remontee_Lead_Reglage__mdt</members>
         <name>CustomObject</name>
     </types>
@@ -39,6 +58,20 @@
         <members>Lead.Ligne_Feuille__c</members>
         <members>Lead.Faux_Numero__c</members>
         <members>Lead.Telephone_Cle__c</members>
+        <members>Lead.Prix_Achat__c</members>
+        <members>Lead.Prix_Revente__c</members>
+        <members>Lead.Statut_Prix__c</members>
+        <members>Lead.Paye_fournisseur__c</members>
+        <members>Lead.Facture_regie__c</members>
+        <members>Lead.Prix_Feuille__c</members>
+        <members>Lead.Ecart_Prix__c</members>
+        <members>Lead.Tarif_Lead__c</members>
+        <members>Opportunity.Source_Lead__c</members>
+        <members>Opportunity.Code_Fournisseur__c</members>
+        <members>Pro__c.Source_Lead__c</members>
+        <members>Pro__c.Code_Fournisseur__c</members>
+        <members>Campaign.Regie_internalisee__c</members>
+        <members>Campaign.Montant_leads__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -54,6 +87,8 @@
         <members>Fournisseur_Lead__c</members>
         <members>Source_Lead__c</members>
         <members>Rejet_Lead__c</members>
+        <members>Tarif_Lead__c</members>
+        <members>Cloture_Lead__c</members>
         <name>CustomTab</name>
     </types>
     <types>

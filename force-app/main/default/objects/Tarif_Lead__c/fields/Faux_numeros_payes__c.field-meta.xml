@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Faux_numeros_payes__c</fullName>
+    <label>Faux numéros payés</label>
+    <inlineHelpText
+  >Coché : un faux numéro est quand même payé à ce fournisseur. Il n’est jamais facturé à la régie.</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>

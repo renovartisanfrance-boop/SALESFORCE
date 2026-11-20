@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Paye_fournisseur__c</fullName>
+    <label>Payé au fournisseur</label>
+    <inlineHelpText
+  >Cette ligne est due au fournisseur même si elle n’est pas remontée (doublon interne, ou faux numéro si le tarif le prévoit).</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+    <trackTrending>false</trackTrending>
+</CustomField>

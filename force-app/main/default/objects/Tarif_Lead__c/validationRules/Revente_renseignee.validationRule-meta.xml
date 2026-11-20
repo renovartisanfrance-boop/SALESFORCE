@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Revente_renseignee</fullName>
+    <active>true</active>
+    <description>La règle de revente choisie doit avoir sa valeur.</description>
+    <errorConditionFormula
+  >OR(AND(ISPICKVAL(Regle_revente__c, "Prix fixe"), ISBLANK(Prix_Revente__c)), AND(OR(ISPICKVAL(Regle_revente__c, "Achat plus marge pourcent"), ISPICKVAL(Regle_revente__c, "Achat plus marge euros")), ISBLANK(Marge__c)))</errorConditionFormula>
+    <errorMessage
+  >Renseignez le prix de revente (règle Prix fixe) ou la marge (règles Achat + marge).</errorMessage>
+</ValidationRule>

@@ -3,7 +3,7 @@
     <fullName>Colonne_Prix__c</fullName>
     <label>Colonne du prix</label>
     <inlineHelpText
-  >Réservé : titre de la colonne où le fournisseur indique son prix.</inlineHelpText>
+  >Titre de la colonne où le fournisseur indique son prix (« Prix » si vide). Ce prix est comparé au prix d’achat du tarif.</inlineHelpText>
     <type>Text</type>
     <length>80</length>
     <required>false</required>

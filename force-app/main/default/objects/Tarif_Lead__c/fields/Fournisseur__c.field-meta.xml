@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fournisseur__c</fullName>
+    <label>Fournisseur</label>
+    <type>Lookup</type>
+    <referenceTo>Fournisseur_Lead__c</referenceTo>
+    <relationshipName>Tarifs_leads</relationshipName>
+    <relationshipLabel>Tarifs leads</relationshipLabel>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

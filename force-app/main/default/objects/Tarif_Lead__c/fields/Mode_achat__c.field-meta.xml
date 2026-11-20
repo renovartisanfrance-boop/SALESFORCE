@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Mode_achat__c</fullName>
+    <label>Mode d’achat</label>
+    <inlineHelpText
+  >Prix fixe : le prix d’achat est connu à l’arrivée. Pourcentage de campagne : le fournisseur refacture son budget plus sa commission, le coût par lead est réparti à la clôture.</inlineHelpText>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Prix fixe</fullName>
+                <default>true</default>
+                <label>Prix fixe</label>
+            </value>
+            <value>
+                <fullName>Pourcentage de campagne</fullName>
+                <default>false</default>
+                <label>Pourcentage de campagne</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dates_coherentes</fullName>
+    <active>true</active>
+    <description>Période valide.</description>
+    <errorConditionFormula
+  >AND(NOT(ISBLANK(Date_fin__c)), Date_fin__c &lt; Date_debut__c)</errorConditionFormula>
+    <errorMessage
+  >La date de fin ne peut pas précéder la date de début.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Compte_Regie__c</fullName>
+    <label>Compte de la régie</label>
+    <inlineHelpText
+  >Rempli automatiquement : le compte dont « Accès REGIE » pointe vers la régie. C’est à lui que va le relevé des leads.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Account</referenceTo>
+    <relationshipName>Sources_de_leads</relationshipName>
+    <relationshipLabel>Sources de leads</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Achat_renseigne</fullName>
+    <active>true</active>
+    <description>Le mode d’achat choisi doit avoir sa valeur.</description>
+    <errorConditionFormula
+  >OR(AND(ISPICKVAL(Mode_achat__c, "Prix fixe"), ISBLANK(Prix_Achat__c)), AND(ISPICKVAL(Mode_achat__c, "Pourcentage de campagne"), ISBLANK(Taux__c)))</errorConditionFormula>
+    <errorMessage
+  >Renseignez le prix d’achat (mode Prix fixe) ou le taux de commission (mode Pourcentage de campagne).</errorMessage>
+</ValidationRule>

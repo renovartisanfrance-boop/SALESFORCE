@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source_Lead__c</fullName>
+    <label>Source de leads</label>
+    <inlineHelpText
+  >Feuille Google d’où vient le lead d’origine.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Source_Lead__c</referenceTo>
+    <relationshipName>Opportunites</relationshipName>
+    <relationshipLabel>Opportunités</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>

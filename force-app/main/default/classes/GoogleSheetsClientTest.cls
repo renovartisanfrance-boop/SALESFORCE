@@ -178,7 +178,7 @@ private class GoogleSheetsClientTest {
       ID,
       new Map<String, String>{
         GoogleSheetsClient.plage('Leads PAC', 'C2') => 'OK – 20/11/2026 10:00',
-        GoogleSheetsClient.plage('Leads PAC', 'C4') => 'DOUBLON – déjà reçu'
+        GoogleSheetsClient.plage('Leads PAC', 'C4') => 'DOUBLON – déjà envoyé'
       }
     );
     mock.ecritureRefusee = true;
@@ -198,7 +198,7 @@ private class GoogleSheetsClientTest {
     Assert.areEqual(2, mock.appelsEcriture, 'rien à écrire = aucun appel');
     Assert.areEqual('OK – 20/11/2026 10:00', mock.cellule(ID, 2, 2));
     Assert.areEqual(
-      'DOUBLON – déjà reçu',
+      'DOUBLON – déjà envoyé',
       mock.cellule(ID, 4, 2),
       'ligne ajoutée'
     );

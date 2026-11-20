@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Compte_Regie__c</fullName>
+    <label>Compte de la régie</label>
+    <inlineHelpText>Destinataire du relevé.</inlineHelpText>
+    <type>Lookup</type>
+    <referenceTo>Account</referenceTo>
+    <relationshipName>Clotures_leads</relationshipName>
+    <relationshipLabel>Clôtures leads</relationshipLabel>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+</CustomField>
