@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Essai_Rattachement_Dossier</fullName>
+    <fullName>Appels_Par_Dossier</fullName>
+    <columns>Dossier__c</columns>
     <columns>CREATED_DATE</columns>
     <columns>NAME</columns>
     <columns>Statut__c</columns>
     <columns>Telephone_Client__c</columns>
-    <columns>Piste__c</columns>
+    <columns>X174_TRAITEMENT__c</columns>
+    <columns>X174_Commentaire_Traitement__c</columns>
+    <columns>Aircall_Message_Vocal__c</columns>
     <columns>Opportunite__c</columns>
-    <columns>Dossier__c</columns>
+    <columns>Piste__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Dossier__c</field>
         <operation>notEqual</operation>
     </filters>
-    <label>ESSAI- Appels reliés à un dossier</label>
+    <label>APPELS- Par dossier</label>
 </ListView>
