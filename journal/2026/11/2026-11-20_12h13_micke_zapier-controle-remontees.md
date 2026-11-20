@@ -117,6 +117,17 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
   - Revente : prix fixé par l'utilisateur pour ses régies internes, distinct du prix d'achat.
   - Suivi : compte rendu de Claude toutes les heures dans une discussion dédiée.
 
+- **Accès Google pour Salesforce créé (20/11, sur demande de l'utilisateur, dans son Chrome)**, sur le
+  compte Google `renov.artisan.france@gmail.com` (sans organisation) :
+  - projet Google Cloud « Salesforce Leads », identifiant `salesforce-leads-515313` ;
+  - API Google Sheets activée ;
+  - compte de service (robot) `salesforce-leads-robot@salesforce-leads-515313.iam.gserviceaccount.com`,
+    **sans clé** pour l'instant, sans aucun rôle sur le projet (l'accès aux feuilles se fait par partage).
+  - Piste retenue pour la clé : certificat créé dans Salesforce, dont seule la partie publique est importée
+    dans Google ; aucune clé secrète téléchargée ni stockée dans le dépôt.
+- Décision de l'utilisateur : pilote **directement en production** sur une feuille de test, une ligne,
+  sans toucher à l'existant ; Zapier reste allumé pendant l'essai.
+
 ## Problèmes / points d'attention
 
 - Zapier ne donne pas la date de dernière exécution d'un Zap par le connecteur. La mesure utilisée
