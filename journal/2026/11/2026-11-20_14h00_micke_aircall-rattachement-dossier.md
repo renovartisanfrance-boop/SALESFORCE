@@ -66,5 +66,5 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 ## Prochaines étapes
 
 - [x] Automatisation installée en prod (trigger `AircallTrigger` actif).
-- [ ] Attribuer `Aircall_Dossier` aux utilisateurs concernés.
+- [x] `Aircall_Dossier` attribué aux 36 utilisateurs actifs (2 licences Salesforce, 34 Partner Community) ; compte technique Sales Insights exclu.
 - [ ] Vérifier sur un vrai appel, puis lancer le rattrapage (depuis le 01/09 ou plus loin).
