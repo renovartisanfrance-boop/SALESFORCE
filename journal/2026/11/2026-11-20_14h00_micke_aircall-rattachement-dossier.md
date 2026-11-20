@@ -70,5 +70,5 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 - [x] Automatisation installée en prod (trigger `AircallTrigger` actif).
 - [x] `Aircall_Dossier` attribué aux 36 utilisateurs actifs (2 licences Salesforce, 34 Partner Community) ; compte technique Sales Insights exclu.
 - [x] Vérifié sur un vrai appel (SA-56017) puis sur une fiche d'essai (SA-56018, ligne « ESSAI CLAUDE », à supprimer après contrôle de l'utilisateur).
-- [ ] Supprimer la fiche d'essai SA-56018.
+- [x] Fiche d'essai SA-56018 supprimée (corbeille).
 - [ ] Lancer le rattrapage (depuis le 01/09 ou plus loin) après accord.
