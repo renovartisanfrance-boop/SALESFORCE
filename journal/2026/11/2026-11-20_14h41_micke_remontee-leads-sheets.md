@@ -1,0 +1,112 @@
+---
+date: 2026-11-20 14:41
+auteur: micke
+sujet: Remontée des leads depuis Google Sheets sans Zapier — code du pilote (non déployé)
+statut: en cours
+branche: micke/remontee-leads-sheets
+suite_de: journal/2026/11/2026-11-20_12h13_micke_zapier-controle-remontees.md
+---
+
+## Objectif
+
+Écrire le code du pilote : Salesforce lit lui-même les feuilles Google des fournisseurs de leads
+toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne dans une colonne
+« Remonté » de la feuille. Les prix (achat / revente) ne font pas partie de ce pilote.
+
+## Ce qui a été fait
+
+- Branche `micke/remontee-leads-sheets`, partie de `micke/commentaire-piste-unique`.
+  **Rien n'est déployé**, ni en production ni en org de test.
+- Objets neufs : `Fournisseur_Lead__c` (code neutre, interne/externe), `Source_Lead__c` (une par
+  feuille : classeur, onglet, régie, campagne, correspondance des colonnes en JSON, suivi),
+  `Rejet_Lead__c` (historique des doublons, faux numéros, erreurs).
+- Réglage général `Remontee_Lead_Reglage__mdt` (enregistrement « Défaut », livré **inactif**) :
+  interrupteur, taille de paquet (20), pause (3 min), nom du certificat, e-mail du robot Google,
+  recherche des doublons sur le téléphone brut, nombre de tentatives (5).
+- 5 champs ajoutés sur la Piste : `Source_Lead__c`, `Code_Fournisseur__c`, `Ligne_Feuille__c`
+  (clé unique : une ligne de feuille ne crée jamais deux pistes), `Faux_Numero__c`,
+  `Telephone_Cle__c` (9 derniers chiffres, indexé).
+- Classes Apex : `GoogleSheetsClient` (jeton signé par certificat, lecture, écriture),
+  `RemonteeLeadFeuille` (analyse d'une feuille), `RemonteeLeadTelephone` (règles téléphone/e-mail),
+  `RemonteeLeadSelector`, `RemonteeLeadService` (création des pistes, doublons, rejets),
+  `RemonteeLeadQueueable` (la chaîne), `RemonteeLeadGardien` (relance horaire), `RemonteeLeadReglage`.
+- Une classe de test par classe (7), plus un faux Google (`RemonteeLeadGoogleMock`) et des données
+  de test communes (`RemonteeLeadTestData`).
+- Jeu d'autorisations `Remontee_Leads`, 3 onglets, 2 sites distants Google.
+- Liste de déploiement : `manifest/remontee-leads.xml`.
+
+### Résultats écrits dans la feuille
+
+| Cas                         | Texte                                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| Piste créée                 | `OK – 20/11/2026 14:02 – <Id de la piste>`                                           |
+| Doublon                     | `DOUBLON – déjà reçu le 12/11/2026 par F012` (ou `hors fournisseurs`)                |
+| Faux numéro, e-mail valable | `FAUX NUMÉRO – e-mail seul – créé le … – <Id>` (piste créée, cochée « Faux numéro ») |
+| Faux numéro, pas d'e-mail   | `FAUX NUMÉRO – <raison> – pas d’e-mail valable, non remonté`                         |
+| Refus de Salesforce         | `ERREUR – tentative 2 – <raison>` puis `ERREUR DÉFINITIVE – <raison>`                |
+
+## Fichiers touchés
+
+- `force-app/main/default/classes/RemonteeLead*.cls`, `GoogleSheetsClient*.cls`
+- `force-app/main/default/objects/{Fournisseur_Lead__c,Source_Lead__c,Rejet_Lead__c,Remontee_Lead_Reglage__mdt}/`
+- `force-app/main/default/objects/Lead/fields/` (5 champs ajoutés)
+- `force-app/main/default/customMetadata/Remontee_Lead_Reglage.Defaut.md-meta.xml`
+- `force-app/main/default/remoteSiteSettings/`, `tabs/`, `permissionsets/Remontee_Leads.permissionset-meta.xml`
+- `manifest/remontee-leads.xml`
+
+## Décisions prises
+
+- Salesforce lit les feuilles (pas un script par feuille) : un seul endroit à surveiller, aucun appel API consommé.
+- Aucune clé secrète : la demande de jeton Google est signée par un certificat gardé dans Salesforce.
+- Le résultat d'un paquet est écrit dans la feuille au début de l'opération suivante (Salesforce
+  interdit un appel sortant après une écriture). Si cette écriture échoue, la ligne est relue et
+  reconnue par sa clé, sans nouvelle piste.
+- Au plus « taille de paquet » pistes créées par opération (20), pour ménager les 12 flux et le
+  déclencheur existants ; au plus 40 feuilles lues par opération (limite de 100 appels sortants).
+- Doublons : la recherche existante (`DoublonService`, groupes `Doublon_Groupe__c`, règle
+  `TELEPHONE_RES060`) n'est pas modifiée ; la remontée la consulte en lecture, en plus de sa
+  propre clé `Telephone_Cle__c` et du numéro brut des anciennes pistes.
+- Écritures en mode système (traitement automatique, sans utilisateur à l'écran).
+
+## Problèmes / points d'attention
+
+- **Les tests Apex n'ont jamais été exécutés** : aucune org de test n'est connectée (pcp1 expirée).
+  Le code est seulement vérifié par le formateur (syntaxe). Des erreurs de compilation ou de test
+  restent possibles au premier déploiement.
+- Les tests créent des pistes : ils traversent les 59 règles de validation et les 12 flux de la
+  production. Un automatisme existant peut faire échouer un test sans que le pilote soit en cause.
+- `Telephone_Cle__c` n'est rempli que sur les pistes créées par la remontée. Pour les 230 000
+  pistes existantes, les doublons sont cherchés sur le numéro tel qu'il est enregistré
+  (`34XXXXXXXXX`, `0XXXXXXXXX`…) : requête non indexée, tolérée hors déclencheur mais qui
+  ralentira avec le volume. À terme : remplir la clé sur l'existant (traitement de reprise, à
+  faire avec précaution car chaque piste modifiée déclenche les automatismes), puis décocher
+  « Recherche de doublons sur le téléphone brut ».
+- La régie de la Source est recopiée dans `Lead.Regie__c`. Des automatismes existants réagissent à
+  ce champ (`PISTE_SharePiste`, `FL_Piste`, règle `PIS_10_CREATION_LOOKUP_A_SON_NOM`) : non testé.
+  Pour le premier essai, laisser la régie vide sur la Source.
+- Non vérifié auprès de Google : la forme exacte acceptée pour la signature (le code construit le
+  JWT lui-même et le signe avec `Crypto.signWithCertificate`) et l'écriture dans une colonne
+  au-delà de la grille de la feuille. Vérifié sur une vraie feuille : une lecture dont la fin
+  dépasse la grille est acceptée, une lecture qui commence après la dernière ligne est refusée.
+- La colonne « Remonté » doit exister dans la grille de la feuille (26 colonnes par défaut) et la
+  feuille doit être partagée **en modification** avec le compte de service.
+- Si des lignes sont supprimées dans une feuille, vider « Première ligne à traiter » sur la Source
+  pour forcer une relecture complète.
+
+## Prochaines étapes
+
+- [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
+      (Configuration > Gestion des certificats et des clés), télécharger sa partie publique.
+- [ ] Importer cette partie publique dans le compte de service Google
+      `salesforce-leads-robot@salesforce-leads-515313.iam.gserviceaccount.com` (Clés > Importer une clé existante).
+- [ ] Comparer la production et le dépôt, puis déployer **uniquement** `manifest/remontee-leads.xml`
+      avec `RunSpecifiedTests` (GoogleSheetsClientTest, RemonteeLeadFeuilleTest, RemonteeLeadGardienTest,
+      RemonteeLeadQueueableTest, RemonteeLeadReglageTest, RemonteeLeadSelectorTest,
+      RemonteeLeadServiceTest, RemonteeLeadTelephoneTest) — **après accord explicite de l'utilisateur**.
+- [ ] Attribuer le jeu d'autorisations « Remontée des leads » à l'administrateur.
+- [ ] Créer un Fournisseur (code `TEST`) et une Source de test pointant sur la feuille de test,
+      campagne de test, régie vide, « Actif » coché.
+- [ ] Passer le réglage « Défaut » sur Actif, puis lancer une fois `RemonteeLeadGardien.planifier();`
+      (Exécuter du code anonyme).
+- [ ] Vérifier la ligne de test : piste créée, colonne « Remonté » remplie ; supprimer la piste de test.
+- [ ] Étape suivante du projet : tarifs d'achat / revente et prix figés sur la piste.

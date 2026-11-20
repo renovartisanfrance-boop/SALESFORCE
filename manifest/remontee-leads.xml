@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Composants du pilote « remontée des leads depuis Google Sheets ».
+  Uniquement du neuf : aucun composant existant n'est modifié (5 champs ajoutés sur la Piste).
+  À déployer avec RunSpecifiedTests et les 7 classes *Test listées dans le journal.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GoogleSheetsClient</members>
+        <members>GoogleSheetsClientTest</members>
+        <members>RemonteeLeadFeuille</members>
+        <members>RemonteeLeadFeuilleTest</members>
+        <members>RemonteeLeadGardien</members>
+        <members>RemonteeLeadGardienTest</members>
+        <members>RemonteeLeadGoogleMock</members>
+        <members>RemonteeLeadQueueable</members>
+        <members>RemonteeLeadQueueableTest</members>
+        <members>RemonteeLeadReglage</members>
+        <members>RemonteeLeadReglageTest</members>
+        <members>RemonteeLeadSelector</members>
+        <members>RemonteeLeadSelectorTest</members>
+        <members>RemonteeLeadService</members>
+        <members>RemonteeLeadServiceTest</members>
+        <members>RemonteeLeadTelephone</members>
+        <members>RemonteeLeadTelephoneTest</members>
+        <members>RemonteeLeadTestData</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>Fournisseur_Lead__c</members>
+        <members>Source_Lead__c</members>
+        <members>Rejet_Lead__c</members>
+        <members>Remontee_Lead_Reglage__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Lead.Source_Lead__c</members>
+        <members>Lead.Code_Fournisseur__c</members>
+        <members>Lead.Ligne_Feuille__c</members>
+        <members>Lead.Faux_Numero__c</members>
+        <members>Lead.Telephone_Cle__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Remontee_Lead_Reglage.Defaut</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>Google_OAuth2</members>
+        <members>Google_Sheets</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>Fournisseur_Lead__c</members>
+        <members>Source_Lead__c</members>
+        <members>Rejet_Lead__c</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>Remontee_Leads</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>66.0</version>
+</Package>
