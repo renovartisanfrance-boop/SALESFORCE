@@ -62,6 +62,21 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
     (≈ 420 de plus) ; la feuille contient 309 lignes en double. Doublons créés par le déclencheur
     « New or Updated row » ? À vérifier.
 
+- **Cause des 93 exécutions retenues (lu dans l'historique Zapier)** : statut « On hold – Disconnected app ».
+  La connexion Salesforce de Zapier (`renov.artisan.france@gmail.com`, créée le 8 sept.) a été coupée
+  du **20/10 vers 16h18 au 21/10 vers 11h42**. Répartition : Ryan page 3 ≈ 39, Yossef ≈ 50.
+  - Ces leads **sont déjà dans Salesforce** : les lignes des feuilles datées de cette fenêtre (60 + 58)
+    ont presque toutes une piste créée le 21/10 entre 11h et 14h (heure de Paris), après la reconnexion.
+    Une seule ligne de la fenêtre est absente.
+  - **Ne pas relancer les 93** : cela créerait des doublons.
+  - Même jour que le début de la coupure Aircall (20/10) : cause commune probable côté Salesforce
+    (hypothèse, non vérifiée).
+- **Cause trouvée pour une partie des 20 leads absents** : 16 exécutions « Errored » sur les 2 Zaps depuis
+  septembre. Les 9 ouvertes ont toutes la même erreur Salesforce : `Ville : valeur de données trop élevée
+(max length=40)` — le client a tapé son adresse complète dans le champ ville.
+  10 des 20 absents correspondent à une de ces erreurs (9 Ryan page 3, 1 Yossef).
+  Les 10 autres (3 Ryan page 3, 7 Yossef) n'ont pas d'erreur visible : cause non trouvée.
+
 ## Fichiers touchés
 
 - `journal/2026/11/2026-11-20_12h13_micke_zapier-controle-remontees.md` (cette entrée)
@@ -85,10 +100,11 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
 
 ## Prochaines étapes
 
-- [ ] Regarder les 93 exécutions retenues (quel Zap, quelles dates, pourquoi) avant toute relance ;
-      une relance écrit dans Salesforce en production, donc accord de l'utilisateur obligatoire.
-- [ ] Vérifier si les 20 lignes absentes font partie des 93 exécutions retenues ou d'erreurs Zapier,
-      puis décider avec l'utilisateur de leur création dans Salesforce.
+- [ ] Avec accord de l'utilisateur : créer les 20 pistes absentes dans Salesforce (ville coupée à 40 caractères).
+- [ ] Avec accord : corriger les 2 Zaps pour couper la ville à 40 caractères (sinon l'erreur reviendra).
+- [ ] Chercher la cause des 10 absents sans erreur visible (recherche par nom dans l'historique Zapier).
+- [ ] Vérifier les 7 exécutions en erreur non ouvertes (15/10, 19/10, 25/10, 28/09 ×2, 06/11, 05/11).
+- [ ] Ne pas relancer les 93 exécutions retenues (doublons) ; les laisser expirer le 19/12 ou les écarter.
 - [ ] Expliquer les ≈ 420 pistes en trop de la campagne `R1 26- KAF-Page3` (doublons).
 - [ ] Demander si les 8 Zaps déjà éteints doivent aussi prendre le préfixe `inactif-`.
 - [ ] Surveiller quelques jours qu'aucun lead attendu ne manque après l'extinction des 9 Zaps.
