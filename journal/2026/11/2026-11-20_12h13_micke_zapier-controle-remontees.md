@@ -49,6 +49,19 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
 - **Zapier affiche « 93 held Zap runs », retenus jusqu'au 19/12/2026** : 93 exécutions en attente,
   donc probablement des leads pas arrivés dans Salesforce. Rien n'a été relancé.
 
+- **Contrôle des 2 Zaps actifs (20/11, lecture seule)** : chaque ligne des feuilles Google comparée aux
+  Pistes Salesforce créées depuis le 01/09 (par téléphone, 9 derniers chiffres, ou e-mail).
+  - `ES- PAC 1EU- Ryan- page 3` : classeur « PAC RAYAN ESPAGNE », feuille `EXCLUSION`, colonne déclencheur
+    « Date d'ajout » → Piste avec Campagne (`Origine_de_la_demande__c`) = `R1 26- KAF-Page3`.
+    7 538 lignes (10/09 → 20/11) : 7 526 trouvées, **12 absentes** (toutes entre le 02/11 et le 19/11).
+  - `ES- PAC 1EU-Yossef` : classeur « Leads Ecotanura PAC Espagne », feuille `Leads PAC`, colonne déclencheur
+    « Nom » → Campagne = `Y1 26- FB 1`. 3 025 lignes : 3 016 trouvées, **8 absentes** (22/09 → 14/11)
+    - 1 ligne de test.
+  - Les 20 absentes ont été recherchées dans toutes les Pistes et tous les Contacts (y compris supprimés) : introuvables.
+  - Écart non expliqué : Salesforce compte 7 956 pistes `R1 26- KAF-Page3` pour 7 538 lignes de feuille
+    (≈ 420 de plus) ; la feuille contient 309 lignes en double. Doublons créés par le déclencheur
+    « New or Updated row » ? À vérifier.
+
 ## Fichiers touchés
 
 - `journal/2026/11/2026-11-20_12h13_micke_zapier-controle-remontees.md` (cette entrée)
@@ -74,6 +87,9 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
 
 - [ ] Regarder les 93 exécutions retenues (quel Zap, quelles dates, pourquoi) avant toute relance ;
       une relance écrit dans Salesforce en production, donc accord de l'utilisateur obligatoire.
+- [ ] Vérifier si les 20 lignes absentes font partie des 93 exécutions retenues ou d'erreurs Zapier,
+      puis décider avec l'utilisateur de leur création dans Salesforce.
+- [ ] Expliquer les ≈ 420 pistes en trop de la campagne `R1 26- KAF-Page3` (doublons).
 - [ ] Demander si les 8 Zaps déjà éteints doivent aussi prendre le préfixe `inactif-`.
 - [ ] Surveiller quelques jours qu'aucun lead attendu ne manque après l'extinction des 9 Zaps.
 - [ ] Trouver, pour chaque Zap actif, la source (formulaire Facebook / site) et le champ Salesforce qui la repère.
