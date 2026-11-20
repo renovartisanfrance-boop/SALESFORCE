@@ -2,7 +2,7 @@
 date: 2026-11-20 14:00
 auteur: micke
 sujet: Aircall : rattachement automatique des appels à la piste, l'opportunité et le dossier (par numéro)
-statut: en cours
+statut: terminé
 branche: micke/aircall-dossier
 suite_de: 2026-11-20_12h45_micke_aircall-rappels-163-179.md
 ---
@@ -71,4 +71,7 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 - [x] `Aircall_Dossier` attribué aux 36 utilisateurs actifs (2 licences Salesforce, 34 Partner Community) ; compte technique Sales Insights exclu.
 - [x] Vérifié sur un vrai appel (SA-56017) puis sur une fiche d'essai (SA-56018, ligne « ESSAI CLAUDE », à supprimer après contrôle de l'utilisateur).
 - [x] Fiche d'essai SA-56018 supprimée (corbeille).
-- [ ] Lancer le rattrapage (depuis le 01/09 ou plus loin) après accord.
+- [x] Rattrapage lancé depuis le 01/09/2025 (accord de l'utilisateur) : 533 lots, 0 erreur. Sur 53 934 fiches,
+      42 503 ont maintenant un client (42 406 avec piste, 10 050 avec dossier). Depuis le 01/09/2026 : piste 35 % → 63 %, dossier 0 % → 30 %.
+- [ ] Fusionner la branche `micke/aircall-dossier` (PR à ouvrir).
+- [ ] Option non retenue pour l'instant : relier les anciens appels quand une piste / un dossier est créé plus tard.
