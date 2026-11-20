@@ -26,8 +26,8 @@ rappelle à partir du lundi 23/11. La liste ne doit plus montrer que ceux-là.
 - **19 numéros** retenus : 4 avaient déjà une fiche créée le matin même (SA-55975, 55981, 55985, 55988),
   **15 fiches créées** (SA-55994 à SA-56008), commentaire « A RAPPELER - Appel manqué du … Jamais rappelé. Remonté le 20/11/2026. »
 - Liste de vue `Aircall__c.Copie_de_STANDAR` (« APPELS ENTRANTS- 163/179 ») : ajout d'un 4e filtre
-  « Date de création ≥ 19/11/2026 » (accord de l'utilisateur), déploiement de ce seul élément en prod.
-  Résultat : 21 fiches visibles (les 19 + SA-55990 message vocal du 13/11 + SA-55866 Arthur Bal du 19/11, décroché).
+  « Date de création ≥ 20/11/2026 » (accord de l'utilisateur ; d'abord 19/11, puis passé au 20/11 à sa demande), déploiement de ce seul élément en prod.
+  Résultat : 20 fiches visibles (les 19 + SA-55990 message vocal du 13/11).
 - Aucune ancienne fiche modifiée : les 53 fiches plus anciennes (appels décrochés jamais clôturés dans
   Salesforce, NRP, anciens doublons des 19) restent telles quelles, simplement masquées par le filtre.
 
