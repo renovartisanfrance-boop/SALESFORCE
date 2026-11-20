@@ -77,6 +77,17 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
   10 des 20 absents correspondent à une de ces erreurs (9 Ryan page 3, 1 Yossef).
   Les 10 autres (3 Ryan page 3, 7 Yossef) n'ont pas d'erreur visible : cause non trouvée.
 
+- **Écriture en production, sur accord explicite de l'utilisateur (20/11, vers 13h07)** : les 20 pistes
+  absentes ont été créées dans Salesforce avec exactement les mêmes champs que ceux remplis par leur Zap
+  (type d'enregistrement « AA- RESIDENTIEL- INTERNE », Origine `LEADS`, Statut `New`, Type de dossier
+  `RESIDENTIEL_REGIES_-_RES060`, Campagne `R1 26- KAF-Page3` ou `Y1 26- FB 1`, champs « Formulaire » et
+  « ADMIN- Heure de création » repris tels quels de la feuille). 12 pour Ryan page 3, 8 pour Yossef.
+  - Seul écart avec la feuille : la **ville coupée à 40 caractères** pour 10 d'entre elles.
+  - Résultat : 20 créées, 0 refus. Elles sont arrivées dans la file « ATTRIBUTION RDV REGIES/LEADS »,
+    comme celles créées par les Zaps.
+  - Les 10 lignes sans erreur Zapier connue ont été acceptées sans problème par Salesforce : le Zap ne les
+    avait donc probablement jamais envoyées (ligne non détectée par Zapier). Cause exacte non trouvée.
+
 ## Fichiers touchés
 
 - `journal/2026/11/2026-11-20_12h13_micke_zapier-controle-remontees.md` (cette entrée)
@@ -100,7 +111,7 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
 
 ## Prochaines étapes
 
-- [ ] Avec accord de l'utilisateur : créer les 20 pistes absentes dans Salesforce (ville coupée à 40 caractères).
+- [x] Créer les 20 pistes absentes dans Salesforce (fait le 20/11, ville coupée à 40 caractères).
 - [ ] Avec accord : corriger les 2 Zaps pour couper la ville à 40 caractères (sinon l'erreur reviendra).
 - [ ] Chercher la cause des 10 absents sans erreur visible (recherche par nom dans l'historique Zapier).
 - [ ] Vérifier les 7 exécutions en erreur non ouvertes (15/10, 19/10, 25/10, 28/09 ×2, 06/11, 05/11).
