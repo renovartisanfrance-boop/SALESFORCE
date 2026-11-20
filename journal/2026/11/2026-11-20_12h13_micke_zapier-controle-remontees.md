@@ -97,6 +97,26 @@ Première étape : connecter Zapier et voir quels Zaps servent encore.
 - Aucun mot de passe confié à Claude : connexion par l'écran officiel Zapier.
 - Lecture seule tant que l'utilisateur n'a pas dit oui : rien n'a été modifié dans Zapier ni dans Salesforce.
 
+- **Projet « remontée des leads sans Zapier » — phase d'exploration, rien de construit (décisions de
+  l'utilisateur, 20/11)** :
+  - Une feuille Google par fournisseur ; une feuille = une régie fixe ; fournisseur interne ou externe.
+  - Jusqu'à 50 feuilles × 50–70 leads/jour : Salesforce lit les feuilles toutes les 3 minutes
+    (pas un script par feuille) et écrit le résultat dans une colonne « Remonté ».
+  - Doublon : comparé à toutes les pistes, le premier fournisseur garde le lead ; pas de nouvelle piste,
+    message dans la feuille avec le **code fournisseur** (jamais le nom), historique gardé dans Salesforce.
+  - Faux numéro (mauvais nombre de chiffres, préfixe ni espagnol ni français, numéro inventé) : noté et
+    historisé ; **si l'e-mail est valable, le lead remonte quand même**.
+  - Prix : prix de référence dans Salesforce par fournisseur et période, comparé à la colonne prix du
+    fournisseur ; un écart est signalé mais ne bloque pas le lead.
+  - Deux modes de tarif d'achat : prix fixe par lead, ou pourcentage de campagne (le fournisseur paie la
+    publicité et refacture budget + 10 à 13 %) avec coût par lead calculé à la clôture.
+  - Chaque lead porte **deux prix** : prix d'acquisition et prix de revente à la régie, avec possibilité
+    de reprendre le même prix.
+  - Achat : le fournisseur est payé sur **tous** les leads qu'il envoie ; un doublon avec un autre
+    fournisseur ne lui est pas imputable (il reste à la charge de l'entreprise).
+  - Revente : prix fixé par l'utilisateur pour ses régies internes, distinct du prix d'achat.
+  - Suivi : compte rendu de Claude toutes les heures dans une discussion dédiée.
+
 ## Problèmes / points d'attention
 
 - Zapier ne donne pas la date de dernière exécution d'un Zap par le connecteur. La mesure utilisée
