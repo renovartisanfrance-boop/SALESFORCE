@@ -1,6 +1,7 @@
 /**
  * Rattache les fiches Aircall à leur client à partir du numéro de l'appelant :
- * piste, opportunité et dossier. Ne remplit que les cases vides, n'écrase rien.
+ * piste, opportunité et dossier. La piste trouvée par le numéro passe devant celle choisie par Aircall
+ * (qui prend parfois un vieux doublon) ; opportunité et dossier ne sont remplis que s'ils sont vides.
  * Règles : piste convertie en priorité, sinon la plus récente ; dossier le plus récent.
  */
 public with sharing class AircallRattachementService {
@@ -25,11 +26,7 @@ public with sharing class AircallRattachementService {
     List<Aircall__c> fiches = new List<Aircall__c>();
     for (Aircall__c fiche : selector.fichesParIds(ficheIds)) {
       String numero = normaliser(fiche.Telephone_Client__c);
-      Boolean incomplete =
-        fiche.Piste__c == null ||
-        fiche.Opportunite__c == null ||
-        fiche.Dossier__c == null;
-      if (numero != null && incomplete) {
+      if (numero != null) {
         numeroParFiche.put(fiche.Id, numero);
         fiches.add(fiche);
       }
@@ -167,7 +164,7 @@ public with sharing class AircallRattachementService {
     Id opportuniteId = fiche.Opportunite__c;
     Id dossierId = fiche.Dossier__c;
 
-    if (pisteId == null && piste != null) {
+    if (piste != null) {
       pisteId = piste.Id;
     }
     if (dossierId == null) {

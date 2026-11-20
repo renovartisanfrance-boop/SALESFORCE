@@ -18,7 +18,7 @@ public with sharing class AircallTriggerHandler {
     switch on operation {
       when AFTER_INSERT {
         for (Aircall__c fiche : nouveaux) {
-          if (aUnNumero(fiche) && aUnLienVide(fiche)) {
+          if (aUnNumero(fiche)) {
             aRattacher.add(fiche.Id);
           }
         }
@@ -44,20 +44,13 @@ public with sharing class AircallTriggerHandler {
     return String.isNotBlank(fiche.Telephone_Client__c);
   }
 
-  private static Boolean aUnLienVide(Aircall__c fiche) {
-    return fiche.Piste__c == null ||
-      fiche.Opportunite__c == null ||
-      fiche.Dossier__c == null;
-  }
-
-  /** Un autre automatisme a vidé la piste ou l'opportunité, ou le numéro a changé. */
+  /** Un autre automatisme a changé la piste ou vidé l'opportunité, ou le numéro a changé. */
   private static Boolean lienPerduOuNumeroChange(
     Aircall__c fiche,
     Aircall__c ancien
   ) {
     return fiche.Telephone_Client__c != ancien.Telephone_Client__c ||
-      (fiche.Piste__c == null &&
-      ancien.Piste__c != null) ||
+      fiche.Piste__c != ancien.Piste__c ||
       (fiche.Opportunite__c == null &&
       ancien.Opportunite__c != null);
   }

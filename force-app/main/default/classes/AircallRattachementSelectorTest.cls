@@ -29,7 +29,7 @@ private class AircallRattachementSelectorTest {
     Aircall__c fiche = insererFiche();
 
     Database.QueryLocatorIterator fiches = new AircallRattachementSelector()
-      .fichesIncompletesDepuis(Datetime.now().addDays(-1))
+      .fichesAvecNumeroDepuis(Datetime.now().addDays(-1))
       .iterator();
 
     Assert.isTrue(fiches.hasNext(), 'La fiche sans lien doit être listée');

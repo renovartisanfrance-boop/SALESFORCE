@@ -77,7 +77,7 @@ private class AircallRattachementServiceTest {
   }
 
   @IsTest
-  static void necrasePasUnePisteDejaReliee() {
+  static void remplaceLaPisteChoisieParAircall() {
     Lead dejaReliee = new Lead(
       LastName = 'Deja reliee',
       Company = 'Test',
@@ -99,9 +99,9 @@ private class AircallRattachementServiceTest {
     Test.stopTest();
 
     Assert.areEqual(
-      dejaReliee.Id,
+      autre.Id,
       relire(fiche.Id).Piste__c,
-      'La piste déjà reliée ne doit pas être remplacée'
+      'La piste du numéro doit remplacer celle choisie par Aircall'
     );
   }
 
@@ -135,6 +135,29 @@ private class AircallRattachementServiceTest {
     Assert.isTrue(
       AircallRattachementService.meilleurePiste(recente, null),
       'Sans piste déjà retenue, la candidate est prise'
+    );
+  }
+
+  @IsTest
+  static void gardeLaPisteSiAucuneAutreTrouvee() {
+    Lead dejaReliee = new Lead(
+      LastName = 'Deja reliee',
+      Company = 'Test',
+      Phone = '0611111111'
+    );
+    insert dejaReliee;
+    Aircall__c fiche = creerFiche(NUMERO);
+    fiche.Piste__c = dejaReliee.Id;
+    insererSansTrigger(new List<SObject>{ fiche });
+
+    Test.startTest();
+    new AircallRattachementService().rattacher(new Set<Id>{ fiche.Id });
+    Test.stopTest();
+
+    Assert.areEqual(
+      dejaReliee.Id,
+      relire(fiche.Id).Piste__c,
+      'Sans piste trouvée par le numéro, celle en place est gardée'
     );
   }
 

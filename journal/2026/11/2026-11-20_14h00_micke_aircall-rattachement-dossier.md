@@ -35,7 +35,9 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
   - `AircallTrigger` → `AircallTriggerHandler` → `AircallRattachementQueueable` → `AircallRattachementService` → `AircallRattachementSelector` ;
   - recherche Salesforce (SOSL) sur les champs téléphone : retrouve le client quel que soit le format, sans champ
     supplémentaire ni modification des 230 000 pistes (les champs téléphone ne sont pas indexés, un SOQL serait refusé) ;
-  - ne remplit que les cases vides ; piste convertie en priorité sinon la plus récente ; dossier le plus récent ;
+  - piste convertie en priorité sinon la plus récente ; dossier le plus récent ; opportunité et dossier remplis seulement s'ils sont vides ;
+  - **la piste trouvée par le numéro passe devant celle choisie par Aircall** (accord de l'utilisateur après le 1er vrai appel :
+    Aircall avait choisi un vieux doublon) ; le rattachement se relance aussi quand un autre automatisme change la piste ;
     dossier de l'opportunité déjà reliée en priorité ;
   - se relance quand le flux existant revide Piste / Opportunité (le flux existant n'est pas modifié) ;
   - `AircallRattachementBatch` pour rattraper les fiches déjà créées.
@@ -67,4 +69,6 @@ automatiquement à partir du numéro de l'appelant, sans dépendre de ce qu'Airc
 
 - [x] Automatisation installée en prod (trigger `AircallTrigger` actif).
 - [x] `Aircall_Dossier` attribué aux 36 utilisateurs actifs (2 licences Salesforce, 34 Partner Community) ; compte technique Sales Insights exclu.
-- [ ] Vérifier sur un vrai appel, puis lancer le rattrapage (depuis le 01/09 ou plus loin).
+- [x] Vérifié sur un vrai appel (SA-56017) puis sur une fiche d'essai (SA-56018, ligne « ESSAI CLAUDE », à supprimer après contrôle de l'utilisateur).
+- [ ] Supprimer la fiche d'essai SA-56018.
+- [ ] Lancer le rattrapage (depuis le 01/09 ou plus loin) après accord.

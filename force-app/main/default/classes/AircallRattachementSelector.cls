@@ -12,17 +12,12 @@ public without sharing class AircallRattachementSelector {
     ];
   }
 
-  public Database.QueryLocator fichesIncompletesDepuis(Datetime depuis) {
+  public Database.QueryLocator fichesAvecNumeroDepuis(Datetime depuis) {
     return Database.getQueryLocator(
       [
         SELECT Id
         FROM Aircall__c
-        WHERE
-          CreatedDate >= :depuis
-          AND Telephone_Client__c != NULL
-          AND (Piste__c = NULL
-          OR Opportunite__c = NULL
-          OR Dossier__c = NULL)
+        WHERE CreatedDate >= :depuis AND Telephone_Client__c != NULL
       ]
     );
   }

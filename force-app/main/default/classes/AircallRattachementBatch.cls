@@ -10,7 +10,7 @@ public with sharing class AircallRattachementBatch implements Database.Batchable
   }
 
   public Database.QueryLocator start(Database.BatchableContext contexte) {
-    return new AircallRattachementSelector().fichesIncompletesDepuis(depuis);
+    return new AircallRattachementSelector().fichesAvecNumeroDepuis(depuis);
   }
 
   public void execute(
