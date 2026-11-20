@@ -93,6 +93,24 @@ toutes les 3 minutes, crée les pistes et écrit le résultat de chaque ligne da
 - Si des lignes sont supprimées dans une feuille, vider « Première ligne à traiter » sur la Source
   pour forcer une relecture complète.
 
+## Corrections demandées par l'utilisateur le 20/11 (à faire, pas encore codées)
+
+- **La régie est une Campagne « Est REGIE »** (`Campaign.EstREGIE__c`), avec un compte relié par
+  `Account.Acces_REGIE__c`. La Source pointe vers une Campagne, plus vers un utilisateur ; la piste remplit
+  `Lead.Campagne_REGIE__c` et plus `Lead.Regie__c`.
+- Vérifié en production (lecture seule, 20/11) : aucun des 12 flux actifs de la piste, ni `LeadTrigger`,
+  `LeadTriggerHandler`, `DoublonService`, ni aucune règle de validation ou de partage de la piste ne cite
+  `Campagne_REGIE__c`. La conversion le recopie vers `Opportunity.Campagne_REGIE__c`. `Pro__c` n'a pas ce champ.
+  Chiffres : 945 campagnes « Est REGIE », 1 083 comptes avec « Accès REGIE », 1 275 pistes et 413 opportunités
+  avec « Campagne (REGIE) ».
+- **Un seul cas : la régie internalisée** (plus de « interne / externe »). Les 945 régies actuelles ne changent pas.
+  Sur la campagne : case « Régie internalisée », nombre d'utilisateurs actifs, montant des leads.
+- **Prix** : prix d'achat et prix de revente sur chaque lead ; tarif par couple fournisseur + régie ; tarifs et
+  clôture dans des objets à part ; Catalogue tarifaire intouché ; écrans de réglage comme « Visibilité Onglets ».
+- **Doublons** : message neutre dans la feuille quand le contact est connu d'une autre régie.
+- **Préparer sans construire** : accès par régie (plus tard, par la sandbox), saisie de leads par la régie,
+  reporting de la régie. Chaque piste doit garder régie, source, prix de revente et télépro.
+
 ## Prochaines étapes
 
 - [ ] Créer dans Salesforce un certificat auto-signé nommé `Google_Sheets_Leads`
